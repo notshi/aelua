@@ -1,0 +1,1 @@
+local core=require("wetgenes.aelua.user.core")module("wetgenes.aelua.user")function get()	return core.get()end
