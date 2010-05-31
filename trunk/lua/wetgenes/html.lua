@@ -6,6 +6,7 @@ html=html or {}
 
 local string=string
 local type=type
+local tostring=tostring
 
 local html=html
 
