@@ -1,0 +1,1 @@
+local core=require("wetgenes.aelua.data.core")module("wetgenes.aelua.data")function put(ent)	return core.put(ent)endfunction get(ent)	return core.get(ent)endfunction query(q)	return core.query(q)end
