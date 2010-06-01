@@ -13,14 +13,14 @@ import javax.servlet.http.*;
 
 import mnj.lua.*;
 
-import wetgenes.aelua.Core;
+import wetgenes.aelua.Srv;
 
 
 public class Servlet extends HttpServlet {
 	
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+	public void serv(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
-	
+			
 		Lua L = new Lua();
 		
 		BaseLib.open(L);
@@ -34,15 +34,37 @@ public class Servlet extends HttpServlet {
 		Data.preload(L);
 		User.preload(L);
 		
-		Core core=new Core(req,resp); // our response core, shouldnt be global
+		Srv srv=new Srv(req,resp); // our response srv, should not be global
 
 		L.loadFile("lua/serv.lua");
 		L.call(0,0);
 		
 		L.push( L.rawGet(L.getGlobals(), "serv") );
-		core.push_lib(L);
+		srv.push_lib(L);
 		L.call(1,0);
 	
-		
+	}
+	
+// send everything thrugh the serv function, we will sort it later
+
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+	
+		serv(req,resp);
+	}
+	public void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+	
+		serv(req,resp);
+	}
+	public void doPut(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+	
+		serv(req,resp);
+	}
+	public void doDelete(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+	
+		serv(req,resp);
 	}
 }
