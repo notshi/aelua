@@ -9,13 +9,13 @@ import mnj.lua.Lua;
 import java.io.IOException;
 import javax.servlet.http.*;
 
-public class Core
+public class Srv
 {
 
 	HttpServletRequest req;
 	HttpServletResponse resp;
 
-	public Core(HttpServletRequest _req, HttpServletResponse _resp )
+	public Srv(HttpServletRequest _req, HttpServletResponse _resp )
 	{
 		req=_req;
 		resp=_resp;
@@ -26,8 +26,7 @@ public class Core
 	{
 		String s;
 			
-//		Object lib = L.register("aecore"); // create or use lib lua table
-		LuaTable lib=L.createTable(0,256);
+		LuaTable lib=L.createTable(0,0);
 		L.push(lib);
 
 		 
@@ -47,8 +46,8 @@ public class Core
 
 	public void reg_print(Lua L,Object lib)
 	{ 
-		final Core _base=this;
-		L.setField(lib, "print", new LuaJavaCallback(){ Core base=_base; public int luaFunction(Lua L){ return base.print(L); } });
+		final Srv _base=this;
+		L.setField(lib, "print", new LuaJavaCallback(){ Srv base=_base; public int luaFunction(Lua L){ return base.print(L); } });
 	}
 	public int print(Lua L)
 	{
@@ -67,8 +66,8 @@ public class Core
 	
 	public void reg_mimetype(Lua L,Object lib)
 	{ 
-		final Core _base=this;
-		L.setField(lib, "mimetype", new LuaJavaCallback(){ Core base=_base; public int luaFunction(Lua L){ return base.mimetype(L); } });
+		final Srv _base=this;
+		L.setField(lib, "mimetype", new LuaJavaCallback(){ Srv base=_base; public int luaFunction(Lua L){ return base.mimetype(L); } });
 	}
 	public int mimetype(Lua L)
 	{
@@ -80,8 +79,8 @@ public class Core
 	
 	public void reg_time(Lua L,Object lib)
 	{ 
-		final Core _base=this;
-		L.setField(lib, "time", new LuaJavaCallback(){ Core base=_base; public int luaFunction(Lua L){ return base.time(L); } });
+		final Srv _base=this;
+		L.setField(lib, "time", new LuaJavaCallback(){ Srv base=_base; public int luaFunction(Lua L){ return base.time(L); } });
 	}
 	public int time(Lua L)
 	{
@@ -93,8 +92,8 @@ public class Core
 	
 	public void reg_nanotime(Lua L,Object lib)
 	{ 
-		final Core _base=this;
-		L.setField(lib, "nanotime", new LuaJavaCallback(){ Core base=_base; public int luaFunction(Lua L){ return base.nanotime(L); } });
+		final Srv _base=this;
+		L.setField(lib, "nanotime", new LuaJavaCallback(){ Srv base=_base; public int luaFunction(Lua L){ return base.nanotime(L); } });
 	}
 	public int nanotime(Lua L)
 	{
