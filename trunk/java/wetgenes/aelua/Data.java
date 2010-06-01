@@ -64,7 +64,7 @@ public class Data
 	{
 	
 		reg_keystr(L,lib);
-		reg_keytab(L,lib);
+		reg_keyinfo(L,lib);
 		
 		reg_put(L,lib);
 		reg_get(L,lib);
@@ -77,12 +77,12 @@ public class Data
 // Create a key informaton table from a key string
 // this does not recurse, it just stores its parent as a key string
 //
-	void reg_keytab(Lua L,Object lib)
+	void reg_keyinfo(Lua L,Object lib)
 	{ 
 		final Data _base=this;
-		L.setField(lib, "keytab", new LuaJavaCallback(){ Data base=_base; public int luaFunction(Lua L){ return base.keytab(L); } });
+		L.setField(lib, "keyinfo", new LuaJavaCallback(){ Data base=_base; public int luaFunction(Lua L){ return base.keyinfo(L); } });
 	}
-	int keytab(Lua L)
+	int keyinfo(Lua L)
 	{
 		Object o1=L.value(1); // keystr
 		if(!L.isString(o1)) { L.error("key must be a string"); }
@@ -356,15 +356,44 @@ public class Data
 		
 		Object o;
 		
-		int lim=100;
-		int off=0;
+		int limit=1000;
+		int offset=0;
+		String kind=null;
+		Key parent=null;
 		
 		o=L.value(1);
 		if(!L.isTable(o)) { L.error("query options must be a table"); }
 		LuaTable opt=(LuaTable)o;
 		
+		o=opt.getlua("parent"); if(L.isString(o)) { parent=KeyFactory.stringToKey((String)o); }
+		o=opt.getlua("kind");   if(L.isString(o)) { kind=(String)o; }
+		o=opt.getlua("limit");  if(L.isNumber(o)) { limit =((Double)o).intValue(); }
+		o=opt.getlua("offset"); if(L.isNumber(o)) { offset=((Double)o).intValue(); }
 		
-		Query q = new Query("test");
+		Query q;
+		
+		if(kind==null)
+		{
+			if(parent==null)
+			{
+				q = new Query();
+			}
+			else
+			{
+				q = new Query(parent);
+			}
+		}
+		else
+		{
+			if(parent==null)
+			{
+				q = new Query(kind);
+			}
+			else
+			{
+				q = new Query(kind,parent);
+			}
+		}
 
 		i=0;
 		do
@@ -406,7 +435,7 @@ public class Data
 		while(!L.isNil(o));
 		
 		
-		FetchOptions f=FetchOptions.Builder.withLimit(lim).offset(off);
+		FetchOptions f=FetchOptions.Builder.withLimit(limit).offset(offset);
 		
 		t=L.newTable(); 
 		
