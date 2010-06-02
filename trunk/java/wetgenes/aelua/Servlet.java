@@ -30,6 +30,7 @@ public class Servlet extends HttpServlet {
 		MathLib.open(L);
 		OSLib.open(L);
 		
+		Sys.preload(L);
 		Log.preload(L);
 		Data.preload(L);
 		User.preload(L);
