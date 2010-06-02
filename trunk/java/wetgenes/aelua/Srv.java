@@ -31,6 +31,7 @@ public class Srv
 
 		 
 		reg_put(L,lib);
+		reg_set_header(L,lib);
 		reg_set_mimetype(L,lib);
 		reg_set_cookie(L,lib);
 		
@@ -64,6 +65,16 @@ public class Srv
 			String name = (String)e.nextElement();
 			L.rawSet( headers , name , req.getHeader(name) );
 		}
+		
+		LuaTable params=L.createTable(0,0);	// create params table
+		L.rawSet(lib, "params", params );
+		
+		for( java.util.Enumeration e = req.getParameterNames() ; e.hasMoreElements() ; )
+		{
+			String name = (String)e.nextElement();
+			L.rawSet( params , name , req.getParameter(name) );
+		}
+		
 		
 		return 1;
 	}
@@ -107,6 +118,22 @@ public class Srv
 	}
 
 //
+// Set a header response
+//
+	public void reg_set_header(Lua L,Object lib)
+	{ 
+		final Srv _base=this;
+		L.rawSet(lib, "set_header", new LuaJavaCallback(){ Srv base=_base; public int luaFunction(Lua L){ return base.set_header(L); } });
+	}
+	public int set_header(Lua L)
+	{
+		String si=L.checkString(1);
+		String sv=L.checkString(2);
+		resp.setHeader(si,sv);
+		return 0;
+	}
+	
+//
 // Set a browserside cookie
 //
 	public void reg_set_cookie(Lua L,Object lib)
@@ -116,6 +143,24 @@ public class Srv
 	}
 	public int set_cookie(Lua L)
 	{
+		if(! L.isTable(L.value(1))) { L.error("cookie must be a table"); }
+		
+		LuaTable cookie=(LuaTable)L.value(1);
+		
+		Object name=L.rawGet(cookie,"name");
+		Object value=L.rawGet(cookie,"value");
+		Object domain=L.rawGet(cookie,"domain");
+		Object path=L.rawGet(cookie,"path");
+		Object live=L.rawGet(cookie,"live");
+		
+		Cookie c=new Cookie(L.toString(name),L.toString(value));
+		
+		if( L.isString(domain) ) { c.setDomain(L.toString(domain)); }
+		if( L.isString(path) )   { c.setPath  (L.toString(path));   }
+		if( L.isNumber(live) )   { c.setMaxAge((int)L.toNumber(live));   }
+		
+		resp.addCookie(c);
+		
 		return 0;
 	}
 	
