@@ -358,6 +358,7 @@ public class Data
 		
 		int limit=1000;
 		int offset=0;
+		Cursor cursor=null;
 		String kind=null;
 		Key parent=null;
 		
@@ -365,6 +366,7 @@ public class Data
 		if(!L.isTable(o)) { L.error("query options must be a table"); }
 		LuaTable opt=(LuaTable)o;
 		
+		o=opt.getlua("cursor"); if(L.isString(o)) { cursor=Cursor.fromWebSafeString((String)o); }
 		o=opt.getlua("parent"); if(L.isString(o)) { parent=KeyFactory.stringToKey((String)o); }
 		o=opt.getlua("kind");   if(L.isString(o)) { kind=(String)o; }
 		o=opt.getlua("limit");  if(L.isNumber(o)) { limit =((Double)o).intValue(); }
@@ -441,13 +443,20 @@ public class Data
 		try
 		{
 			FetchOptions f=FetchOptions.Builder.withLimit(limit).offset(offset);
-				
+			if( cursor!=null ) { f.cursor(cursor); } // passed in a cursor?
+			
+			PreparedQuery pq=ds.prepare(q);
+			QueryResultList ql=pq.asQueryResultList(f);
+			
+			L.rawSet(t,"count", new Double( (pq.countEntities()) ) );
+			
 			i=1;
-			for(Entity e : ds.prepare(q).asIterable(f) )
+			for(Object e : ql )
 			{
-				L.rawSetI(t,i, luaentity_create(L,e) );
+				L.rawSetI(t,i, luaentity_create(L,(Entity)e) );
 				i=i+1;
 			}
+			L.rawSet(t,"cursor", ql.getCursor().toWebSafeString() );
 		}
 		catch(DatastoreNeedIndexException ex)
 		{
