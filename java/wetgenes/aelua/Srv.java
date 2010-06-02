@@ -6,8 +6,17 @@ import mnj.lua.LuaJavaCallback;
 import mnj.lua.LuaTable;
 import mnj.lua.Lua;
 
+import java.io.InputStream;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.*;
+
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 public class Srv
 {
@@ -66,16 +75,75 @@ public class Srv
 			L.rawSet( headers , name , req.getHeader(name) );
 		}
 		
-		LuaTable params=L.createTable(0,0);	// create params table
-		L.rawSet(lib, "params", params );
+		
+		LuaTable posts=L.createTable(0,0);	// create posts table
+		L.rawSet(lib, "posts", posts );
+		
+		try
+		{
+			ServletFileUpload upload = new ServletFileUpload();
+			FileItemIterator iterator = upload.getItemIterator(req);
+			
+			while (iterator.hasNext())
+			{
+				FileItemStream item = iterator.next();
+				InputStream stream = item.openStream();
+
+				if (item.isFormField())
+				{
+					String line;
+					
+					StringBuilder sb = new StringBuilder();
+					
+					BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+					
+					while ((line = reader.readLine()) != null)
+					{
+						sb.append(line).append("\n");
+					}
+
+					String data=sb.toString();
+					
+					L.rawSet( posts , item.getFieldName() , data );
+					
+				}
+				else
+				{
+					/*
+						log.warning("Got an uploaded file: " + item.getFieldName() +
+						", name = " + item.getName());
+
+						// You now have the filename (item.getName() and the
+						// contents (which you can read from stream).  Here we just
+						// print them back out to the servlet output stream, but you
+						// will probably want to do something more interesting (for
+						// example, wrap them in a Blob and commit them to the
+						// datastore).
+						int len;
+						byte[] buffer = new byte[8192];
+						while ((len = stream.read(buffer, 0, buffer.length)) != -1) {
+						res.getOutputStream().write(buffer, 0, len);
+					*/
+				}
+			}
+		}
+		catch (Exception ex) 
+		{
+//			throw new ServletException(ex);
+//			L.error(ex.toString());
+//			return 0;
+		}
+	
+		LuaTable gets=L.createTable(0,0);	// create gets table
+		L.rawSet(lib, "gets", gets );
 		
 		for( java.util.Enumeration e = req.getParameterNames() ; e.hasMoreElements() ; )
 		{
 			String name = (String)e.nextElement();
-			L.rawSet( params , name , req.getParameter(name) );
+			L.rawSet( gets , name , req.getParameter(name) );
 		}
 		
-		
+	
 		return 1;
 	}
 

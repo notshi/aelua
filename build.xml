@@ -64,6 +64,9 @@
       <fileset dir="${appengine.sdk}/lib/user">
           <include name="**/*.jar"/>
       </fileset>
+      <fileset dir="class">
+          <include name="**/*.jar"/>
+      </fileset>
     </copy>
 <!--
     <enhance_war war="${war.dir}"/>
@@ -91,6 +94,9 @@
 
   <javac srcdir="java" destdir="${war.dir}/WEB-INF/classes" includeantruntime="false">
       <classpath>
+		<fileset dir="class">
+		  <include name="**/*.jar" />
+		</fileset>
 		<fileset dir="${war.dir}/WEB-INF/lib">
 		  <include name="**/*.jar" />
 		</fileset>
