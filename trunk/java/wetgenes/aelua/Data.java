@@ -435,17 +435,23 @@ public class Data
 		while(!L.isNil(o));
 		
 		
-		FetchOptions f=FetchOptions.Builder.withLimit(limit).offset(offset);
-		
-		t=L.newTable(); 
-		
+		t=L.newTable();		
 		L.rawSet(t,"code", q.toString() );
-			
-		i=1;
-		for(Entity e : ds.prepare(q).asIterable(f) )
+		
+		try
 		{
-			L.rawSetI(t,i, luaentity_create(L,e) );
-			i=i+1;
+			FetchOptions f=FetchOptions.Builder.withLimit(limit).offset(offset);
+				
+			i=1;
+			for(Entity e : ds.prepare(q).asIterable(f) )
+			{
+				L.rawSetI(t,i, luaentity_create(L,e) );
+				i=i+1;
+			}
+		}
+		catch(DatastoreNeedIndexException ex)
+		{
+			L.rawSet(t,"error", ex.toString() );
 		}
 
 
