@@ -42,6 +42,7 @@ serv_apps[""]		="serv_home" -- default
 serv_apps["home"]	="serv_home" -- default
 
 serv_apps["test"]	="serv_test"
+serv_apps["chan"]	="serv_chan"
 
 
 

@@ -17,10 +17,13 @@ public class User
 {
 
 	UserService us;
+	com.google.appengine.api.users.User u;
 
 	public User()
 	{
 		us = UserServiceFactory.getUserService();
+		
+		u=us.getCurrentUser();
 	}
 
 //
@@ -32,7 +35,7 @@ public class User
 		User base=new User();
 		
 		base.open_lib(L,lib);
-		
+				
 		return 0;
 	}
 
@@ -62,22 +65,58 @@ public class User
 //
 	int open_lib(Lua L,LuaTable lib)
 	{
-		reg_get(L,lib);
+		reg_login_url(L,lib);
+		reg_logout_url(L,lib);
+		
+		
+		if(u!=null)
+		{
+			LuaTable usr=L.createTable(0,0);
+			L.rawSet(lib,"user",usr); // we have a user
+			
+			L.rawSet(usr,"admin",us.isUserAdmin()); // do we have an admin?	
+		
+			if(u.getAuthDomain()!=null)			{ L.rawSet(usr,"domain",u.getAuthDomain()); }
+			if(u.getEmail()!=null)				{ L.rawSet(usr,"email",u.getEmail()); }
+			if(u.getNickname()!=null)			{ L.rawSet(usr,"name",u.getNickname()); }
+			
+//			if(u.getUserId()!=null)				{ L.rawSet(usr,"id",u.getUserId()); }
+//			if(u.getFederatedIdentity()!=null)	{ L.rawSet(usr,"fid",u.getFederatedIdentity()); }
+		}
+		
 		
 		return 0;
 	}
 
 //
-// Get an entity of the given key and return its data
+// Get a url to login and then return
 //
-	void reg_get(Lua L,Object lib)
+	void reg_login_url(Lua L,Object lib)
 	{ 
 		final User _base=this;
-		L.setField(lib, "get", new LuaJavaCallback(){ User base=_base; public int luaFunction(Lua L){ return base.get(L); } });
+		L.setField(lib, "login_url", new LuaJavaCallback(){ User base=_base; public int luaFunction(Lua L){ return base.login_url(L); } });
 	}
-	int get(Lua L)
+	int login_url(Lua L)
 	{
-		L.push("poopyhead");
+		String s1=L.checkString(1);
+		
+		L.push(us.createLoginURL(s1));
+		return 1;
+	}
+	
+//
+// Get a url to logout and then return
+//
+	void reg_logout_url(Lua L,Object lib)
+	{ 
+		final User _base=this;
+		L.setField(lib, "logout_url", new LuaJavaCallback(){ User base=_base; public int luaFunction(Lua L){ return base.logout_url(L); } });
+	}
+	int logout_url(Lua L)
+	{
+		String s1=L.checkString(1);
+		
+		L.push(us.createLogoutURL(s1));
 		return 1;
 	}
 	

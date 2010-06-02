@@ -1,1 +1,1 @@
-local core=require("wetgenes.aelua.user.core")module("wetgenes.aelua.user")function get()	return core.get()end
+local core=require("wetgenes.aelua.user.core")module("wetgenes.aelua.user")function login_url(a)	return core.login_url(a)endfunction logout_url(a)	return core.logout_url(a)end
