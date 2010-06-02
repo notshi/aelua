@@ -1,4 +1,5 @@
 
+local sys=require("wetgenes.aelua.sys")
 local dat=require("wetgenes.aelua.data")
 
 local wet_string=require("wetgenes.string")
@@ -13,8 +14,8 @@ local serialize=wet_string.serialize
 -----------------------------------------------------------------------------
 function serv_fail(srv)
 
-	srv.mimetype("text/html")
-	srv.print([[
+	srv.set_mimetype("text/html")
+	srv.put([[
 	
 PAGE MISSING<br/>
 <br/>
@@ -51,7 +52,7 @@ serv_apps["test"]	="serv_test"
 -----------------------------------------------------------------------------
 function serv(srv)
 
-	srv.stamp_time=srv.nanotime() -- the time we started
+	srv.count_start=sys.count() -- the time we started
 
 	srv.url_slash=str_split("/",srv.url) -- break the input url	
 	
