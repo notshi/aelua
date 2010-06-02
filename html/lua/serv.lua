@@ -42,7 +42,9 @@ serv_apps[""]		="serv_home" -- default
 serv_apps["home"]	="serv_home" -- default
 
 serv_apps["test"]	="serv_test"
-serv_apps["chan"]	="serv_chan"
+serv_apps["chan"]	="chan"
+
+
 
 
 
@@ -53,7 +55,7 @@ serv_apps["chan"]	="serv_chan"
 -----------------------------------------------------------------------------
 function serv(srv)
 
-	srv.count_start=sys.count() -- the time we started
+	srv.clock_start=sys.clock() -- the time we started
 
 	srv.url_slash=str_split("/",srv.url) -- break the input url	
 	
@@ -61,9 +63,17 @@ function serv(srv)
 	
 	if type(f)=="string" then -- a string so load that file and run it
 	
-		dofile("lua/"..f..".lua")
+		if sys.file_exists("lua/"..f..".lua") then -- its a simple file
+	
+			dofile("lua/"..f..".lua")
+			f=_G[f] -- expect it to contain a serv function of the same name as the file
+			
+		elseif sys.file_exists("lua/"..f.."/init.lua") then -- its a module
 		
-		f=_G[f] -- expect it to contain a serv function of the same name as the file
+			f=require("chan")
+			f=f.serv
+			
+		end
 		
 	end
 	
