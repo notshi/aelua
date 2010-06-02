@@ -1,0 +1,65 @@
+body{
+border-style:none;
+border:none;
+outline:none;
+margin:0px;
+padding:0px;
+font-family: Verdana, Tahoma, "Myriad Web", Syntax, sans-serif;
+font-size: 12px;
+
+	color: #000;	
+	background: #fff;
+	background-image: url(/css/img/top_shadow_to_white.png);
+	background-repeat: repeat-x;
+}
+
+
+ul, li {margin: 0px; list-style-type:none; padding-left:16; padding-right:16; }
+
+img {
+border-style:none;
+border:none;
+outline:none;
+margin:0px;
+padding:0px;
+}
+
+a {
+border-style:none;
+border:none;
+outline:none;
+margin:0px;
+padding:0px;
+}
+
+a:link {
+	font-weight: bold;
+	color: #000;
+	text-decoration: none;
+}
+a:visited {
+	font-weight: bold;
+	color: #000;
+	text-decoration: none;
+}
+a:active {
+	text-decoration: underline;
+}
+a:hover {
+	text-decoration: underline;
+}
+
+  
+.zero {
+border-style:none;
+border:none;
+outline:none;
+margin:0px;
+padding:0px;
+overflow-x:hidden;
+}
+
+
+
+
+

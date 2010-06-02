@@ -24,14 +24,13 @@ html.header=function(d)
 
 <link REL="SHORTCUT ICON" HREF="/favicon.ico">
 
-<link rel="stylesheet" type="text/css" href="/css/base.css" /> 
-<link rel="stylesheet" type="text/css" href="/css/links.css" /> 
+<link rel="stylesheet" type="text/css" href="/css/aelua.css" /> 
 
 <script type="text/javascript" src="/js/jquery.js"></script> 
 
  </head>
 <body>
-<div class="space_base">
+<div class="aelua_base">
 ]],d)
 
 end
@@ -46,7 +45,7 @@ html.footer=function(d)
 		
 	return f.replace([[
 </div>
-<div class="space_foot_data">
+<div class="aelua_foot_data">
 {report}
 </div>
 </body>
