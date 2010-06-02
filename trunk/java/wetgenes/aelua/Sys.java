@@ -6,6 +6,7 @@ import mnj.lua.LuaJavaCallback;
 import mnj.lua.LuaTable;
 import mnj.lua.Lua;
 
+import java.io.FileReader;
 import java.io.IOException;
 import javax.servlet.http.*;
 
@@ -61,7 +62,8 @@ public class Sys
 	{
 		
 		reg_time(L,lib);
-		reg_count(L,lib);
+		reg_clock(L,lib);
+		reg_file_exists(L,lib);
 		
 		return 0;
 	}
@@ -87,12 +89,12 @@ public class Sys
 // values returned from this function. IE it is relative to an arbitary point and may wrap and go teh crazy
 // just use it for unimportant benchmark tests
 //
-	public void reg_count(Lua L,Object lib)
+	public void reg_clock(Lua L,Object lib)
 	{ 
 		final Sys _base=this;
-		L.rawSet(lib, "count", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.count(L); } });
+		L.rawSet(lib, "clock", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.clock(L); } });
 	}
-	public int count(Lua L)
+	public int clock(Lua L)
 	{
 		double t=System.nanoTime();
 		t=t/1000000000;
@@ -100,6 +102,32 @@ public class Sys
 		return 1;
 	}
 	
+//
+// does this file exist?
+//
+	public void reg_file_exists(Lua L,Object lib)
+	{ 
+		final Sys _base=this;
+		L.rawSet(lib, "file_exists", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.file_exists(L); } });
+	}
+	public int file_exists(Lua L)
+	{
+	
+		String s=L.checkString(1);
+		try
+		{
+			FileReader f = new FileReader(s);
+		}
+		catch (IOException e_)
+		{
+			L.push( false );
+			return 1;
+		}
+		
+		L.push( true );
+		return 1;
+		
+	}
 }
 
 
