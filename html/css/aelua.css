@@ -1,3 +1,7 @@
+html{
+	overflow-y: scroll;
+}
+
 body{
 	border-style:none;
 	border:none;
@@ -63,9 +67,26 @@ a:hover {
 	
 }
 
+.aelua_home_bar {
+
+	margin: auto;
+	width: 960px;
+	position: relative;
+
+}
+
+.aelua_user_bar {
+
+	margin: auto;
+	width: 960px;
+	position: relative;
+
+}
+
 .aelua_twocol_head {
 
 	width: 960px;
+	clear: both;
 }
 
 .aelua_twocol_wide {
