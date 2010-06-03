@@ -2,6 +2,8 @@
 -- create a global table for keeping templates in
 html=html or {}
 
+local sys=require("wetgenes.aelua.sys")
+local user=require("wetgenes.aelua.user")
 
 
 local f=require("wetgenes.html")
@@ -41,6 +43,10 @@ end
 -----------------------------------------------------------------------------
 html.footer=function(d)
 
+	if not d.time then
+		d.time=math.ceil((sys.clock()-d.srv.clock_start)*1000)/1000
+	end
+
 	d.report="<br/><br/><br/>Output generated in "..(d.time or 0).." Seconds.<br/><br/>"
 		
 	return f.replace([[
@@ -56,29 +62,52 @@ end
 		
 
 		
-		
 -----------------------------------------------------------------------------
 --
+-- a home / tabs / next page area
 --
 -----------------------------------------------------------------------------
-html.chan_form=function(d)
+html.home_bar=function(d)
 
+	d.home="<a href=\"/\">Home</a>"
 		
 	return f.replace([[
 	
-<form name="chanpost" id="chanpost" action="/chan/post" method="post" enctype="multipart/form-data">
+<div class="aelua_home_bar">
+{home}
+</div>
 
-	<input type="hidden" name="parent" value="0">
+]],d)
 
-	<input type="text" name="subject" size="40" maxlength="75" accesskey="s">
+end
 
-	<input type="submit" value="Submit" accesskey="z"> <br/>
+		
+-----------------------------------------------------------------------------
+--
+-- a hello / login / logout area
+--
+-----------------------------------------------------------------------------
+html.user_bar=function(d)
 
-	<textarea name="message" cols="48" rows="4" accesskey="m"></textarea> <br/>
-
-	<input type="file" name="file" size="35" accesskey="f"> 
-
-</form>
+	if user.user then
+	
+		d.name="<span title=\""..user.user.email.."\" >"..(user.user.name or "?").."</span>"
+	
+		d.hello="Hello "..d.name.."."
+		
+		d.action="<a href=\""..user.logout_url(d.srv.url).."\">Logout?</a>"
+	else
+		d.hello="Hello Anon."
+		d.action="<a href=\""..user.login_url(d.srv.url).."\">Login?</a>"
+	
+	end
+	
+	return f.replace([[
+	
+<div class="aelua_user_bar">
+{hello}
+{action}
+</div>
 
 ]],d)
 

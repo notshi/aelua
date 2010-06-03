@@ -9,6 +9,8 @@ local sys=require("wetgenes.aelua.sys")
 
 local dat=require("wetgenes.aelua.data")
 
+local user=require("wetgenes.aelua.user")
+
 local log=require("wetgenes.aelua.log").log -- grab the func from the package
 
 local wet_string=require("wetgenes.string")
@@ -33,17 +35,21 @@ module("chan")
 function serv(srv)
 
 local function put(a,b)
+	b=b or {}
+	b.srv=srv
 	srv.put(html.get(a,b))
 end
 
 	srv.set_mimetype("text/html")
 	put("header",{})
+	put("home_bar",{})
+	put("user_bar",{})
 	
 	put("chan_form",{})
 
-	srv.put("<br/><br/>"..tostring(srv).."<br/><br/>")
+--	srv.put("<br/><br/>"..tostring(user).."<br/><br/>")
 
-	put("footer",{time=math.ceil((sys.clock()-srv.clock_start)*1000)/1000})
+	put("footer",{})
 	
 end
 
