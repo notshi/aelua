@@ -120,6 +120,7 @@
 
   <target name="dev_appserver" depends="runserver"/>
 
+
   <target name="debug" depends="war" 
           description="Launches dev_appserver with remote debugging enabled">
     <echo message="Launching dev_appserver on Web port ${http.port}, Java remote debug port ${debug.port}"/>
@@ -159,5 +160,9 @@
       </args>
     </appcfg>
   </target>
+
+  <target name="bake" depends="war"/>
+  <target name="serv" depends="runserver"/>
+  <target name="upload" depends="update"/>
 
 </project>
