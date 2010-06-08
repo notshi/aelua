@@ -16,10 +16,11 @@ import com.google.appengine.api.images.*;
 
 public class Img
 {
-
+	ImagesService imgs;
 
 	public Img()
 	{
+		imgs=ImagesServiceFactory.getImagesService();
 	}
 
 //
@@ -63,6 +64,9 @@ public class Img
 	{
 		
 		reg_get_img(L,lib);
+		reg_get_dat(L,lib);
+		
+		reg_resize(L,lib);
 		
 		return 0;
 	}
@@ -84,13 +88,72 @@ public class Img
 		
 		LuaTable t=L.newTable();
 		
-		L.setField(t,"img",img);
-		L.setField(t,"format",img.getFormat().name());
-		L.setField(t,"height",img.getHeight());
-		L.setField(t,"width",img.getWidth());
+		fill_tab_img(L,t,img);
 		
 		L.push( t );
 		return 1;
 	}
+	public void fill_tab_img(Lua L,LuaTable t,Image img)
+	{
+		L.setField(t,"img",img);
+		L.setField(t,"format",img.getFormat().name());
+		L.setField(t,"height",img.getHeight());
+		L.setField(t,"width",img.getWidth());
+	}
 	
+//
+// Return a chunk of data bytearray that represents the image
+//
+	public void reg_get_dat(Lua L,Object lib)
+	{ 
+		final Img _base=this;
+		L.rawSet(lib, "get_dat", new LuaJavaCallback(){ Img base=_base; public int luaFunction(Lua L){ return base.get_dat(L); } });
+	}
+	public int get_dat(Lua L)
+	{	
+		Object tab=L.value(1);
+
+		Image img=(Image)L.getField(tab,"img");
+		
+		byte[] d=img.getImageData();
+
+		L.push( d );
+		return 1;
+	}
+	
+//
+// Resize the image, it may end up smaller in one dimension than the requested size
+//
+	public void reg_resize(Lua L,Object lib)
+	{ 
+		final Img _base=this;
+		L.rawSet(lib, "resize", new LuaJavaCallback(){ Img base=_base; public int luaFunction(Lua L){ return base.resize(L); } });
+	}
+	public int resize(Lua L)
+	{	
+		int width=1;
+		int height=1;
+		
+		LuaTable tab=(LuaTable)L.value(1);
+		width=(int)L.checkNumber(2);
+		height=(int)L.checkNumber(3);
+
+		Image img=(Image)L.getField(tab,"img");
+		String format=(String)L.getField(tab,"format");
+		
+		Transform t1=ImagesServiceFactory.makeResize(width,height);  
+		
+		if(format=="JPEG")
+		{
+			img=imgs.applyTransform(t1,img,ImagesService.OutputEncoding.JPEG);
+		}
+		else
+		{
+			img=imgs.applyTransform(t1,img);
+		}
+		
+		fill_tab_img(L,tab,img);
+		L.push( tab );
+		return 1;
+	}
 }
