@@ -32,6 +32,7 @@ public class Servlet extends HttpServlet {
 		
 		Sys.preload(L);
 		Log.preload(L);
+		Img.preload(L);
 		Data.preload(L);
 		User.preload(L);
 		

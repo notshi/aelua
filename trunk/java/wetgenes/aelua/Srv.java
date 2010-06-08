@@ -14,6 +14,8 @@ import java.io.InputStreamReader;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
+import org.apache.commons.io.IOUtils;
+
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -43,8 +45,11 @@ public class Srv
 		reg_set_header(L,lib);
 		reg_set_mimetype(L,lib);
 		reg_set_cookie(L,lib);
+		reg_redirect(L,lib);
 		
 		L.rawSet(lib,"method",req.getMethod());
+		
+		L.rawSet(lib,"ip",req.getRemoteAddr());
 		
 		s=req.getRequestURL().toString();
 		if(s!=null) { L.rawSet(lib, "url", s ); } // the url requested
@@ -79,6 +84,9 @@ public class Srv
 		LuaTable posts=L.createTable(0,0);	// create posts table
 		L.rawSet(lib, "posts", posts );
 		
+		LuaTable uploads=L.createTable(0,0);	// create uploads table
+		L.rawSet(lib, "uploads", uploads );
+		
 		try
 		{
 			ServletFileUpload upload = new ServletFileUpload();
@@ -109,21 +117,17 @@ public class Srv
 				}
 				else
 				{
-					/*
-						log.warning("Got an uploaded file: " + item.getFieldName() +
-						", name = " + item.getName());
-
-						// You now have the filename (item.getName() and the
-						// contents (which you can read from stream).  Here we just
-						// print them back out to the servlet output stream, but you
-						// will probably want to do something more interesting (for
-						// example, wrap them in a Blob and commit them to the
-						// datastore).
-						int len;
-						byte[] buffer = new byte[8192];
-						while ((len = stream.read(buffer, 0, buffer.length)) != -1) {
-						res.getOutputStream().write(buffer, 0, len);
-					*/
+					LuaTable tab=L.createTable(0,0);	// uploaded info tab
+					
+					L.rawSet( uploads , item.getFieldName() , tab );
+					
+					byte[] buffer = IOUtils.toByteArray(stream);
+					
+					L.rawSet( tab , "name" , item.getName() );
+					L.rawSet( tab , "data" , buffer ); // grab file
+					
+					L.rawSet( tab , "size" , (double)buffer.length );
+					
 				}
 			}
 		}
@@ -230,6 +234,31 @@ public class Srv
 		resp.addCookie(c);
 		
 		return 0;
+	}
+	
+	
+//
+// Set a header response
+//
+	public void reg_redirect(Lua L,Object lib)
+	{ 
+		final Srv _base=this;
+		L.rawSet(lib, "redirect", new LuaJavaCallback(){ Srv base=_base; public int luaFunction(Lua L){ return base.redirect(L); } });
+	}
+	public int redirect(Lua L)
+	{
+		String s=L.checkString(1);
+		try
+		{
+			resp.sendRedirect(s);
+		}
+		catch( IOException ex )
+		{
+			L.push(false);
+			return 1;
+		}
+		L.push(true);
+		return 1;
 	}
 	
 	

@@ -1,0 +1,1 @@
+local core=require("wetgenes.aelua.img.core")module("wetgenes.aelua.img")function get_img(...)	return core.get_img(...)end
