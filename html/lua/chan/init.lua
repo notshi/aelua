@@ -71,8 +71,8 @@ end
 	
 	put("chan_form",{})
 
-	srv.put("<br/><br/>"..tostring(srv.posts).."<br/><br/>")
-	srv.put("<br/><br/>"..tostring(srv.uploads).."<br/><br/>")
+--	srv.put("<br/><br/>"..tostring(srv.posts).."<br/><br/>")
+--	srv.put("<br/><br/>"..tostring(srv.uploads).."<br/><br/>")
 	
 	local ts=chan_data.get_threads("new")
 	
@@ -111,7 +111,7 @@ function post(srv)
 		tab.ip=srv.ip
 		tab.image=0
 		
-		if srv.uploads.file then -- got a file
+		if srv.uploads.file and srv.uploads.file.size>0 then -- got a file
 		
 			local image=img.get(srv.uploads.file.data)
 			local thumb=img.resize(image,200,200)
@@ -123,8 +123,8 @@ function post(srv)
 		
 		chan_data.create_thread(tab)
 
---		srv.redirect("/chan")
---		return true
+		srv.redirect("/chan")
+		return true
 	end
 
 end
@@ -151,7 +151,7 @@ function serv_image(srv,name,ids)
 	
 	dat.get(ent)
 	
-log(tostring(ent))
+-- log(tostring(ent))
 
 	if ent.props then -- got an image
 	

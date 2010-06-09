@@ -42,6 +42,14 @@ end
 -----------------------------------------------------------------------------
 html.chan_post=function(d)
 
+	d.img=d.img or ""
+	
+	if d.post.cache.image and d.post.cache.image~=0 then
+	
+		d.img="<a href=\"/chan/image/"..d.post.cache.image..".png\" ><img src=\"/chan/thumb/"..d.post.cache.image..".png\" /></a>"
+	
+	end
+
 	return f.replace([[
 	
 <div>
@@ -49,6 +57,7 @@ html.chan_post=function(d)
 EMAIL:{post.cache.email}<br/>
 SUBJECT:{post.cache.subject}<br/>
 BODY:{post.cache.body}<br/>
+IMG:{img}<br/>
 
 </div>
 
