@@ -1,9 +1,5 @@
 
-
--- load up html template strings
-dofile("lua/html.lua")
 local html=require("wetgenes.html")
-
 
 local sys=require("wetgenes.aelua.sys")
 
@@ -37,29 +33,17 @@ module("chan")
 
 -----------------------------------------------------------------------------
 --
--- the serv function, named the same as the file it is in
+-- the serv function, where the action happens.
+--
+-- do not cache the srv param localy, make sure it cascades around
 --
 -----------------------------------------------------------------------------
 function serv(srv)
 
-	if srv.url_slash[5] then
-	
-		if srv.url_slash[5]=="thumb" then
-		
-			return serv_image(srv,"thumb",srv.url_slash[6] or "0")
-		
-		elseif srv.url_slash[5]=="image" then
-		
-			return serv_image(srv,"image",srv.url_slash[6] or "0")
-			
-		end
-	
-	end
-
 local function put(a,b)
 	b=b or {}
 	b.srv=srv
-	srv.put(html.get(a,b))
+	srv.put(html.get(chan_html,a,b))
 end
 
 	if post(srv) then return end -- post handled everything
@@ -128,46 +112,4 @@ function post(srv)
 	end
 
 end
-
-
------------------------------------------------------------------------------
---
--- serv up an image instead of a page, this is ineficient to do here and should be moved somewhere else :)
--- but for now we shall let it slide
---
------------------------------------------------------------------------------
-function serv_image(srv,name,ids)
-
-	local kind="chan.image"
-	if name=="thumb" then kind="chan.thumb" end
-	
-	local s1,s2=string.find(ids, '.',1,true)
-	local id=ids
-	if s1 then id=string.sub(ids,1,s1-1) end
-	id=tonumber(id) or 0
-		
-	local ent={}
-	ent.key={kind=kind,id=id}
-	
-	dat.get(ent)
-	
--- log(tostring(ent))
-
-	if ent.props then -- got an image
-	
-		srv.set_mimetype( "image/"..string.lower(ent.props.format) )
-		
-		srv.put(ent.props.data)
-		
-	else
-	
-		srv.put(tostring(ent))
-	
-	end
-
-end
-
-
-
-
 

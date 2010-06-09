@@ -1,21 +1,20 @@
 
--- create a global table for keeping templates in
-html=html or {}
 
 local sys=require("wetgenes.aelua.sys")
 local user=require("wetgenes.aelua.user")
 
-
 local f=require("wetgenes.html")
 
+local string=string
+local math=math
 
-
+module("html_base")
 
 -----------------------------------------------------------------------------
 --
 --
 -----------------------------------------------------------------------------
-html.header=function(d)
+header=function(d)
 
 	return f.replace([[
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -41,7 +40,7 @@ end
 --
 --
 -----------------------------------------------------------------------------
-html.footer=function(d)
+footer=function(d)
 
 	if not d.time then
 		d.time=math.ceil((sys.clock()-d.srv.clock_start)*1000)/1000
@@ -68,7 +67,7 @@ end
 --
 --
 -----------------------------------------------------------------------------
-html.about=function(d)
+about=function(d)
 
 	d=d or {}
 	d.bootstrap="<a href=\"http://boot-strap.appspot.com/\">bootstrap</a>"
@@ -101,7 +100,7 @@ end
 -- a home / tabs / next page area
 --
 -----------------------------------------------------------------------------
-html.home_bar=function(d)
+home_bar=function(d)
 
 	d.home="<a href=\"/\">Home</a>"
 		
@@ -121,7 +120,7 @@ end
 -- a hello / login / logout area
 --
 -----------------------------------------------------------------------------
-html.user_bar=function(d)
+user_bar=function(d)
 
 	if user.user then
 	
@@ -146,7 +145,8 @@ html.user_bar=function(d)
 ]],d)
 
 end
-			
+
+
 			
 			
 		

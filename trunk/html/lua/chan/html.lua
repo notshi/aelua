@@ -1,18 +1,25 @@
 
--- create a global table for keeping templates in
-html=html or {}
 
-
+local sys=require("wetgenes.aelua.sys")
+local user=require("wetgenes.aelua.user")
 
 local f=require("wetgenes.html")
 
+local html_base=require("html_base")
 
-	
+local setmetatable=setmetatable
+
+module("chan.html")
+
+setmetatable(_M,{__index=html_base}) -- use a meta table to also return html_base 
+
+
+
 -----------------------------------------------------------------------------
 --
 --
 -----------------------------------------------------------------------------
-html.chan_form=function(d)
+chan_form=function(d)
 
 	if not d.parent then d.parent="" end
 		
@@ -40,7 +47,7 @@ end
 --
 --
 -----------------------------------------------------------------------------
-html.chan_post=function(d)
+chan_post=function(d)
 
 	d.img=d.img or ""
 	
@@ -67,11 +74,5 @@ end
 			
 			
 			
-
-
-module("chan.html")
-
--- something of a dummy module. the data is set in the global html table
-
 
 
