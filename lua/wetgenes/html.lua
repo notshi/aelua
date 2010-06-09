@@ -8,16 +8,8 @@ local string=string
 local type=type
 local tostring=tostring
 
-local html=html
-
-
-
 
 module("wetgenes.html")
-
-
-
-
 
 
 -----------------------------------------------------------------------------
@@ -70,7 +62,7 @@ end
 -- or at least make sure that you are setting or clearing the important parts
 --
 -----------------------------------------------------------------------------
-get=function(src,env)
+get=function(html,src,env)
 
 	if html[src] then src=html[src] end
 	

@@ -34,17 +34,23 @@ end
 -- this has no suport for query strings so dont use them :)
 --
 -----------------------------------------------------------------------------
-serv_apps={} -- base lookup table 
+serv_apps={ -- base lookup table 
 
-serv_apps[0]	=serv_fail -- bad link
+[0]			=	serv_fail, -- bad link
 
-serv_apps[""]		="serv_home" -- default
-serv_apps["home"]	="serv_home" -- default
+[""]		=	"serv_home", -- default
+["home"]	=	"serv_home", -- default
 
-serv_apps["test"]	="serv_test"
-serv_apps["chan"]	="chan"
+["test"]	=	"serv_test", -- a test file
 
+["chan"]	=	{			-- a module
+					[0]			=	"chan",
+					[""]		=	"chan",
+					["image"]	=	"chan.image",	-- special trimmed down chan simage server
+					["thumb"]	=	"chan.image",
+				},
 
+}
 
 
 
@@ -59,23 +65,53 @@ function serv(srv)
 
 	srv.url_slash=str_split("/",srv.url) -- break the input url	
 	
-	local f=serv_apps[ srv.url_slash[4] ]
+	local lookup=serv_apps
+	local cmd
+	local f
 	
-	if type(f)=="string" then -- a string so load that file and run it
+	srv.url_slash_idx=4 -- let the caller know which part of the path called them
+	srv.url_slash_name=nil -- sub modules can use this name to seperate themselves depending on their url, eg multiple chan boards
 	
-		if sys.file_exists("lua/"..f..".lua") then -- its a simple file
+	local loop=true
 	
-			dofile("lua/"..f..".lua")
-			f=_G[f] -- expect it to contain a serv function of the same name as the file
-			
-		elseif sys.file_exists("lua/"..f.."/init.lua") then -- its a module
+	while loop do
+	
+		loop=false -- end loop unless we change our mind later
 		
-			f=require("chan")
-			f=f.serv
+		srv.url_slash_name=srv.url_slash[ srv.url_slash_idx ]
+		
+		if srv.url_slash_name then
+		
+			cmd=lookup[ srv.url_slash_name ] -- lookup the cmd from its name
+			
+			if not cmd then -- missing command
+				cmd=lookup[ 0 ] -- so get default from current rule
+			end
+		else
+		
+			cmd=lookup[ 0 ] -- no name so get default from current rule
+		
+		end
+	
+		
+		if type(cmd)=="table" then -- a table with sub rules
+		
+			loop=true -- run this loop again with a new lookup table
+			
+			lookup=cmd -- use this sub table for new lookup
+			
+			srv.url_slash_idx=srv.url_slash_idx+1 -- move the slash index along one
+		
+		elseif type(cmd)=="string" then -- a string so require that module and use its serv func
+		
+			local m=require(cmd) -- get module, this may load many other modules files at this point
+			
+			f=m.serv -- get function to call
 			
 		end
-		
+			
 	end
+	
 	
 	if not f then f=serv_fail end -- default
 	
