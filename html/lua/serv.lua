@@ -36,19 +36,19 @@ end
 -----------------------------------------------------------------------------
 serv_apps={ -- base lookup table 
 
-[0]			=	serv_fail, -- bad link
+["#default"]	=	serv_fail, -- bad link if we do not understand
 
-[""]		=	"serv_home", -- default
-["home"]	=	"serv_home", -- default
+[""]			=	"serv_home", -- home for /
+["home"]		=	"serv_home", -- home
 
-["test"]	=	"serv_test", -- a test file
+["test"]		=	"serv_test", -- test junk
 
-["chan"]	=	{			-- a module
-					[0]			=	"chan",
-					[""]		=	"chan",
-					["image"]	=	"chan.image",	-- special trimmed down chan simage server
-					["thumb"]	=	"chan.image",
-				},
+["chan"]		=	{			-- a module
+						["#default"]	=	"chan", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"chan", 		-- use this flavour when serving
+						["image"]		=	"chan.image",	-- trimmed down image server code
+						["thumb"]		=	"chan.image",
+					},
 
 }
 
@@ -68,9 +68,10 @@ function serv(srv)
 	local lookup=serv_apps
 	local cmd
 	local f
+	local flavour
 	
 	srv.url_slash_idx=4 -- let the caller know which part of the path called them
-	srv.url_slash_name=nil -- sub modules can use this name to seperate themselves depending on their url, eg multiple chan boards
+	srv.flavour=nil -- sub modules can use this flavour to seperate themselves depending when called
 	
 	local loop=true
 	
@@ -78,21 +79,23 @@ function serv(srv)
 	
 		loop=false -- end loop unless we change our mind later
 		
-		srv.url_slash_name=srv.url_slash[ srv.url_slash_idx ]
+		local slash=srv.url_slash[ srv.url_slash_idx ]
 		
-		if srv.url_slash_name then
+		if slash then
 		
-			cmd=lookup[ srv.url_slash_name ] -- lookup the cmd from its name
+			cmd=lookup[ slash ] -- lookup the cmd from its flavour
 			
-			if not cmd then -- missing command
-				cmd=lookup[ 0 ] -- so get default from current rule
+			if not cmd then -- missing slash
+							
+				cmd=lookup[ "#default" ] -- get default from current rule
+				
 			end
+			
 		else
 		
-			cmd=lookup[ 0 ] -- no name so get default from current rule
+			cmd=lookup[ "#default" ] -- no slash so get default from current rule
 		
 		end
-	
 		
 		if type(cmd)=="table" then -- a table with sub rules
 		
@@ -101,6 +104,7 @@ function serv(srv)
 			lookup=cmd -- use this sub table for new lookup
 			
 			srv.url_slash_idx=srv.url_slash_idx+1 -- move the slash index along one
+			srv.flavour=lookup[ "#flavour" ] -- get flavour of this table
 		
 		elseif type(cmd)=="string" then -- a string so require that module and use its serv func
 		
