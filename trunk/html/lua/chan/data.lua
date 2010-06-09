@@ -91,6 +91,47 @@ function create_thread(tab)
 	return key
 end
 
+-----------------------------------------------------------------------------
+--
+-- create a new image in the datastore
+--
+-- image -- image info
+-- thumb -- thumb info
+--
+-- returns the numerical id of the new entitys, use this + kind to show images
+--
+-----------------------------------------------------------------------------
+function create_image(tab)
+
+	local ent={}
+	
+	ent.key={kind="chan.image"} -- no parent and autogenerate an id
+	ent.props={
+		width=tab.image.width,
+		height=tab.image.height,
+		format=tab.image.format,
+		data=tab.image.data,
+		}
+	
+	local key=dat.put(ent)
+	
+	local keyinfo=dat.keyinfo(key)
+	local id=keyinfo.id
+
+	ent={}
+	
+	ent.key={kind="chan.thumb",id=id} -- use same id as the main image for easy lookup
+		ent.props={
+		width=tab.thumb.width,
+		height=tab.thumb.height,
+		format=tab.thumb.format,
+		data=tab.thumb.data,
+		}
+		
+	local key=dat.put(ent)
+		
+	return id -- return image id
+end
 
 -----------------------------------------------------------------------------
 --
