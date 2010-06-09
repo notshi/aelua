@@ -102,8 +102,8 @@ public class Data
 		
 		if(k.getKind()!=null) { L.rawSet(t,"kind",k.getKind()); }
 		
-		if(k.getName()!=null) { L.rawSet(t,"id",k.getName());   }
-		else				  { L.rawSet(t,"id",k.getId());     }
+		if(k.getName()!=null) { L.rawSet(t,"id",(String)k.getName());   }
+		else				  { L.rawSet(t,"id",(double)k.getId());     }
 		
 		L.rawSet(t,"key",KeyFactory.keyToString(k));
 	}
@@ -166,7 +166,7 @@ public class Data
 					k=KeyFactory.createKey( ((String)(kind)) , ((String)(id)) );
 				}
 			}
-			else { L.error("key id must be a string or number"); }
+			else { L.error("key id must be a string or number : "+L.type(id) ); }
 		}
 		else // no key
 		{
@@ -212,7 +212,6 @@ public class Data
 			Object kind=L.rawGet(key, "kind");
 			Object id=L.rawGet(key, "id");
 			Object parent=L.rawGet(key, "parent");
-			
 
 			if(L.isNil(id)) // auto id on put
 			{
@@ -245,7 +244,15 @@ public class Data
 			Object i=t.nextElement();
 			Object v=props.getlua(i);
 			
-			e.setProperty((String)i,v);
+			// convert byte array into blob
+			if(v instanceof byte[] )
+			{
+				e.setProperty((String)i, new Blob( (byte[])v ) );
+			}
+			else
+			{
+				e.setProperty((String)i,v);
+			}
 		}
 		
 		ds.put(e); // actually write it
@@ -290,7 +297,11 @@ public class Data
 			if(!L.isNil(i))
 			{
 				Object v=e.getProperty((String)i);
-				if(!L.isNil(v))
+				if(v instanceof Blob)
+				{
+					L.rawSet(props,(String)i,((Blob)v).getBytes());
+				}
+				else
 				{
 					L.rawSet(props,(String)i,v);
 				}
@@ -319,7 +330,7 @@ public class Data
 		if(!L.isTable(o)) { L.error("entity.key must be a table"); }
 		LuaTable key=(LuaTable)o;
 		
-		Key k=KeyFactory.createKey( (String)L.rawGet(key, "kind") , (String)L.rawGet(key, "id") );
+		Key k=keystr_makekey(L,L.rawGet(key, "kind"),L.rawGet(key, "id"),L.rawGet(key, "parent"));
 
 		Entity e;
 		

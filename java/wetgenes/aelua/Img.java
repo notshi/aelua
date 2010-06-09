@@ -63,8 +63,7 @@ public class Img
 	int open_lib(Lua L,LuaTable lib)
 	{
 		
-		reg_get_img(L,lib);
-		reg_get_dat(L,lib);
+		reg_get(L,lib);
 		
 		reg_resize(L,lib);
 		
@@ -72,14 +71,14 @@ public class Img
 	}
 
 //
-// Return a table of informaton abou an image represented b a byte string (just a string in normal lua)
+// Return a table of informaton abou an image represented by a byte string (just a string in normal lua)
 //
-	public void reg_get_img(Lua L,Object lib)
+	public void reg_get(Lua L,Object lib)
 	{ 
 		final Img _base=this;
-		L.rawSet(lib, "get_img", new LuaJavaCallback(){ Img base=_base; public int luaFunction(Lua L){ return base.get_img(L); } });
+		L.rawSet(lib, "get", new LuaJavaCallback(){ Img base=_base; public int luaFunction(Lua L){ return base.get(L); } });
 	}
-	public int get_img(Lua L)
+	public int get(Lua L)
 	{
 	
 		Object a1=L.value(1);
@@ -95,30 +94,10 @@ public class Img
 	}
 	public void fill_tab_img(Lua L,LuaTable t,Image img)
 	{
-		L.setField(t,"img",img);
+		L.setField(t,"data",img.getImageData());
 		L.setField(t,"format",img.getFormat().name());
 		L.setField(t,"height",img.getHeight());
 		L.setField(t,"width",img.getWidth());
-	}
-	
-//
-// Return a chunk of data bytearray that represents the image
-//
-	public void reg_get_dat(Lua L,Object lib)
-	{ 
-		final Img _base=this;
-		L.rawSet(lib, "get_dat", new LuaJavaCallback(){ Img base=_base; public int luaFunction(Lua L){ return base.get_dat(L); } });
-	}
-	public int get_dat(Lua L)
-	{	
-		Object tab=L.value(1);
-
-		Image img=(Image)L.getField(tab,"img");
-		
-		byte[] d=img.getImageData();
-
-		L.push( d );
-		return 1;
 	}
 	
 //
@@ -138,7 +117,7 @@ public class Img
 		width=(int)L.checkNumber(2);
 		height=(int)L.checkNumber(3);
 
-		Image img=(Image)L.getField(tab,"img");
+		Image img=ImagesServiceFactory.makeImage( (byte[]) L.getField(tab,"data") );
 		String format=(String)L.getField(tab,"format");
 		
 		Transform t1=ImagesServiceFactory.makeResize(width,height);  
@@ -152,8 +131,9 @@ public class Img
 			img=imgs.applyTransform(t1,img);
 		}
 		
-		fill_tab_img(L,tab,img);
-		L.push( tab );
+		LuaTable t=L.newTable();
+		fill_tab_img(L,t,img);
+		L.push( t );
 		return 1;
 	}
 }

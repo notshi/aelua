@@ -163,8 +163,15 @@ public class Srv
 	{
 		try
 		{
-			String s=L.checkString(1);
-			resp.getWriter().println(s);
+			Object o=L.value(1);
+			if(L.isString(o))
+			{
+				resp.getWriter().println((String)o);
+			}
+			else // output a bytearray
+			{
+				resp.getOutputStream().write( (byte[])o );
+			}
 			return 0;
 		}
 		catch(IOException e)

@@ -736,8 +736,17 @@ public final class BaseLib extends LuaJavaCallback
   /** Implements type. */
   private static int type(Lua L)
   {
-    L.checkAny(1);
-    L.push(L.typeNameOfIndex(1));
+// since this java has a special nil, this can be bad if we didint pass in any object?
+// seems to break some lua code i have so this fixes it
+//    L.checkAny(1);
+    if (L.type(1) == L.TNONE)
+    {
+		L.push("nil");
+	}
+	else
+	{
+		L.push(L.typeNameOfIndex(1));
+	}
     return 1;
   }
 

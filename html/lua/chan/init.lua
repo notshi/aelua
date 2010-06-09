@@ -25,10 +25,13 @@ local chan_html=require("chan.html")
 local chan_data=require("chan.data")
 
 
-local ipairs=ipairs
 
 local math=math
+local string=string
+
+local ipairs=ipairs
 local tostring=tostring
+local tonumber=tonumber
 
 module("chan")
 
@@ -38,6 +41,20 @@ module("chan")
 --
 -----------------------------------------------------------------------------
 function serv(srv)
+
+	if srv.url_slash[5] then
+	
+		if srv.url_slash[5]=="thumb" then
+		
+			return serv_image(srv,"thumb",srv.url_slash[6] or "0")
+		
+		elseif srv.url_slash[5]=="image" then
+		
+			return serv_image(srv,"image",srv.url_slash[6] or "0")
+			
+		end
+	
+	end
 
 local function put(a,b)
 	b=b or {}
@@ -79,22 +96,30 @@ function post(srv)
 
 	if not user.user then -- must be logged in?
 	
+		log("user must be logged in to post, this should cause an error")
+
 		return false	
 	end
 	
+	local tab={}
+	
 	if srv.posts.subject and srv.posts.message then
 	
-		local image=img.get_img(srv.uploads.file.data)
-		
-log(tostring(image))
-	
-		local tab={}
-		
 		tab.subject=srv.posts.subject
 		tab.body=srv.posts.message
 		tab.email=user.user.email
 		tab.ip=srv.ip
-		tab.image=""
+		tab.image=0
+		
+		if srv.uploads.file then -- got a file
+		
+			local image=img.get(srv.uploads.file.data)
+			local thumb=img.resize(image,200,200)
+			local image_id=chan_data.create_image({image=image,thumb=thumb})
+			
+			tab.image=image_id
+			
+		end
 		
 		chan_data.create_thread(tab)
 
@@ -103,5 +128,46 @@ log(tostring(image))
 	end
 
 end
+
+
+-----------------------------------------------------------------------------
+--
+-- serv up an image instead of a page, this is ineficient to do here and should be moved somewhere else :)
+-- but for now we shall let it slide
+--
+-----------------------------------------------------------------------------
+function serv_image(srv,name,ids)
+
+	local kind="chan.image"
+	if name=="thumb" then kind="chan.thumb" end
+	
+	local s1,s2=string.find(ids, '.',1,true)
+	local id=ids
+	if s1 then id=string.sub(ids,1,s1-1) end
+	id=tonumber(id) or 0
+		
+	local ent={}
+	ent.key={kind=kind,id=id}
+	
+	dat.get(ent)
+	
+log(tostring(ent))
+
+	if ent.props then -- got an image
+	
+		srv.set_mimetype( "image/"..string.lower(ent.props.format) )
+		
+		srv.put(ent.props.data)
+		
+	else
+	
+		srv.put(tostring(ent))
+	
+	end
+
+end
+
+
+
 
 
