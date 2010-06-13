@@ -1,9 +1,5 @@
 
 
--- create a global table for keeping templates in
-html=html or {}
-
-
 local string=string
 local type=type
 local tostring=tostring
