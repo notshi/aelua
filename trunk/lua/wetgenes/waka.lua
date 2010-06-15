@@ -258,9 +258,13 @@ function chunk_to_html(chunk,baseurl)
 				
 				if c1 == "/" then -- a very simple link relative to where we are
 				
+					local chars="[%w/%-_#]+"
+					
+					if token:sub(1,3)=="///" then chars="[%w/%-_#%.:]+" end -- allow common domains chars
+				
 					local s=token:sub(2) -- skip this first char
 					
-					local f1,f2=s:find("[%w/%-_#]+")
+					local f1,f2=s:find(chars)
 					if f1 then -- must find a word
 						local s1=s:sub(f1,f2)
 						local ss=split_words(s1,"/")
