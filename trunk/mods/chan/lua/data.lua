@@ -1,7 +1,6 @@
 
 
 -- load up html template strings
-dofile("lua/html.lua")
 local html=require("wetgenes.html")
 
 local Json=require("Json")

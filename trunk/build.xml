@@ -85,7 +85,7 @@
 			<var name="basename" unset="true"/> 
 			<basename file="@{file}" property="basename"/> 
 			
-			<echo>includinf mods ${basename}</echo>
+			<echo>including mods ${basename}</echo>
 			
 			<for list="css,art,js,lua" param="dirname">
 				<sequential>
