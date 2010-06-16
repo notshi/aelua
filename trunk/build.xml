@@ -2,7 +2,7 @@
 <project name="javatest" default="war">
 
 <taskdef resource="net/sf/antcontrib/antlib.xml" >
-  <classpath> <pathelement location="java/ant-contrib.jar"/> </classpath>
+  <classpath> <pathelement location="class/ant-contrib.jar"/> </classpath>
 </taskdef>
 
   <!-- When you copy this template to your working directories, change the
@@ -86,7 +86,7 @@
 			
 			<for list="css,art,js,lua" param="dirname">
 				<sequential>
-					<copy todir="${war.dir}/@{dirname}/${basename}">
+					<copy todir="${war.dir}/@{dirname}/${basename}" includeEmptyDirs="false">
 					  <fileset dir="mods/${basename}/@{dirname}">
 						<exclude name="**/.svn/**"/>
 						<exclude name="**/*~"/>
