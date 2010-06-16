@@ -1,6 +1,9 @@
 <!-- This is a template Ant file for a very basic Google AppEngine project -->
-
 <project name="javatest" default="war">
+
+<taskdef resource="net/sf/antcontrib/antlib.xml" >
+  <classpath> <pathelement location="java/ant-contrib.jar"/> </classpath>
+</taskdef>
 
   <!-- When you copy this template to your working directories, change the
        value of appengine.sdk accordingly.  You may also want to use Ant's
@@ -71,7 +74,40 @@
 <!--
     <enhance_war war="${war.dir}"/>
 -->
+
+	<for param="file"> 
+		<path> 
+			<dirset dir="mods">
+				<include name="*" /> 
+			</dirset>
+		</path> 
+		<sequential> 
+			<var name="basename" unset="true"/> 
+			<basename file="@{file}" property="basename"/> 
+			
+			<echo>includinf mods ${basename}</echo>
+			
+			<for list="css,art,js,lua" param="dirname">
+				<sequential>
+					<copy todir="${war.dir}/@{dirname}/${basename}">
+					  <fileset dir="mods/${basename}/@{dirname}">
+						<exclude name="**/.svn/**"/>
+						<exclude name="**/*~"/>
+					  </fileset>
+					</copy>
+				</sequential>
+			</for>
+			
+		</sequential> 
+	</for> 
+
   </target>
+
+  
+  <target name="war_mods" 
+          description="Assemble mods into the application directory">
+  </target>
+
 
   <target name="enhance" depends="compile"
           description="Enhance the classes after compilation">
