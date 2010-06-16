@@ -42,7 +42,7 @@
   <!-- Change if you like e.g. "war" better than "www" for the output -->
   <property name="war.dir" location="war"/>
 
-  <target name="war" depends="enhance" 
+  <target name="war" 
           description="Assemble the application directory">
     <mkdir dir="${war.dir}/WEB-INF"/>
     <copy todir="${war.dir}">
@@ -71,9 +71,6 @@
           <include name="**/*.jar"/>
       </fileset>
     </copy>
-<!--
-    <enhance_war war="${war.dir}"/>
--->
 
 	<for param="file"> 
 		<path> 
@@ -104,29 +101,10 @@
   </target>
 
   
-  <target name="war_mods" 
-          description="Assemble mods into the application directory">
-  </target>
-
-
-  <target name="enhance" depends="compile"
-          description="Enhance the classes after compilation">
-<!--
-    <enhance_war war="${war.dir}"/>
--->
-  </target>
-
   <target name="compile"
           description="Compile the application servlet code">
     <mkdir dir="${war.dir}/WEB-INF/classes"/>
     <mkdir dir="${war.dir}/WEB-INF/lib"/>
-<!--
-    <copy todir="${war.dir}/WEB-INF/classes">
-      <fileset dir="../jill/compiled">
-      </fileset>
-    </copy>
--->
-
 
   <javac srcdir="java" destdir="${war.dir}/WEB-INF/classes" includeantruntime="false">
       <classpath>
