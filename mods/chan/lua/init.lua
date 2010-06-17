@@ -1,5 +1,5 @@
 
-local html=require("wetgenes.html")
+local wet_html=require("wetgenes.html")
 
 local sys=require("wetgenes.aelua.sys")
 
@@ -17,7 +17,7 @@ local serialize=wet_string.serialize
 
 
 -- require all the module sub parts
-local chan_html=require("chan.html")
+local html=require("chan.html")
 local chan_data=require("chan.data")
 
 
@@ -43,7 +43,7 @@ function serv(srv)
 local function put(a,b)
 	b=b or {}
 	b.srv=srv
-	srv.put(html.get(chan_html,a,b))
+	srv.put(wet_html.get(html,a,b))
 end
 
 	if post(srv) then return end -- post handled everything

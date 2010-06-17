@@ -2,15 +2,15 @@
 
 local sys=require("wetgenes.aelua.sys")
 
-local f=require("wetgenes.html")
+local wet_html=require("wetgenes.html")
 
-local html_base=require("html_base")
+local html=require("html")
 
 local setmetatable=setmetatable
 
 module("dice.html")
 
-setmetatable(_M,{__index=html_base}) -- use a meta table to also return html_base 
+setmetatable(_M,{__index=html}) -- use a meta table to also return html base 
 
 
 
@@ -21,7 +21,7 @@ setmetatable(_M,{__index=html_base}) -- use a meta table to also return html_bas
 dice_test=function(d)
 
 		
-	return f.replace([[
+	return wet_html.replace([[
 	
 This is a test.
 
