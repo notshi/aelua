@@ -50,6 +50,10 @@ serv_apps={ -- base lookup table
 						["thumb"]		=	"chan.image",
 					},
 
+["dice"]		=	{			-- a module
+						["#default"]	=	"dice", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"dice", 		-- use this flavour when serving
+					},
 }
 
 

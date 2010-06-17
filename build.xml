@@ -42,7 +42,7 @@
   <!-- Change if you like e.g. "war" better than "www" for the output -->
   <property name="war.dir" location="war"/>
 
-  <target name="war" 
+  <target name="war" depends="compile"
           description="Assemble the application directory">
     <mkdir dir="${war.dir}/WEB-INF"/>
     <copy todir="${war.dir}">
@@ -82,12 +82,23 @@
 			<var name="basename" unset="true"/> 
 			<basename file="@{file}" property="basename"/> 
 			
+<!--
 			<echo>including mods ${basename}</echo>
-			
-			<for list="css,art,js,lua" param="dirname">
-				<sequential>
-					<copy todir="${war.dir}/@{dirname}/${basename}" includeEmptyDirs="false">
-					  <fileset dir="mods/${basename}/@{dirname}">
+-->			
+			<for param="file2"> 
+				<path> 
+					<dirset dir="mods/${basename}">
+						<include name="*" /> 
+					</dirset>
+				</path> 
+				<sequential> 
+					<var name="dirname" unset="true"/> 
+					<basename file="@{file2}" property="dirname"/> 
+<!--
+					<echo>including mods ${basename} ${dirname}</echo>
+-->			
+					<copy todir="${war.dir}/${dirname}/${basename}" includeEmptyDirs="false">
+					  <fileset dir="mods/${basename}/${dirname}">
 						<exclude name="**/.svn/**"/>
 						<exclude name="**/*~"/>
 					  </fileset>
