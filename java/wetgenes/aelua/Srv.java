@@ -87,6 +87,39 @@ public class Srv
 		LuaTable uploads=L.createTable(0,0);	// create uploads table
 		L.rawSet(lib, "uploads", uploads );
 		
+		LuaTable gets=L.createTable(0,0);	// create gets table
+		L.rawSet(lib, "gets", gets );
+		
+		LuaTable vars=L.createTable(0,0);	// create merged vars table
+		L.rawSet(lib, "vars", gets );
+		
+		for( java.util.Enumeration e = req.getParameterNames() ; e.hasMoreElements() ; )
+		{
+			String name = (String)e.nextElement();
+//
+// looks like java is being helpful, unfortunatly it merges gets and posts
+// use enctype="multipart/form-data" in your forms if you want data to turn up in the posts table
+// a normal post will just turn up in gets since im not sure if it was real post data
+// data will only be placed in posts if I'm sure it was actual post data
+// gets are easier to fake, eg cross site img urls, so its kind of important to know the diference
+//
+// Java is great, all hail java and its standard standards! *rolls eyes*
+//
+
+/*
+ 			if(req.getMethod()=="POST")
+			{
+				L.rawSet( posts , name , req.getParameter(name) );
+				L.rawSet( vars , name , req.getParameter(name) );
+			}
+			else
+*/
+			{
+				L.rawSet( gets , name , req.getParameter(name) );
+				L.rawSet( vars , name , req.getParameter(name) ); // merge gets and posts into vars
+			}
+		}
+		
 		try
 		{
 			ServletFileUpload upload = new ServletFileUpload();
@@ -113,6 +146,7 @@ public class Srv
 					String data=sb.toString();
 					
 					L.rawSet( posts , item.getFieldName() , data );
+					L.rawSet( vars , item.getFieldName() , data ); // posts will overide gets in vars
 					
 				}
 				else
@@ -136,17 +170,7 @@ public class Srv
 //			throw new ServletException(ex);
 //			L.error(ex.toString());
 //			return 0;
-		}
-	
-		LuaTable gets=L.createTable(0,0);	// create gets table
-		L.rawSet(lib, "gets", gets );
-		
-		for( java.util.Enumeration e = req.getParameterNames() ; e.hasMoreElements() ; )
-		{
-			String name = (String)e.nextElement();
-			L.rawSet( gets , name , req.getParameter(name) );
-		}
-		
+		}		
 	
 		return 1;
 	}
