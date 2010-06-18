@@ -1,6 +1,7 @@
 
-
+local table=table
 local string=string
+
 local type=type
 local tostring=tostring
 
@@ -24,7 +25,11 @@ return (string.gsub( a , "{(.-)}" , function(a)
 	
 		if string.len(a)>128 then return a end -- do not even try with large strings
 	
-		if d[a] then return d[a] end -- simple find
+		local t=d[a]
+		if t then
+			if type(t)=="table" then return table.concat(t) end -- if a table then join its contents
+			return tostring(d[a]) -- simple find, make sure we return a string
+		end
 		
 		local a1,a2=string.find(a, "%.") -- try and split on first "."
 		if not a1 then return a end -- didnt find a dot so return look up

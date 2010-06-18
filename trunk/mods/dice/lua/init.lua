@@ -3,9 +3,9 @@ local wet_html=require("wetgenes.html")
 
 local sys=require("wetgenes.aelua.sys")
 
-local dat=require("wetgenes.aelua.data")
+--local dat=require("wetgenes.aelua.data")
 
-local user=require("wetgenes.aelua.user")
+--local user=require("wetgenes.aelua.user")
 
 local img=require("wetgenes.aelua.img")
 
@@ -55,36 +55,74 @@ end
 	srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
-	put("user_bar",{})
+--	put("user_bar",{})
 	
-	put("dice_test",{})
 	
-	local count=1
-	local sides=6
-		
+	local style="plain"
+	local count=2
+	local side=6
+	
+
 	if slash and slash~="" then -- requested format, eg 2d6
 	
 		local ds=wet_string.str_split("d",slash)
-		count=math.floor( tonumber(ds[1] or 1) or 1 )
-		sides=math.floor( tonumber(ds[2] or 6) or 6 )
+		count=math.floor( tonumber(ds[1] or count) or count )
+		side=math.floor( tonumber(ds[2] or side) or side )
 		
 	end
+
+--	put(srv)
+	
+-- override with posts	
+	local function varover(v)
+		if not v then return end
+		if v.count then
+			count=math.floor( tonumber( v.count ) or count )
+		end
+		if v.side then
+			side=math.floor( tonumber( v.side ) or side )
+		end
+	end	
+	varover(srv.gets)
+	varover(srv.posts)
 	
 	if count<1 then count=1 end
 	if count>10 then count=10 end
-	if sides<1 then sides=1 end
-	if sides>20 then sides=20 end
+	if side<1 then side=1 end
+	if side>20 then side=20 end
 	
-	put("You have requested {count} dice with {sides} sides.<br/>",{count=count,sides=sides})
+	local styles={"plain"}
+	local counts={1,2,3,4,5,6,7,8,9,10}
+	local sides={4,6,8,12,20}
+	put("dice_form",{counts=counts,sides=sides,styles=styles,count=count,side=side,style=style})
+	
+	local dienames={
+					[4]="rough tetrahedrons",
+					[6]="rough cubes",
+					[8]="rough octahedrons",
+					[12]="rough dodecahedrons",
+					[20]="rough icosahedrons",
+					}
+	local diename=dienames[side] or side.." sided dice"
+	put(
+	[[
+		<br/>
+		The webmaster grabs a handful of {diename} and throws them high into the air.<br/>
+		{count} of them land{ss} at your feet and stare{ss} up at you with the result.<br/>
+		<br/>
+	]],{count=count,side=side,diename=diename,ss=(count==1)and"s"or"" })
 	
 	local rolls={}
 	for i=1,count do
-		rolls[i]=math.random(1,sides)
+		rolls[i]=math.random(1,side)
 	end
 	
-	local imgid=sides.."/"..table.concat(rolls,".")
+	local imgid=side.."/"..table.concat(rolls,".")
 	
-	put("<a href=\"/dice/image/{imgid}.jpg\"><img src=\"/dice/image/{imgid}.jpg\"/></a><br/>",{count=count,sides=sides,imgid=imgid})
+	local width=count*100
+	if width>960 then width=960 end
+	
+	put("<a href=\"/dice/image/plain/{imgid}.jpg\"><img src=\"/dice/image/plain/{imgid}.jpg\" width=\"{width}\"/></a><br/>",{count=count,sides=sides,imgid=imgid,width=width})
 	
 	put("footer",{})
 	
@@ -109,14 +147,16 @@ end
 -----------------------------------------------------------------------------
 function image(srv)
 
-	local base=tonumber(srv.url_slash[ srv.url_slash_idx+1 ] or 6) or 6
-	local slash=srv.url_slash[ srv.url_slash_idx+2 ]
+	local flavour=srv.url_slash[ srv.url_slash_idx+1 ]
+	local base=tonumber(srv.url_slash[ srv.url_slash_idx+2 ] or 6) or 6
+	local slash=srv.url_slash[ srv.url_slash_idx+3 ]
 
 	local code=wet_string.str_split(".",slash)
 	local nums={}
 	for i=1,#code do
 		local n=tonumber(code[i])
 		if n then table.insert(nums,n) end
+		if #nums==10 then break end
 	end
 	
 	local imgs={}
