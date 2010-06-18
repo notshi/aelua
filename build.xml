@@ -117,7 +117,7 @@
     <mkdir dir="${war.dir}/WEB-INF/classes"/>
     <mkdir dir="${war.dir}/WEB-INF/lib"/>
 
-  <javac srcdir="java" destdir="${war.dir}/WEB-INF/classes" includeantruntime="false">
+    <javac srcdir="java" destdir="${war.dir}/WEB-INF/classes" includeantruntime="false" debug="on">
       <classpath>
 		<fileset dir="class">
 		  <include name="**/*.jar" />
