@@ -87,16 +87,17 @@ end
 	varover(srv.posts)
 	
 	if count<1 then count=1 end
-	if count>10 then count=10 end
-	if side<1 then side=1 end
+	if count>16 then count=16 end
+	if side<2 then side=2 end
 	if side>20 then side=20 end
 	
 	local styles={"plain"}
-	local counts={1,2,3,4,5,6,7,8,9,10}
-	local sides={4,6,8,12,20}
+	local counts={1,2,3,4,5,6,7,8,9,10,11,12,13,14}
+	local sides={2,4,6,8,10,12,20}
 	put("dice_form",{counts=counts,sides=sides,styles=styles,count=count,side=side,style=style})
 	
 	local dienames={
+					[2]="eldritch coins",
 					[4]="rough tetrahedrons",
 					[6]="rough cubes",
 					[8]="rough octahedrons",
@@ -156,13 +157,13 @@ function image(srv)
 	for i=1,#code do
 		local n=tonumber(code[i])
 		if n then table.insert(nums,n) end
-		if #nums==10 then break end
+		if #nums==16 then break end
 	end
 	
 	local imgs={}
 	local comp={width=#nums*100, height=100, color=0, format="JPEG"}
 	for i=1,#nums do local v=nums[i]
-		if not imgs[v] then imgs[v]=img.get(sys.file_read("art/dice/d6."..v..".png")) end -- load image
+		if not imgs[v] then imgs[v]=img.get(sys.file_read("art/dice/plain/d20."..v..".png")) end -- load image
 		table.insert(comp,{imgs[v],100*(i-1),0,1,"TOP_LEFT"})
 	end
 

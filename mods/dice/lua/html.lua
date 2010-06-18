@@ -27,7 +27,7 @@ dice_form=function(d)
 <div style="float:left;width:75px" ><input type="radio" name="side" value="{v}" {checked} />d{v}</div>
 ]]
 	local ss=[[
-<div style="float:left" ><input type="radio" name="style" value="{v}" {checked} />{v}</div>
+<div style="float:left;width:100px" ><input type="radio" name="style" value="{v}" {checked} />{v}</div>
 ]]
 	d.line1=""
 	for i=1,#d.counts do local v=d.counts[i]
@@ -65,7 +65,7 @@ dice_form=function(d)
 <div class="#dice_form_line2" style="float:left;width:75px;background-color:#f0ffff" >
 {line2}
 </div>
-<div class="#dice_form_line3" style="float:left;clear:both" >
+<div class="#dice_form_line3" style="float:left;width:400px" >
 {line3}
 </div>
 <div class="#dice_form_submit" style="clear:both" >
