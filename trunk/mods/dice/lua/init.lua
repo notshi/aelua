@@ -151,6 +151,24 @@ function image(srv)
 	local flavour=srv.url_slash[ srv.url_slash_idx+1 ]
 	local base=tonumber(srv.url_slash[ srv.url_slash_idx+2 ] or 6) or 6
 	local slash=srv.url_slash[ srv.url_slash_idx+3 ]
+	
+	local avail= -- the dice available for each flavour
+	{
+		plain={2,6,20},
+	}
+	
+	if not avail[flavour] then flavour="plain" end -- check flavour, and default to plain
+	local av=avail[flavour]
+
+-- find the best die we have	
+	local die=20
+	for i=1,#av do local v=av[i]
+		if v>=base then
+			die=v
+			break
+		end
+	end
+					
 
 	local code=wet_string.str_split(".",slash)
 	local nums={}
@@ -161,9 +179,9 @@ function image(srv)
 	end
 	
 	local imgs={}
-	local comp={width=#nums*100, height=100, color=0, format="JPEG"}
+	local comp={width=#nums*100, height=100, color=tonumber("ffffff",16), format="JPEG"}
 	for i=1,#nums do local v=nums[i]
-		if not imgs[v] then imgs[v]=img.get(sys.file_read("art/dice/plain/d20."..v..".png")) end -- load image
+		if not imgs[v] then imgs[v]=img.get(sys.file_read("art/dice/plain/d"..die.."."..v..".png")) end -- load image
 		table.insert(comp,{imgs[v],100*(i-1),0,1,"TOP_LEFT"})
 	end
 
