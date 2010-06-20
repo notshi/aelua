@@ -14,6 +14,21 @@ module("chan.html")
 setmetatable(_M,{__index=html}) -- use a meta table to also return html_base 
 
 
+-----------------------------------------------------------------------------
+--
+-- overload footer
+--
+-----------------------------------------------------------------------------
+footer=function(d)
+
+	d=d or {}
+	
+	d.mod_name="chan"
+	d.mod_link="http://code.google.com/p/aelua/wiki/ModChan"
+	
+	return html.footer(d)
+end
+
 
 -----------------------------------------------------------------------------
 --
