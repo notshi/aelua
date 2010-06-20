@@ -13,6 +13,21 @@ module("dice.html")
 setmetatable(_M,{__index=html}) -- use a meta table to also return html base 
 
 
+-----------------------------------------------------------------------------
+--
+-- overload footer
+--
+-----------------------------------------------------------------------------
+footer=function(d)
+
+	d=d or {}
+	
+	d.mod_name="dice"
+	d.mod_link="http://code.google.com/p/aelua/wiki/ModDice"
+	
+	return html.footer(d)
+end
+
 
 -----------------------------------------------------------------------------
 --

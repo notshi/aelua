@@ -43,7 +43,7 @@ function serv(srv)
 	if post(srv) then return end -- post handled everything
 
 	local slash=srv.url_slash[ srv.url_slash_idx ]
-	if slash=="image" then return image(srv) end
+	if slash=="image" then return image(srv) end -- image request
 		
 local function put(a,b)
 	b=b or {}
@@ -109,7 +109,7 @@ end
 	[[
 		<br/>
 		The webmaster grabs a handful of {diename} and throws them high into the air.<br/>
-		{count} of them land{ss} at your feet and stare{ss} up at you with the result.<br/>
+		{count} land{ss} at your feet and stare{ss} up at you with the result.<br/>
 		<br/>
 	]],{count=count,side=side,diename=diename,ss=(count==1)and"s"or"" })
 	
