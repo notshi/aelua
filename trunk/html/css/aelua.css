@@ -1,6 +1,10 @@
 html{
 	overflow-y: scroll;
 	height:100%;
+	background-image: url(/css/img/tile.960.png) ;
+	background-position: 50% 0;
+	background-repeat: repeat-y;
+	background-color: #e6e6e6;
 }
 
 body{
@@ -15,8 +19,8 @@ body{
 	color: #000;	
 	background-image: url(/css/img/back.960.png) ;
 	background-position: 50% 0;
-	background-repeat: repeat-y;
-	background-color: #fff;
+	background-repeat: no-repeat;
+	background-color: transparent;
 	
 }
 
@@ -67,7 +71,7 @@ a:hover {
 	margin: auto;
 	width: 960px;
 	position: relative;
-	background-color: #fff;
+	background-color: transparent;
 }
 
 .aelua_home_bar {
@@ -76,7 +80,7 @@ a:hover {
 	width: 960px;
 	position: relative;
 
-	background-color: #fff;
+	background-color: transparent;
 }
 
 .aelua_user_bar {
@@ -85,7 +89,7 @@ a:hover {
 	width: 960px;
 	position: relative;
 
-	background-color: #fff;
+	background-color: transparent;
 }
 
 .aelua_about {
