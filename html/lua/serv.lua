@@ -39,7 +39,7 @@ serv_apps={ -- base lookup table
 ["#default"]	=	serv_fail, -- bad link if we do not understand
 
 [""]			=	"serv_home", -- home for /
-["home"]		=	"serv_home", -- home
+["home"]		=	"serv_home", -- home for home
 
 ["test"]		=	"serv_test", -- test junk
 
@@ -53,6 +53,11 @@ serv_apps={ -- base lookup table
 ["dice"]		=	{			-- a module
 						["#default"]	=	"dice", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"dice", 		-- use this flavour when serving
+					},
+					
+["console"]		=	{			-- a module
+						["#default"]	=	"console", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"console", 		-- use this flavour when serving
 					},
 }
 
