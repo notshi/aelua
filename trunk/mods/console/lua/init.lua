@@ -56,7 +56,9 @@ end
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{})
-		
+	
+	put("console_form",{})
+	
 	put("footer",{})
 	
 end

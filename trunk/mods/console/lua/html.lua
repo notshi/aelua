@@ -33,58 +33,24 @@ end
 --
 --
 -----------------------------------------------------------------------------
-dice_form=function(d)
+console_form=function(d)
 
-	local cs=[[
-<div style="float:left;width:75px" ><input type="radio" name="count" value="{v}" {checked} />{v}x</div>
-]]
-	local ds=[[
-<div style="float:left;width:75px" ><input type="radio" name="side" value="{v}" {checked} />d{v}</div>
-]]
-	local ss=[[
-<div style="float:left;width:100px" ><input type="radio" name="style" value="{v}" {checked} />{v}</div>
-]]
-	d.line1=""
-	for i=1,#d.counts do local v=d.counts[i]
-		local checked=""
-		if v==d.count then checked="checked=\"on\"" end
-		d.line1=d.line1..wet_html.replace(cs,{v=v,checked=checked})
---		if (i%2)==0 then d.line1=d.line1.."<br/>" end
-	end
-		
-	d.line2=""
-	for i=1,#d.sides do local v=d.sides[i]
-		local checked=""
-		if v==d.side then checked="checked=\"on\"" end
-		d.line2=d.line2..wet_html.replace(ds,{v=v,checked=checked})
-	end
-	
-	d.line3=""
-	for i=1,#d.styles do local v=d.styles[i]
-		local checked=""
-		if v==d.style then checked="checked=\"on\"" end
-		d.line3=d.line3..wet_html.replace(ss,{v=v,checked=checked})
-	end
-	
 	return wet_html.replace([[
 	
 <div class="#dice_title">
-<h1>Choose your god!</h1>
+<h1>This console is live, be careful what you type!</h1>
 </div>
 
-<form class="jNice" name="dice_form" id="dice_form" action="" method="POST">
-<div class="#dice_form">
-<div class="#dice_form_line1" style="float:left;width:150px;background-color:#f0f0ff" >
-{line1}
+<form class="jNice" name="console_form" id="console_form" action="" method="POST" enctype="multipart/form-data">
+<div class="#console_form">
+<div class="#console_form_output" >
+<textarea cols="40" rows="5" name="output" readonly="true" style="width:950px;height:150px" >{output}</textarea>
 </div>
-<div class="#dice_form_line2" style="float:left;width:75px;background-color:#f0ffff" >
-{line2}
+<div class="#console_form_input" >
+<textarea cols="40" rows="5" name="input" style="width:950px;height:150px" >{input}</textarea>
 </div>
-<div class="#dice_form_line3" style="float:left;width:400px" >
-{line3}
-</div>
-<div class="#dice_form_submit" style="clear:both" >
-<input type="submit" name="submit" value="Roll dice!"/>
+<div class="#console_form_submit" style="clear:both" >
+<input type="submit" name="submit" value="Execute Lua Code!"/>
 </div>
 </form>
 

@@ -17,6 +17,7 @@ public class Data
 {
 
 	DatastoreService ds;
+	Transaction trans;
 
 	public Data()
 	{
@@ -66,13 +67,68 @@ public class Data
 		reg_keystr(L,lib);
 		reg_keyinfo(L,lib);
 		
+		reg_del(L,lib);
 		reg_put(L,lib);
 		reg_get(L,lib);
 		reg_query(L,lib);
 		
+		reg_transaction(L,lib);
+		
 		return 0;
 	}
 
+//
+// begin
+// rollback
+// commit
+//
+// a transaction group
+//
+// we only suport one transaction at a time...
+//
+	void reg_transaction(Lua L,Object lib)
+	{ 
+		final Data _base=this;
+		L.setField(lib, "transaction", new LuaJavaCallback(){ Data base=_base; public int luaFunction(Lua L){ return base.transaction(L); } });
+	}
+	int transaction(Lua L)
+	{
+		Object o=L.value(1); // command
+		if(!L.isString(o)) { L.error("transaction command must be a string"); }
+		String s=L.toString(o);
+		
+		if(s=="begin")
+		{
+			if(trans!=null) { L.error("nested transactions not suported"); }
+			trans=ds.beginTransaction();
+			L.push( Boolean.TRUE );
+			return 1;
+		}
+		else
+		if(s=="rollback")
+		{
+			trans.rollback();
+			trans=null;
+			L.push( Boolean.TRUE );
+			return 1;
+		}
+		else
+		if(s=="commit")
+		{
+			trans.commit();
+			trans=null;
+			L.push( Boolean.TRUE );
+			return 1;
+		}
+		else
+		{
+			L.error("unknown transaction command");
+		}
+		
+		return 0;
+	}
+	
+	
 //
 // Create a key informaton table from a key string
 // this does not recurse, it just stores its parent as a key string
@@ -255,8 +311,15 @@ public class Data
 			}
 		}
 		
-		ds.put(e); // actually write it
-	  
+		if(trans==null)
+		{
+			ds.put(e); // actually write it
+		}
+		else
+		{
+			ds.put(trans,e); // actually write it
+		}
+		
 		// return a keystring since it may have just been created
 		L.push( KeyFactory.keyToString( e.getKey() ) );
 
@@ -336,7 +399,14 @@ public class Data
 		
 		try
 		{
-			e=ds.get(k);
+			if(trans==null)
+			{
+				e=ds.get(k);
+			}
+			else
+			{
+				e=ds.get(trans,k);
+			}
 		}
 		catch(EntityNotFoundException ex)
 		{
@@ -346,6 +416,44 @@ public class Data
 		luaentity_fill(L,ent,e);
 		
 		L.push(ent); // return ourselves	  
+		return 1;
+	}
+	
+//
+// Delete an entity of the given key
+//
+	void reg_del(Lua L,Object lib)
+	{ 
+		final Data _base=this;
+		L.setField(lib, "del", new LuaJavaCallback(){ Data base=_base; public int luaFunction(Lua L){ return base.del(L); } });
+	}
+	int del(Lua L)
+	{
+		Object o;
+		
+		o=L.value(1);
+		if(!L.isTable(o)) { L.error("key must be a table"); }
+		LuaTable key=(LuaTable)o;
+		
+		Key k=keystr_makekey(L,L.rawGet(key, "kind"),L.rawGet(key, "id"),L.rawGet(key, "parent"));
+
+		try
+		{
+			if(trans==null)
+			{
+				ds.delete(k);
+			}
+			else
+			{
+				ds.delete(trans,k);
+			}
+		}
+		catch(IllegalStateException ex)
+		{
+			return 0;
+		}
+		
+		L.push(o); // return the key used on success
 		return 1;
 	}
 	
@@ -456,7 +564,17 @@ public class Data
 			FetchOptions f=FetchOptions.Builder.withLimit(limit).offset(offset);
 			if( cursor!=null ) { f.cursor(cursor); } // passed in a cursor?
 			
-			PreparedQuery pq=ds.prepare(q);
+			PreparedQuery pq;
+			
+			if(trans==null)
+			{
+				pq=ds.prepare(q);
+			}
+			else
+			{
+				pq=ds.prepare(trans,q);
+			}
+			
 			QueryResultList ql=pq.asQueryResultList(f);
 			
 			L.rawSet(t,"count", new Double( (pq.countEntities()) ) );
