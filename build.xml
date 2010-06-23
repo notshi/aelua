@@ -1,23 +1,24 @@
-<!-- This is a template Ant file for a very basic Google AppEngine project -->
-<project name="javatest" default="war">
+<project name="hoe-house" default="war">
 
 <taskdef resource="net/sf/antcontrib/antlib.xml" >
-  <classpath> <pathelement location="class/ant-contrib.jar"/> </classpath>
+  <classpath> <pathelement location="../aelua/class/ant-contrib.jar"/> </classpath>
 </taskdef>
 
-  <!-- When you copy this template to your working directories, change the
-       value of appengine.sdk accordingly.  You may also want to use Ant's
-       property file feature, allowing each developer to have their own
-       local property file with the path to the SDK from that workspace. -->
   <property name="appengine.sdk" location="../appengine-java-sdk"/>
 
-  <!-- Check that the SDK value is set and seems sane, so we can give a nicer
-       error if not.  -->
-  <fail message="Please define the appengine.sdk property to point to your SDK directory">
+  <!-- Check that the SDK value is set and seems sane, so we can give a nicer error if not.  -->
+  <fail message="Please define the appengine.sdk property to point to your SDK directory" >
     <condition>
       <not> <and>
           <isset property="appengine.sdk"/>
           <available file="${appengine.sdk}/config/user/ant-macros.xml"/>
+      </and> </not>
+    </condition>
+  </fail>
+  <fail message="this project requires aelua in the ../aelua directory" >
+    <condition>
+      <not> <and>
+          <available file="../aelua/build.xml"/>
       </and> </not>
     </condition>
   </fail>
@@ -39,42 +40,25 @@
   <property name="log.days" value="2"/>
 
 
-  <!-- Change if you like e.g. "war" better than "www" for the output -->
   <property name="war.dir" location="war"/>
 
-  <target name="war" depends="compile"
-          description="Assemble the application directory">
+  <target name="war" depends="compile" description="Assemble the application directory">
     <mkdir dir="${war.dir}/WEB-INF"/>
-    <copy todir="${war.dir}">
-      <fileset dir="html">
-        <exclude name="**/.svn/**"/>
-        <exclude name="**/*~"/>
-      </fileset>
+    <copy todir="${war.dir}" includeEmptyDirs="false" >
+      <fileset dir="../aelua/html"> <exclude name="**/.svn/**"/> </fileset>
+      <fileset dir="html">          <exclude name="**/.svn/**"/> </fileset>
     </copy>
-    <copy todir="${war.dir}/WEB-INF">
-      <fileset dir="WEB-INF">
-        <exclude name="**/.svn/**"/>
-        <exclude name="**/*~"/>
-      </fileset>
+    <copy todir="${war.dir}/WEB-INF/lua" includeEmptyDirs="false" >
+      <fileset dir="../aelua/lua">  <exclude name="**/.svn/**"/> </fileset>
     </copy>
-    <copy todir="${war.dir}/WEB-INF/lua">
-      <fileset dir="lua">
-        <exclude name="**/.svn/**"/>
-        <exclude name="**/*~"/>
-      </fileset>
-    </copy>
-    <copy todir="${war.dir}/WEB-INF/lib" flatten="true">
-      <fileset dir="${appengine.sdk}/lib/user">
-          <include name="**/*.jar"/>
-      </fileset>
-      <fileset dir="class">
-          <include name="**/*.jar"/>
-      </fileset>
+    <copy todir="${war.dir}/WEB-INF/lib" flatten="true" includeEmptyDirs="false">
+      <fileset dir="${appengine.sdk}/lib/user"> <include name="**/*.jar"/> </fileset>
+      <fileset dir="../aelua/class">            <include name="**/*.jar"/> </fileset>
     </copy>
 
 	<for param="file"> 
 		<path> 
-			<dirset dir="mods">
+			<dirset dir="../aelua/mods">
 				<include name="*" /> 
 			</dirset>
 		</path> 
@@ -82,25 +66,18 @@
 			<var name="basename" unset="true"/> 
 			<basename file="@{file}" property="basename"/> 
 			
-<!--
-			<echo>including mods ${basename}</echo>
--->			
 			<for param="file2"> 
 				<path> 
-					<dirset dir="mods/${basename}">
+					<dirset dir="../aelua/mods/${basename}">
 						<include name="*" /> 
 					</dirset>
 				</path> 
 				<sequential> 
 					<var name="dirname" unset="true"/> 
 					<basename file="@{file2}" property="dirname"/> 
-<!--
-					<echo>including mods ${basename} ${dirname}</echo>
--->			
 					<copy todir="${war.dir}/${dirname}/${basename}" includeEmptyDirs="false">
-					  <fileset dir="mods/${basename}/${dirname}">
+					  <fileset dir="../aelua/mods/${basename}/${dirname}">
 						<exclude name="**/.svn/**"/>
-						<exclude name="**/*~"/>
 					  </fileset>
 					</copy>
 				</sequential>
@@ -117,9 +94,9 @@
     <mkdir dir="${war.dir}/WEB-INF/classes"/>
     <mkdir dir="${war.dir}/WEB-INF/lib"/>
 
-    <javac srcdir="java" destdir="${war.dir}/WEB-INF/classes" includeantruntime="false" debug="on">
+    <javac srcdir="../aelua/java" destdir="${war.dir}/WEB-INF/classes" includeantruntime="false" debug="on">
       <classpath>
-		<fileset dir="class">
+		<fileset dir="../aelua/class">
 		  <include name="**/*.jar" />
 		</fileset>
 		<fileset dir="${war.dir}/WEB-INF/lib">
