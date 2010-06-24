@@ -1,0 +1,1 @@
+local core=require("wetgenes.aelua.cache.core")module("wetgenes.aelua.cache")function del(...)	return core.del(...)endfunction put(...)	return core.put(...)endfunction get(...)	return core.get(...)endfunction inc(...)	return core.inc(...)end
