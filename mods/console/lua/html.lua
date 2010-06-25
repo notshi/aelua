@@ -44,16 +44,26 @@ console_form=function(d)
 <form class="jNice" name="console_form" id="console_form" action="" method="POST" enctype="multipart/form-data">
 <div class="#console_form">
 <div class="#console_form_output" >
-<textarea cols="40" rows="5" name="output" readonly="true" style="width:950px;height:150px" >{output}</textarea>
+<textarea cols="40" rows="5" name="output" id="console_form_output_text" readonly="true" style="width:950px;height:150px" >{output}</textarea>
 </div>
 <div class="#console_form_input" >
-<textarea cols="40" rows="5" name="input" style="width:950px;height:150px" >{input}</textarea>
+<textarea cols="40" rows="5" name="input" id="console_form_input_text" style="width:950px;height:150px" >{input}</textarea>
 </div>
 <div class="#console_form_submit" style="clear:both" >
 <input type="submit" name="submit" value="Execute Lua Code!"/>
 </div>
 </form>
 
+<script type="text/javascript">
+
+$(function(){
+var $t = $("#console_form_output_text")[0];
+$t.scrollTop=$t.scrollHeight;
+$t = $("#console_form_input_text")[0];
+$t.scrollTop=$t.scrollHeight;
+});
+
+</script>
 
 ]],d)
 
