@@ -29,6 +29,8 @@ local ipairs=ipairs
 local tostring=tostring
 local tonumber=tonumber
 local type=type
+local pcall=pcall
+local loadstring=loadstring
 
 module("console")
 
@@ -40,16 +42,25 @@ module("console")
 --
 -----------------------------------------------------------------------------
 function serv(srv)
+	local function put(a,b)
+		b=b or {}
+		b.srv=srv
+		srv.put(wet_html.get(html,a,b))
+	end
+
+	if not ( user and user.user and user.user.admin ) then -- error must be admin
+		srv.set_mimetype("text/html")
+		put("header",{})
+		put("error_need_admin",{})
+		put("footer",{})
+		return
+	end
+	
 	if post(srv) then return end -- post handled everything
 
 	local slash=srv.url_slash[ srv.url_slash_idx ]
 --	if slash=="image" then return image(srv) end -- image request
 		
-local function put(a,b)
-	b=b or {}
-	b.srv=srv
-	srv.put(wet_html.get(html,a,b))
-end
 
 
 	srv.set_mimetype("text/html")
@@ -57,7 +68,7 @@ end
 	put("home_bar",{})
 	put("user_bar",{})
 	
-	put("console_form",{})
+	put("console_form",{output=srv.posts.output or "",input=srv.posts.input or "" })
 	
 	put("footer",{})
 	
@@ -70,6 +81,29 @@ end
 --
 -----------------------------------------------------------------------------
 function post(srv)
+
+	if srv.posts.input then -- run it
+	
+		local b,f,r
+		local head=
+[[local _r={} local function print(s) _r[#_r+1]=tostring(s) end
+
+]]
+		local tail=
+[[
+
+return table.concat(_r,"\n")
+
+]]
+		f,r=loadstring( head..srv.posts.input..tail )
+		
+		if f then
+			b,r=pcall( f , srv )
+		end
+		
+		srv.posts.output=srv.posts.output.."-- \n"..tostring(r)
+	
+	end
 
 	return false
 

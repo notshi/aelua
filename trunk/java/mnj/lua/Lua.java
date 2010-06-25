@@ -2324,19 +2324,17 @@ protect:
     stacksetsize(oldtop+1);
   }
 
-  void dThrow(int status)
+  String dStackDumpString()
   {
-//    throw new LuaError(status);
-
-// simple lua stack chance so we have a chance to debug...	
+// simple lua stack dump so we have a chance to debug...	
 	int i=0;
 	String s="";
-	
+
 	for(i=-1;i>-4;i--)
 	{
 		s=s+"\n"+toString(value(i));
 	}
-//	s=s+" **["+civ.size()+"]** ";
+	//	s=s+" **["+civ.size()+"]** ";
 
 
 	String s2;
@@ -2346,7 +2344,14 @@ protect:
 		s=s+"\n"+s2;
 	}
 	
-    throw new RuntimeException( s );
+	return s;
+  }
+  void dThrow(int status)
+  {
+
+	
+    throw new LuaError(status,dStackDumpString());
+//    throw new RuntimeException( s );
   }
 
 

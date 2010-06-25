@@ -86,17 +86,19 @@ about=function(d)
 	d.lua="<a href=\"http://www.lua.org/\">lua</a>"
 	d.appengine="<a href=\"http://code.google.com/appengine/\">appengine</a>"
 	d.wetgenes="<a href=\"http://www.wetgenes.com/\">wetgenes</a>"
-
 	d.jill="<a href=\"http://code.google.com/p/jillcode/\">jill</a>"
-	d.sputnik="<a href=\"http://sputnik.freewisdom.org/\">sputnik</a>"
+	d.journalists="<a href=\"http://en.wikipedia.org/wiki/Yellow_journalism\">journalists</a>"
 
 	return wet_html.replace([[
 <div class="aelua_about">
 <br/>
 <br/>
-{bootstrap} is a self publishing node, designed for creators.<br/>
+{bootstrap} is a self publishing node, designed by creators, for creators.<br/>
 {bootstrap} nodes connect and share with each other.<br/>
 {bootstrap} is powered by {aelua}.<br/>
+{bootstrap} is not a publishing platform for web {journalists}.<br/>
+<br/>
+In bootstrap internets. You do not link to bootstrap. Bootstrap links to you!<br/>
 <br/>
 {aelua} is a {lua} core and framework compatibile with {appengine}.<br/>
 {aelua} and {bootstrap} are designed and developed by {wetgenes}.<br/>
@@ -157,6 +159,26 @@ user_bar=function(d)
 
 end
 
+
+-----------------------------------------------------------------------------
+--
+-- display must be admin error
+--
+-----------------------------------------------------------------------------
+error_need_admin=function(d)
+	
+	return wet_html.replace([[
+	
+<div class="aelua_error">
+Sorry but you must be an admin to view this page!
+</div>
+<div class="aelua_error_click">
+<a href="/">Click here to return to the homepage.</a>
+</div>
+
+]],d)
+
+end
 
 			
 			

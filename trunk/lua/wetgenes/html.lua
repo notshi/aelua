@@ -23,16 +23,16 @@ return (string.gsub( a , "{(.-)}" , function(a)
 	
 	f=function(a,d) -- look up a in table d
 	
-		if string.len(a)>128 then return a end -- do not even try with large strings
+		if string.len(a)>128 then return "{"..a.."}" end -- do not even try with large strings
 	
 		local t=d[a]
 		if t then
 			if type(t)=="table" then return table.concat(t) end -- if a table then join its contents
-			return tostring(d[a]) -- simple find, make sure we return a string
+			return tostring(t) -- simple find, make sure we return a string
 		end
 		
 		local a1,a2=string.find(a, "%.") -- try and split on first "."
-		if not a1 then return a end -- didnt find a dot so return look up
+		if not a1 then return "{"..a.."}" end -- didnt find a dot so return look up value keeping {}
 		
 		a1=string.sub(a,1,a1-1) -- the bit before the .
 		a2=string.sub(a,a2+1) -- the bit after the .
@@ -43,7 +43,7 @@ return (string.gsub( a , "{(.-)}" , function(a)
 			return f(a2,dd) -- tail call this function
 		end
 		
-		return a -- couldnt find anything return input string
+		return "{"..a.."}" -- couldnt find anything return input string
 	end
 
 	return f(a,d)
