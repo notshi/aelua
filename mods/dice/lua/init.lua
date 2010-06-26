@@ -154,7 +154,7 @@ function image(srv)
 	
 	local avail= -- the dice available for each flavour
 	{
-		plain={2,6,20},
+		plain={2,4,6,20},
 	}
 	
 	if not avail[flavour] then flavour="plain" end -- check flavour, and default to plain
