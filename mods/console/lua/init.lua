@@ -105,7 +105,7 @@ return table.concat(_r,"\n")
 	
 	end
 
-	return false
+	return false -- keep going anyway
 
 end
 
