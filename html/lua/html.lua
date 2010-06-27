@@ -1,10 +1,10 @@
 
 
-local sys=require("wetgenes.aelua.sys")
 local user=require("wetgenes.aelua.user")
 
 local wet_html=require("wetgenes.html")
 
+local os=os
 local string=string
 local math=math
 
@@ -46,7 +46,7 @@ end
 footer=function(d)
 
 	if not d.time then
-		d.time=math.ceil((sys.clock()-d.srv.clock_start)*1000)/1000
+		d.time=math.ceil((os.clock()-d.srv.clock)*1000)/1000
 	end
 	
 	local mods=""

@@ -1,5 +1,4 @@
 
-local sys=require("wetgenes.aelua.sys")
 local dat=require("wetgenes.aelua.data")
 
 local wet_string=require("wetgenes.string")
@@ -70,7 +69,8 @@ serv_apps={ -- base lookup table
 -----------------------------------------------------------------------------
 function serv(srv)
 
-	srv.clock_start=sys.clock() -- the time we started
+	srv.clock=os.clock() -- a relative time we started at
+	srv.time=os.time() -- the absolute time we started
 
 	srv.url_slash=str_split("/",srv.url) -- break the input url	
 	

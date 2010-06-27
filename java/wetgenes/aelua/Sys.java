@@ -64,8 +64,8 @@ public class Sys
 	int open_lib(Lua L,LuaTable lib)
 	{
 		
-		reg_time(L,lib);
-		reg_clock(L,lib);
+//		reg_time(L,lib);
+//		reg_clock(L,lib);
 		reg_file_exists(L,lib);
 		reg_file_read(L,lib);
 		
@@ -75,6 +75,7 @@ public class Sys
 //
 // Return time in seconds since unix epoch, if you are lucky it may be acurate to milliseconds
 //
+/*
 	public void reg_time(Lua L,Object lib)
 	{ 
 		final Sys _base=this;
@@ -87,12 +88,13 @@ public class Sys
 		L.push( t );
 		return 1;
 	}
-	
+*/	
 //
 // Return time in seconds thats has as much acuracy as possible but should only be compared to other
 // values returned from this function. IE it is relative to an arbitary point and may wrap and go teh crazy
 // just use it for unimportant benchmark tests
 //
+/*
 	public void reg_clock(Lua L,Object lib)
 	{ 
 		final Sys _base=this;
@@ -105,6 +107,7 @@ public class Sys
 		L.push( t );
 		return 1;
 	}
+*/
 	
 //
 // does this file exist?
