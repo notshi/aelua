@@ -48,6 +48,12 @@
       <fileset dir="../aelua/html"> <exclude name="**/.svn/**"/> </fileset>
       <fileset dir="html">          <exclude name="**/.svn/**"/> </fileset>
     </copy>
+    <copy todir="${war.dir}" includeEmptyDirs="false" overwrite="true">
+      <fileset dir="html">
+        <include name="lua/*"/>
+        <include name="WEB-INF/*"/>
+      </fileset>
+    </copy>
     <copy todir="${war.dir}/WEB-INF/lua" includeEmptyDirs="false" >
       <fileset dir="../aelua/lua">  <exclude name="**/.svn/**"/> </fileset>
     </copy>
