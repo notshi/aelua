@@ -32,6 +32,13 @@ local type=type
 local pcall=pcall
 local loadstring=loadstring
 
+
+--
+-- Which can be overeiden in the global table opts
+--
+local opts_mods_console={}
+if opts and opts.mods and opts.mods.console then opts_mods_console=opts.mods.console end
+
 module("console")
 
 -----------------------------------------------------------------------------
@@ -68,7 +75,7 @@ function serv(srv)
 	put("home_bar",{})
 	put("user_bar",{})
 	
-	put("console_form",{output=srv.posts.output or "",input=srv.posts.input or "" })
+	put("console_form",{output=srv.posts.output or "",input=srv.posts.input or opts_mods_console.input or ""})
 	
 	put("footer",{})
 	

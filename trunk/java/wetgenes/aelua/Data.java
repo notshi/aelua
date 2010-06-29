@@ -547,9 +547,9 @@ public class Data
 				{
 					String sa=((String)v.getnum(2));
 					String sb=((String)v.getnum(3));
-					if(sb==">") { q.addSort(sa,Query.SortDirection.ASCENDING); }
+					if(sb=="ASC") { q.addSort(sa,Query.SortDirection.ASCENDING); }
 					else
-					if(sb=="<") { q.addSort(sa,Query.SortDirection.DESCENDING); }
+					if(sb=="DESC") { q.addSort(sa,Query.SortDirection.DESCENDING); }
 				}
 			}
 		}
