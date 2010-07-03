@@ -3,7 +3,8 @@ local wet_html=require("wetgenes.html")
 
 local dat=require("wetgenes.aelua.data")
 
-local user=require("wetgenes.aelua.user")
+local users=require("wetgenes.aelua.users")
+local user=users.get_viewer()
 
 local img=require("wetgenes.aelua.img")
 
@@ -44,6 +45,7 @@ function create(srv)
 
 	local H={}
 	
+	H.user=user
 	H.srv=srv
 	H.slash=srv.url_slash[ srv.url_slash_idx ]
 	
@@ -89,7 +91,7 @@ function serv(srv)
 	H.srv.set_mimetype("text/html")
 	put("header",{title="Hoe House - "})
 	put("home_bar",{})
-	put("user_bar",{})
+	put("user_bar",{user=user})
 	
 -- ask which round
 
@@ -141,7 +143,7 @@ local cmd=H.arg(1)
 	if cmd=="do" then
 	
 		local id=H.arg(2)
-		local dat=user.get_act(id)
+		local dat=users.get_act(user,id)
 		
 		if dat then
 		
@@ -149,7 +151,7 @@ local cmd=H.arg(1)
 			
 				if dat.cmd=="join" then -- join this round
 			
-					players.join(H,user.user)
+					players.join(H,user)
 
 					put(tostring(id))
 					put(tostring(dat))
@@ -178,12 +180,12 @@ local request=nil
 
 	H.user_data_name=H.srv.flavour.."_hoe_"..H.round.id -- unique data name for this round
 
-	if user.user then -- we have a user
+	if user then -- we have a user
 	
-		local user_data=user.user.data[H.user_data_name]
+		local user_data=user.cache[H.user_data_name]
 
 		if user_data then -- we already have data, so use it
-			H.player=(user_data.player_id)
+			H.player=players.load_id(user_data.player_id)
 		end
 		
 		if not H.player then -- no player in this round
@@ -207,10 +209,10 @@ local request=nil
 	H.srv.set_mimetype("text/html")
 	put("header",{title="Hoe House - "})
 	put("home_bar",{})
-	put("user_bar",{})
+	put("user_bar",{user=user})
 	
 	if request=="join" then
-		put("request_join",{act=user.put_act({cmd="join",check=H.user_data_name})})
+		put("request_join",{act=users.put_act(user,{cmd="join",check=H.user_data_name})})
 	elseif request=="login" then
 		put("request_login",{})
 	end

@@ -5,7 +5,8 @@ local sys=require("wetgenes.aelua.sys")
 
 --local dat=require("wetgenes.aelua.data")
 
-local user=require("wetgenes.aelua.user")
+local users=require("wetgenes.aelua.users")
+local user=users.get_viewer()
 
 local img=require("wetgenes.aelua.img")
 
@@ -55,7 +56,7 @@ function serv(srv)
 		srv.put(wet_html.get(html,a,b))
 	end
 
-	if not ( user and user.user and user.user.admin ) then -- error must be admin
+	if not ( user and user.admin ) then -- error must be admin
 		srv.set_mimetype("text/html")
 		put("header",{})
 		put("error_need_admin",{})
@@ -73,7 +74,7 @@ function serv(srv)
 	srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
-	put("user_bar",{})
+	put("user_bar",{user=user})
 	
 	put("console_form",{output=srv.posts.output or "",input=srv.posts.input or opts_mods_console.input or ""})
 	

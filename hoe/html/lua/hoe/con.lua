@@ -3,7 +3,7 @@ local wet_html=require("wetgenes.html")
 
 local dat=require("wetgenes.aelua.data")
 
-local user=require("wetgenes.aelua.user")
+local users=require("wetgenes.aelua.users")
 
 local img=require("wetgenes.aelua.img")
 
