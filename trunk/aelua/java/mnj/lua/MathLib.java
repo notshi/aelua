@@ -286,7 +286,7 @@ public final class MathLib extends LuaJavaCallback
           int l = L.checkInt(1);
           int u = L.checkInt(2);
           L.argCheck(l<=u, 2, "interval is empty");
-          L.pushNumber(rng.nextInt(u) + l);
+          L.pushNumber(rng.nextInt(1+u-l) + l); // FIX: to correct bounds
         }
         break;
 

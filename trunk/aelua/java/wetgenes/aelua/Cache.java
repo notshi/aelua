@@ -54,7 +54,7 @@ public class Cache
 	}
 	static void reg_preload(Lua L,Object lib)
 	{ 
-		L.setField(lib, "wetgenes.aelua.cache.core", new LuaJavaCallback(){ public int luaFunction(Lua L){ return Data.open(L); } });
+		L.setField(lib, "wetgenes.aelua.cache.core", new LuaJavaCallback(){ public int luaFunction(Lua L){ return Cache.open(L); } });
 	}
 	
 //
@@ -100,7 +100,7 @@ public class Cache
 	void reg_get(Lua L,Object lib)
 	{ 
 		final Cache _base=this;
-		L.setField(lib, "put", new LuaJavaCallback(){ Cache base=_base; public int luaFunction(Lua L){ return base.get(L); } });
+		L.setField(lib, "get", new LuaJavaCallback(){ Cache base=_base; public int luaFunction(Lua L){ return base.get(L); } });
 	}
 	int get(Lua L)
 	{
@@ -109,9 +109,16 @@ public class Cache
 		o=L.value(1);
 		if(!L.isString(o)) { L.error("cache name must be a string"); }
 		String nam=(String)o;
+		Object ret=ms.get(nam);
 
-		L.push(		ms.get(nam)		);
-		
+		if(ret==null)
+		{
+			L.pushNil();
+		}
+		else
+		{
+			L.push( ret );
+		}
 		return 1;
 	}
 	

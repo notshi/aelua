@@ -17,7 +17,10 @@ public class Data
 {
 
 	DatastoreService ds;
+/*
 	Transaction trans;
+	boolean trans_fail;
+*/
 
 	public Data()
 	{
@@ -72,62 +75,51 @@ public class Data
 		reg_get(L,lib);
 		reg_query(L,lib);
 		
-		reg_transaction(L,lib);
+		reg_begin(L,lib);
+		reg_rollback(L,lib);
+		reg_commit(L,lib);
 		
 		return 0;
 	}
 
 //
-// begin
-// rollback
-// commit
+// ok new setup, begin returns a transaction core that can then be commited or rolled back
 //
-// a transaction group
-//
-// we only suport one transaction at a time...
-//
-	void reg_transaction(Lua L,Object lib)
+	void reg_begin(Lua L,Object lib)
 	{ 
 		final Data _base=this;
-		L.setField(lib, "transaction", new LuaJavaCallback(){ Data base=_base; public int luaFunction(Lua L){ return base.transaction(L); } });
+		L.setField(lib, "begin", new LuaJavaCallback(){ Data base=_base; public int luaFunction(Lua L){ return base.begin(L); } });
 	}
-	int transaction(Lua L)
+	int begin(Lua L)
 	{
-		Object o=L.value(1); // command
-		if(!L.isString(o)) { L.error("transaction command must be a string"); }
-		String s=L.toString(o);
-		
-		if(s=="begin")
-		{
-			if(trans!=null) { L.error("nested transactions not suported"); }
-			trans=ds.beginTransaction();
-			L.push( Boolean.TRUE );
-			return 1;
-		}
-		else
-		if(s=="rollback")
-		{
-			trans.rollback();
-			trans=null;
-			L.push( Boolean.TRUE );
-			return 1;
-		}
-		else
-		if(s=="commit")
-		{
-			trans.commit();
-			trans=null;
-			L.push( Boolean.TRUE );
-			return 1;
-		}
-		else
-		{
-			L.error("unknown transaction command");
-		}
-		
+		Transaction trans=ds.beginTransaction();
+		L.push( trans );
+		return 1;
+	}
+	
+	void reg_rollback(Lua L,Object lib)
+	{ 
+		final Data _base=this;
+		L.setField(lib, "rollback", new LuaJavaCallback(){ Data base=_base; public int luaFunction(Lua L){ return base.rollback(L); } });
+	}
+	int rollback(Lua L)
+	{
+		Transaction trans=(Transaction)L.value(1); // transaction core
+		trans.rollback();
 		return 0;
 	}
 	
+	void reg_commit(Lua L,Object lib)
+	{ 
+		final Data _base=this;
+		L.setField(lib, "commit", new LuaJavaCallback(){ Data base=_base; public int luaFunction(Lua L){ return base.commit(L); } });
+	}
+	int commit(Lua L)
+	{
+		Transaction trans=(Transaction)L.value(1); // transaction core
+		trans.rollback();
+		return 0;
+	}
 	
 //
 // Create a key informaton table from a key string
@@ -244,7 +236,16 @@ public class Data
 	{
 		Object o;
 		
+		LuaTable trans=null;
+		Transaction trans_core=null;
 		o=L.value(1);
+		if(L.isTable(o))
+		{
+			trans=(LuaTable)o;
+			trans_core=(Transaction)L.rawGet(trans, "core");
+		}
+		
+		o=L.value(2);
 		if(!L.isTable(o)) { L.error("entity must be a table"); }
 		LuaTable ent=(LuaTable)o;
 
@@ -311,13 +312,24 @@ public class Data
 			}
 		}
 		
-		if(trans==null)
+		try
 		{
-			ds.put(e); // actually write it
+			if(trans_core==null)
+			{
+				ds.put(e); // actually write it
+			}
+			else
+			{
+				ds.put(trans_core,e); // actually write it
+			}
 		}
-		else
+		catch(ConcurrentModificationException ex)
 		{
-			ds.put(trans,e); // actually write it
+			if(trans!=null)
+			{
+				L.rawSet(trans,"fail", L.valueOfBoolean(true) );
+			}
+			return 0;
 		}
 		
 		// return a keystring since it may have just been created
@@ -385,7 +397,16 @@ public class Data
 	{
 		Object o;
 		
+		LuaTable trans=null;
+		Transaction trans_core=null;
 		o=L.value(1);
+		if(L.isTable(o))
+		{
+			trans=(LuaTable)o;
+			trans_core=(Transaction)L.rawGet(trans, "core");
+		}
+		
+		o=L.value(2);
 		if(!L.isTable(o)) { L.error("entity must be a table"); }
 		LuaTable ent=(LuaTable)o;
 
@@ -399,18 +420,18 @@ public class Data
 		
 		try
 		{
-			if(trans==null)
+			if(trans_core==null)
 			{
 				e=ds.get(k);
 			}
 			else
 			{
-				e=ds.get(trans,k);
+				e=ds.get(trans_core,k);
 			}
 		}
 		catch(EntityNotFoundException ex)
 		{
-			return 0;
+			return 0; // return nil if not found, if it returns nil everything else was OK
 		}
 		
 		luaentity_fill(L,ent,e);
@@ -431,7 +452,16 @@ public class Data
 	{
 		Object o;
 		
+		LuaTable trans=null;
+		Transaction trans_core=null;
 		o=L.value(1);
+		if(L.isTable(o))
+		{
+			trans=(LuaTable)o;
+			trans_core=(Transaction)L.rawGet(trans, "core");
+		}
+		
+		o=L.value(2);
 		if(!L.isTable(o)) { L.error("key must be a table"); }
 		LuaTable key=(LuaTable)o;
 		
@@ -439,17 +469,25 @@ public class Data
 
 		try
 		{
-			if(trans==null)
+			if(trans_core==null)
 			{
 				ds.delete(k);
 			}
 			else
 			{
-				ds.delete(trans,k);
+				ds.delete(trans_core,k);
 			}
 		}
 		catch(IllegalStateException ex)
 		{
+			return 0;
+		}
+		catch(ConcurrentModificationException ex)
+		{
+			if(trans!=null)
+			{
+				L.rawSet(trans,"fail", L.valueOfBoolean(true) );
+			}
 			return 0;
 		}
 		
@@ -481,7 +519,16 @@ public class Data
 		String kind=null;
 		Key parent=null;
 		
+		LuaTable trans=null;
+		Transaction trans_core=null;
 		o=L.value(1);
+		if(L.isTable(o))
+		{
+			trans=(LuaTable)o;
+			trans_core=(Transaction)L.rawGet(trans, "core");
+		}
+		
+		o=L.value(2);
 		if(!L.isTable(o)) { L.error("query options must be a table"); }
 		LuaTable opt=(LuaTable)o;
 		
@@ -566,13 +613,13 @@ public class Data
 			
 			PreparedQuery pq;
 			
-			if(trans==null)
+			if(trans_core==null)
 			{
 				pq=ds.prepare(q);
 			}
 			else
 			{
-				pq=ds.prepare(trans,q);
+				pq=ds.prepare(trans_core,q);
 			}
 			
 			QueryResultList ql=pq.asQueryResultList(f);
