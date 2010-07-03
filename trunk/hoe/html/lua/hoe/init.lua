@@ -149,7 +149,7 @@ local cmd=H.arg(1)
 			
 				if dat.cmd=="join" then -- join this round
 			
-			
+					players.join(H,user.user)
 
 					put(tostring(id))
 					put(tostring(dat))
