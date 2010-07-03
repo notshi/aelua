@@ -9,7 +9,7 @@ local sys=require("wetgenes.aelua.sys")
 
 local dat=require("wetgenes.aelua.data")
 
-local user=require("wetgenes.aelua.user")
+local users=require("wetgenes.aelua.users")
 
 local log=require("wetgenes.aelua.log").log -- grab the func from the package
 
@@ -21,6 +21,7 @@ local serialize=wet_string.serialize
 
 local tostring=tostring
 local ipairs=ipairs
+local os=os
 
 local math=math
 local string=string
@@ -44,7 +45,7 @@ end
 
 local function msg_ent(tab)
 
-	local t=sys.time()
+	local t=os.time()
 	
 	local ent={}
 	

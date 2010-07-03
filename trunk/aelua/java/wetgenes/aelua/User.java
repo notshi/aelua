@@ -31,7 +31,7 @@ public class User
 //	
 	public static int open(Lua L)
 	{
-		LuaTable lib=L.register("wetgenes.aelua.user.core");
+		LuaTable lib=L.register("wetgenes.aelua.users.core");
 		User base=new User();
 		
 		base.open_lib(L,lib);
@@ -57,7 +57,7 @@ public class User
 	}
 	static void reg_preload(Lua L,Object lib)
 	{ 
-		L.setField(lib, "wetgenes.aelua.user.core", new LuaJavaCallback(){ public int luaFunction(Lua L){ return User.open(L); } });
+		L.setField(lib, "wetgenes.aelua.users.core", new LuaJavaCallback(){ public int luaFunction(Lua L){ return User.open(L); } });
 	}
 	
 //

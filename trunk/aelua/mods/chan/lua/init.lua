@@ -5,7 +5,8 @@ local sys=require("wetgenes.aelua.sys")
 
 local dat=require("wetgenes.aelua.data")
 
-local user=require("wetgenes.aelua.user")
+local users=require("wetgenes.aelua.users")
+local user=users.get_viewer()
 
 local img=require("wetgenes.aelua.img")
 
@@ -51,7 +52,7 @@ end
 	srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
-	put("user_bar",{})
+	put("user_bar",{user=user})
 	
 	put("chan_form",{})
 
@@ -78,7 +79,7 @@ end
 -----------------------------------------------------------------------------
 function post(srv)
 
-	if not user.user then -- must be logged in?
+	if not user then -- must be logged in?
 	
 		log("user must be logged in to post, this should cause an error")
 
@@ -91,7 +92,7 @@ function post(srv)
 	
 		tab.subject=srv.posts.subject
 		tab.body=srv.posts.message
-		tab.email=user.user.email
+		tab.email=user.cache.email
 		tab.ip=srv.ip
 		tab.image=0
 		

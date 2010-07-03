@@ -1,6 +1,6 @@
 
 
-local user=require("wetgenes.aelua.user")
+local users=require("wetgenes.aelua.users")
 
 local wet_html=require("wetgenes.html")
 
@@ -135,16 +135,16 @@ end
 -----------------------------------------------------------------------------
 user_bar=function(d)
 
-	if user.user then
+	if d.user then
 	
-		d.name="<span title=\""..user.user.email.."\" >"..(user.user.name or "?").."</span>"
+		d.name="<span title=\""..d.user.cache.email.."\" >"..(d.user.cache.name or "?").."</span>"
 	
 		d.hello="Hello "..d.name.."."
 		
-		d.action="<a href=\""..user.logout_url(d.srv.url).."\">Logout?</a>"
+		d.action="<a href=\""..users.logout_url(d.srv.url).."\">Logout?</a>"
 	else
 		d.hello="Hello Anon."
-		d.action="<a href=\""..user.login_url(d.srv.url).."\">Login?</a>"
+		d.action="<a href=\""..users.login_url(d.srv.url).."\">Login?</a>"
 	
 	end
 	
