@@ -204,6 +204,19 @@ function load_id(H,id)
 	player=load(H,player) -- set to nil on fail to load
 	return player
 end
+
+
+
+--------------------------------------------------------------------------------
+--
+-- create a player in this game for the given user
+-- this may fail
+-- the player may already exist, we may be trying to join twice simultaneusly
+--
+--------------------------------------------------------------------------------
+function join(H,user)
+end
+
 --------------------------------------------------------------------------------
 --
 -- Load a list of players from database
