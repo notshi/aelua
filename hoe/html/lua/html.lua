@@ -156,5 +156,47 @@ end
 
 
 			
+-----------------------------------------------------------------------------
+--
+-- sugest an act
+--
+-----------------------------------------------------------------------------
+request_login=function(d)
+
+	d.action="<a href=\""..user.login_url(d.srv.url).."\">Login</a>"
+	
+	return wet_html.replace([[
+	
+<div class="aelua_acts">
+Please {action} if you wish to join this game.
+</div>
+
+]],d)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- sugest an action
+--
+-----------------------------------------------------------------------------
+request_join=function(d)
+
+	d.url_round=d.srv.url_base..d.H.round.id.."/"
+	d.action="<a href=\""..d.url_round.."do/"..d.act.."\">Join</a>"
+	
+	return wet_html.replace([[
+	
+<div class="aelua_acts">
+Click {action} to {action} this game.
+</div>
+
+]],d)
+
+end
+
+			
+			
+		
 			
 		

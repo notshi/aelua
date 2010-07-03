@@ -50,8 +50,11 @@ function create(srv)
 	H.put=function(a,b)
 		b=b or {}
 		b.srv=srv
+		b.H=H
 		srv.put(wet_html.get(html,a,b))
 	end
+	
+	H.arg=function(i) return srv.url_slash[ srv.url_slash_idx + i ]	end
 	
 	return H
 
@@ -67,21 +70,15 @@ end
 -----------------------------------------------------------------------------
 function serv(srv)
 
-local function put(a,b)
-	b=b or {}
-	b.srv=srv
-	srv.put(wet_html.get(html,a,b))
-end
-
 	local H=create(srv)
+	local put=H.put
 	local roundid=tonumber(H.slash or 0) or 0
 	if roundid>0 then -- load a default round from given id
 		H.round=rounds.load_id(H,roundid)
 	end
 	
-	if H.round then -- we have a round
-		put(tostring(H.round),{})
-		return
+	if H.round then -- we have a round, let them handle everything
+		return serv_round(H)
 	end
 	
 	if post(H) then return end -- post handled everything
@@ -89,7 +86,7 @@ end
 		
 
 
-	srv.set_mimetype("text/html")
+	H.srv.set_mimetype("text/html")
 	put("header",{title="Hoe House - "})
 	put("home_bar",{})
 	put("user_bar",{})
@@ -132,3 +129,92 @@ function post(H)
 
 end
 
+-----------------------------------------------------------------------------
+--
+-- the post function, looks for post params and handles them
+--
+-----------------------------------------------------------------------------
+function post_round(H)
+local put=H.put
+local cmd=H.arg(1)
+
+	if cmd=="do" then
+	
+		local id=H.arg(2)
+		local dat=user.get_act(id)
+		
+		if dat then
+		
+			if dat.check==H.user_data_name then -- good data
+			
+				if dat.cmd=="join" then -- join this round
+			
+			
+
+					put(tostring(id))
+					put(tostring(dat))
+
+					return true
+
+				end
+			end
+		end
+	end
+	
+	return false
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- basic serv when we are dealing with an existing round
+--
+-----------------------------------------------------------------------------
+function serv_round(H)
+
+local put=H.put
+	
+local request=nil
+
+	H.user_data_name=H.srv.flavour.."_hoe_"..H.round.id -- unique data name for this round
+
+	if user.user then -- we have a user
+	
+		local user_data=user.user.data[H.user_data_name]
+
+		if user_data then -- we already have data, so use it
+			H.player=(user_data.player_id)
+		end
+		
+		if not H.player then -- no player in this round
+		
+			if H.round.state=="active" then -- viewing an active round so sugest a join
+			
+				request="join"
+				
+			end
+		end
+	
+	else -- no user so suggest they login
+	
+			request="login"
+	
+	end
+	
+	if post_round(H) then return end -- post handled everything
+
+	
+	H.srv.set_mimetype("text/html")
+	put("header",{title="Hoe House - "})
+	put("home_bar",{})
+	put("user_bar",{})
+	
+	if request=="join" then
+		put("request_join",{act=user.put_act({cmd="join",check=H.user_data_name})})
+	elseif request=="login" then
+		put("request_login",{})
+	end
+	
+	put("footer",{})
+	
+end

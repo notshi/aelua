@@ -64,12 +64,13 @@ function create(H)
 	
 	p.shout=""
 	p.name="anon"
+	p.email=""
 	
 -- at the start of the game, a players energy fills up, so there is no disadvantage to slightly late starters 
 -- after a short period of time (about 2 days for standard games) everyone begins with max energy
 	p.energy=count_ticks( H.round.created , H.srv.time , H.round.timestep )
 	
-	p.ent={key={kind=H.srv.flavour..".hoe.player"}} -- we will not know the key id until after we save
+	p.ent={key={kind=H.srv.flavour..".hoe.player."..H.round.id}} -- we will not know the key id until after we save
 
 	return check(H,p)
 end
@@ -105,6 +106,7 @@ function to_ent(H,player,ent)
 		}
 	ent.props={
 		name=p.name,
+		email=p.email,
 		json=Json.Encode(dat),
 		updated=H.srv.time,
 		created=p.created,
@@ -212,10 +214,9 @@ function list(H,opts)
 	local list={}
 	
 	local t=dat.query({
-		kind=H.srv.flavour..".hoe.player",
+		kind=H.srv.flavour..".hoe.player."..H.round.id,
 		limit=10,
 		offset=0,
-			{"filter","round_id","==",H.round.id},
 			{"sort","updated","<"},
 		})
 		
