@@ -176,38 +176,32 @@ function join(H,user)
 		
 		if put(H,p,tp) then -- new player put ok
 		
-			local u=users.get_user(tu,user.cache.email) -- get user
+			local u=users.get_user(user.cache.email,tu) -- get user
 			
 			if u then
 				local ud=u.cache[H.user_data_name] or {} -- userdata for this round
 				u.cache[H.user_data_name]=ud
 				
 				if ud.player_id then -- already joined?
-					tu.rollback()
-					tp.rollback()
-					return false
+					if load_id(H,ud.player_id,tp) then -- check we can actually read this player
+						tu.rollback()
+						tp.rollback()
+						return false
+					end
 				end
 				
 				ud.player_id=p.key.id -- link the user to this player id for this round
 				
-				if users.put_user(tu,u) then -- user put ok
-					if tu.commit() then
-						if tp.commit() then
-							return true
-						end
-					else
-						tp.rollback()
-					end
+				if users.put_user(u,tu) then -- user put ok?
+				
+					if tu.commit() and tp.commit() then return true end
+					
 				end
-			else		
-				tu.rollback()
-				tp.rollback()
 			end
-		else
-			tu.rollback()
-			tp.rollback()
 		end
 		
+		tu.rollback() -- try and undo everything ready to perform again
+		tp.rollback()
 	end
 	
 	return false

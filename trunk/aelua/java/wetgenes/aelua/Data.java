@@ -106,7 +106,8 @@ public class Data
 	{
 		Transaction trans=(Transaction)L.value(1); // transaction core
 		trans.rollback();
-		return 0;
+		L.push(L.valueOfBoolean(false) );
+		return 1;
 	}
 	
 	void reg_commit(Lua L,Object lib)
@@ -117,8 +118,17 @@ public class Data
 	int commit(Lua L)
 	{
 		Transaction trans=(Transaction)L.value(1); // transaction core
-		trans.commit();
-		return 0;
+		try
+		{
+			trans.commit();
+		}
+		catch(ConcurrentModificationException ex)
+		{
+			L.push(L.valueOfBoolean(false) );
+			return 1;
+		}
+		L.push(L.valueOfBoolean(true) ); // actual successs !!!!
+		return 1;
 	}
 	
 //
