@@ -80,6 +80,8 @@ function serv(srv)
 	end
 	
 	if H.round then -- we have a round, let them handle everything
+		H.url_base=srv.url_base..roundid.."/"
+
 		return serv_round(H)
 	end
 	
@@ -153,9 +155,9 @@ local cmd=H.arg(1)
 			
 					players.join(H,user)
 
-					put(tostring(id))
-					put(tostring(dat))
-
+--					put(tostring(id))
+--					put(tostring(dat))
+					H.srv.redirect(H.url_base)
 					return true
 
 				end
@@ -185,7 +187,7 @@ local request=nil
 		local user_data=user.cache[H.user_data_name]
 
 		if user_data then -- we already have data, so use it
-			H.player=players.load_id(user_data.player_id)
+			H.player=players.load_id(H,user_data.player_id)
 		end
 		
 		if not H.player then -- no player in this round
@@ -217,6 +219,12 @@ local request=nil
 		put("request_login",{})
 	end
 	
+	put("listing players <br/>",{})
+	local list=players.list(H)
+	for i=1,#list do local v=list[i]
+		put(tostring(v.key.id).." "..tostring(v.cache.name).."<br/>",{})
+	end
+		
 	put("footer",{})
 	
 end

@@ -117,7 +117,7 @@ public class Data
 	int commit(Lua L)
 	{
 		Transaction trans=(Transaction)L.value(1); // transaction core
-		trans.rollback();
+		trans.commit();
 		return 0;
 	}
 	
