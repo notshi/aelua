@@ -1,4 +1,6 @@
 
+local Json=require("Json")
+
 local wet_html=require("wetgenes.html")
 
 local dat=require("wetgenes.aelua.data")
@@ -43,9 +45,13 @@ module("hoe.players")
 --------------------------------------------------------------------------------
 function create(H)
 
-	local p={}
+	local player={}
 	
-	p.id=0
+	player.key={kind=H.srv.flavour..".hoe.player."..H.round.id} -- we will not know the key id until after we save
+	player.props={}
+	
+	local p=player.props
+		
 	p.round_id=H.round.id
 	
 	p.created=H.srv.time
@@ -62,7 +68,6 @@ function create(H)
 	p.manure=0
 	p.oil=0
 	
-	p.shout=""
 	p.name="anon"
 	p.email=""
 	
@@ -70,9 +75,14 @@ function create(H)
 -- after a short period of time (about 2 days for standard games) everyone begins with max energy
 	p.energy=count_ticks( H.round.created , H.srv.time , H.round.timestep )
 	
-	p.ent={key={kind=H.srv.flavour..".hoe.player."..H.round.id}} -- we will not know the key id until after we save
+	dat.build_cache(player) -- this just copies the props across
+	
+-- these are json only vars
+	local c=player.cache
+	
+	c.shout=""
 
-	return check(H,p)
+	return check(H,player)
 end
 
 --------------------------------------------------------------------------------
@@ -82,81 +92,12 @@ end
 --------------------------------------------------------------------------------
 function check(H,player)
 
-	local p=player
+	local c=player.cache
 	
-	if p.energy < 0                  then p.energy = 0 end
-	if p.energy > H.round.max_energy then p.energy = H.round.max_energy end
-	
-	
-	
-	return p
-end
+	if c.energy < 0                  then c.energy = 0 end
+	if c.energy > H.round.max_energy then c.energy = H.round.max_energy end
 
---------------------------------------------------------------------------------
---
--- Convert player data into an entity
---
---------------------------------------------------------------------------------
-function to_ent(H,player,ent)
-
-	local p=player
-	
-	local dat={
-		shout=p.shout
-		}
-	ent.props={
-		name=p.name,
-		email=p.email,
-		json=Json.Encode(dat),
-		updated=H.srv.time,
-		created=p.created,
-		round_id=p.round_id,
-		score=p.score,
-		energy=p.energy,
-		bux=p.bux,
-		houses=p.houses,
-		hoes=p.hoes,
-		scarecrows=p.scarecrows,
-		gloves=p.gloves,
-		sticks=p.sticks,
-		manure=p.manure,
-		oil=p.oil,
-		}
-		
-	return ent	
-end
-
---------------------------------------------------------------------------------
---
--- Convert an entity into round data
---
---------------------------------------------------------------------------------
-function from_ent(H,player,ent)
-
-	local c=ent.cache
-	local p=player
-	
-	p.id=ent.key.id
-	
-	p.round_id=c.round_id
-	
-	p.created=c.created
-	p.updated=c.updated
-	
-	p.score		=c.score
-	p.energy	=c.energy
-	p.bux		=c.bux
-	p.houses	=c.houses
-	p.hoes		=c.hoes
-	p.scarecrows=c.scarecrows
-	p.gloves	=c.gloves
-	p.sticks	=c.sticks
-	p.manure	=c.manure
-	p.oil		=c.oil
-	
-	check(H,p)
-	
-	return p
+	return player
 end
 
 
@@ -164,14 +105,19 @@ end
 --
 -- Save a player to database
 --
+-- update the cache, this will copy it into props
+--
 --------------------------------------------------------------------------------
-function save(H,player)
+function put(H,player,t)
 
-	to_ent(H,player,player.ent)
+	t=t or dat -- use transaction?
+
+	dat.build_props(player)
+	local ks=t.put(player)
 	
-	local ks=dat.put(player.ent)
-	player.ent.key=dat.keyinfo( ks )
-	player.id=player.ent.key.id
+	if ks then
+		player.key=dat.keyinfo( ks ) -- update key with new id
+	end
 
 	return ks -- return the keystring which is an absolute name
 end
@@ -180,14 +126,15 @@ end
 --------------------------------------------------------------------------------
 --
 -- Load a player from database
+-- the props will be copies into the cache
 --
 --------------------------------------------------------------------------------
-function load(H,player)
+function get(H,player,t)
 
-	if not dat.get(player.ent) then return nil end
+	t=t or dat -- use transaction?
 	
-	dat.build_cache(player.ent)
-	from_ent(H,player,player.ent)
+	if not t.get(player) then return nil end	
+	dat.build_cache(player)
 
 	return player
 end
@@ -197,12 +144,12 @@ end
 -- Load a player by id from database
 --
 --------------------------------------------------------------------------------
-function load_id(H,id)
+function load_id(H,id,t)
 
 	local player=create(H)
-	player.ent.key.id=id
-	player=load(H,player) -- set to nil on fail to load
-	return player
+	player.key.id=id
+	
+	return get(H,player,t) -- set to nil on fail to load
 end
 
 
@@ -215,6 +162,55 @@ end
 --
 --------------------------------------------------------------------------------
 function join(H,user)
+
+	for _=1,10 do
+
+		local tu=dat.begin()
+		local tp=dat.begin()
+		local kp=nil
+		local ku=nil
+		
+		local p=create(H)
+		p.cache.email=user.cache.email
+		p.cache.name=user.cache.name
+		
+		if put(H,p,tp) then -- new player put ok
+		
+			local u=users.get_user(tu,user.cache.email) -- get user
+			
+			if u then
+				local ud=u.cache[H.user_data_name] or {} -- userdata for this round
+				u.cache[H.user_data_name]=ud
+				
+				if ud.player_id then -- already joined?
+					tu.rollback()
+					tp.rollback()
+					return false
+				end
+				
+				ud.player_id=p.key.id -- link the user to this player id for this round
+				
+				if users.put_user(tu,u) then -- user put ok
+					if tu.commit() then
+						if tp.commit() then
+							return true
+						end
+					else
+						tp.rollback()
+					end
+				end
+			else		
+				tu.rollback()
+				tp.rollback()
+			end
+		else
+			tu.rollback()
+			tp.rollback()
+		end
+		
+	end
+	
+	return false
 end
 
 --------------------------------------------------------------------------------
@@ -222,25 +218,22 @@ end
 -- Load a list of players from database
 --
 --------------------------------------------------------------------------------
-function list(H,opts)
+function list(H,opts,t)
 
-	local list={}
+	t=t or dat -- use transaction?
 	
-	local t=dat.query({
+	local r=t.query({
 		kind=H.srv.flavour..".hoe.player."..H.round.id,
 		limit=10,
 		offset=0,
-			{"sort","updated","<"},
+			{"sort","updated","DESC"},
 		})
 		
-	for i=1,#t do local v=t[i]
-		
-		list[i]=create(H)
-		list[i].ent=dat.build_cache(v)
-		from_ent(H,list[i],list[i].ent)
+	for i=1,#r do local v=r[i]
+		dat.build_cache(v)
 	end
 
-	return list
+	return r
 end
 
 --------------------------------------------------------------------------------

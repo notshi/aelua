@@ -186,7 +186,7 @@ function list(H,opts)
 		limit=10,
 		offset=0,
 			{"filter","state","==","active"},
-			{"sort","updated","<"},
+			{"sort","updated","DESC"},
 		})
 		
 	for i=1,#t do local v=t[i]
