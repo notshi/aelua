@@ -111,11 +111,19 @@ end
 home_bar=function(d)
 
 	d.home="<a href=\"/\">Home</a>"
+	
+	d.round=""
+	
+	if d.H and d.H.round then
+	
+		d.round=" / <a href=\""..d.H.url_base.."\">Round "..d.H.round.cache.id.."</a>"
+	end
 		
 	return wet_html.replace([[
 	
 <div class="aelua_home_bar">
 {home}
+{round}
 </div>
 
 ]],d)
@@ -182,8 +190,7 @@ end
 -----------------------------------------------------------------------------
 request_join=function(d)
 
-	d.url_round=d.srv.url_base..d.H.round.id.."/"
-	d.action="<a href=\""..d.url_round.."do/"..d.act.."\">Join</a>"
+	d.action="<a href=\""..d.H.url_base.."do/"..d.act.."\">Join</a>"
 	
 	return wet_html.replace([[
 	

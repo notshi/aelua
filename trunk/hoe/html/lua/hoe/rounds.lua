@@ -37,32 +37,38 @@ module("hoe.rounds")
 
 --------------------------------------------------------------------------------
 --
--- Create a new round filled with initial data
+-- Create a new round filled with initial default data
 --
 --------------------------------------------------------------------------------
 function create(H)
 
-	local r={}
+	local ent={}
 	
-	r.id=0
+	ent.key={kind=H.srv.flavour..".hoe.round"} -- we will not know the key id until after we save
+	ent.props={}
+		
+	local p=ent.props
 	
-	r.created=H.srv.time
-	r.updated=H.srv.time
+	p.created=H.srv.time
+	p.updated=H.srv.time
 	
-	r.timestep=1 -- 60*10 -- a 10 minute tick, gives 144 ticks a day
+	p.timestep=1 -- 60*10 -- a 10 minute tick, gives 144 ticks a day
 	
-	r.endtime=H.srv.time+(r.timestep*4032) -- default game end after about a month of standard ticks
+	p.endtime=H.srv.time+(p.timestep*4032) -- default game end after about a month of standard ticks
 	-- setting the tick to 1 second gets us the same amount of game time in about 1 hour
 	
-	r.max_energy=300	-- maximum amount of energy a player can have at once
+	p.max_energy=300	-- maximum amount of energy a player can have at once
 						-- energy never, under any cirumstances goes over this number
 	
-	r.state="active" -- a new round starts as active
+	p.state="active" -- a new round starts as active
 	
+	dat.build_cache(ent) -- this just copies the props across
 	
-	r.ent={key={kind=H.srv.flavour..".hoe.round"}} -- we will not know the key id until we save
+-- these are json only vars, which just means you cannot query them
+	local c=ent.cache
+	
 
-	return check(H,r)
+	return check(H,ent)
 end
 
 --------------------------------------------------------------------------------
@@ -73,73 +79,32 @@ end
 -- but it is better to just look at what data is available rather than version test
 --
 --------------------------------------------------------------------------------
-function check(H,round)
-
-	local r=round
-	
-	
-	return r
-end
-
---------------------------------------------------------------------------------
---
--- Convert round data into an entity
---
---------------------------------------------------------------------------------
-function to_ent(H,round,ent)
-	
-	local dat={
-		}
-	ent.props={
-		json=Json.Encode(dat),
-		updated=H.srv.time,
-		created=round.created,
-		timestep=round.timestep,
-		endtime=round.endtime,
-		state=round.state,
-		}
-		
-	return ent	
-end
-
---------------------------------------------------------------------------------
---
--- Convert an entity into round data
---
---------------------------------------------------------------------------------
-function from_ent(H,round,ent)
+function check(H,ent)
 
 	local c=ent.cache
-	local r=round
 	
-	r.id=ent.key.id
-	
-	r.state=c.state
-	
-	r.created=c.created
-	r.updated=c.updated
-	
-	r.timestep=c.timestep
-	r.endtime=c.endtime
-	
-	check(H,r)
-	
-	return r
+	return ent
 end
 
 
 --------------------------------------------------------------------------------
 --
 -- Save a round to database
+-- this builds its data from the cache
+-- so consider the props read only, they should all be copied into the cache anyhow
 --
 --------------------------------------------------------------------------------
-function save(H,round)
+function put(H,ent,t)
 
-	to_ent(H,round,round.ent)
+	t=t or dat -- use transaction?
+
+	dat.build_props(ent)
+	local ks=t.put(ent)
 	
-	local ks=dat.put(round.ent)
-	round.ent.key=dat.keyinfo( ks )
-	round.id=round.ent.key.id
+	if ks then
+		ent.key=dat.keyinfo( ks ) -- update key with new id
+		dat.build_cache(ent)
+	end
 
 	return ks -- return the keystring which is an absolute name
 end
@@ -150,14 +115,14 @@ end
 -- Load a round from database
 --
 --------------------------------------------------------------------------------
-function load(H,round)
+function get(H,ent,t)
 
-	if not dat.get(round.ent) then return nil end
+	t=t or dat -- use transaction?
 	
-	dat.build_cache(round.ent)
-	from_ent(H,round,round.ent)
-
-	return round
+	if not t.get(ent) then return nil end	
+	dat.build_cache(ent)
+	
+	return check(H,ent)
 end
 
 --------------------------------------------------------------------------------
@@ -165,13 +130,14 @@ end
 -- Load a round id from database
 --
 --------------------------------------------------------------------------------
-function load_id(H,id)
+function get_id(H,id)
 
-	local round=create(H)
-	round.ent.key.id=id
-	round=load(H,round) -- set to nil on fail to load
-	return round
+	local ent=create(H)
+	ent.key.id=id
+	ent=get(H,ent) -- set to nil on fail to load
+	return ent
 end
+
 --------------------------------------------------------------------------------
 --
 -- Load a list of rounds from database
@@ -181,7 +147,7 @@ function list(H,opts)
 
 	local list={}
 	
-	local t=dat.query({
+	local ret=dat.query({
 		kind=H.srv.flavour..".hoe.round",
 		limit=10,
 		offset=0,
@@ -189,13 +155,10 @@ function list(H,opts)
 			{"sort","updated","DESC"},
 		})
 		
-	for i=1,#t do local v=t[i]
-		
-		list[i]=create(H)
-		list[i].ent=dat.build_cache(v)
-		from_ent(H,list[i],list[i].ent)
+	for i=1,#ret do local v=ret[i]
+		dat.build_cache(v)
 	end
 
-	return list
+	return ret
 end
 
