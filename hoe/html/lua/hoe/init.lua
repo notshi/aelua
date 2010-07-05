@@ -76,11 +76,11 @@ function serv(srv)
 	local put=H.put
 	local roundid=tonumber(H.slash or 0) or 0
 	if roundid>0 then -- load a default round from given id
-		H.round=rounds.load_id(H,roundid)
+		H.round=rounds.get_id(H,roundid)
 	end
 	
 	if H.round then -- we have a round, let them handle everything
-		H.url_base=srv.url_base..roundid.."/"
+		H.url_base=srv.url_base..H.round.key.id.."/"
 
 		return serv_round(H)
 	end
@@ -104,12 +104,11 @@ function serv(srv)
 	for i=1,#list do local v=list[i]
 	
 		put("<br/>",{})
-		put("LIST : "..i.."<br/>",{})
-		put("DATE : "..os.date("%c",v.created).."<br/>" )
-		put("ID : "..(v.id).."<br/>" )
-		put("STEP : "..(v.timestep).."<br/>" )
+		put("DATE : "..os.date("%c",v.cache.created).."<br/>" )
+		put("ID : "..(v.key.id).."<br/>" )
+		put("STEP : "..(v.cache.timestep).."<br/>" )
 		
-		local url=srv.url_base..v.id.."/"
+		local url=srv.url_base..v.key.id.."/"
 		put("Link : <a href=\""..url.."\">"..url.."</a><br/>" )
 		put("<br/>",{})
 		
@@ -180,19 +179,19 @@ local put=H.put
 	
 local request=nil
 
-	H.user_data_name=H.srv.flavour.."_hoe_"..H.round.id -- unique data name for this round
+	H.user_data_name=H.srv.flavour.."_hoe_"..H.round.key.id -- unique data name for this round
 
 	if user then -- we have a user
 	
 		local user_data=user.cache[H.user_data_name]
 
 		if user_data then -- we already have data, so use it
-			H.player=players.load_id(H,user_data.player_id)
+			H.player=players.get_id(H,user_data.player_id)
 		end
 		
 		if not H.player then -- no player in this round
 		
-			if H.round.state=="active" then -- viewing an active round so sugest a join
+			if H.round.cache.state=="active" then -- viewing an active round so sugest a join
 			
 				request="join"
 				
@@ -209,7 +208,7 @@ local request=nil
 
 	
 	H.srv.set_mimetype("text/html")
-	put("header",{title="Hoe House - "})
+	put("header",{title="Hoe House - Round "..H.round.cache.id})
 	put("home_bar",{})
 	put("user_bar",{user=user})
 	

@@ -65,5 +65,5 @@ end
 function make_round(H)
 
 	local r=rounds.create(H)
-	rounds.save(H,r)
+	rounds.put(H,r)
 end

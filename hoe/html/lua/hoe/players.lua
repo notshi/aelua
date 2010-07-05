@@ -40,19 +40,19 @@ module("hoe.players")
 
 --------------------------------------------------------------------------------
 --
--- Create a new player in h.round filled with initial data
+-- Create a new local player in H.round filled with initial data
 --
 --------------------------------------------------------------------------------
 function create(H)
 
-	local player={}
+	local ent={}
 	
-	player.key={kind=H.srv.flavour..".hoe.player."..H.round.id} -- we will not know the key id until after we save
-	player.props={}
+	ent.key={kind=H.srv.flavour..".hoe.player."..H.round.key.id} -- we will not know the key id until after we save
+	ent.props={}
 	
-	local p=player.props
+	local p=ent.props
 		
-	p.round_id=H.round.id
+	p.round_id=H.round.key.id
 	
 	p.created=H.srv.time
 	p.updated=H.srv.time
@@ -73,16 +73,16 @@ function create(H)
 	
 -- at the start of the game, a players energy fills up, so there is no disadvantage to slightly late starters 
 -- after a short period of time (about 2 days for standard games) everyone begins with max energy
-	p.energy=count_ticks( H.round.created , H.srv.time , H.round.timestep )
+	p.energy=count_ticks( H.round.cache.created , H.srv.time , H.round.cache.timestep )
 	
-	dat.build_cache(player) -- this just copies the props across
+	dat.build_cache(ent) -- this just copies the props across
 	
 -- these are json only vars
-	local c=player.cache
+	local c=ent.cache
 	
 	c.shout=""
 
-	return check(H,player)
+	return check(H,ent)
 end
 
 --------------------------------------------------------------------------------
@@ -90,14 +90,22 @@ end
 -- check that a player has initial data and set any missing defaults
 --
 --------------------------------------------------------------------------------
-function check(H,player)
+function check(H,ent)
 
-	local c=player.cache
+	local r=H.round.cache
+	local c=ent.cache
 	
-	if c.energy < 0                  then c.energy = 0 end
-	if c.energy > H.round.max_energy then c.energy = H.round.max_energy end
+	local ticks=count_ticks( c.updated , H.srv.time , r.timestep ) -- ticks since player was last updated
+	c.updated=H.srv.time
+	
+	if ticks>0 then -- hand out energy over time
+		c.energy=c.energy+ticks
+	end
 
-	return player
+	if c.energy < 0            then c.energy = 0 end -- sanity
+	if c.energy > r.max_energy then c.energy = r.max_energy end -- cap energy to maximum
+
+	return ent
 end
 
 
@@ -108,15 +116,16 @@ end
 -- update the cache, this will copy it into props
 --
 --------------------------------------------------------------------------------
-function put(H,player,t)
+function put(H,ent,t)
 
 	t=t or dat -- use transaction?
 
-	dat.build_props(player)
-	local ks=t.put(player)
+	dat.build_props(ent)
+	local ks=t.put(ent)
 	
 	if ks then
-		player.key=dat.keyinfo( ks ) -- update key with new id
+		ent.key=dat.keyinfo( ks ) -- update key with new id
+		dat.build_cache(ent)
 	end
 
 	return ks -- return the keystring which is an absolute name
@@ -129,14 +138,14 @@ end
 -- the props will be copies into the cache
 --
 --------------------------------------------------------------------------------
-function get(H,player,t)
+function get(H,ent,t)
 
 	t=t or dat -- use transaction?
 	
-	if not t.get(player) then return nil end	
-	dat.build_cache(player)
-
-	return player
+	if not t.get(ent) then return nil end	
+	dat.build_cache(ent)
+	
+	return check(H,ent)
 end
 
 --------------------------------------------------------------------------------
@@ -144,12 +153,12 @@ end
 -- Load a player by id from database
 --
 --------------------------------------------------------------------------------
-function load_id(H,id,t)
+function get_id(H,id,t)
 
-	local player=create(H)
-	player.key.id=id
+	local ent=create(H)
+	ent.key.id=id
 	
-	return get(H,player,t) -- set to nil on fail to load
+	return get(H,ent,t) -- set to nil on fail to load
 end
 
 
@@ -158,12 +167,14 @@ end
 --
 -- create a player in this game for the given user
 -- this may fail
--- the player may already exist, we may be trying to join twice simultaneusly
+-- the player may already exist
+-- we may be trying to join twice simultaneusly
+-- but it will probably work
 --
 --------------------------------------------------------------------------------
 function join(H,user)
 
-	for _=1,10 do
+	for retry=1,10 do
 
 		local tu=dat.begin()
 		local tp=dat.begin()
@@ -182,8 +193,11 @@ function join(H,user)
 				local ud=u.cache[H.user_data_name] or {} -- userdata for this round
 				u.cache[H.user_data_name]=ud
 				
+				-- this bit deals with the fact that we have two transactions and that
+				-- tu may get commited then tp might fail
 				if ud.player_id then -- already joined?
-					if load_id(H,ud.player_id,tp) then -- check we can actually read this player
+					p=get_id(H,ud.player_id)
+					if p and p.cache.email==user.cache.email then -- check that link to player is good
 						tu.rollback()
 						tp.rollback()
 						return false
@@ -194,13 +208,14 @@ function join(H,user)
 				
 				if users.put_user(u,tu) then -- user put ok?
 				
-					if tu.commit() and tp.commit() then return true end
-					
+					if tu.commit() then -- commit the pointer first, pointers can be updated later
+						if tp.commit() then return true end -- failure means tu was commited but tp was not
+					end
 				end
 			end
 		end
 		
-		tu.rollback() -- try and undo everything ready to perform again
+		tu.rollback() -- try and undo everything ready to try again
 		tp.rollback()
 	end
 	
@@ -217,7 +232,7 @@ function list(H,opts,t)
 	t=t or dat -- use transaction?
 	
 	local r=t.query({
-		kind=H.srv.flavour..".hoe.player."..H.round.id,
+		kind=H.srv.flavour..".hoe.player."..H.round.key.id,
 		limit=10,
 		offset=0,
 			{"sort","updated","DESC"},
