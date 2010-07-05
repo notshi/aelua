@@ -137,7 +137,7 @@ public final class OSLib extends LuaJavaCallback
     }
     else
     {
-      t = (long)L.checkNumber(2);
+      t = (long)(L.checkNumber(2)*1000); //FIX ms to s
     }
 
     String s = L.optString(1, "%c");
@@ -290,7 +290,7 @@ public final class OSLib extends LuaJavaCallback
   /** Implements difftime. */
   private static int difftime(Lua L)
   {
-    L.pushNumber((L.checkNumber(1) - L.optNumber(2, 0))/1000);
+    L.pushNumber((L.checkNumber(1) - L.optNumber(2, 0))); //FIX ms to s
     return 1;
   }
 
@@ -335,7 +335,7 @@ public final class OSLib extends LuaJavaCallback
   {
     if (L.isNoneOrNil(1))       // called without args?
     {
-      L.pushNumber(System.currentTimeMillis());
+      L.pushNumber(System.currentTimeMillis()/1000.0); //FIX ms to s
       return 1;
     }
     L.checkType(1, Lua.TTABLE);
@@ -348,7 +348,7 @@ public final class OSLib extends LuaJavaCallback
     c.set(Calendar.MONTH, MONTH[getfield(L, "month", -1) - 1]);
     c.set(Calendar.YEAR, getfield(L, "year", -1));
     // ignore isdst field
-    L.pushNumber(c.getTime().getTime());
+    L.pushNumber(c.getTime().getTime()/1000.0); //FIX ms to s
     return 1;
   }
 
