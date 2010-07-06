@@ -183,15 +183,45 @@ local put=H.put
 			end
 		end
 	end
+	
+	
 
 -- functions for each special command	
 	local cmds={
 		list=serv_round_list,
 	}
+	local f=cmds[ string.lower(cmd or "") ]
+	if f then return f(H) end
+
+-- display base menu
+
+	H.srv.set_mimetype("text/html")
+	put("header",{})
+	put("home_bar",{})
+	put("user_bar",{user=user})
+	put("player_bar",{player=H.player and H.player.cache})
 	
-	local f=cmds[ string.lower(cmd or "") ] or cmds.list
+	if H.cmd_request=="join" then
+		put("request_join",{act=users.put_act(user,{cmd="join",check=H.user_data_name})})
+	elseif H.cmd_request=="login" then
+		put("request_login",{})
+	end
 	
-	return f(H)
+	put("<br/>Basic menu <br/><br/>",{})
+	local menu={
+		{name="work",url=H.url_base.."work/",desc="Work to gain bux, hoes and scarecrows."},
+		{name="user",url=H.url_base.."user/",desc="View and change your player."},
+		{name="list",url=H.url_base.."list/",desc="Check out the other players."},
+		{name="fight",url=H.url_base.."fight/",desc="Attack the other players for fun and profit."},
+		{name="shop",url=H.url_base.."shop/",desc="Buy what you need."},
+		{name="trade",url=H.url_base.."trade/",desc="Trade with other players."},
+	}
+	for i=1,#menu do local v=menu[i]
+		put("hoe_menu_item",v)
+	end
+		
+	put("footer",{})
+	
 end
 
 
@@ -211,13 +241,7 @@ local put=H.put
 	put("home_bar",{})
 	put("user_bar",{user=user})
 	put("player_bar",{player=H.player and H.player.cache})
-	
-	if H.cmd_request=="join" then
-		put("request_join",{act=users.put_act(user,{cmd="join",check=H.user_data_name})})
-	elseif H.cmd_request=="login" then
-		put("request_login",{})
-	end
-	
+		
 	put("<br/>listing players <br/><br/>",{})
 	local list=players.list(H)
 	for i=1,#list do local v=list[i]
