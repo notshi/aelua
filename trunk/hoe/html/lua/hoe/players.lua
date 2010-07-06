@@ -60,10 +60,10 @@ function create(H)
 	p.score=0
 	p.energy=0
 	p.bux=0
-	p.houses=0
+	p.houses=1
 	p.hoes=0
 	p.scarecrows=0
-	p.gloves=0
+	p.gloves=100
 	p.sticks=0
 	p.manure=0
 	p.oil=0
@@ -104,6 +104,10 @@ function check(H,ent)
 
 	if c.energy < 0            then c.energy = 0 end -- sanity
 	if c.energy > r.max_energy then c.energy = r.max_energy end -- cap energy to maximum
+
+-- score can be rebuilt from all other values
+	
+	c.score= ( c.houses * 50000 ) + ( c.hoes * 1000 ) + ( c.scarecrows * 100 ) + ( c.bux ) + ( c.manure )
 
 	return ent
 end

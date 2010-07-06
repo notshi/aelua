@@ -56,7 +56,7 @@ serv_apps={ -- base lookup table
 
 -----------------------------------------------------------------------------
 --
--- the main serv function, named the same as the file it is in
+-- the main serv function
 --
 -----------------------------------------------------------------------------
 function serv(srv)
