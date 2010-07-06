@@ -16,6 +16,17 @@ module("html")
 -----------------------------------------------------------------------------
 header=function(d)
 
+	
+	if not d.title then
+		local crumbs=d.srv.crumbs
+		local s
+		for i=1,#crumbs do local v=crumbs[i]
+			if not s then s="" else s=s.." - " end
+			s=s..v.title
+		end
+		d.title=s
+	end
+
 	return wet_html.replace([[
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -110,20 +121,18 @@ end
 -----------------------------------------------------------------------------
 home_bar=function(d)
 
-	d.home="<a href=\"/\">Home</a>"
-	
-	d.round=""
-	
-	if d.H and d.H.round then
-	
-		d.round=" / <a href=\""..d.H.url_base.."\">Round "..d.H.round.cache.id.."</a>"
+	local crumbs=d.srv.crumbs
+	local s
+	for i=1,#crumbs do local v=crumbs[i]
+		if not s then s="" else s=s.." / " end
+		s=s.."<a href=\""..v.url.."\">"..v.link.."</a>"
 	end
+	d.crumbs=s
 		
 	return wet_html.replace([[
 	
 <div class="aelua_home_bar">
-{home}
-{round}
+{crumbs}
 </div>
 
 ]],d)
@@ -162,7 +171,94 @@ user_bar=function(d)
 
 end
 
+-----------------------------------------------------------------------------
+--
+-- a basic player area for the viewer
+--
+-----------------------------------------------------------------------------
+player_bar=function(d)
 
+	if d.player then
+			
+		return wet_html.replace([[	
+<div class="hoe_player_bar">
+<span class="hoe_player_bar_energy">energy={player.energy}</span>
+<span class="hoe_player_bar_score">score={player.score}</span>
+<span class="hoe_player_bar_bux">bux={player.bux}</span>
+<span class="hoe_player_bar_hoes">hoes={player.hoes}</span>
+<span class="hoe_player_bar_houses">houses={player.houses}</span>
+<span class="hoe_player_bar_scarecrows">scarecrows={player.scarecrows}</span>
+</div>
+]],d)
+
+	end
+	
+	return wet_html.replace([[	
+<div class="hoe_player_bar">
+</div>
+]],d)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- display a player row
+--
+-----------------------------------------------------------------------------
+player_row=function(d)
+
+	if d.player then
+			
+		return wet_html.replace([[	
+<div class="hoe_player_row">
+<span class="hoe_player_row_name">{player.name}</span>
+<span class="hoe_player_row_score">score={player.score}</span>
+<span class="hoe_player_row_bux">bux={player.bux}</span>
+<span class="hoe_player_row_hoes">hoes={player.hoes}</span>
+<span class="hoe_player_row_houses">houses={player.houses}</span>
+<span class="hoe_player_row_scarecrows">scarecrows={player.scarecrows}</span>
+<span class="hoe_player_row_shout">{player.shout}</span>
+</div>
+]],d)
+
+	end
+	
+	return wet_html.replace([[	
+<div class="hoe_player_row">
+</div>
+]],d)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- display most player info on thier profile
+--
+-----------------------------------------------------------------------------
+player_base=function(d)
+
+	if d.player then
+			
+		return wet_html.replace([[	
+<div class="hoe_player_base">
+<span class="hoe_player_base_name">{player.name}</span>
+<span class="hoe_player_base_score">score={player.score}</span>
+<span class="hoe_player_base_bux">bux={player.bux}</span>
+<span class="hoe_player_base_hoes">hoes={player.hoes}</span>
+<span class="hoe_player_base_houses">houses={player.houses}</span>
+<span class="hoe_player_base_scarecrows">scarecrows={player.scarecrows}</span>
+<span class="hoe_player_base_shout">{player.shout}</span>
+</div>
+]],d)
+
+	end
+	
+	return wet_html.replace([[	
+<div class="hoe_player_base">
+</div>
+]],d)
+
+end
 			
 -----------------------------------------------------------------------------
 --
@@ -175,7 +271,7 @@ request_login=function(d)
 	
 	return wet_html.replace([[
 	
-<div class="aelua_acts">
+<div class="hoe_acts">
 Please {action} if you wish to join this game.
 </div>
 
@@ -194,7 +290,7 @@ request_join=function(d)
 	
 	return wet_html.replace([[
 	
-<div class="aelua_acts">
+<div class="hoe_acts">
 Click {action} to {action} this game.
 </div>
 

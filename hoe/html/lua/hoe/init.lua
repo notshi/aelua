@@ -73,6 +73,8 @@ end
 function serv(srv)
 
 	local H=create(srv)
+	H.srv.crumbs[#H.srv.crumbs+1]={url="/",title="Hoe House",link="Home",}
+	
 	local put=H.put
 	local roundid=tonumber(H.slash or 0) or 0
 	if roundid>0 then -- load a default round from given id
@@ -85,13 +87,13 @@ function serv(srv)
 		return serv_round(H)
 	end
 	
-	if post(H) then return end -- post handled everything
+-- post handled everything
 	
 		
 
 
 	H.srv.set_mimetype("text/html")
-	put("header",{title="Hoe House - "})
+	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{user=user})
 	
@@ -121,52 +123,6 @@ function serv(srv)
 end
 
 
------------------------------------------------------------------------------
---
--- the post function, looks for post params and handles them
---
------------------------------------------------------------------------------
-function post(H)
-
-	return false
-
-end
-
------------------------------------------------------------------------------
---
--- the post function, looks for post params and handles them
---
------------------------------------------------------------------------------
-function post_round(H)
-local put=H.put
-local cmd=H.arg(1)
-
-	if cmd=="do" then
-	
-		local id=H.arg(2)
-		local dat=users.get_act(user,id)
-		
-		if dat then
-		
-			if dat.check==H.user_data_name then -- good data
-			
-				if dat.cmd=="join" then -- join this round
-			
-					players.join(H,user)
-
---					put(tostring(id))
---					put(tostring(dat))
-					H.srv.redirect(H.url_base)
-					return true
-
-				end
-			end
-		end
-	end
-	
-	return false
-
-end
 
 -----------------------------------------------------------------------------
 --
@@ -177,7 +133,9 @@ function serv_round(H)
 
 local put=H.put
 	
-local request=nil
+	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base,title="Round "..H.round.key.id,link="Round "..H.round.key.id,}
+	
+	H.cmd_request=nil
 
 	H.user_data_name=H.srv.flavour.."_hoe_"..H.round.key.id -- unique data name for this round
 
@@ -193,35 +151,77 @@ local request=nil
 		
 			if H.round.cache.state=="active" then -- viewing an active round so sugest a join
 			
-				request="join"
+				H.cmd_request="join"
 				
 			end
 		end
 	
 	else -- no user so suggest they login
 	
-			request="login"
+			H.cmd_request="login"
 	
 	end
 	
-	if post_round(H) then return end -- post handled everything
+	local cmd=H.arg(1)
 
+	if cmd=="do" then -- perform a basic action with mild security
 	
+		local id=H.arg(2)
+		local dat=users.get_act(user,id)
+		
+		if dat then
+		
+			if dat.check==H.user_data_name then -- good data
+			
+				if dat.cmd=="join" then -- join this round
+			
+					players.join(H,user)
+					H.srv.redirect(H.url_base)
+					return true
+
+				end
+			end
+		end
+	end
+
+-- functions for each special command	
+	local cmds={
+		list=serv_round_list,
+	}
+	
+	local f=cmds[ string.lower(cmd or "") ] or cmds.list
+	
+	return f(H)
+end
+
+
+-----------------------------------------------------------------------------
+--
+-- list users
+--
+-----------------------------------------------------------------------------
+function serv_round_list(H)
+
+local put=H.put
+
+	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."list/",title="list",link="list",}
+
 	H.srv.set_mimetype("text/html")
-	put("header",{title="Hoe House - Round "..H.round.cache.id})
+	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{user=user})
+	put("player_bar",{player=H.player and H.player.cache})
 	
-	if request=="join" then
+	if H.cmd_request=="join" then
 		put("request_join",{act=users.put_act(user,{cmd="join",check=H.user_data_name})})
-	elseif request=="login" then
+	elseif H.cmd_request=="login" then
 		put("request_login",{})
 	end
 	
-	put("listing players <br/>",{})
+	put("<br/>listing players <br/><br/>",{})
 	local list=players.list(H)
 	for i=1,#list do local v=list[i]
-		put(tostring(v.key.id).." "..tostring(v.cache.name).."<br/>",{})
+		put("player_row",{player=v.cache})
 	end
 		
 	put("footer",{})

@@ -39,7 +39,7 @@ public class Servlet extends HttpServlet {
 		
 		Srv srv=new Srv(req,resp); // our response srv, should not be global
 
-		L.loadFile("lua/serv.lua");
+		L.loadFile("lua/init.lua");
 		L.call(0,0);
 		
 		L.push( L.rawGet(L.getGlobals(), "serv") );

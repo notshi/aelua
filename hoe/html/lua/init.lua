@@ -64,7 +64,8 @@ function serv(srv)
 	srv.clock=os.clock() -- a relative time we started at
 	srv.time=os.time() -- the absolute time we started
 
-	srv.url_slash=str_split("/",srv.url) -- break the input url	
+	srv.url_slash=str_split("/",srv.url) -- break the input url
+	srv.crumbs={} -- for crumbs based navigation 
 	
 	local lookup=serv_apps
 	local cmd
