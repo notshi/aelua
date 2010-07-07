@@ -70,33 +70,40 @@ function serv(srv)
 		elseif not data then -- we will go get it
 --			log("web")
 		
-			cache.put(cachename,"*",60)
+			if cache.put(cachename,"*",60,"ADD_ONLY_IF_NOT_PRESENT") then -- get a 60sec lock
 
-			local s1=srv.url_slash[ srv.url_slash_idx ]
-			local s2=srv.url_slash[ srv.url_slash_idx+1 ]
+				local s1=srv.url_slash[ srv.url_slash_idx ]
+				local s2=srv.url_slash[ srv.url_slash_idx+1 ]
 			
-			local t={}
-			for i=1,#srv.url_slash do local v=srv.url_slash[i]
-				if i>srv.url_slash_idx+1 then
-					t[#t+1]=v
+				local t={}
+				for i=1,#srv.url_slash do local v=srv.url_slash[i]
+					if i>srv.url_slash_idx+1 then
+						t[#t+1]=v
+					end
 				end
+				local url="http://"..table.concat(t,"/") -- build the remote request string
+			
+				data=fetch.get(url).body -- get from internets
+			
+				local width=tonumber(s1 or "") or 100
+				local height=tonumber(s2 or "") or 100
+
+				if width<1 then width=1 end
+				if width>1024 then width=1024 end
+
+				if height<1 then height=1 end
+				if height>1024 then height=1024 end
+
+				image=img.get(data) -- convert to image
+				image=img.resize(image,width,height,"JPEG") -- resize image and force it to a JPEG
+			
+				cache.put(cachename,image.data,60*60)
+			
+				srv.set_mimetype( "image/"..string.lower(image.format) )
+				srv.put(image.data)
+			
+				return
 			end
-			local url="http://"..table.concat(t,"/") -- build the remote request string
-			
-			data=fetch.get(url).body -- get from internets
-			
-			local width=tonumber(s1 or "") or 100
-			local height=tonumber(s2 or "") or 100
-			
-			image=img.get(data) -- convert to image
-			image=img.resize(image,width,height,"JPEG") -- resize image
-			
-			cache.put(cachename,image.data,60*60)
-			
-			srv.set_mimetype( "image/"..string.lower(image.format) )
-			srv.put(image.data)
-			
-			return
 		end
 	end
 	

@@ -1,4 +1,4 @@
-<project name="hoe-house" default="war">
+<project name="aelua" default="war">
 
 <taskdef resource="net/sf/antcontrib/antlib.xml" >
   <classpath> <pathelement location="../aelua/class/ant-contrib.jar"/> </classpath>
@@ -45,7 +45,6 @@
   <target name="war" depends="compile" description="Assemble the application directory">
     <mkdir dir="${war.dir}/WEB-INF"/>
     <copy todir="${war.dir}" includeEmptyDirs="false" >
-      <fileset dir="../aelua/html"> <exclude name="**/.svn/**"/> </fileset>
       <fileset dir="html">          <exclude name="**/.svn/**"/> </fileset>
     </copy>
     <copy todir="${war.dir}" includeEmptyDirs="false" overwrite="true">
