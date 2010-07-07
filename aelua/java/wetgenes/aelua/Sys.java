@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import javax.servlet.http.*;
+import java.lang.Thread;
 
 import java.util.*;
 
@@ -66,6 +67,7 @@ public class Sys
 		
 //		reg_time(L,lib);
 //		reg_clock(L,lib);
+		reg_sleep(L,lib);
 		reg_file_exists(L,lib);
 		reg_file_read(L,lib);
 		
@@ -108,6 +110,28 @@ public class Sys
 		return 1;
 	}
 */
+
+//
+// take a little nap for x seconds
+//
+	public void reg_sleep(Lua L,Object lib)
+	{ 
+		final Sys _base=this;
+		L.rawSet(lib, "sleep", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.sleep(L); } });
+	}
+	public int sleep(Lua L)
+	{
+		Double n=L.checkNumber(1);
+
+		try
+		{
+			Thread.sleep(n.intValue()*1000);
+		}
+		catch(InterruptedException ex)
+		{
+		}
+		return 0;
+	}
 	
 //
 // does this file exist?

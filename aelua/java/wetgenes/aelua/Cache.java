@@ -138,9 +138,9 @@ public class Cache
 		if(!L.isString(o)) { L.error("cache name must be a string"); }
 		String nam=(String)o;
 
-		o=L.value(2);
-		if(!L.isString(o)) { L.error("cache data must be a string"); }
-		String dat=(String)o;
+		Object dat=L.value(2);
+//		if(!L.isString(o)) { L.error("cache data must be a string"); }
+//		String dat=(String)o;
 		
 		Double num=new Double(60*60); // one hour default
 		o=L.value(3);

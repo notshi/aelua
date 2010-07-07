@@ -136,6 +136,11 @@ public class Img
 		Image img=ImagesServiceFactory.makeImage( (byte[]) L.getField(tab,"data") );
 		String format=(String)L.getField(tab,"format");
 		
+		if(L.type(4)==L.TSTRING) // requesting a format
+		{
+			format=L.checkString(4);
+		}
+		
 		Transform t1=ImagesServiceFactory.makeResize(width,height);  
 		
 		if(format=="JPEG")

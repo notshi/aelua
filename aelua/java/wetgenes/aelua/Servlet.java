@@ -36,6 +36,7 @@ public class Servlet extends HttpServlet {
 		Data.preload(L);
 		Cache.preload(L);
 		User.preload(L);
+		Fetch.preload(L);
 		
 		Srv srv=new Srv(req,resp); // our response srv, should not be global
 
