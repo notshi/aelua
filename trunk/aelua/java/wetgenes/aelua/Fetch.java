@@ -114,7 +114,7 @@ public class Fetch
 				{
 					if(headerValue.substring(0,4).compareToIgnoreCase("text")==0) // text mimetype get converted to strings
 					{
-						bodytype="UTF8"; // always utf8 because fuck you :)
+						bodytype="UTF-8"; // always utf8 because fuck you :)
 					}
 				}
 			}
