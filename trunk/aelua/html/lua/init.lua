@@ -58,6 +58,11 @@ serv_apps={ -- base lookup table
 						["#default"]	=	"console", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"console", 		-- use this flavour when serving
 					},
+					
+["thumbcache"]		=	{			-- a module
+						["#default"]	=	"thumbcache", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"thumbcache", 		-- use this flavour when serving
+					},
 }
 
 

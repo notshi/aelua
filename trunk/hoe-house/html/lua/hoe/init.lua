@@ -176,7 +176,7 @@ local put=H.put
 				if dat.cmd=="join" then -- join this round
 			
 					players.join(H,user)
-					H.srv.redirect(H.url_base)
+					H.srv.redirect(H.url_base) -- simplest just to redirect at this point
 					return true
 
 				end
@@ -189,11 +189,12 @@ local put=H.put
 -- functions for each special command	
 	local cmds={
 		list=serv_round_list,
+		work=serv_round_work,
 	}
 	local f=cmds[ string.lower(cmd or "") ]
 	if f then return f(H) end
 
--- display base menu
+-- or display base menu
 
 	H.srv.set_mimetype("text/html")
 	put("header",{})
@@ -252,3 +253,35 @@ local put=H.put
 	put("footer",{})
 	
 end
+
+
+
+-----------------------------------------------------------------------------
+--
+-- work hoes
+--
+-----------------------------------------------------------------------------
+function serv_round_work(H)
+
+local put=H.put
+
+	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."work/",title="work",link="work",}
+
+	H.srv.set_mimetype("text/html")
+	put("header",{})
+	put("home_bar",{})
+	put("user_bar",{user=user})
+	put("player_bar",{player=H.player and H.player.cache})
+		
+	put("<br/>choose Your work ethic <br/><br/>",{})
+	local list=players.list(H)
+	for i=1,#list do local v=list[i]
+		put("player_row",{player=v.cache})
+	end
+		
+	put("footer",{})
+	
+end
+
+
+

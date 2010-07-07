@@ -1,0 +1,1 @@
+local core=require("wetgenes.aelua.fetch.core")module("wetgenes.aelua.fetch")function get(...)	return core.get(...)end
