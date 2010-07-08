@@ -42,6 +42,7 @@ div.line{
 }
 div.header{
 	width: 960px;
+	height: 180px;
 	margin: auto;
 }
 div.desc{

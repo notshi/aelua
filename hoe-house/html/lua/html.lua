@@ -46,8 +46,7 @@ header=function(d)
  </head>
 <body>
 <div class="cont">
-	<div class="header">
-		<img src="/art/hoe.960x180.png">
+	<div class="header" style="background-image:url(/art/hoe.960x180.png)">
 	</div>
 	<div class="line"></div>
 </div>
@@ -176,19 +175,19 @@ Basic Menu
 <div class="menu1">
 <div class="menuit"><a href="work">WORK</a></div>
 <div class="menuline"></div>
-<div class="menup"><a href="work"><img src="/art/worka.png"></a></div>
+<div class="menup"><a href="work"><img src="/art/worka.png" width="100" height="100"></a></div>
 <div class="menun">Work to gain bux, hoes and scarecrows.</div>
 </div>
 <div class="menu1">
 <div class="menuit"><a href="shop">SHOP</a></div>
 <div class="menuline"></div>
-<div class="menup"><a href="shop"><img src="/art/shopa.png"></a></div>
+<div class="menup"><a href="shop"><img src="/art/shopa.png" width="100" height="100"></a></div>
 <div class="menun">Buy what you need.<br /> <br /></div>
 </div>
 <div class="menu1">
 <div class="menuit"><a href="profile">PROFILE</a></div>
 <div class="menuline"></div>
-<div class="menup"><a href="profile"><img src="/art/proa.png"></a></div>
+<div class="menup"><a href="profile"><img src="/art/proa.png" width="100" height="100"></a></div>
 <div class="menun">View and change how others see you.</div>
 </div>
 </div>
@@ -196,19 +195,19 @@ Basic Menu
 <div class="menu1">
 <div class="menuit"><a href="list">LIST</a></div>
 <div class="menuline"></div>
-<div class="menup"><a href="list"><img src="/art/lista.png"></a></div>
+<div class="menup"><a href="list"><img src="/art/lista.png" width="100" height="100"></a></div>
 <div class="menun">View the leaderboards.</div>
 </div>
 <div class="menu1">
 <div class="menuit"><a href="fight">FIGHT</a></div>
 <div class="menuline"></div>
-<div class="menup"><a href="fight"><img src="/art/fighta.png"></a></div>
+<div class="menup"><a href="fight"><img src="/art/fighta.png" width="100" height="100"></a></div>
 <div class="menun">Attack the others for fun and profit.</div>
 </div>
 <div class="menu1">
 <div class="menuit"><a href="trade">TRADE</a></div>
 <div class="menuline"></div>
-<div class="menup"><a href="trade"><img src="/art/tradea.png"></a></div>
+<div class="menup"><a href="trade"><img src="/art/tradea.png" width="100" height="100"></a></div>
 <div class="menun">Trade with the others.</div>
 </div>
 </div>
@@ -273,32 +272,32 @@ player_bar=function(d)
 <div class="chunk4">
 <div class="act1">
 <div class="act1p">
-<a href="work"><img src="/art/work.png"></a>
+<a href="work"><img src="/art/work.png" width="30" height="30"></a>
 </div>
 </div>
 <div class="act1">
 <div class="act1p">
-<a href="shop"><img src="/art/shop.png"></a>
+<a href="shop"><img src="/art/shop.png" width="30" height="30"></a>
 </div>
 </div>
 <div class="act1">
 <div class="act1p">
-<a href="pro"><img src="/art/pro.png"></a>
+<a href="pro"><img src="/art/pro.png" width="30" height="30"></a>
 </div>
 </div>
 <div class="act1">
 <div class="act1p">
-<a href="list"><img src="/art/list.png"></a>
+<a href="list"><img src="/art/list.png" width="30" height="30"></a>
 </div>
 </div>
 <div class="act1">
 <div class="act1p">
-<a href="fight"><img src="/art/fight.png"></a>
+<a href="fight"><img src="/art/fight.png" width="30" height="30"></a>
 </div>
 </div>
 <div class="act1">
 <div class="act1p">
-<a href="trade"><img src="/art/trade.png"></a>
+<a href="trade"><img src="/art/trade.png" width="30" height="30"></a>
 </div>
 </div>
 <div class="clear"></div>
