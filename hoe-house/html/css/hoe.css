@@ -88,8 +88,9 @@ div.chunk3{
 	background-color: #e3e3e3;
 	border-top-left-radius: 8px 8px;
 	border-top-right-radius: 8px 8px;
-	border-bottom:5px solid #f7f7f7;
 	margin: auto;
+	margin-top: 20px;
+	margin-bottom: 5px;
 	width: 624px;
 	padding: 0px;
 }

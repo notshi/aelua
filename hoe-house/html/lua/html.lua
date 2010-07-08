@@ -46,7 +46,8 @@ header=function(d)
  </head>
 <body>
 <div class="cont">
-	<div class="header" style="background-image:url(/art/hoe.960x180.png)">
+	<div class="header">
+		<a href="/"><img src="/art/hoe.960x180.png" width="960" height="180"></a>
 	</div>
 	<div class="line"></div>
 </div>
@@ -392,6 +393,7 @@ scarecrows
 </div>
 </div>
 </div>
+<div class="clear"></div>
 </div>
 		
 ]],d)
