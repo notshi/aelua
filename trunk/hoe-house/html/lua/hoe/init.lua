@@ -219,9 +219,9 @@ local put=H.put
 		{name="trade",   url=H.url_base.."trade/",   desc="Trade with the others."},
 	}
 	for i=1,#menu do local v=menu[i]
-		put("hoe_menu_item",v)
+--		put("hoe_menu_item",v)
 	end
-		
+	put("hoe_menu_items",v)	
 	put("footer",{})
 	
 end
