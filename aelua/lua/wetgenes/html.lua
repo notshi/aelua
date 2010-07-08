@@ -4,7 +4,7 @@ local string=string
 
 local type=type
 local tostring=tostring
-
+local setmetatable=setmetatable
 
 module("wetgenes.html")
 
@@ -58,18 +58,20 @@ end
 --
 -- build a string from a template,  with a table to be used as its environment
 --
--- this environment may get junked on slightly by the script :)
--- so possibly best to use a new one for each call
--- or at least make sure that you are setting or clearing the important parts
+-- this environment will not get modified by the called function as it is wrapped here
 --
 -----------------------------------------------------------------------------
 get=function(html,src,env)
 
+	local new_env={}
+
+	if env then setmetatable(new_env,{__index=env})	end -- wrap to protect
+
 	if html[src] then src=html[src] end
 	
-	if type(src)=="function" then return src(env or {}) end
+	if type(src)=="function" then return src(new_env) end
 	
-	if type(src)=="string" and env then return replace(src,env) end
+	if type(src)=="string" and env then return replace(src,new_env) end
 
 	return tostring(src)
 end
