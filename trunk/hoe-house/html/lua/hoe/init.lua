@@ -208,6 +208,7 @@ local put=H.put
 		put("request_login",{})
 	end
 	
+--[[
 	put("<br/>Basic menu <br/><br/>",{})
 	
 	local menu={
@@ -221,6 +222,7 @@ local put=H.put
 	for i=1,#menu do local v=menu[i]
 --		put("hoe_menu_item",v)
 	end
+]]
 	put("hoe_menu_items",v)	
 	put("footer",{})
 	
