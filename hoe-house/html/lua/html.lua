@@ -234,7 +234,7 @@ user_bar=function(d)
 		
 		d.action="<div class=\"log3\"><div class=\"logit\"><a href=\""..users.logout_url(d.srv.url).."\">Logout?</a></a></div>"
 	else
-		d.hello="Hello Anon."
+		d.hello="Hello, Anon."
 		d.action="<div class=\"log2\"><div class=\"logit\"><a href=\""..users.login_url(d.srv.url).."\">Login?</a></a></div>"
 	
 	end
