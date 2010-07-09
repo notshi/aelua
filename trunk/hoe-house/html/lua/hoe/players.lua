@@ -37,6 +37,16 @@ local type=type
 
 module("hoe.players")
 
+--------------------------------------------------------------------------------
+--
+-- serving flavour can be used to create a subgame of a certain flavour
+-- make sure we incorporate flavour into the name of our stored data types
+--
+--------------------------------------------------------------------------------
+function kind(H)
+	if not H.srv.flavour or H.srv.flavour=="hoe" then return "hoe.player" end
+	return H.srv.flavour..".hoe.player"
+end
 
 --------------------------------------------------------------------------------
 --
@@ -47,7 +57,7 @@ function create(H)
 
 	local ent={}
 	
-	ent.key={kind=H.srv.flavour..".hoe.player."..H.round.key.id} -- we will not know the key id until after we save
+	ent.key={kind=kind(H)} -- we will not know the key id until after we save
 	ent.props={}
 	
 	local p=ent.props
@@ -139,7 +149,7 @@ end
 --------------------------------------------------------------------------------
 --
 -- Load a player from database
--- the props will be copies into the cache
+-- the props will be copied into the cache
 --
 --------------------------------------------------------------------------------
 function get(H,ent,t)
@@ -213,7 +223,10 @@ function join(H,user)
 				if users.put_user(u,tu) then -- user put ok?
 				
 					if tu.commit() then -- commit the pointer first, pointers can be updated later
-						if tp.commit() then return true end -- failure means tu was commited but tp was not
+						if tp.commit() then -- failure means tu was commited but tp was not
+							rounds.inc_players(H,H.round.key.id) -- adjust round player count +1
+							return true
+						end
 					end
 				end
 			end
@@ -236,9 +249,10 @@ function list(H,opts,t)
 	t=t or dat -- use transaction?
 	
 	local r=t.query({
-		kind=H.srv.flavour..".hoe.player."..H.round.key.id,
+		kind=kind(H),
 		limit=10,
 		offset=0,
+			{"filter","round_id","==",H.round.key.id},
 			{"sort","updated","DESC"},
 		})
 		

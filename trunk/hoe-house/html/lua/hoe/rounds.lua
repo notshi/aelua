@@ -34,6 +34,16 @@ local type=type
 
 module("hoe.rounds")
 
+--------------------------------------------------------------------------------
+--
+-- serving flavour can be used to create a subgame of a certain flavour
+-- make sure we incorporate flavour into the name of our stored data types
+--
+--------------------------------------------------------------------------------
+function kind(H)
+	if not H.srv.flavour or H.srv.flavour=="hoe" then return "hoe.round" end
+	return H.srv.flavour..".hoe.round"
+end
 
 --------------------------------------------------------------------------------
 --
@@ -44,7 +54,7 @@ function create(H)
 
 	local ent={}
 	
-	ent.key={kind=H.srv.flavour..".hoe.round"} -- we will not know the key id until after we save
+	ent.key={kind=kind(H)} -- we will not know the key id until after we save
 	ent.props={}
 		
 	local p=ent.props
@@ -61,6 +71,8 @@ function create(H)
 						-- energy never, under any cirumstances goes over this number
 	
 	p.state="active" -- a new round starts as active
+	
+	p.players=0 -- number of players in this round
 	
 	dat.build_cache(ent) -- this just copies the props across
 	
@@ -130,11 +142,11 @@ end
 -- Load a round id from database
 --
 --------------------------------------------------------------------------------
-function get_id(H,id)
+function get_id(H,id,t)
 
 	local ent=create(H)
 	ent.key.id=id
-	ent=get(H,ent) -- set to nil on fail to load
+	ent=get(H,ent,t) -- set to nil on fail to load
 	return ent
 end
 
@@ -148,7 +160,7 @@ function list(H,opts)
 	local list={}
 	
 	local ret=dat.query({
-		kind=H.srv.flavour..".hoe.round",
+		kind=kind(H),
 		limit=10,
 		offset=0,
 			{"filter","state","==","active"},
@@ -160,5 +172,30 @@ function list(H,opts)
 	end
 
 	return ret
+end
+
+--------------------------------------------------------------------------------
+--
+-- inc the number of players in this round
+-- this may get out pf sync and need to be recalculated
+--
+--------------------------------------------------------------------------------
+function inc_players(H,id)
+	id=id or H.round.key.id -- use this round?
+	
+	for retry=1,10 do
+		local t=dat.begin()
+		local r=get_id(H,id,t)
+		if r then
+			r.cache.players=(r.cache.players or 0)+1
+			if put(H,r) then
+				if t.commit() then
+					return true
+				end
+			end
+		end
+	end
+	
+	return false
 end
 
