@@ -88,6 +88,7 @@ div.chunk3{
 	background-color: #e3e3e3;
 	border-top-left-radius: 8px 8px;
 	border-top-right-radius: 8px 8px;
+	border:1px solid #ccc;
 	margin: auto;
 	margin-top: 20px;
 	margin-bottom: 5px;
@@ -115,6 +116,9 @@ div.chunk4{
 	background-color: #e3e3e3;
 	border-bottom-left-radius: 8px 8px;
 	border-bottom-right-radius: 8px 8px;
+	border-bottom:1px solid #ccc;
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
 	margin: 0px;
 	width: 350px;
 	padding: 0px 5px 5px 5px;
@@ -124,6 +128,9 @@ div.chunk5{
 	background-color: #e3e3e3;
 	border-bottom-left-radius: 8px 8px;
 	border-bottom-right-radius: 8px 8px;
+	border-bottom:1px solid #ccc;
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
 	margin: 0px;
 	width: 585px;
 	padding: 5px;
