@@ -16,7 +16,7 @@ local serialize=wet_string.serialize
 
 
 -- require all the module sub parts
-local html=require("hoe.html")
+local html=require("html")
 local players=require("hoe.players")
 local rounds=require("hoe.rounds")
 
@@ -101,19 +101,8 @@ function serv(srv)
 
 	local list=rounds.list(H)
 	
-	put("<br/>",{})
-	
 	for i=1,#list do local v=list[i]
-	
-		put("<br/>",{})
-		put("DATE : "..os.date("%c",v.cache.created).."<br/>" )
-		put("ID : "..(v.key.id).."<br/>" )
-		put("STEP : "..(v.cache.timestep).."<br/>" )
-		
-		local url=srv.url_base..v.key.id.."/"
-		put("Link : <a href=\""..url.."\">"..url.."</a><br/>" )
-		put("<br/>",{})
-		
+		put("round_row",{round=v.cache})		
 	end
 	
 	put("about",{})	

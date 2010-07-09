@@ -42,7 +42,7 @@ function help()
 available console helper functions in hoe.con.* are :
 help(H)        -- return this text
 list_rounds(H) -- return listing of active rounds
-make_round(H)  -- create a new round for playtesting
+make_round(H,t)  -- create a new round for playtesting
 ]]
 end
 
@@ -62,8 +62,9 @@ function list_rounds(H)
 end
 
 
-function make_round(H)
+function make_round(H,timestep)
 
 	local r=rounds.create(H)
+	r.cache.timestep=timestep or 1
 	rounds.put(H,r)
 end
