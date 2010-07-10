@@ -27,9 +27,9 @@
 
 package mnj.lua;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+//import java.util.Calendar;
+//import java.util.Date;
+//import java.util.TimeZone;
 
 /**
  * The OS Library.  Can be opened into a {@link Lua} state by invoking
@@ -130,7 +130,8 @@ public final class OSLib extends LuaJavaCallback
   /** Implements date. */
   private static int date(Lua L)
   {
-    long t;
+/*
+ *     long t;
     if (L.isNoneOrNil(2))
     {
       t = System.currentTimeMillis();
@@ -281,10 +282,12 @@ public final class OSLib extends LuaJavaCallback
             b.append('%');
             break;
         }
-      } /* while */
+      } /* while *
       L.pushString(b.toString());
     }
     return 1;
+ */
+	return 0;
   }
 
   /** Implements difftime. */
@@ -300,7 +303,8 @@ public final class OSLib extends LuaJavaCallback
    * Converts from 0-11 to required Calendar value.  DO NOT MODIFY THIS
    * ARRAY.
    */
-  private static final int[] MONTH =
+/*
+ *   private static final int[] MONTH =
   {
     Calendar.JANUARY,
     Calendar.FEBRUARY,
@@ -315,11 +319,14 @@ public final class OSLib extends LuaJavaCallback
     Calendar.NOVEMBER,
     Calendar.DECEMBER
   };
+*/
 
   /** Implements setlocale. */
   private static int setlocale(Lua L)
   {
-    if (L.isNoneOrNil(1))
+	  return 0;
+/*
+ *     if (L.isNoneOrNil(1))
     {
       L.pushString("");
     }
@@ -327,7 +334,7 @@ public final class OSLib extends LuaJavaCallback
     {
       L.pushNil();
     }
-    return 1;
+    return 1;*/
   }
 
   /** Implements time. */
@@ -338,6 +345,8 @@ public final class OSLib extends LuaJavaCallback
       L.pushNumber(System.currentTimeMillis()/1000.0); //FIX ms to s
       return 1;
     }
+    return 0;
+    /*
     L.checkType(1, Lua.TTABLE);
     L.setTop(1);        // make sure table is at the top
     Calendar c = Calendar.getInstance();
@@ -350,6 +359,7 @@ public final class OSLib extends LuaJavaCallback
     // ignore isdst field
     L.pushNumber(c.getTime().getTime()/1000.0); //FIX ms to s
     return 1;
+    * */
   }
 
   private static int getfield(Lua L, String key, int d)
@@ -380,7 +390,7 @@ public final class OSLib extends LuaJavaCallback
     }
     return b.toString();
   }
-
+/*
   private static String weekdayname(Calendar c)
   {
     String s = c.getTime().toString();
@@ -398,7 +408,7 @@ public final class OSLib extends LuaJavaCallback
    * from a {@link Calendar} value to a month in the range 1-12.
    * @param m  a value from the enum Calendar.JANUARY, Calendar.FEBRUARY, etc
    * @return a month in the range 1-12, or the original value.
-   */
+   *
   private static int canonicalmonth(int m)
   {
     for (int i=0; i<MONTH.length; ++i)
@@ -428,7 +438,7 @@ public final class OSLib extends LuaJavaCallback
    * 0-6 where 0 is Sunday (as per the convention used in [C1990]).
    * @param w  a value from the enum Calendar.SUNDAY, Calendar.MONDAY, etc
    * @return a weekday in the range 0-6, or the original value.
-   */
+   *
   private static int canonicalweekday(int w)
   {
     for (int i=0; i<WEEKDAY.length; ++i)
@@ -440,4 +450,5 @@ public final class OSLib extends LuaJavaCallback
     }
     return w;
   }
+  */
 }
