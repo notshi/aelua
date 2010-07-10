@@ -343,9 +343,9 @@ public final class BaseLib extends LuaJavaCallback
   /** Implements gcinfo. */
   private static int gcinfo(Lua L)
   {
-    Runtime rt = Runtime.getRuntime();
-    L.push( new Double( (rt.totalMemory()-rt.freeMemory())/1024 ) );
-    L.push( new Double( rt.maxMemory()/1024 ) );
+//    Runtime rt = Runtime.getRuntime();
+    L.push( 0);//new Double( (rt.totalMemory()-rt.freeMemory())/1024 ) );
+    L.push( 0);//new Double( rt.maxMemory()/1024 ) );
     return 2;
   }
 

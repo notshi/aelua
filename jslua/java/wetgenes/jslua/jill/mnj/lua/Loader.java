@@ -458,8 +458,9 @@ final class Loader
       else
         l = (l >>> 8) | (((long)(longbuf[i]&0xff)) << 56);
     }
-    double d = Double.longBitsToDouble(l);
-    return Lua.valueOfNumber(d);
+//    double d = Double.longBitsToDouble(l);
+//    return Lua.valueOfNumber(d);
+    return Lua.valueOfNumber(0);
   }
 
   /**
@@ -505,7 +506,8 @@ final class Loader
     if (in.read() == -1)
       throw new EOFException() ;
 
-    return (new String(buf, "UTF-8")).intern();
+//    return (new String(buf, "UTF-8")).intern();
+    return (new String()).intern();
   }
 
   /**

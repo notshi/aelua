@@ -24,7 +24,7 @@
 
 package mnj.lua;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 /**
  * Used to model a function during compilation.  Code generation uses
@@ -44,7 +44,7 @@ final class FuncState
    * Table to find (and reuse) elements in <var>f.k</var>.  Maps from
    * Object (a constant Lua value) to an index into <var>f.k</var>.
    */
-  Hashtable h = new Hashtable();
+  HashMap h = new HashMap();
 
   /** Enclosing function. */
   FuncState prev;

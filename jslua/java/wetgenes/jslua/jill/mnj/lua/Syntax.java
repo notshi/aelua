@@ -26,7 +26,7 @@ package mnj.lua;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 
 /**
@@ -86,7 +86,7 @@ final class Syntax
     "<number>", "<name>", "<string>", "<eof>"
   };
 
-  static Hashtable reserved = new Hashtable();
+  static HashMap reserved = new HashMap();
   static
   {
     for (int i=0; i < NUM_RESERVED; ++i)
