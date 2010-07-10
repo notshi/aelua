@@ -58,7 +58,7 @@
       <arg value="Hello.html"/>
       <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
       <arg line="${gwt.args}"/>
-      <arg value="wetgenes.jslua.hello.Hello"/>
+      <arg value="wetgenes.jslua.Hello"/>
     </java>
   </target>
 
