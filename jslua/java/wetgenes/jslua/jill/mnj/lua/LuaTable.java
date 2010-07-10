@@ -27,6 +27,9 @@ package mnj.lua;
 import java.util.Iterator;
 import java.util.Enumeration;
 
+//patched to hashmap?
+//GWT doesnt have hashtable
+
 /**
  * Class that models Lua's tables.  Each Lua table is an instance of
  * this class.  Whilst you can clearly see that this class extends
