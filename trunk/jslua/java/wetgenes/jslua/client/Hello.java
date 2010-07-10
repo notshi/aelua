@@ -30,7 +30,12 @@ public class Hello implements EntryPoint {
 		MathLib.open(L);
 		OSLib.open(L);
 
-		L.loadString("test='poop on you'","test");
+		L.loadString(
+"		test='poop on you'"+
+"		for i=1,10 do"+
+"			test=test..' and you'"+
+"		end"+
+"		","test");
 		L.call(0,0);
 
         Window.alert( (String) L.rawGet(L.getGlobals(), "test") );
