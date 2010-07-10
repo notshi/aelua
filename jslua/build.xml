@@ -18,7 +18,10 @@
     <mkdir dir="war/WEB-INF/lib" />
     <copy todir="war/WEB-INF/lib" file="${gwt.sdk}/gwt-servlet.jar" />
     <!-- Add any additional server libs that need to be copied -->
-  </target>
+    <copy todir="war" includeEmptyDirs="false" >
+      <fileset dir="html">          <exclude name="**/.svn/**"/> </fileset>
+    </copy>
+    </target>
 
   <target name="javac" depends="libs" description="Compile java source">
     <mkdir dir="war/WEB-INF/classes"/>
@@ -82,8 +85,7 @@
   </target>
 
   <target name="clean" description="Cleans this project">
-    <delete dir="war/WEB-INF/classes" failonerror="false" />
-    <delete dir="war/hello" failonerror="false" />
+    <delete dir="war" failonerror="false" />
   </target>
 
 </project>
