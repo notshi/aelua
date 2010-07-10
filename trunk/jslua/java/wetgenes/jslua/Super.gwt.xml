@@ -12,9 +12,7 @@
 <!-- implied. License for the specific language governing permissions and   -->
 <!-- limitations under the License.                                         -->
 
-<module rename-to="hello">
-	<inherits name="com.google.gwt.user.User"/>
-	<inherits name="wetgenes.jslua.Super"/>
-	<entry-point class="wetgenes.jslua.client.Hello"/>
+<module>
+<super-source path="jill" />
 </module>
 

@@ -466,7 +466,7 @@ public final class Lua
    */
   public int gc(int what, int data)
   {
-    Runtime rt;
+//    Runtime rt;
 
     switch (what)
     {
@@ -478,11 +478,11 @@ public final class Lua
         System.gc();
         return 0;
       case GCCOUNT:
-        rt = Runtime.getRuntime();
-        return (int)((rt.totalMemory() - rt.freeMemory()) / 1024);
+//        rt = Runtime.getRuntime();
+        return 0;//(int)((rt.totalMemory() - rt.freeMemory()) / 1024);
       case GCCOUNTB:
-        rt = Runtime.getRuntime();
-        return (int)((rt.totalMemory() - rt.freeMemory()) % 1024);
+//        rt = Runtime.getRuntime();
+        return 0;//(int)((rt.totalMemory() - rt.freeMemory()) % 1024);
       case GCSETPAUSE:
       case GCSETSTEPMUL:
         return 0;
@@ -980,7 +980,8 @@ public final class Lua
       allowhook = old_allowhook;
       errorStatus = e.errorStatus;
     }
-    catch (OutOfMemoryError e)
+/* gwt does not throw this?
+     catch (OutOfMemoryError e)
     {
       fClose(restoreStack);     // close eventual pending closures
       dSeterrorobj(ERRMEM, restoreStack);
@@ -992,6 +993,7 @@ public final class Lua
       allowhook = old_allowhook;
       errorStatus = ERRMEM;
     }
+*/
     errfunc = old_errfunc;
     return errorStatus;
   }
@@ -4504,11 +4506,13 @@ final class DumpState
        * possible UnsupportedEncodingException is left to be thrown
        * (it's a subclass of IOException which is declared to be thrown).
        */
-      byte [] contents = s.getBytes("UTF-8") ;
+/*
+ *       byte [] contents = s.getBytes("UTF-8") ;
       int size = contents.length ;
       DumpInt(size+1) ;
       writer.write(contents, 0, size) ;
       writer.writeByte(0) ;
+*/
     }
   }
 

@@ -21,7 +21,7 @@ public class Hello implements EntryPoint {
     Button b = new Button("Click here bitches", new ClickHandler() {
       public void onClick(ClickEvent event) {
 		  
-		Lua L = new Lua();
+ 		Lua L = new Lua();
 		
 		BaseLib.open(L);
 		PackageLib.open(L);
