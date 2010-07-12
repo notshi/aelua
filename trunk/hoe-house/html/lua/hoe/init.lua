@@ -201,7 +201,7 @@ local put=H.put
 	put("<br/>Basic menu <br/><br/>",{})
 	
 	local menu={
-		{name="work",    url=H.url_base.."work/",    desc="Work to gain bux, hoes and scarecrows."},
+		{name="work",    url=H.url_base.."work/",    desc="Work to gain bux, hoes and bros."},
 		{name="shop",    url=H.url_base.."shop/",    desc="Buy what you need."},
 		{name="profile", url=H.url_base.."profile/", desc="View and change how the others see you."},
 		{name="list",    url=H.url_base.."list/",    desc="View the leaderboards."},
@@ -258,17 +258,60 @@ local put=H.put
 
 	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."work/",title="work",link="work",}
 
+	local result
+	local payout
+	if H.srv.posts.payout then
+		payout=math.floor(tonumber(H.srv.posts.payout))
+		if payout<0 then payout=0 end
+		if payout>100 then payout=100 end
+		
+		result={}
+		result.energy=-1
+		result.hoes=0
+		result.bros=0
+		result.bux=0
+				
+		local p=H.player.cache
+		local houses=tonumber(p.houses)
+		local hoes=tonumber(p.hoes)
+		local crowd=hoes/(houses*50) -- how much space we have for hoes, 0 is empty and 1 is full
+		local pay=payout/100
+		local mypay=1-pay
+		
+		local gain=(1-(crowd/2))
+		if gain<0 then gain=0 end
+		gain = gain * pay * 1.0
+		
+		if math.random() < gain then -- we gain a new hoe
+			result.hoes=result.hoes+1
+			if math.random() < gain then -- we also gain a new bro
+				result.bros=result.bros+1
+			end
+		end
+		
+		local loss=(crowd/2) - pay
+		if math.random() < loss then -- we lose a hoe
+			result.hoes=result.hoes-1
+		end
+		
+		local bux=math.floor((500 + 1500*math.random()) * hoes * mypay)
+		result.bux=result.bux+bux
+		
+		local r=players.adjust(H,H.player,result)
+		if r then H.player=r else result=nil end
+	end
+
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{user=user})
 	put("player_bar",{player=H.player and H.player.cache})
-		
-	put("<br/>choose Your work ethic <br/><br/>",{})
-	local list=players.list(H)
-	for i=1,#list do local v=list[i]
-		put("player_row",{player=v.cache})
+	
+	if result then
+		put("player_work_result",{result=result})
 	end
+	
+	put("player_work_form",{payout=payout or 50})
 		
 	put("footer",{})
 	

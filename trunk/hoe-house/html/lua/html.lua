@@ -5,6 +5,7 @@ local users=require("wetgenes.aelua.users")
 local wet_html=require("wetgenes.html")
 local replace=wet_html.replace
 
+local table=table
 local string=string
 local math=math
 local os=os
@@ -34,6 +35,22 @@ function rough_english_duration(t)
 	end
 end
 
+function num_to_thousands(n)
+	local p=math.floor(n)
+	if p<0 then p=-p end -- positive only
+	local s=string.format("%d",p) -- force integer part only?
+	local len=string.len(s)
+	local skip=len%3 -- size of first batch
+	local t={}
+	if skip>0 then
+		t[#t+1]=string.sub(s,1,skip)
+	end
+	for i=skip,len-3,3 do
+		t[#t+1]=string.sub(s,i+1,i+3)
+	end
+	local s=table.concat(t,",")
+	if n<0 then return "-"..s else return s end
+end
 
 -----------------------------------------------------------------------------
 --
@@ -161,7 +178,7 @@ home_bar=function(d)
 		if not s then s="" else s=s.." / " end
 		s=s.."<a href=\""..v.url.."\">"..v.link.."</a>"
 	end
-	d.crumbs=s
+	d.crumbs=s or "<a href=\"/\">Home</a>"
 		
 	return replace([[
 	
@@ -202,7 +219,7 @@ Basic Menu
 <div class="menuit"><a href="{H.url_base}work">WORK</a></div>
 <div class="menuline"></div>
 <div class="menup"><a href="{H.url_base}work"><img src="/art/worka.png" width="100" height="100"></a></div>
-<div class="menun">Work to gain bux, hoes and scarecrows.</div>
+<div class="menun">Work to gain bux, hoes and bros.</div>
 </div>
 <div class="menu1">
 <div class="menuit"><a href="{H.url_base}shop">SHOP</a></div>
@@ -292,6 +309,9 @@ player_bar=function(d)
 
 	if d.player then
 			
+		d.score=num_to_thousands(d.player.score)
+		d.bux=num_to_thousands(d.player.bux)
+		
 		return replace([[	
 
 <div class="cont">
@@ -308,7 +328,7 @@ player_bar=function(d)
 </div>
 <div class="act1">
 <div class="act1p">
-<a href="{H.url_base}pro"><img src="/art/pro.png" width="30" height="30"></a>
+<a href="{H.url_base}profile"><img src="/art/pro.png" width="30" height="30"></a>
 </div>
 </div>
 <div class="act1">
@@ -349,7 +369,7 @@ energy
 <div class="hudline"></div>
 <div class="hud1">
 <div class="hudit">
-{player.score}
+{score}
 </div>
 <div class="hud1">
 <div class="hudp">
@@ -363,7 +383,7 @@ score
 <div class="hudline"></div>
 <div class="hud1">
 <div class="hudit">
-{player.bux}
+{bux}
 </div>
 <div class="hud1">
 <div class="hudp">
@@ -405,14 +425,14 @@ houses
 <div class="hudline"></div>
 <div class="hud2">
 <div class="hud2it">
-{player.scarecrows}
+{player.bros}
 </div>
 <div class="hud2">
 <div class="hud2p">
 <img src="/art/scare.png">
 </div>
 <div class="hud2n">
-scarecrows
+bros
 </div>
 </div>
 </div>
@@ -477,15 +497,18 @@ end
 player_row=function(d)
 
 	if d.player then
+	
+		d.score=num_to_thousands(d.player.score)
+		d.bux=num_to_thousands(d.player.bux)
 			
 		return replace([[	
 <div class="hoe_player_row">
 <span class="hoe_player_row_name">{player.name}</span>
-<span class="hoe_player_row_score">score={player.score}</span>
-<span class="hoe_player_row_bux">bux={player.bux}</span>
+<span class="hoe_player_row_score">score={score}</span>
+<span class="hoe_player_row_bux">bux={bux}</span>
 <span class="hoe_player_row_hoes">hoes={player.hoes}</span>
 <span class="hoe_player_row_houses">houses={player.houses}</span>
-<span class="hoe_player_row_scarecrows">scarecrows={player.scarecrows}</span>
+<span class="hoe_player_row_bros">bros={player.bros}</span>
 <span class="hoe_player_row_shout">{player.shout}</span>
 </div>
 ]],d)
@@ -507,15 +530,18 @@ end
 player_base=function(d)
 
 	if d.player then
-			
+		
+		d.score=num_to_thousands(d.player.score)
+		d.bux=num_to_thousands(d.player.bux)
+		
 		return replace([[	
 <div class="hoe_player_base">
 <span class="hoe_player_base_name">{player.name}</span>
-<span class="hoe_player_base_score">score={player.score}</span>
-<span class="hoe_player_base_bux">bux={player.bux}</span>
+<span class="hoe_player_base_score">score={score}</span>
+<span class="hoe_player_base_bux">bux={bux}</span>
 <span class="hoe_player_base_hoes">hoes={player.hoes}</span>
 <span class="hoe_player_base_houses">houses={player.houses}</span>
-<span class="hoe_player_base_scarecrows">scarecrows={player.scarecrows}</span>
+<span class="hoe_player_base_bros">bros={player.bros}</span>
 <span class="hoe_player_base_shout">{player.shout}</span>
 </div>
 ]],d)
@@ -529,6 +555,41 @@ player_base=function(d)
 
 end
 			
+-----------------------------------------------------------------------------
+--
+-- display player work form
+--
+-----------------------------------------------------------------------------
+player_work_form=function(d)
+
+	return replace([[	
+<div class="hoe_player_work">
+
+<form class="jNice" name="hoe_player_work_form" id="hoe_player_work_form" action="" method="POST" enctype="multipart/form-data">
+<br/>
+<br/>
+A high payout will earn you less money but may convince new hoes to join you.<br/>
+A low payout will earn you more money but may cause your hoes to leave.<br/>
+<br/>
+
+<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','0');">0%</a>
+<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','25');">25%</a>
+<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','50');">50%</a>
+<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','75');">75%</a>
+<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','100');">100%</a>
+<br/>
+<input type="text" name="payout" id="hoe_player_work_form_payout" value="{payout}"/>% payout
+<br/>
+
+<input type="submit" name="submit" value="Work!"/>
+
+</form>
+
+</div>
+]],d)
+
+end
+
 -----------------------------------------------------------------------------
 --
 -- suggest an act
