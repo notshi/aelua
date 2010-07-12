@@ -266,44 +266,56 @@ local put=H.put
 		if payout>100 then payout=100 end
 		
 		result={}
-		result.energy=-1
+		result.energy=0
 		result.hoes=0
 		result.bros=0
 		result.bux=0
-				
+		
+		local total=0
+		
 		local p=H.player.cache
-		local houses=tonumber(p.houses)
-		local hoes=tonumber(p.hoes)
-		local crowd=hoes/(houses*50) -- how much space we have for hoes, 0 is empty and 1 is full
-		local pay=payout/100
-		local mypay=1-pay
 		
-		local gain=(1-(crowd/2))
-		if gain<0 then gain=0 end
-		gain = gain * pay * 1.0
-		
-		if math.random() < gain then -- we gain a new hoe
-			result.hoes=result.hoes+1
-			if math.random() < gain then -- we also gain a new bro
-				result.bros=result.bros+1
+		local rep=1
+		if rep>p.energy then rep=p.energy end -- do not try and work too many times
+		if rep<1 then rep=1 end
+		if rep>10 then rep=10 end
+		for i=1,rep do -- repeat a few times, yes this makes for bad integration...
+			result.energy=result.energy-1
+					
+			local houses=tonumber(p.houses)
+			local hoes=tonumber(p.hoes)
+			local crowd=hoes/(houses*50) -- how much space we have for hoes, 0 is empty and 1 is full
+			local pay=payout/100
+			local mypay=1-pay
+			
+			local gain=(1-(crowd/2)) -- 1.0 when empty , 0.5 when full , and 0.0 when bursting
+			if gain<0 then gain=0 end
+			gain = gain * pay * 1.0 -- also adjust by payout 
+			
+			if math.random() < gain then -- we gain a new hoe
+				result.hoes=result.hoes+1
+				if math.random() < gain then -- we also gain a new bro
+					result.bros=result.bros+1
+				end
 			end
+			
+			local loss=(crowd/2) - pay
+			if math.random() < loss then -- we lose a hoe
+				result.hoes=result.hoes-1
+			end
+			
+			local tbux=math.floor((50 + 450*math.random()) * hoes) -- how much is earned
+			local bux=math.floor(tbux * mypay) -- how much we keep
+			result.bux=result.bux+bux
+			total=total+tbux
 		end
-		
-		local loss=(crowd/2) - pay
-		if math.random() < loss then -- we lose a hoe
-			result.hoes=result.hoes-1
-		end
-		
-		local total_bux=math.floor((50 + 450*math.random()) * hoes)
-		local bux=math.floor(total_bux * mypay)
-		result.bux=result.bux+bux
 		
 		local r=players.adjust(H,H.player,result)
 		if r then
 			H.player=r
-			result.total_bux=total_bux
+			result.total_bux=total
 		else
-			result=nil -- failed, no energy
+			result=nil -- failed, no energy?
 		end
 	end
 
