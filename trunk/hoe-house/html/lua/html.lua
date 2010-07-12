@@ -613,25 +613,31 @@ Your hoes worked hard and earned a total of {total_bux} bux giving you {bux} bux
 	
 	if d.result.hoes>0 then
 		d.one=d.result.hoes
+		d.s=""
+		if d.one>1 then d.s="s" end
 		d.shoes=replace([[
 <span>
-{one} hoe joined your buisness.
+{one} hoe{s} joined your buisness.
 </span><br/>
 ]],d)
 	elseif d.result.hoes<0 then
 		d.one=-d.result.hoes
+		d.s=""
+		if d.one>1 then d.s="s" end
 		d.shoes=replace([[
 <span>
-{one} hoe left your buisness.
+{one} hoe{s} left your buisness.
 </span><br/>
 ]],d)
 	end
 
 	if d.result.bros>0 then
 		d.one=d.result.bros
+		d.s=""
+		if d.one>1 then d.s="s" end
 		d.sbros=replace([[
 <span>
-{one} bro joined your buisness.
+{one} bro{s} joined your buisness.
 </span><br/>
 ]],d)
 	end
