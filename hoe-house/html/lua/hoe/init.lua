@@ -294,11 +294,17 @@ local put=H.put
 			result.hoes=result.hoes-1
 		end
 		
-		local bux=math.floor((500 + 1500*math.random()) * hoes * mypay)
+		local total_bux=math.floor((50 + 450*math.random()) * hoes)
+		local bux=math.floor(total_bux * mypay)
 		result.bux=result.bux+bux
 		
 		local r=players.adjust(H,H.player,result)
-		if r then H.player=r else result=nil end
+		if r then
+			H.player=r
+			result.total_bux=total_bux
+		else
+			result=nil -- failed, no energy
+		end
 	end
 
 	H.srv.set_mimetype("text/html")

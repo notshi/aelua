@@ -592,6 +592,62 @@ end
 
 -----------------------------------------------------------------------------
 --
+-- display player work result
+--
+-----------------------------------------------------------------------------
+player_work_result=function(d)
+
+	d.sbux=""
+	d.shoes=""
+	d.sbros=""
+
+	if d.result.total_bux>0 then
+		d.total_bux=num_to_thousands(d.result.total_bux)
+		d.bux=num_to_thousands(d.result.bux)
+		d.sbux=replace([[
+<span>
+Your hoes worked hard and earned a total of {total_bux} bux giving you {bux} bux after expenses.
+</span><br/>
+]],d)
+	end
+	
+	if d.result.hoes>0 then
+		d.one=d.result.hoes
+		d.shoes=replace([[
+<span>
+{one} hoe joined your buisness.
+</span><br/>
+]],d)
+	elseif d.result.hoes<0 then
+		d.one=-d.result.hoes
+		d.shoes=replace([[
+<span>
+{one} hoe left your buisness.
+</span><br/>
+]],d)
+	end
+
+	if d.result.bros>0 then
+		d.one=d.result.bros
+		d.sbros=replace([[
+<span>
+{one} bro joined your buisness.
+</span><br/>
+]],d)
+	end
+	
+	return replace([[	
+<div class="hoe_player_result">
+{sbux}
+{shoes}
+{sbros}
+</div>
+]],d)
+
+end
+
+-----------------------------------------------------------------------------
+--
 -- suggest an act
 --
 -----------------------------------------------------------------------------
