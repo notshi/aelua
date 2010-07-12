@@ -157,7 +157,7 @@ about=function(d)
 {hoehouse} is a friendly hommage to {whorehouse}.<br/>
 {hoehouse} is an example {aelua} app.<br/>
 <br/>
-{aelua} is a {lua} core and framework compatibile with {appengine}.<br/>
+{aelua} is a {lua} core and framework compatible with {appengine}.<br/>
 {aelua} and {hoehouse} are designed and developed by {wetgenes}.<br/>
 </div>
 ]],d)
@@ -274,10 +274,10 @@ user_bar=function(d)
 	
 		d.hello="Hello, "..d.name.."."
 		
-		d.action="<div class=\"log3\"><div class=\"logit\"><a href=\""..users.logout_url(d.srv.url).."\">Logout?</a></a></div>"
+		d.action="<div class=\"log3\"><div class=\"logit\"><a href=\""..users.logout_url(d.srv.url).."\">Logout?</a></div></div>"
 	else
 		d.hello="Hello, Anon."
-		d.action="<div class=\"log2\"><div class=\"logit\"><a href=\""..users.login_url(d.srv.url).."\">Login?</a></a></div>"
+		d.action="<div class=\"log2\"><div class=\"logit\"><a href=\""..users.login_url(d.srv.url).."\">Login?</a></div></div>"
 	
 	end
 	
@@ -524,7 +524,7 @@ end
 
 -----------------------------------------------------------------------------
 --
--- display most player info on thier profile
+-- display most player info on their profile
 --
 -----------------------------------------------------------------------------
 player_base=function(d)
@@ -605,9 +605,14 @@ player_work_result=function(d)
 		d.total_bux=num_to_thousands(d.result.total_bux)
 		d.bux=num_to_thousands(d.result.bux)
 		d.sbux=replace([[
-<span>
-Your hoes worked hard and earned a total of {total_bux} bux giving you {bux} bux after expenses.
-</span><br/>
+<div class="cont">
+<div class="chunk6">
+<div class="alert">
+Your hoes worked hard and earned a total of <b>{total_bux}</b> bux giving you <b>{bux}</b> bux after expenses.
+</div>
+<div class="clear"></div>
+</div>
+</div>
 ]],d)
 	end
 	
@@ -616,18 +621,28 @@ Your hoes worked hard and earned a total of {total_bux} bux giving you {bux} bux
 		d.s=""
 		if d.one>1 then d.s="s" end
 		d.shoes=replace([[
-<span>
-{one} hoe{s} joined your buisness.
-</span><br/>
+<div class="cont">
+<div class="chunk6">
+<div class="alert">
+<img src="/art/hoes.png"> <b>{one}</b> hoe{s} joined your business.
+</div>
+<div class="clear"></div>
+</div>
+</div>
 ]],d)
 	elseif d.result.hoes<0 then
 		d.one=-d.result.hoes
 		d.s=""
 		if d.one>1 then d.s="s" end
 		d.shoes=replace([[
-<span>
-{one} hoe{s} left your buisness.
-</span><br/>
+<div class="cont">
+<div class="chunk6">
+<div class="alert">
+<img src="/art/hoes.png"> <b>{one}</b> hoe{s} left your business.
+</div>
+<div class="clear"></div>
+</div>
+</div>
 ]],d)
 	end
 
@@ -636,9 +651,14 @@ Your hoes worked hard and earned a total of {total_bux} bux giving you {bux} bux
 		d.s=""
 		if d.one>1 then d.s="s" end
 		d.sbros=replace([[
-<span>
-{one} bro{s} joined your buisness.
-</span><br/>
+<div class="cont">
+<div class="chunk6">
+<div class="alert">
+<img src="/art/scare.png"> <b>{one}</b> bro{s} joined your business.
+</div>
+<div class="clear"></div>
+</div>
+</div>
 ]],d)
 	end
 	
@@ -662,9 +682,15 @@ request_login=function(d)
 	d.action="<a href=\""..users.login_url(d.srv.url).."\">Login</a>"
 	
 	return replace([[
-	
-<div class="hoe_acts">
-Please {action} if you wish to join this game.
+
+<div class="cont">
+<div class="chunk6">
+<div class="alert">
+Please {action}	if you wish to join this game.
+</div>
+
+<div class="clear"></div>
+</div>
 </div>
 
 ]],d)
@@ -681,9 +707,15 @@ request_join=function(d)
 	d.action="<a href=\""..d.H.url_base.."do/"..d.act.."\">Join</a>"
 	
 	return replace([[
-	
-<div class="hoe_acts">
+
+<div class="cont">
+<div class="chunk6">
+<div class="alert">
 Click {action} to {action} this game.
+</div>
+
+<div class="clear"></div>
+</div>
 </div>
 
 ]],d)
