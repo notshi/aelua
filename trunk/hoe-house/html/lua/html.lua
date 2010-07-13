@@ -634,7 +634,7 @@ player_work_result=function(d)
 <div class="cont">
 <div class="chunk6">
 <div class="alert">
-Your hoes worked hard and farmed a total of <b>{total_bux}</b> bux giving you <b>{bux}</b> bux after payout.
+Your hoes worked hard and farmed a total of <img src="/art/buxb.png"> <b>{total_bux}</b> bux giving you <img src="/art/buxb.png"> <b>{bux}</b> bux after payout.
 </div>
 <div class="clear"></div>
 </div>
@@ -662,7 +662,7 @@ Your hoes worked hard and farmed a total of <b>{total_bux}</b> bux giving you <b
 		if d.one>1 then d.s="s" end
 		d.shoes=replace([[
 <div class="cont">
-<div class="chunk6">
+<div class="chunk6a">
 <div class="alert">
 <img src="/art/hoes.png"> <b>{one}</b> hoe{s} left your business.
 </div>
