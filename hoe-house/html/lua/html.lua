@@ -367,12 +367,12 @@ player_bar=function(d)
 <div class="cont">
 <div class="chunk5">
 <div class="hud">
-<div class="hud1">
-<div class="hudit">
-{player.energy}
+<div class="hud2">
+<div class="hud2it">
+<b>{player.energy}</b>
 </div>
-<div class="hud1">
-<div class="hudn">
+<div class="hud2">
+<div class="hud2n">
 <img src="/art/energyb.png"> energy
 </div>
 </div>
@@ -380,7 +380,7 @@ player_bar=function(d)
 <div class="hudline"></div>
 <div class="hud1">
 <div class="hudit">
-{score}
+<b>{score}</b>
 </div>
 <div class="hud1">
 <div class="hudn">
@@ -391,7 +391,7 @@ player_bar=function(d)
 <div class="hudline"></div>
 <div class="hud1">
 <div class="hudit">
-{bux}
+<b>{bux}</b>
 </div>
 <div class="hud1">
 <div class="hudn">
@@ -402,7 +402,7 @@ player_bar=function(d)
 <div class="hudline"></div>
 <div class="hud2">
 <div class="hud2it">
-{player.hoes}
+<b>{player.hoes}</b>
 </div>
 <div class="hud2">
 <div class="hud2n">
@@ -413,7 +413,7 @@ player_bar=function(d)
 <div class="hudline"></div>
 <div class="hud2">
 <div class="hud2it">
-{player.houses}
+<b>{player.houses}</b>
 </div>
 <div class="hud2">
 <div class="hud2n">
@@ -424,7 +424,7 @@ player_bar=function(d)
 <div class="hudline"></div>
 <div class="hud2">
 <div class="hud2it">
-{player.bros}
+<b>{player.bros}</b>
 </div>
 <div class="hud2">
 <div class="hud2n">
@@ -607,17 +607,19 @@ A <b>low</b> payout will earn you more money but may cause your hoes to <b>leave
 <div class="chunk8">
 <div class="chunk9">
 <div class="formt">
-	<div class="badcssbreakseverythingformi">
+	<div id="workit" class="formi">
+	
 	<form class="form" name="hoe_player_work_form" id="hoe_player_work_form" action="" method="POST" enctype="multipart/form-data">
 
-	<input type="text" name="payout" id="hoe_player_work_form_payout" value="{payout}"/> <span class="info">% payout</span>
-	<button type="submit" name="submit" value="Work!">Work!</button>
-<br/>
-<input type="radio" name="x" value="1"{check1}/>x1
-<input type="radio" name="x" value="5"{check5}/>x5
-<input type="radio" name="x" value="10"{check10}/>x10<br/>
-</form>
-	</div>
+	<input class="percent" type="text" name="payout" id="hoe_player_work_form_payout" value="{payout}"/> % payout
+	<button type="submit" name="submit">Work!</button>
+	<br />
+	<input class="radio" type="radio" name="x" value="1"{check1}/>x1
+	<input class="radio" type="radio" name="x" value="5"{check5}/>x5
+	<input class="radio" type="radio" name="x" value="10"{check10}/>x10<br/>
+
+	</form>
+	
 	</div>
 </div>
 </div>
