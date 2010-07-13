@@ -30,7 +30,8 @@ http://whorehouse.naken.cc
 	padding: 0;
 	margin: 0;
 }
-b {font-family: Lucida Sans Unicode; font-weight: bold; letter-spacing: -2px; line-height: 30px;}
+b {font-weight: bold;}
+i {font-family: Lucida Sans Unicode; font-weight: bold; letter-spacing: -2px; line-height: 30px;}
 a img, :link img, :visited img {border: 0;}
 form, button{border:0; margin:0; padding:0;}
 	

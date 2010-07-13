@@ -369,7 +369,7 @@ player_bar=function(d)
 <div class="hud">
 <div class="hud2">
 <div class="hud2it">
-<b>{player.energy}</b>
+<i>{player.energy}</i>
 </div>
 <div class="hud2">
 <div class="hud2n">
@@ -380,7 +380,7 @@ player_bar=function(d)
 <div class="hudline"></div>
 <div class="hud1">
 <div class="hudit">
-<b>{score}</b>
+<i>{score}</i>
 </div>
 <div class="hud1">
 <div class="hudn">
@@ -391,7 +391,7 @@ player_bar=function(d)
 <div class="hudline"></div>
 <div class="hud1">
 <div class="hudit">
-<b>{bux}</b>
+<i>{bux}</i>
 </div>
 <div class="hud1">
 <div class="hudn">
@@ -402,7 +402,7 @@ player_bar=function(d)
 <div class="hudline"></div>
 <div class="hud2">
 <div class="hud2it">
-<b>{player.hoes}</b>
+<i>{player.hoes}</i>
 </div>
 <div class="hud2">
 <div class="hud2n">
@@ -413,7 +413,7 @@ player_bar=function(d)
 <div class="hudline"></div>
 <div class="hud2">
 <div class="hud2it">
-<b>{player.houses}</b>
+<i>{player.houses}</i>
 </div>
 <div class="hud2">
 <div class="hud2n">
@@ -424,7 +424,7 @@ player_bar=function(d)
 <div class="hudline"></div>
 <div class="hud2">
 <div class="hud2it">
-<b>{player.bros}</b>
+<i>{player.bros}</i>
 </div>
 <div class="hud2">
 <div class="hud2n">
@@ -579,27 +579,27 @@ A <b>low</b> payout will earn you more money but may cause your hoes to <b>leave
 <div class="chunk9">
 	<div class="formp1">
 		<div class="formn">
-			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','0');">0%</a></b>
+			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','0');">0%</a></i>
 		</div>
 	</div>
 	<div class="formp2">
 		<div class="formn">
-			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','25');">25%</a></b>
+			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','25');">25%</a></i>
 		</div>
 	</div>
 	<div class="formp3">
 		<div class="formn">
-			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','50');">50%</a></b>
+			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','50');">50%</a></i>
 		</div>
 	</div>
 	<div class="formp4">
 		<div class="formn">
-			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','75');">75%</a></b>
+			<i><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','75');">75%</a></i>
 		</div>
 	</div>
 	<div class="formp5">
 		<div class="formn">
-			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','100');">100%</a></b>
+			<i><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','100');">100%</a></i>
 		</div>
 	</div>
 </div>
@@ -648,7 +648,7 @@ player_work_result=function(d)
 <div class="cont">
 <div class="chunk6">
 <div class="alert">
-Your hoes worked hard and farmed a total of <img src="/art/buxb.png"> <b>{total_bux}</b> bux giving you <img src="/art/buxb.png"> <b>{bux}</b> bux after payout.
+Your hoes worked hard and farmed a total of <img src="/art/buxb.png"> <i>{total_bux}</i> bux giving you <img src="/art/buxb.png"> <i>{bux}</i> bux after payout.
 </div>
 <div class="clear"></div>
 </div>
@@ -664,7 +664,7 @@ Your hoes worked hard and farmed a total of <img src="/art/buxb.png"> <b>{total_
 <div class="cont">
 <div class="chunk6">
 <div class="alert">
-<img src="/art/hoes.png"> <b>{one}</b> hoe{s} joined your business.
+<img src="/art/hoes.png"> <i>{one}</i> hoe{s} joined your business.
 </div>
 <div class="clear"></div>
 </div>
@@ -678,7 +678,7 @@ Your hoes worked hard and farmed a total of <img src="/art/buxb.png"> <b>{total_
 <div class="cont">
 <div class="chunk6a">
 <div class="alert">
-<img src="/art/hoes.png"> <b>{one}</b> hoe{s} left your business.
+<img src="/art/hoes.png"> <i>{one}</i> hoe{s} left your business.
 </div>
 <div class="clear"></div>
 </div>
@@ -694,7 +694,7 @@ Your hoes worked hard and farmed a total of <img src="/art/buxb.png"> <b>{total_
 <div class="cont">
 <div class="chunk6">
 <div class="alert">
-<img src="/art/scare.png"> <b>{one}</b> bro{s} joined your business.
+<img src="/art/scare.png"> <i>{one}</i> bro{s} joined your business.
 </div>
 <div class="clear"></div>
 </div>
