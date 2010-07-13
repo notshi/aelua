@@ -29,6 +29,9 @@ a:link		{color: #444; text-decoration: none;}
 a:visited	{color: #444; text-decoration: none;}
 a:hover		{color: #444; text-decoration: underline;}
 a:active	{color: #444; text-decoration: none;}
+
+img {border:0px;}
+
 /* Main container */
 div.cont{
 	width: 960px;
@@ -94,8 +97,10 @@ div.chunk2{
 /* Basic menu headers*/
 div.chunk3{
 	background-color: #e3e3e3;
-	border-top-left-radius: 8px 8px;
-	border-top-right-radius: 8px 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
 	border:1px solid #ccc;
 	margin: auto;
 	margin-top: 20px;
@@ -123,8 +128,10 @@ div.chunk3line{
 /* Icon navigation container*/
 div.chunk4{
 	background-color: #e3e3e3;
-	border-bottom-left-radius: 8px 8px;
-	border-bottom-right-radius: 8px 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
 	border-bottom:1px solid #ccc;
 	border-left:1px solid #ccc;
 	border-right:1px solid #ccc;
@@ -136,8 +143,10 @@ div.chunk4{
 /* HUD container */
 div.chunk5{
 	background-color: #e3e3e3;
-	border-bottom-left-radius: 8px 8px;
-	border-bottom-right-radius: 8px 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
 	border-bottom:1px solid #ccc;
 	border-left:1px solid #ccc;
 	border-right:1px solid #ccc;
@@ -147,14 +156,21 @@ div.chunk5{
 	float: right;
 }
 /* ALERT container ie. Please login, click to join. */
-div.chunk6{
-	background-color: #fff;
+div.chunk6, div.chunk6a{
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
 	border:1px dotted #ccc;
 	margin: auto;
 	margin-top: 20px;
 	width: 920px;
 	padding: 5px;
+}
+div.chunk6{
+	background-color: #fff;
+}
+div.chunk6a{
+	background-color: #FFD9D9;
 }
 /* ALERT fonts */
 div.alert{
@@ -171,6 +187,8 @@ div.alert{
 /* Form container */
 div.chunk7{
 	background-color: #555;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 	border: 2px solid #ccc;
 	margin: auto;
@@ -207,6 +225,8 @@ div.formt{
 }
 div.formp1{
 	background-color: #BAD4BA;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
 	margin: 0px 10px 10px 10px;
 	width: 80px;
@@ -214,6 +234,8 @@ div.formp1{
 }
 div.formp2{
 	background-color: #92D192;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
 	margin: 0px 10px 10px 10px;
 	width: 80px;
@@ -221,6 +243,8 @@ div.formp2{
 }
 div.formp3{
 	background-color: #6ED46E;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
 	margin: 0px 10px 10px 10px;
 	width: 80px;
@@ -228,6 +252,8 @@ div.formp3{
 }
 div.formp4{
 	background-color: #4CD44C;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
 	margin: 0px 10px 10px 10px;
 	width: 80px;
@@ -235,6 +261,8 @@ div.formp4{
 }
 div.formp5{
 	background-color: #00d400;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
 	margin: 0px 10px 10px 10px;
 	width: 80px;
@@ -259,23 +287,32 @@ form, button{border:0; margin:0; padding:0;}
 
 div.formi .info{
 	font-family: Georgia, serif;
-	margin: 5px;
+	margin: 20px 5px 5px 5px;
 	float: left;
 }
 
 div.formi input{
-	font-family: Georgia, serif;
-	font-size: 23px;
-	
 	border: 1px dotted #ccc;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
-	margin: 2px 0 20px 30px;
-	width: 200px;
-	padding: 4px 2px;
+	margin: 2px 0 20px 50px;
+	width: 150px;
+	height: 50px;
 	float: left;
+	
+	font-family: Georgia, serif;
+	font-size: 60px;
+	line-height: 20px;
+}
+div.formi input:focus{
+	border: 0;
+	outline: 0;
 }
 div.formi button{
 	background: #000;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
 	margin: 5px;
 	width: 125px;
@@ -295,6 +332,8 @@ div.menu{
 }
 div.menu1{
 	background-color: #555;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 	border: 2px solid #ccc;
 	margin: 0px 2px 5px 2px;
@@ -345,6 +384,8 @@ div.clear{
 /* Icon navigation icons */
 div.act{
 	background-color: #555;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 	border: 2px solid #ccc;
 	width: 140px;
@@ -353,6 +394,8 @@ div.act{
 }
 div.act1{
 	background-color: #555;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 	border: 2px solid #ccc;
 	width: 50px;
@@ -382,6 +425,8 @@ div.actn{
 /* HUD icons */
 div.hud{
 	background-color: #555;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 	border: 2px solid #ccc;
 	width: 580px;
