@@ -370,11 +370,8 @@ player_bar=function(d)
 {player.energy}
 </div>
 <div class="hud1">
-<div class="hudp">
-<img src="/art/energy.png">
-</div>
 <div class="hudn">
-energy
+<img src="/art/energyb.png"> energy
 </div>
 </div>
 </div>
@@ -384,11 +381,8 @@ energy
 {score}
 </div>
 <div class="hud1">
-<div class="hudp">
-<img src="/art/score.png">
-</div>
 <div class="hudn">
-score
+<img src="/art/scoreb.png"> score
 </div>
 </div>
 </div>
@@ -398,11 +392,8 @@ score
 {bux}
 </div>
 <div class="hud1">
-<div class="hudp">
-<img src="/art/bux.png">
-</div>
 <div class="hudn">
-bux
+<img src="/art/buxb.png"> bux
 </div>
 </div>
 </div>
@@ -412,11 +403,8 @@ bux
 {player.hoes}
 </div>
 <div class="hud2">
-<div class="hud2p">
-<img src="/art/hoes.png">
-</div>
 <div class="hud2n">
-hoes
+<img src="/art/hoesb.png"> hoes
 </div>
 </div>
 </div>
@@ -426,11 +414,8 @@ hoes
 {player.houses}
 </div>
 <div class="hud2">
-<div class="hud2p">
-<img src="/art/house.png">
-</div>
 <div class="hud2n">
-houses
+<img src="/art/housesb.png"> houses
 </div>
 </div>
 </div>
@@ -440,11 +425,8 @@ houses
 {player.bros}
 </div>
 <div class="hud2">
-<div class="hud2p">
-<img src="/art/scare.png">
-</div>
 <div class="hud2n">
-bros
+<img src="/art/scareb.png"> bros
 </div>
 </div>
 </div>
@@ -575,28 +557,60 @@ end
 player_work_form=function(d)
 
 	return replace([[	
-<div class="hoe_player_work">
+<div class="cont">
+<div class="chunk7">
+<div class="chunk8">
+<div class="formt">
+A <b>high</b> payout will earn you less money but may convince new hoes to <b>join</b> you. <br />
+A <b>low</b> payout will earn you more money but may cause your hoes to <b>leave</b>.
+</div>
+<div class="formline">
+</div>
+</div>
+<div class="chunk8">
+<div class="chunk9">
+	<div class="formp1">
+		<div class="formn">
+			<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','0');">0%</a>
+		</div>
+	</div>
+	<div class="formp2">
+		<div class="formn">
+			<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','25');">25%</a>
+		</div>
+	</div>
+	<div class="formp3">
+		<div class="formn">
+			<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','50');">50%</a>
+		</div>
+	</div>
+	<div class="formp4">
+		<div class="formn">
+			<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','75');">75%</a>
+		</div>
+	</div>
+	<div class="formp5">
+		<div class="formn">
+			<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','100');">100%</a>
+		</div>
+	</div>
+</div>
+</div>
+<div class="chunk8">
+<div class="chunk9">
+<div class="formt">
+	<div class="formi">
+	<form class="form" name="hoe_player_work_form" id="hoe_player_work_form" action="" method="POST" enctype="multipart/form-data">
 
-<form class="notjNice" name="hoe_player_work_form" id="hoe_player_work_form" action="" method="POST" enctype="multipart/form-data">
-<br/>
-<br/>
-A high payout will earn you less money but may convince new hoes to join you.<br/>
-A low payout will earn you more money but may cause your hoes to leave.<br/>
-<br/>
-
-<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','0');">0%</a>
-<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','25');">25%</a>
-<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','50');">50%</a>
-<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','75');">75%</a>
-<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','100');">100%</a>
-<br/>
-<input type="text" name="payout" id="hoe_player_work_form_payout" value="{payout}"/>% payout
-<br/>
-
-<input type="submit" name="submit" value="Work!"/>
-
-</form>
-
+	<input type="text" name="payout" id="hoe_player_work_form_payout" value="{payout}"/> <span class="info">% payout</span>
+	<button type="submit" name="submit" value="Work!"/>Work!</button>
+	
+	</div>
+	</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 ]],d)
 

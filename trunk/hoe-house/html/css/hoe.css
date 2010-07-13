@@ -168,6 +168,126 @@ div.alert{
 .alert a:visited	{color: #ff5555; font-weight: bold; text-decoration: none;}
 .alert a:hover		{color: #ff5555; font-weight: bold; text-decoration: underline;}
 .alert a:active		{color: #ff5555; font-weight: bold; text-decoration: none;}
+/* Form container */
+div.chunk7{
+	background-color: #555;
+	border-radius: 8px;
+	border: 2px solid #ccc;
+	margin: auto;
+	margin-top: 20px;
+	width: 624px;
+}
+/* Form chunks */
+div.chunk8{
+	margin: auto;
+	margin-top: 10px;
+	width: 624px;
+	clear: both;
+}
+/* Form horizontal line */
+div.formline{	
+	border-bottom:1px dotted #ccc;
+	
+	width: 500px;
+	margin: auto;
+	margin-top: 5px;
+}
+/* Percentage container */
+div.chunk9{
+	margin: auto;
+	margin-bottom: 20px;
+	width: 500px;
+}
+div.formt{
+	font-family: Georgia, serif;
+	color: #ccc;
+	font-size: 16px;
+	text-align: center;
+	line-height: 25px;
+}
+div.formp1{
+	background-color: #BAD4BA;
+	border-radius: 8px 8px;
+	margin: 0px 10px 10px 10px;
+	width: 80px;
+	float: left;
+}
+div.formp2{
+	background-color: #92D192;
+	border-radius: 8px 8px;
+	margin: 0px 10px 10px 10px;
+	width: 80px;
+	float: left;
+}
+div.formp3{
+	background-color: #6ED46E;
+	border-radius: 8px 8px;
+	margin: 0px 10px 10px 10px;
+	width: 80px;
+	float: left;
+}
+div.formp4{
+	background-color: #4CD44C;
+	border-radius: 8px 8px;
+	margin: 0px 10px 10px 10px;
+	width: 80px;
+	float: left;
+}
+div.formp5{
+	background-color: #00d400;
+	border-radius: 8px 8px;
+	margin: 0px 10px 10px 10px;
+	width: 80px;
+	float: left;
+}
+div.formn{
+	font-family: Georgia, serif;
+	color: #fff;
+	font-size: 23px;
+	font-weight: bold;
+	text-align: center;
+	margin: 5px;
+}
+.formn a:focus		{color: #fff; font-weight: bold; text-decoration: none;}
+.formn a:link		{color: #fff; font-weight: bold; text-decoration: none;}
+.formn a:visited	{color: #fff; font-weight: bold; text-decoration: none;}
+.formn a:hover		{color: #374548; font-weight: bold; text-decoration: underline;}
+.formn a:active		{color: #374548; font-weight: bold; text-decoration: none;}
+
+/* Form inputs */
+form, button{border:0; margin:0; padding:0;}
+
+div.formi .info{
+	font-family: Georgia, serif;
+	margin: 5px;
+	float: left;
+}
+
+div.formi input{
+	font-family: Georgia, serif;
+	font-size: 23px;
+	
+	border: 1px dotted #ccc;
+	border-radius: 8px 8px;
+	margin: 2px 0 20px 30px;
+	width: 200px;
+	padding: 4px 2px;
+	float: left;
+}
+div.formi button{
+	background: #000;
+	border-radius: 8px 8px;
+	margin: 5px;
+	width: 125px;
+	height: 35px;
+	
+	font-family: Georgia, serif;
+	color: #00d400;
+	font-size: 23px;
+	font-weight: bold;
+	text-align: center;
+}
+
 /* Big button menu */
 div.menu{
 	margin: auto;
@@ -290,11 +410,11 @@ div.hudp{
 }
 div.hudn{
 	font-family: Georgia, serif;
-	color: #ffffff;
-	font-size: 12px;
+	color: #ccc;
+	font-size: 14px;
 	text-align:center;
 	
-	width: 90px;
+	width: 110px;
 	margin: 0px;
 	float:left;
 }
@@ -327,11 +447,11 @@ div.hud2p{
 }
 div.hud2n{
 	font-family: Georgia, serif;
-	color: #ffffff;
-	font-size: 12px;
+	color: #ccc;
+	font-size: 14px;
 	text-align:center;
 	
-	width: 60px;
+	width: 80px;
 	margin: 0px;
 	float:left;
 }
@@ -406,7 +526,7 @@ div.crumit{
 	margin: 10px 0px;
 	float:left;
 }
-.crumit a:focus		{color: #00d400; text-decoration: none;}
+.crumit a:focus		{color: #374548; text-decoration: none;}
 .crumit a:link		{color: #374548; text-decoration: none;}
 .crumit a:visited	{color: #374548; text-decoration: none;}
 .crumit a:hover		{color: #00d400; text-decoration: underline;}
