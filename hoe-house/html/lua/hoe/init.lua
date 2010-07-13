@@ -28,9 +28,15 @@ local string=string
 local table=table
 
 local ipairs=ipairs
+local pairs=pairs
 local tostring=tostring
 local tonumber=tonumber
 local type=type
+
+local footer_data={
+	app_name="hoe-house",
+	app_link="http://code.google.com/p/aelua/wiki/AppHoeHouse",
+}
 
 module("hoe")
 
@@ -54,6 +60,8 @@ function create(srv)
 		b.srv=srv
 		b.H=H
 		srv.put(wet_html.get(html,a,b))
+		b.srv=nil
+		b.H=nil
 	end
 	
 	H.arg=function(i) return srv.url_slash[ srv.url_slash_idx + i ]	end
@@ -107,7 +115,7 @@ function serv(srv)
 	
 	put("about",{})	
 	
-	put("footer",{})
+	put("footer",footer_data)
 	
 end
 
@@ -177,8 +185,12 @@ local put=H.put
 
 -- functions for each special command	
 	local cmds={
-		list=serv_round_list,
-		work=serv_round_work,
+		list=	serv_round_list,
+		work=	serv_round_work,
+		shop=	serv_round_shop,
+		profile=serv_round_profile,
+		fight=	serv_round_fight,
+		trade=	serv_round_trade,
 	}
 	local f=cmds[ string.lower(cmd or "") ]
 	if f then return f(H) end
@@ -197,23 +209,9 @@ local put=H.put
 		put("request_login",{})
 	end
 	
---[[
-	put("<br/>Basic menu <br/><br/>",{})
+	put("hoe_menu_items",{})
 	
-	local menu={
-		{name="work",    url=H.url_base.."work/",    desc="Work to gain bux, hoes and bros."},
-		{name="shop",    url=H.url_base.."shop/",    desc="Buy what you need."},
-		{name="profile", url=H.url_base.."profile/", desc="View and change how the others see you."},
-		{name="list",    url=H.url_base.."list/",    desc="View the leaderboards."},
-		{name="fight",   url=H.url_base.."fight/",   desc="Attack the others for fun and profit."},
-		{name="trade",   url=H.url_base.."trade/",   desc="Trade with the others."},
-	}
-	for i=1,#menu do local v=menu[i]
---		put("hoe_menu_item",v)
-	end
-]]
-	put("hoe_menu_items",v)	
-	put("footer",{})
+	put("footer",footer_data)
 	
 end
 
@@ -241,7 +239,7 @@ local put=H.put
 		put("player_row",{player=v.cache})
 	end
 		
-	put("footer",{})
+	put("footer",footer_data)
 	
 end
 
@@ -260,7 +258,7 @@ local put=H.put
 
 	local result
 	local payout
-	if H.srv.posts.payout then
+	if H.player and H.srv.posts.payout then
 		payout=math.floor(tonumber(H.srv.posts.payout))
 		if payout<0 then payout=0 end
 		if payout>100 then payout=100 end
@@ -299,7 +297,7 @@ local put=H.put
 				end
 			end
 			
-			local loss=(crowd/2) - pay
+			local loss=(crowd) * mypay
 			if math.random() < loss then -- we lose a hoe
 				result.hoes=result.hoes-1
 			end
@@ -329,11 +327,156 @@ local put=H.put
 		put("player_work_result",{result=result})
 	end
 	
-	put("player_work_form",{payout=payout or 50})
-		
-	put("footer",{})
+	if H.player then
+		put("player_work_form",{payout=payout or 50})
+	else
+		put("player_needed",{})
+	end
+	
+	put("footer",footer_data)
 	
 end
 
+-----------------------------------------------------------------------------
+--
+-- shop
+--
+-----------------------------------------------------------------------------
+function serv_round_shop(H)
 
+	local put=H.put
+	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."shop/",title="shop",link="shop",}
+	
+	local cost={}
+	local function workout_cost()
+		cost.houses=50000 * H.player.cache.houses
+		cost.bros=1000 + (10 * H.player.cache.bros)
+		cost.gloves=1
+		cost.sticks=10
+		cost.manure=100
+	end
+	workout_cost()
+	
+	local result
+	if H.player and H.srv.posts.houses then	-- attempt to buy
+	
+		local by={}
+		by.houses=tonumber(H.srv.posts.houses)
+		by.bros=tonumber(H.srv.posts.bros)
+		by.gloves=tonumber(H.srv.posts.gloves)
+		by.sticks=tonumber(H.srv.posts.sticks)
+		by.manure=tonumber(H.srv.posts.manure)
+		for i,v in pairs(by) do
+			v=math.floor(v)
+			if v<0 then v=0 end
+			by[i]=v
+		end
+		if by.houses>1 then by.houses=1 end -- may only buy one house at a time
+		by.bux=0
+		for i,v in pairs(cost) do
+			if by[i] then
+				by.bux=by.bux-(v*by[i]) -- cost to purchase
+			end
+		end
+		if H.player.cache.bux + by.bux < 0 then -- not enough cash
+			result=by
+			result.fail="bux"
+		else
+			local r=players.adjust(H,H.player,by)
+			if r then
+				H.player=r
+				workout_cost()
+				result=by
+			else
+				result=nil -- failed, but do not report
+			end
+		end
+	end
+	
+	H.srv.set_mimetype("text/html")
+	put("header",{})
+	put("home_bar",{})
+	put("user_bar",{user=user})
+	put("player_bar",{player=H.player and H.player.cache})
+	
+	if result then
+		put("player_shop_result",{result=result})
+	end
+	
+	if H.player then
+		put("player_shop_form",{cost=cost})
+	else
+		put("player_needed",{})
+	end
+		
+	put("footer",footer_data)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- profile
+--
+-----------------------------------------------------------------------------
+function serv_round_profile(H)
+
+	local put=H.put
+	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."profile/",title="profile",link="profile",}
+	
+	H.srv.set_mimetype("text/html")
+	put("header",{})
+	put("home_bar",{})
+	put("user_bar",{user=user})
+	put("player_bar",{player=H.player and H.player.cache})
+	
+	put("missing_content",{})
+		
+	put("footer",footer_data)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- fight
+--
+-----------------------------------------------------------------------------
+function serv_round_fight(H)
+
+	local put=H.put
+	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."fight/",title="fight",link="fight",}
+
+	H.srv.set_mimetype("text/html")
+	put("header",{})
+	put("home_bar",{})
+	put("user_bar",{user=user})
+	put("player_bar",{player=H.player and H.player.cache})
+	
+	put("missing_content",{})
+		
+	put("footer",footer_data)
+
+end
+
+
+-----------------------------------------------------------------------------
+--
+-- trade
+--
+-----------------------------------------------------------------------------
+function serv_round_trade(H)
+
+	local put=H.put
+	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."trade/",title="trade",link="trade",}
+
+	H.srv.set_mimetype("text/html")
+	put("header",{})
+	put("home_bar",{})
+	put("user_bar",{user=user})
+	put("player_bar",{player=H.player and H.player.cache})
+	
+	put("missing_content",{})
+		
+	put("footer",footer_data)
+
+end
 
