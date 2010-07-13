@@ -30,7 +30,7 @@ http://whorehouse.naken.cc
 	padding: 0;
 	margin: 0;
 }
-b {font-family: Lucida Sans Unicode; font-weight: bold; letter-spacing: -2px;}
+b {font-family: Lucida Sans Unicode; font-weight: bold; letter-spacing: -2px; line-height: 30px;}
 a img, :link img, :visited img {border: 0;}
 form, button{border:0; margin:0; padding:0;}
 	
@@ -453,6 +453,7 @@ div.hud{
 }
 div.hud1{
 	width: 127px;
+	height: 45px;
 	margin: 0px;
 	float:left;
 }
@@ -463,12 +464,8 @@ div.hudit{
 	text-align:center;
 	
 	width: 127px;
+	height: 25px;
 	margin: 0px;
-	float:left;
-}
-div.hudp{
-	width: 15px;
-	margin: 0px 0px 0px 5px;
 	float:left;
 }
 div.hudn{
@@ -490,6 +487,7 @@ div.hudline{
 /* smaller HUD icons */
 div.hud2{
 	width: 80px;
+	height: 45px;
 	margin: 0px;
 	float:left;
 }
@@ -500,12 +498,8 @@ div.hud2it{
 	text-align:center;
 	
 	width: 80px;
+	height: 25px;
 	margin: 0px;
-	float:left;
-}
-div.hud2p{
-	width: 15px;
-	margin: 0px 0px 0px 5px;
 	float:left;
 }
 div.hud2n{
