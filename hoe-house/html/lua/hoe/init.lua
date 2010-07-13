@@ -258,6 +258,7 @@ local put=H.put
 
 	local result
 	local payout
+	local xwork=1
 	if H.player and H.srv.posts.payout then
 		payout=math.floor(tonumber(H.srv.posts.payout))
 		if payout<0 then payout=0 end
@@ -274,9 +275,14 @@ local put=H.put
 		local p=H.player.cache
 		
 		local rep=1
+		if H.srv.posts.x then
+			rep=tonumber(H.srv.posts.x)
+			rep=math.floor(rep)
+		end
 		if rep>p.energy then rep=p.energy end -- do not try and work too many times
 		if rep<1 then rep=1 end
 		if rep>10 then rep=10 end
+		xwork=rep
 		for i=1,rep do -- repeat a few times, yes this makes for bad integration...
 			result.energy=result.energy-1
 					
@@ -328,7 +334,7 @@ local put=H.put
 	end
 	
 	if H.player then
-		put("player_work_form",{payout=payout or 50})
+		put("player_work_form",{payout=payout or 50,xwork=xwork or 1})
 	else
 		put("player_needed",{})
 	end

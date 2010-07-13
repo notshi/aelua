@@ -10,6 +10,8 @@ local string=string
 local math=math
 local os=os
 
+local pairs=pairs
+
 module("html")
 
 -----------------------------------------------------------------------------
@@ -556,6 +558,12 @@ end
 -----------------------------------------------------------------------------
 player_work_form=function(d)
 
+	for i,v in pairs{1,5,10} do
+		if v==d.xwork then
+			d["check"..v]=" checked=\"true\""
+		end
+	end
+
 	return replace([[	
 <div class="cont">
 <div class="chunk7">
@@ -599,12 +607,16 @@ A <b>low</b> payout will earn you more money but may cause your hoes to <b>leave
 <div class="chunk8">
 <div class="chunk9">
 <div class="formt">
-	<div class="formi">
+	<div class="badcssbreakseverythingformi">
 	<form class="form" name="hoe_player_work_form" id="hoe_player_work_form" action="" method="POST" enctype="multipart/form-data">
 
 	<input type="text" name="payout" id="hoe_player_work_form_payout" value="{payout}"/> <span class="info">% payout</span>
-	<button type="submit" name="submit" value="Work!"/>Work!</button>
-	
+	<button type="submit" name="submit" value="Work!">Work!</button>
+<br/>
+<input type="radio" name="x" value="1"{check1}/>x1
+<input type="radio" name="x" value="5"{check5}/>x5
+<input type="radio" name="x" value="10"{check10}/>x10<br/>
+</form>
 	</div>
 	</div>
 </div>
