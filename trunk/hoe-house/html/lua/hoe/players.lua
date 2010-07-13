@@ -287,8 +287,13 @@ end
 function adjust(H,id,by)
 
 	local f=function(H,p)
-		if by.energy<0 then
+		if by.energy and by.energy<0 then
 			if p.energy<(-by.energy) then -- not enough energy to perform
+				return false
+			end
+		end
+		if by.bux and by.bux<0 then
+			if p.bux<(-by.bux) then -- not enough bux to perform
 				return false
 			end
 		end
