@@ -11,6 +11,7 @@ local math=math
 local os=os
 
 local pairs=pairs
+local tostring=tostring
 
 module("html")
 
@@ -70,6 +71,13 @@ end
 -----------------------------------------------------------------------------
 header=function(d)
 
+	d.jquery_js="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
+	d.jquery_ui_js="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"
+		
+	if d.srv.url_slash[3]=="localhost:8080" then -- a local shop only servs local people
+		d.jquery_js="/js/jquery-1.4.2.min.js"
+		d.jquery_ui_js="/js/jquery-ui-1.8.2.custom.min.js"
+	end
 	
 	if not d.title then
 		local crumbs=d.srv.crumbs
@@ -90,9 +98,11 @@ header=function(d)
 
 <link REL="SHORTCUT ICON" HREF="/favicon.ico">
 
+<link rel="stylesheet" type="text/css" href="/css/jquery/smoothness/jquery-ui-1.8.2.custom.css" />
 <link rel="stylesheet" type="text/css" href="/css/hoe.css" /> 
 
-<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="{jquery_js}"></script>
+<script type="text/javascript" src="{jquery_ui_js}"></script>
 
 
  </head>
@@ -563,7 +573,11 @@ player_work_form=function(d)
 			d["check"..v]=" checked=\"true\""
 		end
 	end
-
+	
+	for i,v in pairs{0,25,50,75,100} do
+		d["set"..v]="$('#hoe_player_work_form_payout').attr('value','"..v.."');$('#hoe_player_work_form_slide').slider('option','value',"..v..");return false"
+	end
+	
 	return replace([[	
 <div class="cont">
 <div class="chunk7">
@@ -579,27 +593,27 @@ A <b>low</b> payout will earn you more money but may cause your hoes to <b>leave
 <div class="chunk9">
 	<div class="formp1">
 		<div class="formn">
-			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','0');">0%</a></i>
+			<i><a href="#" onclick="{set0}">0%</a></i>
 		</div>
 	</div>
 	<div class="formp2">
 		<div class="formn">
-			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','25');">25%</a></i>
+			<i><a href="#" onclick="{set25}">25%</a></i>
 		</div>
 	</div>
 	<div class="formp3">
 		<div class="formn">
-			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','50');">50%</a></i>
+			<i><a href="#" onclick="{set50}">50%</a></i>
 		</div>
 	</div>
 	<div class="formp4">
 		<div class="formn">
-			<i><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','75');">75%</a></i>
+			<i><a href="#" onclick="{set75}">75%</a></i>
 		</div>
 	</div>
 	<div class="formp5">
 		<div class="formn">
-			<i><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','100');">100%</a></i>
+			<i><a href="#" onclick="{set100}">100%</a></i>
 		</div>
 	</div>
 </div>
@@ -611,6 +625,8 @@ A <b>low</b> payout will earn you more money but may cause your hoes to <b>leave
 	
 	<form class="form" name="hoe_player_work_form" id="hoe_player_work_form" action="" method="POST" enctype="multipart/form-data">
 
+	
+	<div id="hoe_player_work_form_slide"></div>
 	<input class="percent" type="text" name="payout" id="hoe_player_work_form_payout" value="{payout}"/> % payout
 	<button type="submit" name="submit">Work!</button>
 	<br />
@@ -626,6 +642,21 @@ A <b>low</b> payout will earn you more money but may cause your hoes to <b>leave
 </div>
 </div>
 </div>
+
+<script>
+$(document).ready(function() {
+	$("#hoe_player_work_form_slide").slider({ min:0,max:100,value:50,
+		slide: function(event, ui) {
+			$('#hoe_player_work_form_payout').attr('value',ui.value);
+			}
+		});	
+	$('#hoe_player_work_form_slide').slider('option','value',$('#hoe_player_work_form_payout').attr('value'));
+	$('#hoe_player_work_form_payout').bind("change keyup", function() { 
+		$('#hoe_player_work_form_slide').slider('option','value',$('#hoe_player_work_form_payout').attr('value'));
+		}); 
+	});
+</script>
+
 ]],d)
 
 end
