@@ -19,6 +19,21 @@ http://www.wetgenes.com/
 http://whorehouse.naken.cc
 */
 
+* {
+	vertical-align: baseline;
+	font-weight: inherit;
+	font-family: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	border: 0 none;
+	outline: 0;
+	padding: 0;
+	margin: 0;
+}
+b {font-family: Lucida Sans Unicode; font-weight: bold; letter-spacing: -2px;}
+a img, :link img, :visited img {border: 0;}
+form, button{border:0; margin:0; padding:0;}
+	
 body{
 	background-color: #f7f7f7;
 /*	background-image:url('hoe.600x450.png');
@@ -29,8 +44,6 @@ a:link		{color: #444; text-decoration: none;}
 a:visited	{color: #444; text-decoration: none;}
 a:hover		{color: #444; text-decoration: underline;}
 a:active	{color: #444; text-decoration: none;}
-
-img {border:0px;}
 
 /* Main container */
 div.cont{
@@ -50,6 +63,7 @@ div.header{
 	width: 960px;
 	height: 180px;
 	margin: auto;
+	margin-top: 30px;
 }
 /* div small fonts */
 div.desc{
@@ -283,44 +297,48 @@ div.formn{
 .formn a:active		{color: #374548; font-weight: bold; text-decoration: none;}
 
 /* Form inputs */
-form, button{border:0; margin:0; padding:0;}
-
-div.formi .info{
-	font-family: Georgia, serif;
-	margin: 20px 5px 5px 5px;
-	float: left;
+div.formi{
+	margin: 0 auto;
+	width: 624px;
+	padding: 0px;
 }
 
-div.formi input{
-	border: 1px dotted #ccc;
-	-moz-border-radius: 8px;
-	-webkit-border-radius: 8px;
-	border-radius: 8px 8px;
-	margin: 2px 0 20px 50px;
-	width: 150px;
-	height: 50px;
-	float: left;
-	
-	font-family: Georgia, serif;
-	font-size: 60px;
-	line-height: 20px;
-}
-div.formi input:focus{
+#workit input:focus{
 	border: 0;
 	outline: 0;
 }
-div.formi button{
+
+#workit input.percent{
 	background: #000;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
-	margin: 5px;
-	width: 125px;
-	height: 35px;
+	border: 0;
+		
+	margin: 0;
+	width: 500px;
+	float: left;
 	
 	font-family: Georgia, serif;
 	color: #00d400;
-	font-size: 23px;
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+}
+
+#workit button{
+	background: #000;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	
+	margin: 0;
+	width: 125px;
+	float: left;
+	
+	font-family: Georgia, serif;
+	color: #00d400;
+	font-size: 16px;
 	font-weight: bold;
 	text-align: center;
 }
@@ -434,7 +452,7 @@ div.hud{
 	float:left;
 }
 div.hud1{
-	width: 110px;
+	width: 127px;
 	margin: 0px;
 	float:left;
 }
@@ -444,7 +462,7 @@ div.hudit{
 	font-size: 20px;
 	text-align:center;
 	
-	width: 110px;
+	width: 127px;
 	margin: 0px;
 	float:left;
 }
@@ -459,7 +477,7 @@ div.hudn{
 	font-size: 14px;
 	text-align:center;
 	
-	width: 110px;
+	width: 127px;
 	margin: 0px;
 	float:left;
 }
