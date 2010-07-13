@@ -579,27 +579,27 @@ A <b>low</b> payout will earn you more money but may cause your hoes to <b>leave
 <div class="chunk9">
 	<div class="formp1">
 		<div class="formn">
-			<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','0');">0%</a>
+			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','0');">0%</a></b>
 		</div>
 	</div>
 	<div class="formp2">
 		<div class="formn">
-			<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','25');">25%</a>
+			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','25');">25%</a></b>
 		</div>
 	</div>
 	<div class="formp3">
 		<div class="formn">
-			<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','50');">50%</a>
+			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','50');">50%</a></b>
 		</div>
 	</div>
 	<div class="formp4">
 		<div class="formn">
-			<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','75');">75%</a>
+			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','75');">75%</a></b>
 		</div>
 	</div>
 	<div class="formp5">
 		<div class="formn">
-			<a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','100');">100%</a>
+			<b><a href="#" onclick="$('#hoe_player_work_form_payout').attr('value','100');">100%</a></b>
 		</div>
 	</div>
 </div>
