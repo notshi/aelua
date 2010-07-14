@@ -581,65 +581,74 @@ player_work_form=function(d)
 	return replace([[	
 <div class="cont">
 <div class="chunk7">
-<div class="chunk8">
-<div class="formt">
-A <b>high</b> payout will earn you less money but may convince new hoes to <b>join</b> you. <br />
-A <b>low</b> payout will earn you more money but may cause your hoes to <b>leave</b>.
-</div>
-<div class="formline">
-</div>
-</div>
-<div class="chunk8">
-<div class="chunk9">
-	<div class="formp1">
-		<div class="formn">
-			<i><a href="#" onclick="{set0}">0%</a></i>
+	<div class="chunk8">
+		<div class="formt">
+			A <b>high</b> payout will earn you less money but may convince new hoes to <b>join</b> you. <br />
+			A <b>low</b> payout will earn you more money but may cause your hoes to <b>leave</b>.
+		</div>
+		<div class="formline"></div>
+	</div>
+	<div class="chunk8">
+		<div class="chunk9">
+			<div class="formp1">
+				<div class="formn">
+					<i><a href="#" onclick="{set0}">0%</a></i>
+				</div>
+			</div>
+			<div class="formp2">
+				<div class="formn">
+					<i><a href="#" onclick="{set25}">25%</a></i>
+				</div>
+			</div>
+			<div class="formp3">
+				<div class="formn">
+					<i><a href="#" onclick="{set50}">50%</a></i>
+				</div>
+			</div>
+			<div class="formp4">
+				<div class="formn">
+					<i><a href="#" onclick="{set75}">75%</a></i>
+				</div>
+			</div>
+			<div class="formp5">
+				<div class="formn">
+					<i><a href="#" onclick="{set100}">100%</a></i>
+				</div>
+			</div>
 		</div>
 	</div>
-	<div class="formp2">
-		<div class="formn">
-			<i><a href="#" onclick="{set25}">25%</a></i>
-		</div>
-	</div>
-	<div class="formp3">
-		<div class="formn">
-			<i><a href="#" onclick="{set50}">50%</a></i>
-		</div>
-	</div>
-	<div class="formp4">
-		<div class="formn">
-			<i><a href="#" onclick="{set75}">75%</a></i>
-		</div>
-	</div>
-	<div class="formp5">
-		<div class="formn">
-			<i><a href="#" onclick="{set100}">100%</a></i>
-		</div>
-	</div>
-</div>
-</div>
-<div class="chunk8">
-<div class="chunk9">
-<div class="formt">
-	<div id="workit" class="formi">
+	<div class="chunk8">
 	
-	<form class="form" name="hoe_player_work_form" id="hoe_player_work_form" action="" method="POST" enctype="multipart/form-data">
+		<form class="form" name="hoe_player_work_form" id="hoe_player_work_form" action="" method="POST" enctype="multipart/form-data">
+		<div id="hoe_player_work_form_slide" class="slide"></div>
+		
+		
+		<div id="workit" class="formi">
+		<input class="percent" type="text" name="payout" id="hoe_player_work_form_payout" value="{payout}"/><div class="formina"><div class="forminb">% payout</div></div>
+		
+		<div class="forminline"></div>
+		
+		<button type="submit" name="submit">Work!</button>
+		
+		<div class="formin">
+		<div class="formin">
+		<input class="radio" type="radio" name="x" value="1"{check1}/>x1
+		</div>
+		<div class="formin">
+		<input class="radio" type="radio" name="x" value="5"{check5}/>x5
+		</div>
+		<div class="formin">
+		<input class="radio" type="radio" name="x" value="10"{check10}/>x10
+		</div>
+		</div>
 
-	
-	<div id="hoe_player_work_form_slide"></div>
-	<input class="percent" type="text" name="payout" id="hoe_player_work_form_payout" value="{payout}"/> % payout
-	<button type="submit" name="submit">Work!</button>
-	<br />
-	<input class="radio" type="radio" name="x" value="1"{check1}/>x1
-	<input class="radio" type="radio" name="x" value="5"{check5}/>x5
-	<input class="radio" type="radio" name="x" value="10"{check10}/>x10<br/>
+		</form>
+		
+		<div class="clear"></div>
+		</div>
+		
 
-	</form>
-	
 	</div>
-</div>
-</div>
-</div>
 </div>
 </div>
 

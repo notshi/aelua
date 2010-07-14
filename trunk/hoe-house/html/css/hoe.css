@@ -31,7 +31,7 @@ http://whorehouse.naken.cc
 	margin: 0;
 }
 b {font-weight: bold;}
-i {font-family: Lucida Sans Unicode; font-weight: bold; letter-spacing: -2px; line-height: 30px;}
+i {font-family: Lucida Sans Unicode; font-weight: bold; letter-spacing: -1px; line-height: 30px;}
 a img, :link img, :visited img {border: 0;}
 form, button{border:0; margin:0; padding:0;}
 	
@@ -230,6 +230,7 @@ div.chunk9{
 	margin: auto;
 	margin-bottom: 20px;
 	width: 500px;
+	clear: both;
 }
 div.formt{
 	font-family: Georgia, serif;
@@ -299,9 +300,56 @@ div.formn{
 
 /* Form inputs */
 div.formi{
-	margin: 0 auto;
-	width: 624px;
+	background: #555;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	
+	margin: auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: 60px;
+	
+	width: 494px;
 	padding: 0px;
+	
+	clear: both;
+}
+
+div.slide{
+	background: #000;
+	border: 1px solid #000;
+	margin: 0 auto;
+	width: 480px;
+	padding: 0px;
+}
+
+div.formin, div.formina, div.forminb, div.forminline{		
+	font-family: Lucida Sans Unicode;
+	color: #e3e3e3;
+	font-size: 12px;
+		
+	margin: 0px;
+	width: 50px;
+	padding: 0px;
+	float: left;
+}
+div.formina{
+	font-size: 23px;
+	width: 120px;
+	height: 50px;
+	position: relative;
+}
+div.forminb{
+	font-size: 23px;
+	width: 120px;
+	position: absolute;
+	bottom: 0;
+}
+div.forminline{
+	border-left: 1px solid #000;
+	width: 15px;
+	height: 50px;
 }
 
 #workit input:focus{
@@ -310,19 +358,20 @@ div.formi{
 }
 
 #workit input.percent{
-	background: #000;
+	background: #555;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
 	border: 0;
 		
 	margin: 0;
-	width: 500px;
+	width: 100px;
+	height: 50px;
 	float: left;
 	
-	font-family: Georgia, serif;
-	color: #00d400;
-	font-size: 16px;
+	font-family: Lucida Sans Unicode;
+	color: #e3e3e3;
+	font-size: 42px;
 	font-weight: bold;
 	text-align: center;
 }
@@ -334,14 +383,19 @@ div.formi{
 	border-radius: 8px 8px;
 	
 	margin: 0;
-	width: 125px;
-	float: left;
+	width: 200px;
+	height: 50px;
+	float: right;
 	
 	font-family: Georgia, serif;
 	color: #00d400;
-	font-size: 16px;
+	font-size: 42px;
 	font-weight: bold;
 	text-align: center;
+}
+
+#workit radio{
+	float: left;
 }
 
 /* Big button menu */
