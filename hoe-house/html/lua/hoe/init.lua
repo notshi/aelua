@@ -330,7 +330,7 @@ local put=H.put
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	if result then
-		put("player_work_result",{result=result})
+		put("player_work_result",{result=result,xwork=xwork or 1})
 	end
 	
 	if H.player then

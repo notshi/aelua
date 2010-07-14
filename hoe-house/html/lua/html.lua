@@ -661,7 +661,7 @@ $(document).ready(function() {
 			$('#hoe_player_work_form_payout').attr('value',ui.value);
 			}
 		});	
-	$('#hoe_player_work_form_slide').slider('option','value',$('#hoe_player_work_form_payout').attr('value'));
+	$('#hoe_player_work_form_slide').slider('option','value',{payout});
 	$('#hoe_player_work_form_payout').bind("change keyup", function() { 
 		$('#hoe_player_work_form_slide').slider('option','value',$('#hoe_player_work_form_payout').attr('value'));
 		}); 
