@@ -17,13 +17,17 @@ module("wetgenes.html")
 -----------------------------------------------------------------------------
 function replace(a,d)
 
-return (string.gsub( a , "{(.-)}" , function(a)
+return (string.gsub( a , "{([%w%._%-]-)}" , function(a) -- find only words and ._- tightly encased in {}
+-- this means that almost all legal use of {} in javascript will not match at all.
+-- Even when it does probably as a "{}" then it is unlikley to find anything in the d table
+-- so will just be returned as is.
+-- So it may not be safe, but it is simple to understand and perfecty fine under most use cases.
 
 	local f
 	
 	f=function(a,d) -- look up a in table d
 	
-		if string.len(a)>128 then return "{"..a.."}" end -- do not even try with large strings
+--		if string.len(a)>256 then return "{"..a.."}" end -- do not even try with really large strings?
 	
 		local t=d[a]
 		if t then
