@@ -20,7 +20,7 @@ module("wetgenes.waka")
 
 -----------------------------------------------------------------------------
 --
--- split on \n each line also includes its own \n
+-- split on \n, each line also includes its own \n
 --
 -----------------------------------------------------------------------------
 local function split_lines(text)
@@ -103,9 +103,7 @@ end
 
 -----------------------------------------------------------------------------
 --
--- split on whitespace, include this white space in its own token
---
--- such that a concat on the result would be a perfect reproduction of the original
+-- split a string in two on =
 --
 -----------------------------------------------------------------------------
 local function split_equal(text)
@@ -127,22 +125,29 @@ end
 
 -----------------------------------------------------------------------------
 --
--- take a chunk of text and break it into named sections
--- returns a table of sections
+-- take a multichunk of text and break it into named chunks
+-- returns a lookup table of chunks and numerical list of chunks in the order they where first defined
+-- body is always defined
 --
--- a section is a line that begins with #
--- the part after the . and ending with whitespace is the section name
--- all text following this line is part of that section
--- the default section if none is give is .body
--- data may follow this section name, if multiple sections of the same name
+-- a chunk is a line that begins with #
+-- the part after the . and ending with whitespace is the chunk name
+-- all text following this line is part of that chunk
+-- the default section if none is give is "body", so any whitespace at the start of the file
+-- before the first # line will be assigned into this chunk
+-- data may follow this chunk name, if multiple chunks of the same name
 -- are defined they are simple merged into one
--- and each #section line is combined
+-- and each #chunk line is combined into one chunk
 --
 -- use option=value after the section name to provide options, so somthing like this
 --
--- #section opt=val opt=val opt=val
+-- #name opt=val opt=val opt=val
 -- # opt=val
+-- here is some text
 -- # opt=val
+-- here is some more text
+--
+-- is a valid chunk, all of the opt=val will be assigned to the same chunk
+-- and all the other text will be joined as that chunks body
 --
 -----------------------------------------------------------------------------
 function text_to_chunks(text)
@@ -155,7 +160,7 @@ function text_to_chunks(text)
 		local chunk
 		local c2=line:sub(2,2)
 		
-		if c2:find("%s") then -- if first char after # is whitespace, then use old chunk 
+		if c2:find("%s") then -- if first char after # is whitespace, then use the old chunk 
 			chunk=oldchunk
 		end
 		
@@ -194,7 +199,7 @@ function text_to_chunks(text)
 		
 	local lines=split_lines(text)
 	
-	local chunk=manifest_chunk("#body")
+	local chunk
 	
 	for i=1,#lines do local v=lines[i] -- ipairs
 		
@@ -206,6 +211,8 @@ function text_to_chunks(text)
 		
 		else -- normal lime add to the current chunk
 		
+			if not chunk then chunk=manifest_chunk("#body") end --sanity
+			
 			table.insert(chunk.lines , v)
 		end
 	
@@ -220,8 +227,9 @@ end
 --
 -- get a html string given a chunk
 --
--- \n are turned into <br/> or <p></p> tags
+-- \n are turned into <br/> tags
 -- and words that look like links are turned into links
+-- any included html should get escaped so this is "safe" to use on user input
 --
 -- we need to lnow the baseurl of this page when building links, if this is not given
 -- then relative links are not built
