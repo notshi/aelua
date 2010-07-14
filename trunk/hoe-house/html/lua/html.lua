@@ -656,12 +656,11 @@ player_work_form=function(d)
 
 <script>
 $(document).ready(function() {
-	$("#hoe_player_work_form_slide").slider({ min:0,max:100,value:50,
+	$("#hoe_player_work_form_slide").slider({ min:0,max:100,value:{payout},
 		slide: function(event, ui) {
 			$('#hoe_player_work_form_payout').attr('value',ui.value);
 			}
 		});	
-	$('#hoe_player_work_form_slide').slider('option','value',{payout});
 	$('#hoe_player_work_form_payout').bind("change keyup", function() { 
 		$('#hoe_player_work_form_slide').slider('option','value',$('#hoe_player_work_form_payout').attr('value'));
 		}); 
