@@ -80,3 +80,15 @@ get=function(html,src,env)
 	return tostring(src)
 end
 
+
+-----------------------------------------------------------------------------
+--
+-- very basic html esc to stop tags and entities from doing bad things
+--
+-----------------------------------------------------------------------------
+function esc(s)
+	local escaped = { ['<']='&lt;', ['>']='&gt;', ["&"]='&amp;' }
+	return (s:gsub("[<>&]", function(c) return escaped[c] end))
+end
+
+

@@ -556,13 +556,13 @@ player_row=function(d)
 		return replace([[
 
 		<div class="chunk8b">
-			<div class="lista">{player.name}</div>
+			<div class="lista"><a href="{H.url_base}profile/{player.id}">{player.name}</a></div>
 			<div class="lista"><i>{score}</i></div>
 			<div class="lista"><i>{bux}</i></div>
 			<div class="listb"><i>{player.hoes}</i></div>
 			<div class="listb"><i>{player.houses}</i></div>
 			<div class="listb"><i>{player.bros}</i></div>
-			<div class="listc">{player.shout}and this random shout is brought to you by the almighty administrator and has exactly, i hope, 100 characters.</div>
+			<div class="listc">{player.shout}</div>
 		</div>
 
 ]],d)
@@ -979,6 +979,64 @@ player_shop_results=function(d)
 	return replace([[	
 <div class="hoe_player_shop_results">
 
+</div>
+]],d)
+
+end
+
+
+
+-----------------------------------------------------------------------------
+--
+-- display a players profile
+--
+-----------------------------------------------------------------------------
+player_profile=function(d)
+
+		d.score=num_to_thousands(d.player.score)
+		d.bux=num_to_thousands(d.player.bux)
+		
+		d.form=""
+		if d.edit then -- we can edit our profile
+		
+			d.form=replace([[	
+<div class="hoe_player_profile_edit">
+<form action="" method="POST" enctype="multipart/form-data">
+name=<input type="text" name="name" id="profile_name" maxlength="20" value="{player.name}" /><br/>
+<button type="submit" name="do_name">Change name</button><br/>
+<br/>
+</form>
+<form action="" method="POST" enctype="multipart/form-data">
+shout=<input type="text" name="shout" id="profile_shout" maxlength="100" value="{player.shout}" /><br/>
+<button type="submit" name="do_shout">Change shout</button><br/>
+<br/>
+</form>
+</div>
+]],d)
+		elseif d.fight then
+			d.form=replace([[	
+<div class="hoe_player_profile_fight">
+<br/>
+<a href="{H.url_base}fight/{player.id}/rob">Rob bux from {player.name}</a>
+<br/>
+</div>
+]],d)
+		end
+		
+		return replace([[
+{form}
+<div class="hoe_player_profile">
+name={player.name}<br/>
+#{player.id}<br/>
+score={score}<br/>
+bux={bux}<br/>
+hoes={player.hoes}<br/>
+houses={player.houses}<br/>
+bros={player.bros}<br/>
+gloves={player.gloves}<br/>
+sticks={player.sticks}<br/>
+manure={player.manure}<br/>
+shout={player.shout}<br/>
 </div>
 ]],d)
 
