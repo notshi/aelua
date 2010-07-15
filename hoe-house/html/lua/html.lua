@@ -340,33 +340,33 @@ player_bar=function(d)
 
 <div class="cont">
 <div class="chunk4">
-<div class="act1">
-<div class="act1p">
+<div class="act">
+<div class="actp">
 <a href="{H.url_base}work"><img src="/art/work.png" width="30" height="30"></a>
 </div>
 </div>
-<div class="act1">
-<div class="act1p">
+<div class="act">
+<div class="actp">
 <a href="{H.url_base}shop"><img src="/art/shop.png" width="30" height="30"></a>
 </div>
 </div>
-<div class="act1">
-<div class="act1p">
+<div class="act">
+<div class="actp">
 <a href="{H.url_base}profile"><img src="/art/pro.png" width="30" height="30"></a>
 </div>
 </div>
-<div class="act1">
-<div class="act1p">
+<div class="act">
+<div class="actp">
 <a href="{H.url_base}list"><img src="/art/list.png" width="30" height="30"></a>
 </div>
 </div>
-<div class="act1">
-<div class="act1p">
+<div class="act">
+<div class="actp">
 <a href="{H.url_base}fight"><img src="/art/fight.png" width="30" height="30"></a>
 </div>
 </div>
-<div class="act1">
-<div class="act1p">
+<div class="act">
+<div class="actp">
 <a href="{H.url_base}trade"><img src="/art/trade.png" width="30" height="30"></a>
 </div>
 </div>
@@ -477,12 +477,14 @@ round_row=function(d)
 		d.url=d.srv.url_base..r.id
 			
 		return replace([[	
+<div class="desc">
 <a class="hoe_round_row" href="{url}" style="display:block"> game {round.id} : 
 <span class="hoe_round_row_speed">{speed}eph</span>
 <span class="hoe_round_row_start">{start}</span>
 <span class="hoe_round_row_end">{remaining}</span>
 <span class="hoe_round_row_players">{players} players</span>
 </a>
+</div>
 ]],d)
 
 	end
@@ -872,7 +874,7 @@ end
 missing_content=function(d)
 
 	return replace([[
-<div class="missing_content">MISSING CONTENT</div>
+<div class="chunk">MISSING CONTENT</div>
 ]],d)
 
 end
@@ -1000,43 +1002,194 @@ player_profile=function(d)
 		if d.edit then -- we can edit our profile
 		
 			d.form=replace([[	
-<div class="hoe_player_profile_edit">
-<form action="" method="POST" enctype="multipart/form-data">
-name=<input type="text" name="name" id="profile_name" maxlength="20" value="{player.name}" /><br/>
-<button type="submit" name="do_name">Change name</button><br/>
-<br/>
-</form>
-<form action="" method="POST" enctype="multipart/form-data">
-shout=<input type="text" name="shout" id="profile_shout" maxlength="100" value="{player.shout}" /><br/>
-<button type="submit" name="do_shout">Change shout</button><br/>
-<br/>
-</form>
-</div>
+<div class="cont">
+	<div class="chunk3a">
+		<div class="chunk3ait">
+			Profile
+		<div class="chunk3line"></div>
+		</div>
+		<div class="clear"></div>
+	</div>	
+	<div class="chunk8c">
+		<div class="chunk8b">
+		
+			<div class="pro1">
+				<div class="pro1a">
+					
+					<div class="pro1b">
+						<form action="" method="POST" enctype="multipart/form-data">
+						<div class="pro1c">
+							<div class="pro1c">
+								Name:
+							</div>
+							<div class="pro1c1">
+								( Max. 20 char )
+							</div>
+							<div class="pro1c">
+								<button type="submit" name="do_name">Change name</button>
+							</div>
+						</div>
+						<div class="pro1d">	
+							<input type="text" name="name" id="profile_name" maxlength="20" value="{player.name}" /><br/>
+						</div>
+						</form>
+					</div>
+					<div class="clear"></div>
+					<div class="pro1b1">	
+						<form action="" method="POST" enctype="multipart/form-data">
+						<div class="pro1c">
+							<div class="pro1c">
+								Shout:
+							</div>
+							<div class="pro1c1">
+								( Max. 100 char )
+							</div>
+							<div class="pro1c">
+								<button type="submit" name="do_shout">Change shout</button>
+							</div>
+						</div>
+						<div class="pro1d">
+							<input type="text" name="shout" id="profile_shout" maxlength="100" value="{player.shout}" /><br/>
+						</div>
+						</form>
+					</div>
+					<div class="clear"></div>
+
+
+	
 ]],d)
 		elseif d.fight then
 			d.form=replace([[	
-<div class="hoe_player_profile_fight">
-<br/>
-<a href="{H.url_base}fight/{player.id}/rob">Rob bux from {player.name}</a>
-<br/>
-</div>
+<div class="cont">
+	<div class="chunk3a">
+		<div class="chunk3ait">
+			Profile
+		<div class="chunk3line"></div>
+		</div>
+		<div class="clear"></div>
+	</div>	
+	<div class="chunk8c">
+		<div class="chunk8b">
+		
+			<div class="pro1">
+				<div class="pro1a">
+					
+					<div class="prorob">
+						<a href="{H.url_base}fight/{player.id}/rob">Rob <img src="/art/buxb.png"> bux from {player.name}</a>
+					</div>
+
 ]],d)
 		end
 		
 		return replace([[
 {form}
-<div class="hoe_player_profile">
-name={player.name}<br/>
-#{player.id}<br/>
-score={score}<br/>
-bux={bux}<br/>
-hoes={player.hoes}<br/>
-houses={player.houses}<br/>
-bros={player.bros}<br/>
-gloves={player.gloves}<br/>
-sticks={player.sticks}<br/>
-manure={player.manure}<br/>
-shout={player.shout}<br/>
+					<div class="pro1b1">
+						<div class="pro1c2">
+							Shout:
+						</div>
+						<div class="pro1d1">
+							{player.shout}
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+		<div class="pro2">
+			<div class="pro2a1">
+				<div class="pro2b">
+					<div class="pro2id">
+						<i>#{player.id}</i>
+					</div>
+					<div class="pro2c">
+						{player.name}
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="pro2a">
+				<div class="pro2b">
+					<div class="pro2tit">
+						Inventory
+					</div>
+				</div>
+				<div class="clear"></div>
+				<div class="pro2b">
+					<div class="pro2d1">
+						<div class="pro2d">
+							<i>{score}</i>
+						</div>
+						<div class="procat1">
+							<img src="/art/scoreb.png"> Score
+						</div>
+					</div>
+					<div class="pro2d2">
+						<div class="pro2d">
+							<i>{bux}</i>
+						</div>
+						<div class="procat1">
+							<img src="/art/buxb.png"> Bux
+						</div>
+					</div>
+				</div>
+				<div class="pro2b">
+					<div class="pro2e1">
+						<div class="pro2e">
+							<i>{player.hoes}</i>
+						</div>
+						<div class="procat2">
+							<img src="/art/hoesb.png"> Hoes
+						</div>
+					</div>
+					<div class="pro2e1">
+						<div class="pro2e">
+							<i>{player.houses}</i>
+						</div>
+						<div class="procat2">
+							<img src="/art/housesb.png"> Houses
+						</div>
+					</div>
+					<div class="pro2e2">
+						<div class="pro2e">
+							<i>{player.bros}</i>
+						</div>
+						<div class="procat2">
+							<img src="/art/scareb.png"> Bros
+						</div>
+					</div>
+				</div>
+				<div class="pro2b">
+					<div class="pro2e1">
+						<div class="pro2e">
+							<i>{player.gloves}</i>
+						</div>
+						<div class="procat2">
+							Gloves
+						</div>
+					</div>
+					<div class="pro2e1">
+						<div class="pro2e">
+							<i>{player.manure}</i>
+						</div>
+						<div class="procat2">
+							Manure
+						</div>
+					</div>
+					<div class="pro2e2">
+						<div class="pro2e">
+							<i>{player.sticks}</i>
+						</div>
+						<div class="procat2">
+							Sticks
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+
+		</div>
+		<div class="clear"></div>
+	</div>	
 </div>
 ]],d)
 
