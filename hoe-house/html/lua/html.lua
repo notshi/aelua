@@ -383,7 +383,7 @@ player_bar=function(d)
 </div>
 <div class="hud2">
 <div class="hud2n">
-<img src="/art/energyb.png"> energy
+<img src="/art/energyb.png"> Energy
 </div>
 </div>
 </div>
@@ -394,7 +394,7 @@ player_bar=function(d)
 </div>
 <div class="hud1">
 <div class="hudn">
-<img src="/art/scoreb.png"> score
+<img src="/art/scoreb.png"> Score
 </div>
 </div>
 </div>
@@ -405,7 +405,7 @@ player_bar=function(d)
 </div>
 <div class="hud1">
 <div class="hudn">
-<img src="/art/buxb.png"> bux
+<img src="/art/buxb.png"> Bux
 </div>
 </div>
 </div>
@@ -416,7 +416,7 @@ player_bar=function(d)
 </div>
 <div class="hud2">
 <div class="hud2n">
-<img src="/art/hoesb.png"> hoes
+<img src="/art/hoesb.png"> Hoes
 </div>
 </div>
 </div>
@@ -427,7 +427,7 @@ player_bar=function(d)
 </div>
 <div class="hud2">
 <div class="hud2n">
-<img src="/art/housesb.png"> houses
+<img src="/art/housesb.png"> Houses
 </div>
 </div>
 </div>
@@ -438,7 +438,7 @@ player_bar=function(d)
 </div>
 <div class="hud2">
 <div class="hud2n">
-<img src="/art/scareb.png"> bros
+<img src="/art/scareb.png"> Bros
 </div>
 </div>
 </div>
@@ -500,6 +500,52 @@ end
 -- display a player row
 --
 -----------------------------------------------------------------------------
+player_row_header=function(d)
+	return replace([[
+	
+<div class="cont">
+	<div class="chunk3a">
+		<div class="chunk3ait">
+			List
+		<div class="chunk3line"></div>
+		</div>
+		<div class="clear"></div>
+	</div>	
+	<div class="chunk8a">
+		<div class="chunk8b">
+			<div class="listat">Player Name</div>
+			<div class="listat"><img src="/art/scoreb.png"> Score</div>
+			<div class="listat"><img src="/art/buxb.png"> Bux</div>
+			<div class="listbt"><img src="/art/hoesb.png"> Hoes</div>
+			<div class="listbt"><img src="/art/housesb.png"> Houses</div>
+			<div class="listbt"><img src="/art/scareb.png"> Bros</div>
+			<div class="listct">Shout</div>
+		</div>
+		<div class="clear"></div>
+	
+]],d)
+end
+
+player_row_footer=function(d)
+	return replace([[
+	
+		<div class="clear"></div>
+		<div class="chunk8b">
+			<div class="listat">Player Name</div>
+			<div class="listat"><img src="/art/scoreb.png"> Score</div>
+			<div class="listat"><img src="/art/buxb.png"> Bux</div>
+			<div class="listbt"><img src="/art/hoesb.png"> Hoes</div>
+			<div class="listbt"><img src="/art/housesb.png"> Houses</div>
+			<div class="listbt"><img src="/art/scareb.png"> Bros</div>
+			<div class="listct">Shout</div>
+		</div>
+		<div class="clear"></div>
+	</div>	
+</div>
+	
+]],d)
+end
+
 player_row=function(d)
 
 	if d.player then
@@ -507,16 +553,18 @@ player_row=function(d)
 		d.score=num_to_thousands(d.player.score)
 		d.bux=num_to_thousands(d.player.bux)
 			
-		return replace([[	
-<div class="hoe_player_row">
-<span class="hoe_player_row_name">{player.name}</span>
-<span class="hoe_player_row_score">score={score}</span>
-<span class="hoe_player_row_bux">bux={bux}</span>
-<span class="hoe_player_row_hoes">hoes={player.hoes}</span>
-<span class="hoe_player_row_houses">houses={player.houses}</span>
-<span class="hoe_player_row_bros">bros={player.bros}</span>
-<span class="hoe_player_row_shout">{player.shout}</span>
-</div>
+		return replace([[
+
+		<div class="chunk8b">
+			<div class="lista">{player.name}</div>
+			<div class="lista"><i>{score}</i></div>
+			<div class="lista"><i>{bux}</i></div>
+			<div class="listb"><i>{player.hoes}</i></div>
+			<div class="listb"><i>{player.houses}</i></div>
+			<div class="listb"><i>{player.bros}</i></div>
+			<div class="listc">{player.shout}and this random shout is brought to you by the almighty administrator and has exactly, i hope, 100 characters.</div>
+		</div>
+
 ]],d)
 
 	end
@@ -541,14 +589,27 @@ player_base=function(d)
 		d.bux=num_to_thousands(d.player.bux)
 		
 		return replace([[	
-<div class="hoe_player_base">
-<span class="hoe_player_base_name">{player.name}</span>
-<span class="hoe_player_base_score">score={score}</span>
-<span class="hoe_player_base_bux">bux={bux}</span>
-<span class="hoe_player_base_hoes">hoes={player.hoes}</span>
-<span class="hoe_player_base_houses">houses={player.houses}</span>
-<span class="hoe_player_base_bros">bros={player.bros}</span>
-<span class="hoe_player_base_shout">{player.shout}</span>
+<div class="cont">
+	<div class="chunk3">
+		<div class="chunk3it">
+			Shop
+		<div class="chunk3line"></div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="chunk8">
+		<div class="chunk9">
+		<div class="formta">
+			<span class="hoe_player_base_name">{player.name}</span>
+			<span class="hoe_player_base_score">score={score}</span>
+			<span class="hoe_player_base_bux">bux={bux}</span>
+			<span class="hoe_player_base_hoes">hoes={player.hoes}</span>
+			<span class="hoe_player_base_houses">houses={player.houses}</span>
+			<span class="hoe_player_base_bros">bros={player.bros}</span>
+			<span class="hoe_player_base_shout">{player.shout}</span>
+		</div>
+		</div>
+	</div>
 </div>
 ]],d)
 
@@ -626,7 +687,7 @@ player_work_form=function(d)
 		
 		
 		<div id="workit" class="formi">
-		<input class="percent" type="text" name="payout" id="hoe_player_work_form_payout" value="{payout}"/><div class="formina"><div class="forminb">% payout</div></div>
+		<input class="percent" type="text" name="payout" id="hoe_player_work_form_payout" value="{payout}"/><div class="formina"><div class="forminb">% Payout</div></div>
 		
 		<div class="forminline"></div>
 		
@@ -847,22 +908,38 @@ player_shop_form=function(d)
 	d.manure_bux=num_to_thousands(d.cost.manure)
 
 	return replace([[	
-<div class="hoe_player_shop">
+	
+<div class="cont">
+	<div class="chunk3">
+		<div class="chunk3it">
+			Shop
+		<div class="chunk3line"></div>
+		</div>
+		<div class="clear"></div>
+	</div>
+<div class="chunk7a">
+	<div class="chunk8">
+	<div class="formta">
+	<form class="notjNice" name="hoe_player_shop_form" id="hoe_player_shop_form" action="" method="POST" enctype="multipart/form-data">
 
-<form class="notjNice" name="hoe_player_shop_form" id="hoe_player_shop_form" action="" method="POST" enctype="multipart/form-data">
+	<div id="buyit">
+	Buy <i><input type="text" name="houses" id="hoe_player_work_form_houses" value="0" style="width:100px;"/></i> houses at <img src="/art/buxb.png"> <i>{houses_bux}</i> bux each.
+	<div class="formline"></div>
+	Buy <i><input type="text" name="bros" id="hoe_player_work_form_bros" value="0" style="width:100px;"/></i> bros at <img src="/art/buxb.png"> <i>{bros_bux}</i> bux each.
+	<div class="formline"></div>
+	Buy <i><input type="text" name="gloves" id="hoe_player_work_form_gloves" value="0" style="width:100px;"/></i> gloves at <img src="/art/buxb.png"> <i>{gloves_bux}</i> bux each.
+	<div class="formline"></div>
+	Buy <i><input type="text" name="sticks" id="hoe_player_work_form_sticks" value="0" style="width:100px;"/></i> sticks at <img src="/art/buxb.png"> <i>{sticks_bux}</i> bux each.
+	<div class="formline"></div>
 
+	<button class="button" type="submit" name="submit" value="Buy!"/>Buy!</button>
+	</div>
+	
+	</form>
+	</div>
+	</div>
 
-Buy <input type="text" name="houses" id="hoe_player_work_form_houses" value="0" style="width:100px;"/> houses at {houses_bux} bux each.<br/>
-Buy <input type="text" name="bros" id="hoe_player_work_form_bros" value="0" style="width:100px;"/> bros at {bros_bux} bux each.<br/>
-Buy <input type="text" name="gloves" id="hoe_player_work_form_gloves" value="0" style="width:100px;"/> gloves at {gloves_bux} bux each.<br/>
-Buy <input type="text" name="sticks" id="hoe_player_work_form_sticks" value="0" style="width:100px;"/> sticks at {sticks_bux} bux each.<br/>
-Buy <input type="text" name="manure" id="hoe_player_work_form_manure" value="0" style="width:100px;"/> manure at {manure_bux} bux each.<br/>
-
-
-<input type="submit" name="submit" value="Buy!"/>
-
-</form>
-
+</div>
 </div>
 ]],d)
 
