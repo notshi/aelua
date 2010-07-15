@@ -218,29 +218,269 @@ div.chunk7, div.chunk7a{
 div.chunk7a {
 	margin: 0px auto;
 }
-/* Form chunks, chunk8a: LIST outercontainer, chunk8b: LIST innercontainer */
-div.chunk8, div.chunk8a, div.chunk8b {
+/* Form chunks, chunk8a: LIST/PROFILE outercontainer, chunk8b: LIST/PROFILE innercontainer */
+div.chunk8, div.chunk8a, div.chunk8b, div.chunk8c {
 	margin: 0px auto;
 	width: 960px;
 }
+.chunk8b a:focus	{color: #fff; text-decoration: none;}
+.chunk8b a:link		{color: #fff; text-decoration: none;}
+.chunk8b a:visited	{color: #fff; text-decoration: none;}
+.chunk8b a:hover	{color: #fff; text-decoration: underline;}
+.chunk8b a:active	{color: #fff; text-decoration: none;}
 div.chunk8 {
 	margin: auto;
 	margin-top: 10px;
 	width: 624px;
 	clear: both;
 }
-/* LIST outer container */
-div.chunk8a{
+/* PROFILE outer container */
+div.chunk8a, div.chunk8c {
 	background-color: #555;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	border: 2px solid #ccc;
+}
+/* LIST outer container */
+div.chunk8a {
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
-	border: 2px solid #ccc;
 }
-/* lista: LIST fat columns, listit: Top row names */
+/*PROFILE INFO containers */
+div.pro1, div.pro1a, div.pro1b, div.pro1b1, div.pro1c, div.pro1c1, div.pro1c2, div.prorob {
+	width: 430px;
+	margin: 20px 10px 20px 10px;
+	
+	font-family: Georgia, serif;
+	color: #ccc;
+	font-size: 16px;
+	text-align: left;
+}
+/*PROFILE INFO outer container */
+div.pro1 {
+	margin: 0 auto;
+	width: 450px;
+	float: right;
+}
+/*PROFILE ROBBING container */
+div.prorob {
+	background-color: #000;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	
+	margin: 0 auto;
+	width: 400px;
+	height: 25px;
+	padding: 10px;
+	
+	font-family: Georgia, serif;
+	color: #00d400;
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+}
+.prorob a:focus		{color: #00d400; text-decoration: none;}
+.prorob a:link		{color: #00d400; text-decoration: none;}
+.prorob a:visited	{color: #00d400; text-decoration: none;}
+.prorob a:hover		{color: #56FF56; text-decoration: none;}
+.prorob a:active	{color: #00d400; text-decoration: none;}
+
+div.prorob:hover {
+	background: #222;
+}
+div.prorob:active {
+	background: #000;
+}
+
+/*PROFILE INFO topmost inner container */
+div.pro1b, div.pro1b1 {
+	margin: 0 auto;
+	float: left;
+}
+/*PROFILE INFO inner container */
+div.pro1b1 {
+	margin-top: 10px;
+}
+/*PROFILE INFO Name/Shout/Button container */
+div.pro1c, div.pro1c1, div.pro1c2 {
+	width: 100px;
+	margin: 0 auto;
+	float: left;
+}
+/*PROFILE INFO Tiny Print container */
+div.pro1c1 {
+	font-size: 12px;
+}
+div.pro1c2 {
+	background-image:url('/art/shout.png');
+}
+/*PROFILE INFO Form container */
+div.pro1d, div.pro1d1 {
+	width: 310px;
+	margin: 0 auto;
+	float: left;
+}
+/*PROFILE INFO Current SHOUT container */
+div.pro1d1 {
+	background-color: #fff;
+	width: 300px;
+	height: 80px;
+	color: #374548;
+	padding: 10px 10px 0px 10px;
+}
+/*PROFILE INFO Form Input container */
+div.pro1d input {
+	color: #ccc;
+	width: 320px;
+	height: 30px;
+	margin: 0;
+}
+/*PROFILE INFO Form Button container */
+div.pro1c button{
+	background: #000;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	border:1px solid #000;
+	
+	margin: 5px auto;
+	width: 100px;
+	height: 25px;
+	
+	font-family: Georgia, serif;
+	color: #00d400;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+	
+	cursor:pointer;
+}
+div.pro1c button:hover {
+	background: #222;
+	border:1px solid #222;
+	color: #56FF56;
+}
+div.pro1c button:active {
+	background: #000;
+	border:1px solid #000;
+	color: #00d400;
+}
+
+/*PROFILE ITEMS containers */
+div.pro2, div.pro2a, div.pro2a1, div.pro2b {
+	background-color: #555;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	border: 2px solid #ccc;
+	width: 489px;
+	margin: auto;
+	margin: 10px 10px 20px 7px;
+}
+/*PROFILE ITEMS outer container */
+div.pro2 {
+	border: 0px;
+	border-right: 1px solid #374548;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
+	margin: 0 auto;
+	width: 509px;
+	float: right;
+}
+/*PROFILE ITEMS Name #ID inner container */
+div.pro2a1 {
+	border: 0px;
+	width: 489px;
+	margin: 0 auto;
+	margin-top: 20px;
+	margin-bottom: 30px;
+}
+/*PROFILE ITEMS inner container */
+div.pro2b, div.pro2tit {
+	border: 0px;
+	width: 489px;
+	margin: 0 auto;
+}
+/*INVENTORY container */
+div.pro2tit {
+	background-color: #e3e3e3;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+	
+	font-family: Georgia, serif;
+	color: #374548;
+	font-size: 23px;
+	text-align: center;
+}
+/*PROFILE ITEMS fonts, pro2c: Name, pro2id: #ID, pro2d: big col, pro2e: small col, procat: cat */
+div.pro2c, div.pro2id, div.pro2d, div.pro2e, div.pro2d1, div.pro2e1, div.pro2d2, div.pro2e2, div.procat1, div.procat2 {
+	font-family: Georgia, serif;
+	color: #fff;
+	font-size: 23px;
+	
+	margin: 0 auto;
+	float: left;
+}
+/*PROFILE ITEMS Name container */
+div.pro2c {
+	color: #ccc;
+	width: 329px;
+	height: 30px;
+	
+	margin-left: 10px;
+}
+/*PROFILE ITEMS #ID container */
+div.pro2id {
+	background-color: #92D192;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	color: #374548;
+	width: 150px;
+	text-align: center
+}
+/*PROFILE ITEMS big col container */
+div.pro2d, div.pro2d1, div.pro2d2 {
+	width: 243px;
+	text-align: center
+}
+/*PROFILE ITEMS small col container */
+div.pro2e, div.pro2e1, div.pro2e2 {
+	width: 161px;
+	text-align: center
+}
+/*PROFILE ITEMS col container with border */
+div.pro2d1, div.pro2e1 {
+	border-right: 1px dotted #ccc;
+	border-bottom: 1px dotted #ccc;
+}
+/*PROFILE ITEMS col container with only bottom border */
+div.pro2d2, div.pro2e2 {
+	border-bottom: 1px dotted #ccc;
+}
+/*PROFILE ITEMS category container */
+div.procat1, div.procat2 {
+	border: 0px;
+	width: 243px;
+	
+	color: #ccc;
+	font-size: 14px;
+	text-align: center;
+}
+/*PROFILE ITEMS small col cat container */
+div.procat2 {
+	width: 160px;
+}
+
+/* lista: LIST fat columns */
 div.lista, div.listb, div.listat, div.listbt, div.listc, div.listct {
-	border-right: 1px dotted #fff;
+	border-right: 1px dotted #ccc;
 	border-bottom: 1px solid #374548;
 	
 	font-family: Georgia, serif;
@@ -254,30 +494,40 @@ div.lista, div.listb, div.listat, div.listbt, div.listc, div.listct {
 	padding: 5px;
 	float: left;
 }
-/* LIST top row names has different height */
+/* LIST thin columns */
+div.listb, div.listbt{	
+	border-right: 1px dotted #ccc;
+	width: 80px;
+}
+/* LIST TOP ROW has different height */
 div.listat, div.listbt, div.listct{	
 	height: 25px;
+	border-top: 1px dotted #ccc;
+	border-right: 1px dotted #ccc;
+	border-bottom: 1px dotted #ccc;
 }
-/* SHOUT has special, left aligned text */
+/* LIST TOP ROW names */
+div.listat, div.listbt, div.listct{	
+	color: #ccc;
+	font-size: 18px;
+}
+/* SHOUT TOP ROW with no right border */
+div.listct{	
+	border: 0px;
+	border-top: 1px dotted #ccc;
+	border-bottom: 1px dotted #ccc;
+}
+/* SHOUT COLUMN with no borders */
+div.listc{	
+	border: 0px;
+	border-bottom: 1px solid #374548;
+}
+/* SHOUT COLUMN has special, left aligned text */
 div.listc{	
 	font-family: Lucida Sans Unicode;
 	line-height: 1.2em;
 	font-size: 10px;
 	text-align: left;
-}
-/* Special last List with no borders */
-div.listc, div.listct{	
-	border: 0px;
-	border-bottom: 1px solid #374548;
-}
-/* LIST thin columns */
-div.listb, div.listbt{	
-	width: 80px;
-}
-/* LIST top row names */
-div.listat, div.listbt, div.listct{	
-	color: #ccc;
-	font-size: 18px;
 }
 
 /* Form horizontal line */
@@ -317,6 +567,12 @@ div.formp1{
 	width: 80px;
 	float: left;
 }
+div.formp1:hover {
+	background-color: #D5E4D5;
+}
+div.formp1:active {
+	background-color: #BAD4BA;
+}
 div.formp2{
 	background-color: #92D192;
 	-moz-border-radius: 8px;
@@ -325,6 +581,12 @@ div.formp2{
 	margin: 0px 10px 10px 10px;
 	width: 80px;
 	float: left;
+}
+div.formp2:hover {
+	background-color: #AAE3AA;
+}
+div.formp2:active {
+	background-color: #92D192;
 }
 div.formp3{
 	background-color: #6ED46E;
@@ -335,6 +597,12 @@ div.formp3{
 	width: 80px;
 	float: left;
 }
+div.formp3:hover {
+	background-color: #82E682;
+}
+div.formp3:active {
+	background-color: #6ED46E;
+}
 div.formp4{
 	background-color: #4CD44C;
 	-moz-border-radius: 8px;
@@ -343,6 +611,12 @@ div.formp4{
 	margin: 0px 10px 10px 10px;
 	width: 80px;
 	float: left;
+}
+div.formp4:hover {
+	background-color: #61EA61;
+}
+div.formp4:active {
+	background-color: #4CD44C;
 }
 div.formp5{
 	background-color: #00d400;
@@ -353,19 +627,25 @@ div.formp5{
 	width: 80px;
 	float: left;
 }
+div.formp5:hover {
+	background-color: #28F128;
+}
+div.formp5:active {
+	background-color: #00d400;
+}
 div.formn{
 	font-family: Georgia, serif;
-	color: #fff;
+	color: #555;
 	font-size: 23px;
 	font-weight: bold;
 	text-align: center;
 	margin: 5px;
 }
-.formn a:focus		{color: #fff; font-weight: bold; text-decoration: none;}
-.formn a:link		{color: #fff; font-weight: bold; text-decoration: none;}
-.formn a:visited	{color: #fff; font-weight: bold; text-decoration: none;}
-.formn a:hover		{color: #374548; font-weight: bold; text-decoration: underline;}
-.formn a:active		{color: #374548; font-weight: bold; text-decoration: none;}
+.formn a:focus		{color: #555; font-weight: bold; text-decoration: none;}
+.formn a:link		{color: #555; font-weight: bold; text-decoration: none;}
+.formn a:visited	{color: #555; font-weight: bold; text-decoration: none;}
+.formn a:hover		{color: #fff; font-weight: bold; text-decoration: none;}
+.formn a:active		{color: #fff; font-weight: bold; text-decoration: none;}
 
 /* Form inputs for Work */
 div.formi{
@@ -464,6 +744,16 @@ div.forminline{
 	
 	cursor:pointer;
 }
+#workit button:hover {
+	background: #222;
+	border:1px solid #222;
+	color: #56FF56;
+}
+#workit button:active {
+	background: #000;
+	border:1px solid #000;
+	color: #00d400;
+}
 
 #workit radio{
 	float: left;
@@ -501,6 +791,16 @@ div.forminline{
 	
 	cursor:pointer;
 }
+#buyit button:hover {
+	background: #222;
+	border:1px solid #222;
+	color: #56FF56;
+}
+#buyit button:active {
+	background: #000;
+	border:1px solid #000;
+	color: #00d400;
+}
 
 /* Big button menu */
 div.menu{
@@ -516,6 +816,12 @@ div.menu1{
 	margin: 0px 2px 5px 2px;
 	width: 200px;
 	float: left;
+}
+div.menu1:hover{
+	background-color: #666;
+}
+div.menu1:active{
+	background-color: #555;
 }
 div.menup{
 	width: 100px;
@@ -558,47 +864,30 @@ div.menun{
 div.clear{
 	clear: both;
 }
-/* Icon navigation icons */
+/* TOP LEFT navigation container */
 div.act{
 	background-color: #555;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px;
 	border: 2px solid #ccc;
-	width: 140px;
-	margin: 5px 2px 0px 2px;
-	float:left;
-}
-div.act1{
-	background-color: #555;
-	-moz-border-radius: 8px;
-	-webkit-border-radius: 8px;
-	border-radius: 8px;
-	border: 2px solid #ccc;
 	width: 50px;
 	margin: 5px 2px 0px 2px;
 	float:left;
 }
-div.act1p{
+div.act:hover {
+	background-color: #666;
+}
+div.act:active {
+	background-color: #555;
+}
+
+/* TOP LEFT NAVIGATION ICONS */
+div.actp{
 	width: 50px;
 	margin: 5px 10px 5px 10px;
 }
-div.actp{
-	width: 50px;
-	margin: 10px 20px 0px 50px;
-}
-div.actn{
-	font-family: Georgia, serif;
-	color: #ffffff;
-	font-size: 12px;
-	line-height: 1.0em;
-	font-weight: bold;
-	text-align:center;
 
-	width: 130px;
-	margin: 5px 5px 10px 5px;
-	float:left;
-}
 /* HUD icons */
 div.hud{
 	background-color: #555;
@@ -689,11 +978,24 @@ div.log2{
 	margin: 0px;
 	float:left;
 }
+div.log2:hover{
+	background-color: #FF8A8A;
+}
+div.log2:active{
+	background-color: #ff5555;
+}
+/* Grey Logout button */
 div.log3{
 	background-color: #ccc;
 	width: 80px;
 	margin: 0px;
 	float:left;
+}
+div.log3:hover{
+	background-color: #DBD9D9;
+}
+div.log3:active{
+	background-color: #ccc;
 }
 div.logit{
 	font-family: Georgia, serif;
