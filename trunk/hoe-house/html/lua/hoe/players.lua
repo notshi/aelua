@@ -281,10 +281,11 @@ end
 
 --------------------------------------------------------------------------------
 --
--- adjust a player by a table or a function
+-- adjust a player by a table
+-- numbers are added to existing values, strings are set
 --
 --------------------------------------------------------------------------------
-function adjust(H,id,by)
+function update_add(H,id,by)
 
 	local f=function(H,p)
 		if by.energy and by.energy<0 then
@@ -307,9 +308,36 @@ function adjust(H,id,by)
 		end
 		return true
 	end
+	return update(H,id,f)	
+end
+
+--------------------------------------------------------------------------------
+--
+-- change a player by a table, each value is set
+--
+--------------------------------------------------------------------------------
+function update_set(H,id,by)
+
+	local f=function(H,p)
+		for i,v in pairs(by) do
+			p[i]=v
+		end
+		return true
+	end		
+	return update(H,id,f)	
+end
+
+--------------------------------------------------------------------------------
+--
+-- get - update - put
+--
+-- f must be a function that changes the player.cache and returns true on success
+-- id can be an id or a player table from which we will get the id
+--
+--------------------------------------------------------------------------------
+function update(H,id,f)
 
 	if type(id)=="table" then id=id.key.id end -- can turn a player into an id
-	if type(by)=="function" then f=func end -- more control
 		
 	for retry=1,10 do
 		local t=dat.begin()
@@ -327,4 +355,3 @@ function adjust(H,id,by)
 	end
 	
 end
-

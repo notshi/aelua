@@ -315,7 +315,7 @@ local put=H.put
 			total=total+tbux
 		end
 		
-		local r=players.adjust(H,H.player,result)
+		local r=players.update_add(H,H.player,result)
 		if r then
 			H.player=r
 			result.total_bux=total
@@ -389,7 +389,7 @@ function serv_round_shop(H)
 			result=by
 			result.fail="bux"
 		else
-			local r=players.adjust(H,H.player,by)
+			local r=players.update_add(H,H.player,by)
 			if r then
 				H.player=r
 				workout_cost()
@@ -430,14 +430,48 @@ function serv_round_profile(H)
 	local put=H.put
 	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."profile/",title="profile",link="profile",}
 	
+	if H.player and (H.srv.posts.name or H.srv.posts.shout) then
+		local by={}
+		
+		if H.srv.posts.do_name and H.srv.posts.name then
+			local s=H.srv.posts.name
+			if string.len(s) > 20 then s=string.sub(s,1,20) end
+			by.name=wet_html.esc(s)
+		end
+
+		if H.srv.posts.do_shout and H.srv.posts.shout then
+			local s=H.srv.posts.shout		
+			if string.len(s) > 100 then s=string.sub(s,1,100) end		
+			by.shout=wet_html.esc(s)
+		end
+		
+		local r=players.update_add(H,H.player,by)
+		if r then
+			H.player=r
+		end
+	end
+
+	local view=tonumber(H.arg(2) or 0) or 0
+	if view<=0 then view=nil end
+	if view then
+		view=players.get_id(H,view)
+		if view then
+			if view.cache.round_id~=H.round.key.id then view=nil end -- check that player belongs to this round
+		end
+	end
+
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{user=user})
 	put("player_bar",{player=H.player and H.player.cache})
 	
-	put("missing_content",{})
-		
+	if view and view.cache then 
+		put("player_profile",{player=view.cache,edit=false,fight=true})
+	else
+		put("player_profile",{player=H.player and H.player.cache,edit=true})
+	end
+	
 	put("footer",footer_data)
 
 end
