@@ -233,11 +233,12 @@ local put=H.put
 	put("user_bar",{user=user})
 	put("player_bar",{player=H.player and H.player.cache})
 		
-	put("<br/>listing players <br/><br/>",{})
+	put("player_row_header",{})
 	local list=players.list(H)
 	for i=1,#list do local v=list[i]
 		put("player_row",{player=v.cache})
 	end
+	put("player_row_footer",{})
 		
 	put("footer",footer_data)
 	

@@ -31,7 +31,7 @@ http://whorehouse.naken.cc
 	margin: 0;
 }
 b {font-weight: bold;}
-i {font-family: Lucida Sans Unicode; font-weight: bold; letter-spacing: -1px; line-height: 30px;}
+i {font-family: Lucida Sans Unicode; font-weight: bold; letter-spacing: -0.1em; line-height: 30px;}
 a img, :link img, :visited img {border: 0;}
 form, button{border:0; margin:0; padding:0;}
 	
@@ -109,8 +109,8 @@ div.chunk2{
 	width: 480px;
 	float:right;
 }
-/* Basic menu headers*/
-div.chunk3{
+/* Menu headers. chunk3: Basic Menu, chunk3a: List */
+div.chunk3, div.chunk3a{
 	background-color: #e3e3e3;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -123,7 +123,7 @@ div.chunk3{
 	width: 624px;
 	padding: 0px;
 }
-div.chunk3it{
+div.chunk3it, div.chunk3ait{
 	font-family: Georgia, serif;
 	color: #374548;
 	font-size: 23px;
@@ -134,12 +134,16 @@ div.chunk3it{
 	margin: 10px;
 	float:left;
 }
-div.chunk3line{	
+div.chunk3line {	
 	border-bottom:2px dotted #fff;
 	
 	width: 550px;
 	margin: auto;
 }
+div.chunk3a, div.chunk3ait {
+	width: 960px;
+}
+
 /* Icon navigation container*/
 div.chunk4{
 	background-color: #e3e3e3;
@@ -200,7 +204,7 @@ div.alert{
 .alert a:hover		{color: #ff5555; font-weight: bold; text-decoration: underline;}
 .alert a:active		{color: #ff5555; font-weight: bold; text-decoration: none;}
 /* Form container */
-div.chunk7{
+div.chunk7, div.chunk7a{
 	background-color: #555;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -210,13 +214,72 @@ div.chunk7{
 	margin-top: 20px;
 	width: 624px;
 }
-/* Form chunks */
-div.chunk8{
+/* SHOP container */
+div.chunk7a {
+	margin: 0px auto;
+}
+/* Form chunks, chunk8a: LIST outercontainer, chunk8b: LIST innercontainer */
+div.chunk8, div.chunk8a, div.chunk8b {
+	margin: 0px auto;
+	width: 960px;
+}
+div.chunk8 {
 	margin: auto;
 	margin-top: 10px;
 	width: 624px;
 	clear: both;
 }
+/* LIST outer container */
+div.chunk8a{
+	background-color: #555;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	border: 2px solid #ccc;
+}
+/* lista: LIST fat columns, listit: Top row names */
+div.lista, div.listb, div.listat, div.listbt, div.listc, div.listct {
+	border-right: 1px dotted #fff;
+	border-bottom: 1px solid #374548;
+	
+	font-family: Georgia, serif;
+	color: #fff;
+	font-size: 16px;
+	text-align: center;
+	height: 45px;
+	overflow: hidden;
+	width: 160px;
+	margin: 0px;
+	padding: 5px;
+	float: left;
+}
+/* LIST top row names has different height */
+div.listat, div.listbt, div.listct{	
+	height: 25px;
+}
+/* SHOUT has special, left aligned text */
+div.listc{	
+	font-family: Lucida Sans Unicode;
+	line-height: 1.2em;
+	font-size: 10px;
+	text-align: left;
+}
+/* Special last List with no borders */
+div.listc, div.listct{	
+	border: 0px;
+	border-bottom: 1px solid #374548;
+}
+/* LIST thin columns */
+div.listb, div.listbt{	
+	width: 80px;
+}
+/* LIST top row names */
+div.listat, div.listbt, div.listct{	
+	color: #ccc;
+	font-size: 18px;
+}
+
 /* Form horizontal line */
 div.formline{	
 	border-bottom:1px dotted #ccc;
@@ -232,9 +295,15 @@ div.chunk9{
 	width: 500px;
 	clear: both;
 }
-div.formt{
+/* Fonts for action Forms. formt: work, formta: shop, */
+div.formt, div.formta{
 	font-family: Georgia, serif;
 	color: #ccc;
+	font-size: 25px;
+	line-height: 45px;
+	
+}
+div.formt{
 	font-size: 16px;
 	text-align: center;
 	line-height: 25px;
@@ -298,7 +367,7 @@ div.formn{
 .formn a:hover		{color: #374548; font-weight: bold; text-decoration: underline;}
 .formn a:active		{color: #374548; font-weight: bold; text-decoration: none;}
 
-/* Form inputs */
+/* Form inputs for Work */
 div.formi{
 	background: #555;
 	-moz-border-radius: 8px;
@@ -323,7 +392,7 @@ div.slide{
 	width: 480px;
 	padding: 0px;
 }
-
+/* html+css= ugly web */
 div.formin, div.formina, div.forminb, div.forminline{		
 	font-family: Lucida Sans Unicode;
 	color: #e3e3e3;
@@ -351,7 +420,7 @@ div.forminline{
 	width: 15px;
 	height: 50px;
 }
-
+/* WORK Form attributes. using ID for great importance. */
 #workit input:focus{
 	border: 0;
 	outline: 0;
@@ -392,10 +461,45 @@ div.forminline{
 	font-size: 42px;
 	font-weight: bold;
 	text-align: center;
+	
+	cursor:pointer;
 }
 
 #workit radio{
 	float: left;
+}
+
+/* SHOP form attributes */
+#buyit{
+	width: 500px;
+	margin: 0 auto;
+	margin-bottom: 20px;
+}
+
+#buyit input:focus{
+	border: 0;
+	outline: 0;
+}
+
+#buyit button{
+	background: #000;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	border:1px solid #000;
+	
+	margin: 0;
+	margin-top: 10px;
+	width: 200px;
+	height: 50px;
+	
+	font-family: Georgia, serif;
+	color: #00d400;
+	font-size: 42px;
+	font-weight: bold;
+	text-align: center;
+	
+	cursor:pointer;
 }
 
 /* Big button menu */
