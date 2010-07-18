@@ -468,8 +468,8 @@ function serv_round_profile(H)
 	
 	if view and view.cache then 
 		put("player_profile",{player=view.cache,edit=false,fight=true})
-	else
-		put("player_profile",{player=H.player and H.player.cache,edit=true})
+	elseif H.player then
+		put("player_profile",{player=H.player.cache,edit=true})
 	end
 	
 	put("footer",footer_data)

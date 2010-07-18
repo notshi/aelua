@@ -4,6 +4,7 @@ local users=require("wetgenes.aelua.users")
 
 local wet_html=require("wetgenes.html")
 local replace=wet_html.replace
+local url_esc=wet_html.url_esc
 
 local table=table
 local string=string
@@ -298,10 +299,12 @@ user_bar=function(d)
 	
 		d.hello="Hello, "..d.name.."."
 		
-		d.action="<div class=\"log3\"><div class=\"logit\"><a href=\""..users.logout_url(d.srv.url).."\">Logout?</a></div></div>"
+--		d.action="<div class=\"log3\"><div class=\"logit\"><a href=\""..users.logout_url(d.srv.url).."\">Logout?</a></div></div>"
+		d.action="<div class=\"log3\"><div class=\"logit\"><a href=\"/dumid/logout/?continue="..url_esc(d.srv.url).."\">Logout?</a></div></div>"
 	else
 		d.hello="Hello, Anon."
-		d.action="<div class=\"log2\"><div class=\"logit\"><a href=\""..users.login_url(d.srv.url).."\">Login?</a></div></div>"
+--		d.action="<div class=\"log2\"><div class=\"logit\"><a href=\""..users.login_url(d.srv.url).."\">Login?</a></div></div>"
+		d.action="<div class=\"log2\"><div class=\"logit\"><a href=\"/dumid/login/?continue="..url_esc(d.srv.url).."\">Login?</a></div></div>"
 	
 	end
 	
@@ -849,7 +852,7 @@ end
 -----------------------------------------------------------------------------
 request_login=function(d)
 
-	d.action="<a href=\""..users.login_url(d.srv.url).."\">Login</a>"
+	d.action="<a href=\"/dumid/login/?continue="..url_esc(d.srv.url).."\">Login</a>"
 	
 	return replace([[
 
