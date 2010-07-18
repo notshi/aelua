@@ -477,14 +477,28 @@ round_row=function(d)
 		d.url=d.srv.url_base..r.id
 			
 		return replace([[	
-<div class="desc">
-<a class="hoe_round_row" href="{url}" style="display:block"> game {round.id} : 
-<span class="hoe_round_row_speed">{speed}eph</span>
-<span class="hoe_round_row_start">{start}</span>
-<span class="hoe_round_row_end">{remaining}</span>
-<span class="hoe_round_row_players">{players} players</span>
-</a>
+<div class="cont">
+	<div class="chunk6">
+			<div class="gameid">
+				<a class="hoe_round_row" href="{url}" style="display:block"> Game <i>{round.id}</i>: 
+			</div>
+			<div class="game">
+				<i>{speed}</i> eph
+			</div>
+			<div class="game">
+				<i>{start}</i>
+			</div>
+			<div class="game">
+				{remaining}
+			</div>
+			<div class="game">
+			<i>{players}</i> players
+				</a>
+			</div>
+		<div class="clear"></div>
+	</div>
 </div>
+
 ]],d)
 
 	end
@@ -503,6 +517,7 @@ end
 --
 -----------------------------------------------------------------------------
 player_row_header=function(d)
+	d.random=math.random(1,3)
 	return replace([[
 	
 <div class="cont">
@@ -513,6 +528,7 @@ player_row_header=function(d)
 		</div>
 		<div class="clear"></div>
 	</div>	
+	<div class="illlist{random}"></div>
 	<div class="chunk8a">
 		<div class="chunk8b">
 			<div class="listat">Player Name</div>
@@ -599,6 +615,7 @@ player_base=function(d)
 		</div>
 		<div class="clear"></div>
 	</div>
+	<div class="illshop1"></div>
 	<div class="chunk8">
 		<div class="chunk9">
 		<div class="formta">
@@ -744,15 +761,18 @@ player_work_result=function(d)
 	d.sbux=""
 	d.shoes=""
 	d.sbros=""
+	d.random=math.random(1,3)
 
 	if d.result.total_bux>0 then
 		d.total_bux=num_to_thousands(d.result.total_bux)
 		d.bux=num_to_thousands(d.result.bux)
 		d.sbux=replace([[
 <div class="cont">
-<div class="chunk6">
+<div class="illwork{random}">
+<div class="chunk6c">
 <div class="alert">
 Your hoes worked hard and farmed a total of <img src="/art/buxb.png"> <i>{total_bux}</i> bux giving you <img src="/art/buxb.png"> <i>{bux}</i> bux after payout.
+</div>
 </div>
 <div class="clear"></div>
 </div>
@@ -766,12 +786,14 @@ Your hoes worked hard and farmed a total of <img src="/art/buxb.png"> <i>{total_
 		if d.one>1 then d.s="s" end
 		d.shoes=replace([[
 <div class="cont">
-<div class="chunk6">
+<div class="illhoe{random}">
+<div class="chunk6b">
 <div class="alert">
 <img src="/art/hoes.png"> <i>{one}</i> hoe{s} joined your business.
 </div>
-<div class="clear"></div>
 </div>
+</div>
+<div class="clear"></div>
 </div>
 ]],d)
 	elseif d.result.hoes<0 then
@@ -780,12 +802,14 @@ Your hoes worked hard and farmed a total of <img src="/art/buxb.png"> <i>{total_
 		if d.one>1 then d.s="s" end
 		d.shoes=replace([[
 <div class="cont">
+<div class="illleave{random}">
 <div class="chunk6a">
 <div class="alert">
 <img src="/art/hoes.png"> <i>{one}</i> hoe{s} left your business.
 </div>
-<div class="clear"></div>
 </div>
+</div>
+<div class="clear"></div>
 </div>
 ]],d)
 	end
@@ -796,12 +820,14 @@ Your hoes worked hard and farmed a total of <img src="/art/buxb.png"> <i>{total_
 		if d.one>1 then d.s="s" end
 		d.sbros=replace([[
 <div class="cont">
-<div class="chunk6">
+<div class="illbro{random}">
+<div class="chunk6b">
 <div class="alert">
 <img src="/art/scare.png"> <i>{one}</i> bro{s} joined your business.
 </div>
-<div class="clear"></div>
 </div>
+</div>
+<div class="clear"></div>
 </div>
 ]],d)
 	end
@@ -910,38 +936,37 @@ player_shop_form=function(d)
 	d.manure_bux=num_to_thousands(d.cost.manure)
 
 	return replace([[	
-	
+			
 <div class="cont">
-	<div class="chunk3">
-		<div class="chunk3it">
+	<div class="chunk3a">
+		<div class="chunk3ait">
 			Shop
 		<div class="chunk3line"></div>
 		</div>
 		<div class="clear"></div>
 	</div>
-<div class="chunk7a">
-	<div class="chunk8">
+	<div class="illshop1"></div>
+	<div class="chunk8a">
 	<div class="formta">
 	<form class="notjNice" name="hoe_player_shop_form" id="hoe_player_shop_form" action="" method="POST" enctype="multipart/form-data">
 
 	<div id="buyit">
-	Buy <i><input type="text" name="houses" id="hoe_player_work_form_houses" value="0" style="width:100px;"/></i> houses at <img src="/art/buxb.png"> <i>{houses_bux}</i> bux each.
-	<div class="formline"></div>
-	Buy <i><input type="text" name="bros" id="hoe_player_work_form_bros" value="0" style="width:100px;"/></i> bros at <img src="/art/buxb.png"> <i>{bros_bux}</i> bux each.
-	<div class="formline"></div>
-	Buy <i><input type="text" name="gloves" id="hoe_player_work_form_gloves" value="0" style="width:100px;"/></i> gloves at <img src="/art/buxb.png"> <i>{gloves_bux}</i> bux each.
-	<div class="formline"></div>
-	Buy <i><input type="text" name="sticks" id="hoe_player_work_form_sticks" value="0" style="width:100px;"/></i> sticks at <img src="/art/buxb.png"> <i>{sticks_bux}</i> bux each.
-	<div class="formline"></div>
+		Buy <i><input type="text" name="houses" id="hoe_player_work_form_houses" value="0" style="width:100px;"/></i> <img src="/art/housesb.png"> houses at <img src="/art/buxb.png"> <i>{houses_bux}</i> bux each.
+		<div class="formline1"></div>
+		Buy <i><input type="text" name="bros" id="hoe_player_work_form_bros" value="0" style="width:100px;"/></i> <img src="/art/scareb.png"> bros at <img src="/art/buxb.png"> <i>{bros_bux}</i> bux each.
+		<div class="formline1"></div>
+		Buy <i><input type="text" name="gloves" id="hoe_player_work_form_gloves" value="0" style="width:100px;"/></i> <img src="/art/glovesb.png"> gloves at <img src="/art/buxb.png"> <i>{gloves_bux}</i> bux each.
+		<div class="formline1"></div>
+		Buy <i><input type="text" name="sticks" id="hoe_player_work_form_sticks" value="0" style="width:100px;"/></i> <img src="/art/sticksb.png"> sticks at <img src="/art/buxb.png"> <i>{sticks_bux}</i> bux each.
+		<div class="formline1"></div>
 
-	<button class="button" type="submit" name="submit" value="Buy!"/>Buy!</button>
+		<button class="button" type="submit" name="submit" value="Buy!">Buy!</button>
 	</div>
 	
 	</form>
 	</div>
 	</div>
-
-</div>
+	
 </div>
 ]],d)
 
