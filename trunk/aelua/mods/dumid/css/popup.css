@@ -1,0 +1,113 @@
+
+* {
+	vertical-align: baseline;
+	font-weight: inherit;
+	font-family: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	border: 0 none;
+	outline: 0;
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	font-family: Georgia, serif;
+	font-size:24px;
+}
+
+b {
+	font-weight:bold;
+}
+
+.popup {
+	position:relative;
+	width:390px;
+	height:290px;
+	margin: auto;
+	background: #eee;
+	border:5px solid #aaf;
+}
+
+.head{
+	width:380px;
+	background: #eef;
+	margin: 5px;
+	margin-bottom: 20px
+}
+.from{
+	width:380px;
+	background: #eef;
+	margin: 5px;
+	text-align:left;
+}
+.wants{
+	width:380px;
+	background: #eef;
+	margin: 5px;
+	text-align:left;
+}
+.data{
+	width:380px;
+	background: #eef;
+	margin: 5px;
+	text-align:center;
+	font-weight:bold;
+}
+.buttons{
+	font-size:48px;
+	position:absolute;
+	bottom:0px;
+	width:100%;
+}
+.allow {
+	float: left;
+	margin:20px;
+	border:5px solid #afa;
+	padding: 5px;
+}
+.deny {
+	float: right;
+	margin:20px;
+	border:5px solid #faa;
+	padding: 5px;
+}
+.foot {
+	font-size:12px;
+	position:absolute;
+	bottom:0px;
+	width:100%;
+	text-align:center;
+}
+
+.button {
+   border-top: 1px solid #96d1f8;
+   background: #65a9d7;
+   background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+   background: -moz-linear-gradient(top, #3e779d, #65a9d7);
+   padding: 5px 11px;
+   -webkit-border-radius: 0px;
+   -moz-border-radius: 0px;
+   border-radius: 0px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,1) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: #fff;
+   font-size: 28px;
+   font-family: Helvetica, Arial, Sans-Serif;
+   text-decoration: none;
+   vertical-align: middle;
+   }
+.button:hover {
+   background: #4e87ad;
+   background: -webkit-gradient(linear, left top, left bottom, from(#4e87ad), to(#75b9e7));
+   background: -moz-linear-gradient(top, #4e87ad, #75b9e7);
+   }
+.button:active {
+   background: #3e779d;
+   background: -webkit-gradient(linear, left top, left bottom, from(#65a9d7), to(#3e779d));
+   background: -moz-linear-gradient(top, #65a9d7, #3e779d);
+   color: #eee;
+   }
+   

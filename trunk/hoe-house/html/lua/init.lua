@@ -50,6 +50,10 @@ serv_apps={ -- base lookup table
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
 					},
 					
+["dumid"]		=	{			-- a dumid module
+						["#default"]	=	"dumid", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+					},
 }
 
 
