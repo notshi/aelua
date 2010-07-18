@@ -17,10 +17,10 @@ module("wetgenes.html")
 -----------------------------------------------------------------------------
 function replace(a,d)
 
-return (string.gsub( a , "{([%w%._%-]-)}" , function(a) -- find only words and ._- tightly encased in {}
+return (string.gsub( a , "{([%w%._%-]-)}" , function(a) -- find only words and "._-" tightly encased in {}
 -- this means that almost all legal use of {} in javascript will not match at all.
--- Even when it does probably as a "{}" then it is unlikley to find anything in the d table
--- so will just be returned as is.
+-- Even when it does (probably as a "{}") then it is unlikley to accidently find anything in the d table
+-- so the text will just be returned as is.
 -- So it may not be safe, but it is simple to understand and perfecty fine under most use cases.
 
 	local f
@@ -64,6 +64,8 @@ end
 --
 -- this environment will not get modified by the called function as it is wrapped here
 --
+-- even though the calling function is free to modify the table it gets
+--
 -----------------------------------------------------------------------------
 get=function(html,src,env)
 
@@ -84,6 +86,9 @@ end
 -----------------------------------------------------------------------------
 --
 -- very basic html esc to stop tags and entities from doing bad things
+-- running text submitted from a user through this function should stop it from doing
+-- anything other than just being text, it doesnt guarantee that it is valid xhtml / whatever
+-- We just turn a few important characters into entities.
 --
 -----------------------------------------------------------------------------
 function esc(s)
@@ -91,4 +96,26 @@ function esc(s)
 	return (s:gsub("[<>&]", function(c) return escaped[c] end))
 end
 
+-----------------------------------------------------------------------------
+--
+-- basic url escape, so as not to trigger url get params or anything else by mistake 
+-- so = & # % are bad and get replaced with %xx
+--
+-----------------------------------------------------------------------------
+function url_esc(s)
+	return string.gsub(s, "([&=%%%# ])", function(c)
+		return string.format("%%%02x", string.byte(c))
+	end)
+end
+
+-----------------------------------------------------------------------------
+--
+-- convert any %xx into single chars
+--
+-----------------------------------------------------------------------------
+function url_unesc(s)
+	return string.gsub(s, "%%(%x%x)", function(hex)
+		return string.char(tonumber(hex, 16))
+	end)
+end
 
