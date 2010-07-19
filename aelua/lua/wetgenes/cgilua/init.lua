@@ -86,7 +86,7 @@ function setup() -- call setup once to set global values for this request?
 
 	headers_sent=false
 
-	path=cgilua.servervariable("PATH_INFO")
+	path=cgilua.servervariable("SCRIPT_NAME")..cgilua.servervariable("PATH_INFO")
 
 	server=cgilua.servervariable("SERVER_NAME")
 
