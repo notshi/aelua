@@ -11,8 +11,9 @@ local type,ipairs=type,ipairs
 
 local string=string
 
+local wet_html=require("wetgenes.html")
 
-local wet = wetgenes.cgilua
+local wet = require("wetgenes.cgilua")
 local cfg = cfg
 
 
@@ -34,7 +35,7 @@ function login(need)
 
 local sess=cgilua.cookies.get(cfg.cookie_session)
 
-local redirect="http://join."..cfg.base_domain.."?redirect="..wet.url
+local redirect="http://join."..cfg.base_domain.."?redirect="..wet_html.url_esc(wet.url)
 
 
 user={}
@@ -73,7 +74,7 @@ user={}
 				if need then
 					wet.redirect(redirect)
 				end
---	dbg("fail bad ip")
+--	dbg("fail bad ip "..wet.ip..":"..tab.sys_id)
 
 			end
 			

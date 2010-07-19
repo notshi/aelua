@@ -10,7 +10,7 @@ local sql=require("wetgenes.cgilua.mysql")
 local json=require("Json")
 
 
-local wet = wetgenes.cgilua
+local wet = require("wetgenes.cgilua")
 local cfg = cfg
 
 
