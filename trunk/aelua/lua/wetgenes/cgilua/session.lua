@@ -4,7 +4,7 @@
 
 require"cgilua.cookies"
 
-local sql=require "wetgenes.cgilua.mysql"
+local sql=require("wetgenes.cgilua.mysql")
 
 
 local type,ipairs=type,ipairs
@@ -34,7 +34,7 @@ function login(need)
 
 local sess=cgilua.cookies.get(cfg.cookie_session)
 
-local redirect="http://join."..cfg.base_domain.."?redirect="..wet.cgi.url
+local redirect="http://join."..cfg.base_domain.."?redirect="..wet.url
 
 
 user={}
@@ -45,7 +45,7 @@ user={}
 		sess=string.gsub(sess, "[^0-9a-zA-Z]+", "" )
 
 
-		local info=wet.mysql.execute([[SELECT
+		local info=sql.execute([[SELECT
 				u.alias, u.posts_ppg, u.time_zone, u.sig, u.last_visit, u.last_read, u.cat_collapse_status, u.users_opt,
 				u.ignore_list, u.buddy_list, u.id, u.group_leader_list, u.email, u.login, u.sq, u.ban_expiry
 				, u.avatar_loc , u.referer_id , s.time_sec , s.sys_id
@@ -53,11 +53,11 @@ user={}
 				INNER JOIN ]]..cfg.mysql_prefix_fud..[[users u ON u.id=(CASE WHEN s.user_id>2000000000 THEN 1 ELSE s.user_id END)
 			WHERE ses_id=']]..sess..[[']])
 
-		local tab=wet.mysql.named(info,1)
+		local tab=sql.named(info,1)
 
 		if tab then -- session exists
 		
-			if wet.cgi.ip==tab.sys_id then -- mild security fix, session is locked to ip
+			if wet.ip==tab.sys_id then -- mild security fix, session is locked to ip
 			
 			
 				user.fud=tab
@@ -71,7 +71,7 @@ user={}
 			else
 
 				if need then
-					wet.cgi.redirect(redirect)
+					wet.redirect(redirect)
 				end
 --	dbg("fail bad ip")
 
@@ -83,7 +83,7 @@ user={}
 --	dbg("fail bad sesson")
 			
 			if need then
-				wet.cgi.redirect(redirect)
+				wet.redirect(redirect)
 			end
 			
 		end
@@ -91,12 +91,14 @@ user={}
 	else
 	
 		if need then
-			wet.cgi.redirect(redirect)
+			wet.redirect(redirect)
 		end
 			
 --	dbg("fail no session")
 	
 	end
+	
+	return user
 
 end
 
