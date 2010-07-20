@@ -8,6 +8,7 @@ local type,ipairs,pairs,tonumber=type,ipairs,pairs,tonumber
 
 local string=string
 
+local cgilua=cgilua
 
 local cfg = cfg
 
@@ -25,7 +26,9 @@ query_count=0
 -----------------------------------------------------------------------------
 --
 -----------------------------------------------------------------------------
-function open()
+function setup()
+	clean()
+	
 local err
 
 	con,err=sql:connect(cfg.mysql_database,cfg.mysql_username,cfg.mysql_password,cfg.mysql_hostname)
@@ -36,8 +39,12 @@ local err
 		
 		return nil
 	end
+	
+	cgilua.addclosefunction( clean )
+
+	return _M
 end
-function close()
+function clean()
 	if con then con:close() end
 	con=nil
 end

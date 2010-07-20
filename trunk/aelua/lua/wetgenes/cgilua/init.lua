@@ -1,9 +1,8 @@
-
 --
 -- Some cgilua helper functions
 --
 
-local wet
+local cgi
 local cgilua=cgilua
 
 local string=string
@@ -15,11 +14,10 @@ local pairs=pairs
 local setfenv=setfenv
 
 local socket=require("socket")
-
 local misc=require("wetgenes.cgilua.misc")
 
 module("wetgenes.cgilua")
-wet=_M -- wet should point to this module
+cgi=_M -- cgi should point to this module
 
 -----------------------------------------------------------------------------
 --
@@ -29,9 +27,21 @@ wet=_M -- wet should point to this module
 dbg=function(s)
 	cgilua.errorlog(s)
 	if not headers_sent then 
-		contentheader ("text", "html")
+		contentheader("text", "html")
 	end
 	cgilua.put(s)
+end
+
+-----------------------------------------------------------------------------
+--
+-- just a copy of some cgilua put
+--
+-----------------------------------------------------------------------------
+put=function(s)
+	cgilua.put(s)
+end
+header=function(a,b)
+	cgilua.header(a,b)
 end
 
 -----------------------------------------------------------------------------
@@ -53,7 +63,7 @@ end
 -----------------------------------------------------------------------------
 --
 -- redirect
--- eiher with headers or throw out some javascript if that is too late
+-- either with headers or throw out some javascript if that is too late
 --
 -----------------------------------------------------------------------------
 function redirect(url)
@@ -81,6 +91,7 @@ function setup() -- call setup once to set global values for this request?
 
 	start_time=socket.gettime()
 	query_count=0
+	
 	math.randomseed( math.floor(start_time*1000) )
 	math.random()
 
@@ -98,45 +109,31 @@ function setup() -- call setup once to set global values for this request?
 	url="http://"..server..path
 
 	if query and query~="" then url=url.."?"..query end
-
-	slash=misc.str_split("/",cgilua.script_vpath)
-	if slash[1] then table.remove(slash,1) end -- first is always ""
-
-	-- url is now probably correct if we need to redirect to ourselves
-
+	-- url is now probably correct and full if we need to redirect to ourselves (which we often do)
+	
+	slash=misc.str_split("/",query) --  a normally useful array
 
 	-- the lua query/post are dangerous as they may contain tables...
-	-- this creates safe copies that are all strings
+	-- this creates safe copies that are only strings
 
 	gets={}
-
 	for i,v in pairs(cgilua.QUERY) do
-
-		if type(i)=="string" and type(v)=="string" then
-
+		if type(i)=="string" and type(v)=="string" then -- do not allow tables to break simple code
 			gets[i]=v
-
 		end
 	end
 
 	posts={}
-
 	for i,v in pairs(cgilua.POST) do
-
-		if type(i)=="string" and type(v)=="string" then
-
+		if type(i)=="string" and type(v)=="string" then -- do not allow tables to break simple code
 			posts[i]=v
-
 		end
 	end
 
 	json=nil
-
 	if gets.fmt=="json" or posts.fmt=="json" then -- a special json request, start building the return
-
 		json={}
 		json.doups={}
-
 	end
 	
 	return _M

@@ -13,7 +13,7 @@ local string=string
 
 local wet_html=require("wetgenes.html")
 
-local wet = require("wetgenes.cgilua")
+local cgi = require("wetgenes.cgilua")
 local cfg = cfg
 
 
@@ -35,7 +35,7 @@ function login(need)
 
 local sess=cgilua.cookies.get(cfg.cookie_session)
 
-local redirect="http://join."..cfg.base_domain.."?redirect="..wet_html.url_esc(wet.url)
+local redirect="http://join.wetgenes."..cfg.tld.."/?redirect="..wet_html.url_esc(cgi.url)
 
 
 user={}
@@ -58,7 +58,7 @@ user={}
 
 		if tab then -- session exists
 		
-			if wet.ip==tab.sys_id then -- mild security fix, session is locked to ip
+			if cgi.ip==tab.sys_id then -- mild security fix, session is locked to ip
 			
 			
 				user.fud=tab
@@ -72,9 +72,9 @@ user={}
 			else
 
 				if need then
-					wet.redirect(redirect)
+					cgi.redirect(redirect)
 				end
---	dbg("fail bad ip "..wet.ip..":"..tab.sys_id)
+--	dbg("fail bad ip "..cgi.ip..":"..tab.sys_id)
 
 			end
 			
@@ -84,7 +84,7 @@ user={}
 --	dbg("fail bad sesson")
 			
 			if need then
-				wet.redirect(redirect)
+				cgi.redirect(redirect)
 			end
 			
 		end
@@ -92,7 +92,7 @@ user={}
 	else
 	
 		if need then
-			wet.redirect(redirect)
+			cgi.redirect(redirect)
 		end
 			
 --	dbg("fail no session")
