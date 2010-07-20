@@ -10,7 +10,7 @@ local sql=require("wetgenes.cgilua.mysql")
 local json=require("Json")
 
 
-local wet = require("wetgenes.cgilua")
+local cgi = require("wetgenes.cgilua")
 local cfg = cfg
 
 
@@ -43,7 +43,7 @@ base_sqltable={
 -----------------------------------------------------------------------------
 function create_table(tabname)
 
-	wet.mysql.table_create(tabname,base_sqltable)
+	sql.table_create(tabname,base_sqltable)
 
 end
 
@@ -95,7 +95,7 @@ function put(it)
 		
 		if it.id==0 then -- do not care about id
 		
-			local ret=wet.mysql.do_insert(it.tabname,tab)
+			local ret=sql.do_insert(it.tabname,tab)
 			
 			if ret==0 then return false end
 			
@@ -104,7 +104,7 @@ function put(it)
 		else -- we wish to create a fixed id
 		
 			tab.id=it.id
-			local ret=wet.mysql.do_insert(it.tabname,tab)
+			local ret=sql.do_insert(it.tabname,tab)
 			
 			if ret~=1 then return false end
 		end
@@ -121,7 +121,7 @@ function put(it)
 		tab.latch=l
 		tab.json=it.json
 		
-		local ret=wet.mysql.do_update(it.tabname,tab," id="..it.id.." AND latch="..it.latch)
+		local ret=sql.do_update(it.tabname,tab," id="..it.id.." AND latch="..it.latch)
 		
 		if ret==1 then -- updated OK
 		
@@ -149,12 +149,12 @@ end
 -----------------------------------------------------------------------------
 function get(it)
 
-	local res=wet.mysql.execute([[
+	local res=sql.execute([[
 			SELECT *
 			FROM ]]..it.tabname..[[
 			WHERE id=]]..it.id..[[ ]])
 			
-	local tab=wet.mysql.named(res,1)
+	local tab=sql.named(res,1)
 	
 	if not tab then return false end
 	
