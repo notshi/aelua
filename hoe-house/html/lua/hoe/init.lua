@@ -110,11 +110,11 @@ function serv(srv)
 -- ask which round
 
 	local list=rounds.list(H)
-	
+	put("round_row_header",{})
 	for i=1,#list do local v=list[i]
 		put("round_row",{round=v.cache})		
 	end
-	
+	put("round_row_footer",{})
 	put("about",{})	
 	
 	put("footer",footer_data)

@@ -176,14 +176,21 @@ about=function(d)
 	d.wetgenes="<a href=\"http://www.wetgenes.com/\">wetgenes</a>"
 
 	return replace([[
-<div class="chunk">
 <br/>
-<br/>
-{hoehouse} is a friendly hommage to {whorehouse}.<br/>
-{hoehouse} is an example {aelua} app.<br/>
-<br/>
-{aelua} is a {lua} core and framework compatible with {appengine}.<br/>
-{aelua} and {hoehouse} are designed and developed by {wetgenes}.<br/>
+<div class="cont">
+	<div class="chunk">
+		<div class="intro">
+			<div class="illgame1"></div>
+			<div class="intro1">
+				{hoehouse} is a friendly hommage to {whorehouse}.<br/>
+				{hoehouse} is an example {aelua} app.<br/>
+				<br/>
+				{aelua} is a {lua} core and framework compatible with {appengine}.<br/>
+				{aelua} and {hoehouse} are designed and developed by {wetgenes}.<br/>
+			</div>
+		</div>
+	</div>
+	<div class="clear"></div>
 </div>
 ]],d)
 
@@ -468,6 +475,68 @@ end
 -- display a round row, for use in a "table" list of rounds 
 --
 -----------------------------------------------------------------------------
+round_row_header=function(d)
+	return replace([[
+	
+<div class="cont">
+	<div class="chunk3a">
+		<div class="chunk3ait">
+			Choose the round you want to join.
+		<div class="chunk3line"></div>
+		</div>
+		<div class="clear"></div>
+	</div>	
+	<div class="chunk8a">	
+	<div class="chunk8b">
+		<div class="game2">
+			Round #	
+		</div>
+		<div class="game">
+			Players
+		</div>
+		<div class="game">
+			Speed
+		</div>
+		<div class="game">
+			Start Date
+		</div>
+		<div class="game">
+			Time Remaining
+		</div>
+		<div class="clear"></div>
+	</div>
+	
+]],d)
+end	
+
+round_row_footer=function(d)
+	return replace([[
+	
+	<div class="clear"></div>
+	<div class="chunk8b">
+		<div class="game3">
+			Round #	
+		</div>
+		<div class="game">
+			Players
+		</div>
+		<div class="game">
+			Speed
+		</div>
+		<div class="game">
+			Start Date
+		</div>
+		<div class="game">
+			Time Remaining
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+</div>
+	
+]],d)
+end
+
 round_row=function(d)
 
 	local r=d.round
@@ -482,31 +551,28 @@ round_row=function(d)
 		d.url=d.srv.url_base..r.id
 			
 		return replace([[	
-<div class="cont">
-	<div class="chunk6">
-			<div class="gameid">
-				<a class="hoe_round_row" href="{url}" style="display:block"> Game <i>{round.id}</i>: 
-			</div>
-			<div class="game">
-				<i>{speed}</i> eph
-			</div>
-			<div class="game">
-				<i>{start}</i>
-			</div>
-			<div class="game">
-				{remaining}
-			</div>
-			<div class="game">
-			<i>{players}</i> players
-				</a>
-			</div>
+	
+	<div class="chunk8b">
+		<div class="game1">
+			<a class="hoe_round_row" href="{url}">Round <i>{round.id}</i></a>	
+		</div>
+		<div class="game">
+			<a class="hoe_round_row" href="{url}"><i>{players}</i></a>
+		</div>
+		<div class="game">
+			<a class="hoe_round_row" href="{url}"><i>{speed}</i> eph</a>
+		</div>
+		<div class="game">
+			<a class="hoe_round_row" href="{url}"><i>{start}</i></a>
+		</div>
+		<div class="game">
+			<a class="hoe_round_row" href="{url}"><i>{remaining}</i></a>
+		</div>
 		<div class="clear"></div>
 	</div>
-</div>
 
 ]],d)
-
-	end
+end
 	
 	return replace([[	
 <div class="hoe_round_row">
@@ -528,7 +594,7 @@ player_row_header=function(d)
 <div class="cont">
 	<div class="chunk3a">
 		<div class="chunk3ait">
-			List
+			<img src="/art/list.png" width="30" height="30"> List
 		<div class="chunk3line"></div>
 		</div>
 		<div class="clear"></div>
@@ -615,7 +681,7 @@ player_base=function(d)
 <div class="cont">
 	<div class="chunk3">
 		<div class="chunk3it">
-			Shop
+			<img src="/art/shop.png" width="30" height="30"> Shop
 		<div class="chunk3line"></div>
 		</div>
 		<div class="clear"></div>
@@ -945,7 +1011,7 @@ player_shop_form=function(d)
 <div class="cont">
 	<div class="chunk3a">
 		<div class="chunk3ait">
-			Shop
+			<img src="/art/shop.png" width="30" height="30"> Shop
 		<div class="chunk3line"></div>
 		</div>
 		<div class="clear"></div>
@@ -1035,7 +1101,7 @@ player_profile=function(d)
 <div class="cont">
 	<div class="chunk3a">
 		<div class="chunk3ait">
-			Profile
+			<img src="/art/pro.png" width="30" height="30"> Profile
 		<div class="chunk3line"></div>
 		</div>
 		<div class="clear"></div>
