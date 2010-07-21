@@ -6,7 +6,6 @@ local sys=require("wetgenes.aelua.sys")
 local dat=require("wetgenes.aelua.data")
 
 local users=require("wetgenes.aelua.users")
-local user=users.get_viewer()
 
 local img=require("wetgenes.aelua.img")
 
@@ -40,6 +39,7 @@ module("chan")
 --
 -----------------------------------------------------------------------------
 function serv(srv)
+local sess,user=users.get_viewer_session(srv)
 
 local function put(a,b)
 	b=b or {}
