@@ -4,7 +4,6 @@ local wet_html=require("wetgenes.html")
 local dat=require("wetgenes.aelua.data")
 
 local users=require("wetgenes.aelua.users")
-local user=users.get_viewer()
 
 local img=require("wetgenes.aelua.img")
 
@@ -49,9 +48,12 @@ module("hoe")
 -----------------------------------------------------------------------------
 function create(srv)
 
+local sess,user=users.get_viewer_session(srv)
+
 	local H={}
 	
 	H.user=user
+	H.sess=sess
 	H.srv=srv
 	H.slash=srv.url_slash[ srv.url_slash_idx ]
 	
@@ -103,7 +105,7 @@ function serv(srv)
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
-	put("user_bar",{user=user})
+	put("user_bar",{})
 	
 -- ask which round
 
@@ -136,9 +138,9 @@ local put=H.put
 
 	H.user_data_name=H.srv.flavour.."_hoe_"..H.round.key.id -- unique data name for this round
 
-	if user then -- we have a user
+	if H.user then -- we have a user
 	
-		local user_data=user.cache[H.user_data_name]
+		local user_data=H.user.cache[H.user_data_name]
 
 		if user_data then -- we already have data, so use it
 			H.player=players.get_id(H,user_data.player_id)
@@ -164,7 +166,7 @@ local put=H.put
 	if cmd=="do" then -- perform a basic action with mild security
 	
 		local id=H.arg(2)
-		local dat=users.get_act(user,id)
+		local dat=users.get_act(H.user,id)
 		
 		if dat then
 		
@@ -172,7 +174,7 @@ local put=H.put
 			
 				if dat.cmd=="join" then -- join this round
 			
-					players.join(H,user)
+					players.join(H,H.user)
 					H.srv.redirect(H.url_base) -- simplest just to redirect at this point
 					return true
 
@@ -200,11 +202,11 @@ local put=H.put
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
-	put("user_bar",{user=user})
+	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	if H.cmd_request=="join" then
-		put("request_join",{act=users.put_act(user,{cmd="join",check=H.user_data_name})})
+		put("request_join",{act=users.put_act(H.user,{cmd="join",check=H.user_data_name})})
 	elseif H.cmd_request=="login" then
 		put("request_login",{})
 	end
@@ -230,7 +232,7 @@ local put=H.put
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
-	put("user_bar",{user=user})
+	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 		
 	put("player_row_header",{})
@@ -327,7 +329,7 @@ local put=H.put
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
-	put("user_bar",{user=user})
+	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	if result then
@@ -403,7 +405,7 @@ function serv_round_shop(H)
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
-	put("user_bar",{user=user})
+	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	if result then
@@ -463,7 +465,7 @@ function serv_round_profile(H)
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
-	put("user_bar",{user=user})
+	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	if view and view.cache then 
@@ -489,7 +491,7 @@ function serv_round_fight(H)
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
-	put("user_bar",{user=user})
+	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	put("missing_content",{})
@@ -512,7 +514,7 @@ function serv_round_trade(H)
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
-	put("user_bar",{user=user})
+	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	put("missing_content",{})

@@ -116,6 +116,11 @@ public class Fetch
 					{
 						bodytype="UTF-8"; // always utf8 because fuck you :)
 					}
+					if(headerValue.compareToIgnoreCase("application/json")==0) // json is a string
+					{
+						bodytype="UTF-8"; // always utf8 because fuck you :)
+					}
+
 				}
 			}
 			
