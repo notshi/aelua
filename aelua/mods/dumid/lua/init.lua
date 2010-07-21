@@ -133,6 +133,7 @@ local put=make_put(srv)
 	local sess
 	local email
 	local name
+	local admin=false
 	
 	if data=="wetgenes" then
 	
@@ -162,6 +163,7 @@ local put=make_put(srv)
 		if guser then -- google login OK
 			email=guser.email
 			name=guser.name
+			admin=guser.admin
 		end
 		
 	end
@@ -176,6 +178,11 @@ local put=make_put(srv)
 			if not user then -- didnt get, so make and put a new user?
 			
 				user=users.new_user(email,name) -- name can be nil, it will just be created from the email
+				if not users.put_user(user,t) then user=nil end
+			end
+
+			if user.cache.admin~=admin then -- check admin flag
+				user.cache.admin=admin
 				if not users.put_user(user,t) then user=nil end
 			end
 			

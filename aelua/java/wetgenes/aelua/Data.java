@@ -317,6 +317,19 @@ public class Data
 				e.setProperty((String)i, new Blob( (byte[])v ) );
 			}
 			else
+			if(v instanceof String )
+			{
+				String s=(String)v;
+				if(s.length()<500)
+				{
+					e.setProperty((String)i, v); // can query short strings
+				}
+				else
+				{
+					e.setProperty((String)i, new Text( s ) ); // an opaque long string
+				}
+			}
+			else
 			{
 				e.setProperty((String)i,v);
 			}
@@ -385,6 +398,11 @@ public class Data
 				if(v instanceof Blob)
 				{
 					L.rawSet(props,(String)i,((Blob)v).getBytes());
+				}
+				else
+				if(v instanceof Text)
+				{
+					L.rawSet(props,(String)i,((Text)v).getValue());
 				}
 				else
 				{
