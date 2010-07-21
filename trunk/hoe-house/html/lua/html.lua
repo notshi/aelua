@@ -293,8 +293,8 @@ end
 -----------------------------------------------------------------------------
 user_bar=function(d)
 
-	local user=d.H.user
-	local hash=d.H.sess and d.H.sess.key and d.H.sess.key.id
+	local user=d.H and d.H.user
+	local hash=d.H and d.H.sess and d.H.sess.key and d.H.sess.key.id
 	if user then
 	
 		d.name="<span title=\""..user.cache.email.."\" >"..(user.cache.name or "?").."</span>"

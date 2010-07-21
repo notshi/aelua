@@ -57,7 +57,7 @@ local sess,user=users.get_viewer_session(srv)
 		srv.put(wet_html.get(html,a,b))
 	end
 
-	if not ( user and user.admin ) then -- error must be admin
+	if not ( user and user.cache.admin ) then -- error must be admin
 		srv.set_mimetype("text/html")
 		put("header",{})
 		put("error_need_admin",{})
