@@ -406,7 +406,29 @@ player_bar=function(d)
 <div class="hud">
 <div class="hud2">
 <div class="hud2it">
-<i>{player.energy}</i>
+<i id="player_energy">{player.energy}</i>
+<script type="text/javascript">
+function show_energy(nam,num,frac,upd)
+{
+	var start_time=(new Date()).getTime();
+	var tid;
+	var update=function() {
+		var now_time=(new Date()).getTime();
+		var t=(now_time-start_time)/upd; // grows over time
+		t=(t+frac+num);
+		if(t>300) // max
+		{
+			t=300;
+			clearInterval(tid);
+		}
+		$(nam).text(t.toFixed(2));
+	};
+	update();
+	tld=setInterval(update,1000);
+}
+$(function(){show_energy("#player_energy",{player.energy},{H.energy_frac},{H.energy_step}*1000);});
+
+</script>
 </div>
 <div class="hud2">
 <div class="hud2n">
@@ -644,8 +666,12 @@ player_row_footer=function(d)
 			<div class="listct">Shout</div>
 		</div>
 		<div class="clear"></div>
-	</div>	
+	</div>
+<a href="{url}">TOP</a>
+<a href="{url}?off={page.prev}">PREV</a>
+<a href="{url}?off={page.next}">NEXT</a>
 </div>
+
 	
 ]],d)
 end
@@ -679,6 +705,8 @@ player_row=function(d)
 ]],d)
 
 end
+
+
 
 -----------------------------------------------------------------------------
 --

@@ -56,7 +56,7 @@ local sess,user=users.get_viewer_session(srv)
 	H.sess=sess
 	H.srv=srv
 	H.slash=srv.url_slash[ srv.url_slash_idx ]
-	
+		
 	H.put=function(a,b)
 		b=b or {}
 		b.srv=srv
@@ -93,6 +93,10 @@ function serv(srv)
 	
 	if H.round then -- we have a round, let them handle everything
 		H.url_base=srv.url_base..H.round.key.id.."/"
+
+		H.energy_frac=(H.srv.time/H.round.cache.timestep)
+		H.energy_frac=H.energy_frac-math.floor(H.energy_frac) -- fractional amount of energy we have
+		H.energy_step=H.round.cache.timestep
 
 		return serv_round(H)
 	end
@@ -234,13 +238,30 @@ local put=H.put
 	put("home_bar",{})
 	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
-		
-	put("player_row_header",{})
-	local list=players.list(H)
-	for i=1,#list do local v=list[i]
-		put("player_row",{player=v.cache})
+	
+	local page={} -- this sort of dumb paging should be fine for now? bad for appengine though
+	page.show=0
+	page.size=50
+	page.next=page.size
+	page.prev=0
+	
+	if H.srv.gets.show then
+		page.show=math.floor( tonumber(H.srv.gets.off) or 0)
 	end
-	put("player_row_footer",{})
+	if page.show<0 then page.show=0 end	-- no negative offsets going in
+	
+	local list=players.list(H,{limit=page.size,offset=page.show})
+	
+	page.next=page.show+page.size
+	page.prev=page.show-page.size
+	if page.prev<0 then page.prev=0 end -- and prev does not go below 0 either	
+	if #list < lim then page.next=0 end -- looks last page so set to 0
+	
+	put("player_row_header",{url=H.srv.url,page=page})
+	for i=1,#list do local v=list[i]
+		put("player_row",{player=v.cache,idx=i+page.show})
+	end
+	put("player_row_footer",{url=H.srv.url,page=page})
 		
 	put("footer",footer_data)
 	
@@ -516,6 +537,8 @@ function serv_round_trade(H)
 
 	local put=H.put
 	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."trade/",title="trade",link="trade",}
+	
+	local trade={"hoes","bux"} -- offering A want to be paid in B, use string names for items
 
 	H.srv.set_mimetype("text/html")
 	put("header",{})
