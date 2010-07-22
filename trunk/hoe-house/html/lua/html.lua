@@ -109,8 +109,12 @@ header=function(d)
 <script type="text/javascript" src="{swfobject_js}"></script>
 
 
+
  </head>
 <body>
+
+<div class="wrapper">
+<div class="maincont">	
 <div class="cont">
 	<div class="header" id="header">
 		<a href="/"><img src="/art/hoe.960x180.png" width="960" height="180"></a>
@@ -150,14 +154,21 @@ footer=function(d)
 	return replace([[
 
 
-<br/>
-<br/>
-<br/>
-<div class="desc">{report}</div><br/>
-<br/>
-<br/>
-<br/>
 
+</div>
+	<div class="push"></div>
+</div>
+<div class="footer">
+	<div class="cont">
+		<div class="line"></div>
+		<div class="desc">
+			{report}
+		</div>
+		<div class="desc1">
+			Visit the <a href="http://forum.wetgenes.com" target="_new">Forum</a> for more information.
+		</div>
+	</div>
+</div>
 
 </body>
 </html>
@@ -1163,7 +1174,7 @@ player_profile=function(d)
 <div class="cont">
 	<div class="chunk3a">
 		<div class="chunk3ait">
-			Profile
+			<img src="/art/pro.png" width="30" height="30"> Profile
 		<div class="chunk3line"></div>
 		</div>
 		<div class="clear"></div>
