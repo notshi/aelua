@@ -52,7 +52,7 @@ public class Srv
 		L.rawSet(lib,"ip",req.getRemoteAddr());
 		
 		s=req.getRequestURL().toString();
-		if(s!=null) { L.rawSet(lib, "url", s ); } // the url requested
+		if(s!=null) { L.rawSet(lib, "url", s ); } // the url requested (not including any query string)
 		
 		s=req.getQueryString();
 		if(s!=null) { L.rawSet(lib, "query", s ); } // the query string

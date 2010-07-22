@@ -246,13 +246,14 @@ end
 --
 --------------------------------------------------------------------------------
 function list(H,opts,t)
-
+	opts=opts or {} -- stop opts from being nil
+	
 	t=t or dat -- use transaction?
 	
 	local r=t.query({
 		kind=kind(H),
-		limit=10,
-		offset=0,
+		limit=opts.limit or 100,
+		offset=opts.offset or 0,
 			{"filter","round_id","==",H.round.key.id},
 			{"sort","score","DESC"},
 		})
