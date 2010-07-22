@@ -26,7 +26,7 @@ dumid_header=function(d)
 	
 	d.jquery_js="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
 		
-	if d.srv.url_slash[3]=="localhost:8080" then -- a local shop only servs local people
+	if d.srv.url_slash[3]=="host.local:8080" then -- a local shop only servs local people
 		d.jquery_js="/js/jquery-1.4.2.min.js"
 	end
 

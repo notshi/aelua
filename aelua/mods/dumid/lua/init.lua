@@ -98,7 +98,7 @@ local put=make_put(srv)
 	
 		local callback=srv.url_base.."callback/wetgenes/?continue="..wet_html.url_esc(continue)
 		local tld="com"
-		if srv.url_slash[3]=="localhost:8080" then tld="local" end
+		if srv.url_slash[3]=="host.local:8080" then tld="local" end
 		return srv.redirect("http://lua.wetgenes."..tld.."/dumid.lua?continue="..wet_html.url_esc(callback))
 		
 	elseif dat=="google" then
@@ -143,7 +143,7 @@ local put=make_put(srv)
 			
 			local callback=srv.url_base.."callback/wetgenes/?continue="..wet_html.url_esc(continue)
 			local tld="com"
-			if srv.url_slash[3]=="localhost:8080" then tld="local" end
+			if srv.url_slash[3]=="host.local:8080" then tld="local" end
 			local s="http://lua.wetgenes."..tld.."/dumid.lua?continue="..wet_html.url_esc(callback)
 			
 			local got=fetch.get(s.."&hash="..hash) -- ask for confirmation from server
