@@ -76,7 +76,7 @@ header=function(d)
 	d.jquery_ui_js="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"
 	d.swfobject_js="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"
 	
-	if d.srv.url_slash[3]=="localhost:8080" then -- a local shop only servs local people
+	if d.srv.url_slash[3]=="host.local:8080" then -- a local shop only servs local people
 		d.jquery_js="/js/jquery-1.4.2.min.js"
 		d.jquery_ui_js="/js/jquery-ui-1.8.2.custom.min.js"
 		d.swfobject_js="/js/swfobject.js"

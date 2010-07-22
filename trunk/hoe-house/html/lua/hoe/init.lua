@@ -357,9 +357,10 @@ function serv_round_shop(H)
 	local put=H.put
 	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."shop/",title="shop",link="shop",}
 	
+	local cost={}
+		
 	if H.player then -- must be logged in
 	
-		local cost={}
 		local function workout_cost()
 			cost.houses=50000 * H.player.cache.houses
 			cost.bros=1000 + (10 * H.player.cache.bros)
