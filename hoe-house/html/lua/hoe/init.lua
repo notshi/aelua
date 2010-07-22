@@ -262,8 +262,9 @@ local put=H.put
 	local result
 	local payout
 	local xwork=1
+	
 	if H.player and H.srv.posts.payout then
-		payout=math.floor(tonumber(H.srv.posts.payout))
+		payout=math.floor(tonumber(H.srv.posts.payout) or 0)
 		if payout<0 then payout=0 end
 		if payout>100 then payout=100 end
 		
@@ -356,50 +357,54 @@ function serv_round_shop(H)
 	local put=H.put
 	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."shop/",title="shop",link="shop",}
 	
-	local cost={}
-	local function workout_cost()
-		cost.houses=50000 * H.player.cache.houses
-		cost.bros=1000 + (10 * H.player.cache.bros)
-		cost.gloves=1
-		cost.sticks=10
-		cost.manure=100
-	end
-	workout_cost()
+	if H.player then -- must be logged in
 	
-	local result
-	if H.player and H.srv.posts.houses then	-- attempt to buy
-	
-		local by={}
-		by.houses=tonumber(H.srv.posts.houses)
-		by.bros=tonumber(H.srv.posts.bros)
-		by.gloves=tonumber(H.srv.posts.gloves)
-		by.sticks=tonumber(H.srv.posts.sticks)
-		by.manure=tonumber(H.srv.posts.manure)
-		for i,v in pairs(by) do
-			v=math.floor(v)
-			if v<0 then v=0 end
-			by[i]=v
+		local cost={}
+		local function workout_cost()
+			cost.houses=50000 * H.player.cache.houses
+			cost.bros=1000 + (10 * H.player.cache.bros)
+			cost.gloves=1
+			cost.sticks=10
+			cost.manure=100
 		end
-		if by.houses>1 then by.houses=1 end -- may only buy one house at a time
-		by.bux=0
-		for i,v in pairs(cost) do
-			if by[i] then
-				by.bux=by.bux-(v*by[i]) -- cost to purchase
+		workout_cost()
+		
+		local result
+		if H.player and H.srv.posts.houses then	-- attempt to buy
+		
+			local by={}
+			by.houses=tonumber(H.srv.posts.houses)
+			by.bros=tonumber(H.srv.posts.bros)
+			by.gloves=tonumber(H.srv.posts.gloves)
+			by.sticks=tonumber(H.srv.posts.sticks)
+			by.manure=tonumber(H.srv.posts.manure)
+			for i,v in pairs(by) do
+				v=math.floor(v)
+				if v<0 then v=0 end
+				by[i]=v
 			end
-		end
-		if H.player.cache.bux + by.bux < 0 then -- not enough cash
-			result=by
-			result.fail="bux"
-		else
-			local r=players.update_add(H,H.player,by)
-			if r then
-				H.player=r
-				workout_cost()
+			if by.houses>1 then by.houses=1 end -- may only buy one house at a time
+			by.bux=0
+			for i,v in pairs(cost) do
+				if by[i] then
+					by.bux=by.bux-(v*by[i]) -- cost to purchase
+				end
+			end
+			if H.player.cache.bux + by.bux < 0 then -- not enough cash
 				result=by
+				result.fail="bux"
 			else
-				result=nil -- failed, but do not report
+				local r=players.update_add(H,H.player,by)
+				if r then
+					H.player=r
+					workout_cost()
+					result=by
+				else
+					result=nil -- failed, but do not report
+				end
 			end
 		end
+		
 	end
 	
 	H.srv.set_mimetype("text/html")
