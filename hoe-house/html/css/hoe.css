@@ -103,6 +103,9 @@ div.header{
 	background-color:#ddf;
 	padding:2px;
 }
+#tv_switch:hover{
+	background-color:#FEC7C7;
+}
 
 /* Footer container */
 div.desc, div.desc1 {
