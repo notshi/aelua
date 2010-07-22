@@ -99,11 +99,11 @@ end
 -----------------------------------------------------------------------------
 --
 -- basic url escape, so as not to trigger url get params or anything else by mistake 
--- so = & # % ? are bad and get replaced with %xx
+-- so = & # % ? " ' are bad and get replaced with %xx
 --
 -----------------------------------------------------------------------------
 function url_esc(s)
-	return string.gsub(s, "([&=%%%#%? ])", function(c)
+	return string.gsub(s, "([&=%%%#%?%'%\" ])", function(c)
 		return string.format("%%%02x", string.byte(c))
 	end)
 end
