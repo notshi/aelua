@@ -74,10 +74,12 @@ header=function(d)
 
 	d.jquery_js="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
 	d.jquery_ui_js="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"
-		
+	d.swfobject_js="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"
+	
 	if d.srv.url_slash[3]=="localhost:8080" then -- a local shop only servs local people
 		d.jquery_js="/js/jquery-1.4.2.min.js"
 		d.jquery_ui_js="/js/jquery-ui-1.8.2.custom.min.js"
+		d.swfobject_js="/js/swfobject.js"
 	end
 	
 	if not d.title then
@@ -104,13 +106,15 @@ header=function(d)
 
 <script type="text/javascript" src="{jquery_js}"></script>
 <script type="text/javascript" src="{jquery_ui_js}"></script>
+<script type="text/javascript" src="{swfobject_js}"></script>
 
 
  </head>
 <body>
 <div class="cont">
-	<div class="header">
+	<div class="header" id="header">
 		<a href="/"><img src="/art/hoe.960x180.png" width="960" height="180"></a>
+		<a id="tv_switch" href="#" onclick='swfobject.embedSWF("http://www.wetgenes.com/link/WetV.swf", "header", "960", "480", "8");return false;'>Switch on TV?</a>
 	</div>
 	<div class="line"></div>
 </div>

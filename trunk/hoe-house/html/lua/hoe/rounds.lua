@@ -62,7 +62,7 @@ function create(H)
 	p.created=H.srv.time
 	p.updated=H.srv.time
 	
-	p.timestep=1 -- 60*10 -- a 10 minute tick, gives 144 ticks a day
+	p.timestep=600 -- 60*10 -- a 10 minute tick, gives 144 ticks a day
 	
 	p.endtime=H.srv.time+(p.timestep*4032) -- default game end after about a month of standard ticks
 	-- setting the tick to 1 second gets us the same amount of game time in about 1 hour
