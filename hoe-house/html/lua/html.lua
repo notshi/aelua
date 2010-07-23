@@ -118,6 +118,7 @@ header=function(d)
 <div class="cont">
 	<div class="header" id="header">
 		<a href="/"><img src="/art/hoe.960x180.png" width="960" height="180"></a>
+		<a id="alfa" href="http://forum.wetgenes.com" target="_new"></a>
 		<a id="tv_switch" href="#" onclick='swfobject.embedSWF("http://www.wetgenes.com/link/WetV.swf", "header", "960", "480", "8");return false;'>Switch on TV?</a>
 	</div>
 	<div class="line"></div>

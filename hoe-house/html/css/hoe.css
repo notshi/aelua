@@ -95,6 +95,19 @@ div.header{
 	position:relative;
 }
 
+#alfa{
+	display:block;
+	position:absolute;
+	top:0px;
+	right:0px;
+	width:270px;
+	height:165px;
+	background-image:url('/art/4lfalfa.png')
+}
+#alfa:hover{
+	background-image:url('/art/4lfalfa1.png')
+}
+
 #tv_switch{
 	display:block;
 	position:absolute;
