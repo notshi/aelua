@@ -1014,7 +1014,14 @@ end
 missing_content=function(d)
 
 	return replace([[
-<div class="chunk">MISSING CONTENT</div>
+<div class="chunk">
+	<span style="text-align:'center';font-size:23px;">
+		<br />
+		Herro, you've reached the future.
+		We haven't made this yet. <br />
+		Send all bugs & complaints to the <a href="http://forum.wetgenes.com/" target="_new">forum</a>. We have repellents.
+	</span>
+</div>
 ]],d)
 
 end
@@ -1149,6 +1156,7 @@ player_profile=function(d)
 		</div>
 		<div class="clear"></div>
 	</div>	
+	<div class="illpro1"></div>
 	<div class="chunk8c">
 		<div class="chunk8b">
 		
