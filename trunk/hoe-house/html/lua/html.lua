@@ -165,7 +165,7 @@ footer=function(d)
 			{report}
 		</div>
 		<div class="desc1">
-			Visit the <a href="http://forum.wetgenes.com" target="_new">Forum</a> for more information.
+			Send in your bug reports and visit the <a href="http://forum.wetgenes.com" target="_new">Forum</a> for more information.
 		</div>
 	</div>
 </div>
