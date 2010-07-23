@@ -37,7 +37,7 @@ function login(need)
 
 local sess=cgilua.cookies.get(cfg.cookie_session)
 
-local redirect="http://join.wetgenes."..cfg.tld.."/?redirect="..wet_html.url_esc(wet_html.url_esc(cgi.url_query)))
+local redirect="http://join.wetgenes."..cfg.tld.."/?redirect="..wet_html.url_esc(wet_html.url_esc(cgi.url_query))
 
 user={}
 
