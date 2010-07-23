@@ -196,7 +196,7 @@ div.illgame1 {
 div.illbro1, div.illbro2, div.illbro3, div.illhoe1, div.illhoe2,
 div.illhoe3, div.illwork1, div.illwork2, div.illwork3, div.illleave1,
 div.illleave2, div.illleave3, div.illlist1, div.illlist2, div.illlist3,
-div.illshop1 {
+div.illshop1, div.illtrade1, div.illpro1 {
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
@@ -247,7 +247,7 @@ div.illleave3 {
 	background-image:url('/art/illleave3.png');
 }
 div.illlist1, div.illlist2, div.illlist3,
-div.illshop1 {
+div.illshop1, div.illtrade1, div.illpro1  {
 	border: 0;
 
 	border-bottom-left-radius: 0px;
@@ -267,6 +267,12 @@ div.illlist3 {
 }
 div.illshop1 {
 	background-image:url('/art/illshop1.png');
+}
+div.illtrade1 {
+	background-image:url('/art/illtrade1.png');
+}
+div.illpro1 {
+	background-image:url('/art/illpro1.png');
 }
 
 /* div big bold fonts */
@@ -459,16 +465,9 @@ div.chunk8a, div.chunk8c {
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 	border: 2px solid #ccc;
-}
-/* LIST outer container */
-div.chunk8a {
-	-moz-border-radius: 8px;
-	-webkit-border-radius: 8px;
-	border-top-left-radius: 0px;
-	border-top-right-radius: 0px;
 	border-top: 0;
-	border-bottom:0;
 }
+
 /*PROFILE INFO containers */
 div.pro1, div.pro1a, div.pro1b, div.pro1b1, div.pro1c, div.pro1c1, div.pro1c2, div.prorob {
 	width: 430px;
