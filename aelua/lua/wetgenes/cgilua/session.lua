@@ -30,13 +30,14 @@ module("wetgenes.cgilua.session")
 -- log in using a session
 -- if need is set to true then redirect to a login page as a login is needed
 --
+-- pass in url of current page if needed, (escaping is icky)
+--
 -----------------------------------------------------------------------------
 function login(need)
 
 local sess=cgilua.cookies.get(cfg.cookie_session)
 
-local redirect="http://join.wetgenes."..cfg.tld.."/?redirect="..wet_html.url_esc(cgi.url)
-
+local redirect="http://join.wetgenes."..cfg.tld.."/?redirect="..wet_html.url_esc(wet_html.url_esc(cgi.url_query)))
 
 user={}
 

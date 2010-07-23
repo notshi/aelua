@@ -107,11 +107,12 @@ function setup() -- call setup once to set global values for this request?
 	ipnum=misc.ipstr_to_number(ip)
 
 	url="http://"..server..path
+	url_query=url
 
-	if query and query~="" then url=url.."?"..query end
-	-- url is now probably correct and full if we need to redirect to ourselves (which we often do)
+	if query and query~="" then url_query=url.."?"..query end
+	-- url_query is now probably full if we need to redirect to ourselves (which we often do)
 	
-	slash=misc.str_split("/",query) --  a normally useful array
+	slash=misc.str_split("/",url) --  a normally useful array
 
 	-- the lua query/post are dangerous as they may contain tables...
 	-- this creates safe copies that are only strings
