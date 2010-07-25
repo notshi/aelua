@@ -133,6 +133,7 @@ local put=make_put(srv)
 	local sess
 	local email
 	local name
+	local flavour
 	local admin=false
 	
 	if data=="wetgenes" then
@@ -152,6 +153,7 @@ local put=make_put(srv)
 				if got.id then -- we now know who they are
 					name=got.name
 					email=got.id.."@id.wetgenes.com"
+					flavor=data
 				end
 			end
 		
@@ -164,6 +166,7 @@ local put=make_put(srv)
 			email=guser.email
 			name=guser.name
 			admin=guser.admin
+			flavor=data
 		end
 		
 	end
@@ -177,7 +180,7 @@ local put=make_put(srv)
 			
 			if not user then -- didnt get, so make and put a new user?
 			
-				user=users.new_user(email,name) -- name can be nil, it will just be created from the email
+				user=users.new_user(email,name,flavour) -- name can be nil, it will just be created from the email
 				if not users.put_user(user,t) then user=nil end
 			end
 

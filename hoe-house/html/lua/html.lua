@@ -1342,3 +1342,152 @@ player_profile=function(d)
 ]],d)
 
 end
+
+
+-----------------------------------------------------------------------------
+--
+-- trade options
+--
+-----------------------------------------------------------------------------
+trade_header=function(d)
+	return replace([[
+<br />
+Only the best offer in each catagory is available to buy, so you should consider selling for less than that price if you want a quick sell.<br />
+You also might want to keep checking this page in case someone is offering a good deal.<br />
+<br />
+<div>
+]],d)
+end
+-----------------------------------------------------------------------------
+--
+-- trade options
+--
+-----------------------------------------------------------------------------
+trade_footer=function(d)
+	return replace([[
+</div>
+]],d)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- trade options
+--
+-----------------------------------------------------------------------------
+trade_row=function(d)
+
+	d.form=replace([[
+<form action="{url}" method="POST" enctype="multipart/form-data">
+<button type="submit" class="button">Sell!</button>
+<input type="hidden" name="cmd" value="sell" /> 
+<input type="hidden" name="trade" value="{trade.offer}4{trade.seek}" /> 
+<input type="text" name="count" value="0" size="3" class="field"/> {trade.offer}
+for <input type="text" name="cost" value="0" size="3" class="field"/> {trade.seek} each.
+</form>
+]],d)
+
+	if not d.best then -- none available	
+		return replace([[
+<form action="{url}" method="POST" enctype="multipart/form-data">
+<input type="hidden" name="key" value="0" /> 
+<input type="hidden" name="cmd" value="buy" /> 
+<input type="hidden" name="count" value="0" /> 
+<input type="hidden" name="cost" value="0" /> 
+<input type="hidden" name="trade" value="{trade.offer}4{trade.seek}" /> 
+<button type="submit" class="button" disabled="disabled">Buy!</button>
+noone is offering any {trade.offer} for {trade.seek}
+</form>
+{form}<br/>
+]],d)
+	
+	end
+
+	return replace([[
+<form action="{url}" method="POST" enctype="multipart/form-data">
+<input type="hidden" name="key" value="{best.id}" /> 
+<input type="hidden" name="cmd" value="buy" /> 
+<input type="hidden" name="count" value="{best.count}" /> 
+<input type="hidden" name="cost" value="{best.cost}" /> 
+<input type="hidden" name="trade" value="{best.offer}4{best.seek}" /> 
+<button type="submit" class="button">Buy!</button>
+player <a href="{H.url_base}profile/{best.player}">#{best.player}</a> is offering {best.count} {best.offer} for {best.price} {best.seek} ( {best.cost} {best.seek} each )
+</form>
+{form}<br/>
+]],d)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- trade options
+--
+-----------------------------------------------------------------------------
+trade_buy_fail=function(d)
+
+	return replace([[
+<div>
+<br/>
+Failed to buy anything, maybe somebody else bought it first...
+<br/>
+<br/>
+<div>
+]],d)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- trade options
+--
+-----------------------------------------------------------------------------
+trade_buy_fail_cost=function(d)
+
+	return replace([[
+<div>
+<br/>
+You can not afford to buy that.
+<br/>
+<br/>
+<div>
+]],d)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- trade options
+--
+-----------------------------------------------------------------------------
+trade_buy=function(d)
+
+	return replace([[
+<div>
+<br/>
+Congratulations. You just bought {trade.count} {trade.offer} for {trade.price} {trade.seek}
+from player <a href="{H.url_base}profile/{trade.player}">#{trade.player}</a> 
+<br/>
+<br/>
+<div>
+]],d)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- trade options
+--
+-----------------------------------------------------------------------------
+trade_sell=function(d)
+
+	return replace([[
+<div>
+<br/>
+Congratulations. You just offered {trade.count} {trade.offer} for {trade.price} {trade.seek}.
+The {trade.offer} have been placed in escrow. Now you must wait for a buyer.
+<br/>
+<br/>
+<div>
+]],d)
+
+end
