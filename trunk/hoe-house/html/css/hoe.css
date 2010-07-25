@@ -37,6 +37,36 @@ i {font-family: Lucida Sans Unicode; font-weight: bold; letter-spacing: -0.1em; 
 a img, :link img, :visited img {border: 0;}
 form, button{border:0; margin:0; padding:0;}
 
+
+.button, .button:hover, .button:visited ,.button:active {
+	display:inline;
+	cursor:pointer;
+	color: #000;
+	background-color: #ddd;
+	padding: 1px 2px 0px 3px ;
+	border-top:    solid #fff 1px;
+	border-right:  solid #888 1px;
+	border-bottom: solid #888 1px;
+	border-left:   solid #fff 1px;
+}  
+.button:active {
+	cursor:pointer;
+	padding: 0px 2px 0px 2px ;
+	border-bottom: solid #fff 1px;
+	border-left:   solid #444 2px;
+	border-top:    solid #444 2px;
+	border-right:  solid #fff 1px;
+}
+
+.field {
+	border-bottom: solid #fff 1px;
+	border-left:   solid #444 2px;
+	border-top:    solid #444 2px;
+	border-right:  solid #fff 1px;
+}
+
+     
+
 /* thanks http://ryanfait.com/sticky-footer/ */
 html, body {
 	height: 100%;
@@ -1335,3 +1365,5 @@ div.foot{
 .foot a:visited		{color: #ffcc00; text-decoration: none;}
 .foot a:hover		{color: #ffcc00; text-decoration: underline;}
 .foot a:active		{color: #ffcc00; text-decoration: none;}
+
+

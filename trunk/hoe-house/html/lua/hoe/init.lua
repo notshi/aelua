@@ -13,11 +13,13 @@ local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
 local serialize=wet_string.serialize
 
+local Json=require("Json")
 
 -- require all the module sub parts
 local html=require("html")
 local players=require("hoe.players")
 local rounds=require("hoe.rounds")
+local trades=require("hoe.trades")
 
 
 
@@ -57,16 +59,21 @@ local sess,user=users.get_viewer_session(srv)
 	H.srv=srv
 	H.slash=srv.url_slash[ srv.url_slash_idx ]
 		
-	H.put=function(a,b)
+	H.get=function(a,b) -- get some html
 		b=b or {}
 		b.srv=srv
 		b.H=H
-		srv.put(wet_html.get(html,a,b))
+		local r=wet_html.get(html,a,b)
 		b.srv=nil
 		b.H=nil
+		return r
 	end
 	
-	H.arg=function(i) return srv.url_slash[ srv.url_slash_idx + i ]	end
+	H.put=function(a,b) -- put some html
+		srv.put(H.get(a,b))
+	end
+	
+	H.arg=function(i) return srv.url_slash[ srv.url_slash_idx + i ]	end -- get an arg from the url
 	
 	return H
 
@@ -278,14 +285,23 @@ function serv_round_work(H)
 
 local put=H.put
 
+	local url=H.url_base.."work"
 	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."work/",title="work",link="work",}
+	
+	local posts={} -- remove any gunk from the posts input
+	-- check if this post probably came from this page before allowing post params
+	if H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
+		for i,v in pairs(H.srv.posts) do
+			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
+		end
+	end
 
 	local result
 	local payout
 	local xwork=1
 	
-	if H.player and H.srv.posts.payout then
-		payout=math.floor(tonumber(H.srv.posts.payout) or 0)
+	if H.player and posts.payout then
+		payout=math.floor(tonumber(posts.payout) or 0)
 		if payout<0 then payout=0 end
 		if payout>100 then payout=100 end
 		
@@ -300,8 +316,8 @@ local put=H.put
 		local p=H.player.cache
 		
 		local rep=1
-		if H.srv.posts.x then
-			rep=tonumber(H.srv.posts.x)
+		if posts.x then
+			rep=tonumber(posts.x)
 			rep=math.floor(rep)
 		end
 		if rep>p.energy then rep=p.energy end -- do not try and work too many times
@@ -376,7 +392,16 @@ end
 function serv_round_shop(H)
 
 	local put=H.put
+	local url=H.url_base.."shop"
 	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."shop/",title="shop",link="shop",}
+		
+	local posts={} -- remove any gunk from the posts input
+	-- check if this post probably came from this page before allowing post params
+	if H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
+		for i,v in pairs(H.srv.posts) do
+			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
+		end
+	end
 	
 	local cost={}
 		
@@ -392,14 +417,14 @@ function serv_round_shop(H)
 		workout_cost()
 		
 		local result
-		if H.player and H.srv.posts.houses then	-- attempt to buy
+		if H.player and posts.houses then	-- attempt to buy
 		
 			local by={}
-			by.houses=tonumber(H.srv.posts.houses)
-			by.bros=tonumber(H.srv.posts.bros)
-			by.gloves=tonumber(H.srv.posts.gloves)
-			by.sticks=tonumber(H.srv.posts.sticks)
-			by.manure=tonumber(H.srv.posts.manure)
+			by.houses=tonumber(posts.houses)
+			by.bros=tonumber(posts.bros)
+			by.gloves=tonumber(posts.gloves)
+			by.sticks=tonumber(posts.sticks)
+			by.manure=tonumber(posts.manure)
 			for i,v in pairs(by) do
 				v=math.floor(v)
 				if v<0 then v=0 end
@@ -457,19 +482,28 @@ end
 function serv_round_profile(H)
 
 	local put=H.put
+	local url=H.url_base.."profile"
 	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."profile/",title="profile",link="profile",}
 	
-	if H.player and (H.srv.posts.name or H.srv.posts.shout) then
+	local posts={} -- remove any gunk from the posts input
+	-- check if this post probably came from this page before allowing post params
+	if H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
+		for i,v in pairs(H.srv.posts) do
+			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
+		end
+	end
+	
+	if H.player and (posts.name or posts.shout) then
 		local by={}
 		
-		if H.srv.posts.do_name and H.srv.posts.name then
-			local s=H.srv.posts.name
+		if posts.do_name and posts.name then
+			local s=posts.name
 			if string.len(s) > 20 then s=string.sub(s,1,20) end
 			by.name=wet_html.esc(s)
 		end
 
-		if H.srv.posts.do_shout and H.srv.posts.shout then
-			local s=H.srv.posts.shout		
+		if posts.do_shout and posts.shout then
+			local s=posts.shout		
 			if string.len(s) > 100 then s=string.sub(s,1,100) end		
 			by.shout=wet_html.esc(s)
 		end
@@ -535,19 +569,180 @@ end
 -----------------------------------------------------------------------------
 function serv_round_trade(H)
 
-	local put=H.put
+	-- these are the allowed trades , the first name is offered
+	-- and the second name is the payment type
+	local valid_trades={
+			{"houses","hoes"},
+			{"hoes","bros"},
+			{"bros","bux"},
+		}
+
+	local put,get=H.put,H.get
+	local url=H.url_base.."trade"
 	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."trade/",title="trade",link="trade",}
 	
-	local trade={"hoes","bux"} -- offering A want to be paid in B, use string names for items
+	local posts={} -- remove any gunk from the posts input
+	-- check if this post probably came from this page before allowing post params
+	if H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
+		for i,v in pairs(H.srv.posts) do
+			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
+		end
+	end
+	
+	local trade -- offering [1] want to be paid in [2], use string names for items
+	local results="" -- any extra result html
+	
+	if posts.trade then -- we want to trade
+	
+		if posts.trade~="" then
+			local aa=str_split("4",posts.trade)
+			if aa[1] and aa[2] then -- possible
+				for i=1,#valid_trades do local v=valid_trades[i]
+					if v[1]==aa[1] and v[2]==aa[2] then -- found valid trade
+						trade=v
+						break
+					end
+				end
+			end
+		end
+		
+		if trade then -- a valid trade, lets give it a go
+		
+			local key=math.floor(tonumber(posts.key or 0) or 0)
+			local count=math.floor(tonumber(posts.count or 0) or 0)
+			local cost=math.floor(tonumber(posts.cost or 0) or 0)
+			
+			if count<0 then count=0 end
+			if cost <0 then cost =0 end
+			
+			if count>1000000 then count=1000000 end -- best to also have a max, 1 million? sure why not?
+			if cost >1000000 then cost =1000000 end
+			
+			if posts.cmd=="buy" then
+			
+			
+				local best=trades.find_cheapest(H,{offer=trade[1],seek=trade[2]}) -- get the best trade
+				
+				if (not best) or best.cache.id~=key then -- fail if best is not the one we wanted...
+				
+					results=results..get("trade_buy_fail") -- failed to buy
+					
+				else
+				
+					if H.player.cache[ trade[2] ] >= best.cache.price then -- must have price available
+				
+						local claim_trade=function()
+							return trades.update(H,best,function(H,p)
+								if p.buyer==0 then p.buyer=H.player.cache.id return true end
+							end)
+						end
+						local undo_trade=function()
+							return trades.update(H,best,function(H,p)
+								if p.buyer==H.player.cache.id then p.buyer=0 return true end
+							end)
+						end
+						
+						if claim_trade() then -- first we claim the trade
+						
+							local f=function(H,p)
+								if p[ trade[2] ]<(best.cache.price) then -- must have goods available
+									return false
+								end
+								if trade[2]=="houses" then -- must always own at least one house...
+									if p[ trade[2] ]<=(count) then
+										return false
+									end
+								end
+								p[ trade[1] ]=p[ trade[1] ]+(best.cache.count) -- give goods right now
+								p[ trade[2] ]=p[ trade[2] ]-(best.cache.price) -- remove price right now
+								return true
+							end
+			
+							if players.update(H,H.player,f) then -- goods where removed, now give price to trader
+							
+								local adjust={}
+								adjust[ trade[2] ]=best.cache.price
+								players.update_add(H,best.cache.player,adjust) -- hand over the price
+								
+								results=results..get("trade_buy",{trade=best.cache}) -- finally say we bought stuff				
+								
+								H.player=players.get(H,H.player) -- get updated self
+							else
+								undo_trade() -- release the trade
+								results=results..get("trade_buy_fail_cost") -- failed to buy					
+							end
+							
+						end
+					else
+						results=results..get("trade_buy_fail_cost") -- failed to buy					
+					end
+				end
 
+			
+			elseif posts.cmd=="sell" and count>0 and cost>0 then -- must sell something
+			
+				if H.player.cache[ trade[1] ] >= count then -- must have goods available
+				
+					local f=function(H,p)
+						if p[ trade[1] ]<(count) then -- must have goods available
+							return false
+						end
+						if trade[1]=="houses" then -- must always own at least one house...
+							if p[ trade[1] ]<=(count) then
+								return false
+							end
+						end
+						p[ trade[1] ]=p[ trade[1] ]-(count) -- remove goods right now
+						return true
+					end
+	
+					if players.update(H,H.player,f) then -- goods where removed
+					
+						local ent=trades.create(H)
+						ent.cache.player=H.player.cache.id
+						ent.cache.offer=trade[1]
+						ent.cache.seek=trade[2]
+						ent.cache.count=count
+						ent.cache.cost=cost
+						
+						trades.check(H,ent)		-- this will calculate the total price
+						
+						trades.put(H,ent)		-- create trade in database
+						
+						trades.fix_memcache(H,trades.what_memcache(H,ent)) -- update cache values
+						
+						results=results..get("trade_sell",{trade=ent.cache}) -- we added a trade
+						
+						H.player=players.get(H,H.player) -- get updated self
+					end
+				
+				end
+			
+			end
+			
+		end
+		
+	end
+	
+	
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
-	put("missing_content",{})
-		
+	put(results)
+	
+	put("trade_header",{trades=trades})
+	for i=1,#valid_trades do local v=valid_trades[i]
+		local trade={}
+		trade.offer=v[1]
+		trade.seek=v[2]
+		trade.best=trades.find_cheapest(H,trade)
+		put("trade_row",{trade=trade,best=trade.best and trade.best.cache,url=url})
+	end
+	put("trade_footer",{trades=trades})
+	
 	put("footer",footer_data)
 
 end
