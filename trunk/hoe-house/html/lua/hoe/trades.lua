@@ -268,7 +268,7 @@ function find_cheapest(H,opts,t)
 	local r=cache.get(cachekey) -- do we already know the answer
 	
 	if r then -- we cached the answer
-	log(r)
+--	log(r)
 		r=Json.Decode(r) -- turn back into data
 		return r["1"] -- may be null and beware that the json encoding converted the number to a key
 	end
