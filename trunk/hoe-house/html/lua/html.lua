@@ -1353,7 +1353,8 @@ trade_header=function(d)
 	return replace([[
 <br />
 Only the best offer in each catagory is available to buy, so you should consider selling for less than that price if you want a quick sell.<br />
-You also might want to keep checking this page in case someone is offering a good deal.<br />
+Remember that your trade offer will sit in the queue for a random amount of time, possibly a couple of hours before it shows up for anyone to buy.<br />
+You might want to keep checking this page in case someone is offering a good deal.<br />
 <br />
 <div>
 ]],d)
@@ -1483,9 +1484,9 @@ trade_sell=function(d)
 	return replace([[
 <div>
 <br/>
-Congratulations. You just offered {trade.count} {trade.offer} for {trade.price} {trade.seek}.
-The {trade.offer} have been placed in escrow. Now you must wait for a buyer.
-<br/>
+Congratulations. You just offered {trade.count} {trade.offer} for {trade.price} {trade.seek}.<br/>
+The {trade.offer} have been placed in escrow.<br/>
+Now you must wait for it to be added to the queue and for a buyer.<br/>
 <br/>
 <div>
 ]],d)

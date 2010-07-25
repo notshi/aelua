@@ -108,6 +108,10 @@ function check(H,ent)
 
 	local r=H.round.cache
 	local c=ent.cache
+	
+-- how long to sit in limbo for?
+
+	c.limbo=c.limbo or math.random( 6*H.round.cache.timestep , 4*6*H.round.cache.timestep ) --  1-4 hours with 10min timestep
 
 -- price can be rebuilt
 	
@@ -270,14 +274,14 @@ function find_cheapest(H,opts,t)
 	if r then -- we cached the answer
 --	log(r)
 		r=Json.Decode(r) -- turn back into data
-		return r["1"] -- may be null and beware that the json encoding converted the number to a key
+		return r["1"] or r[1] -- may be null and json may turn int keys to string keys
 	end
 	
 	t=t or dat -- transactions shouldnt be used anyhow?
 	
 	local r=t.query({
 		kind=kind(H),
-		limit=1,
+		limit=100, -- there are probably not 100, and we need to skip any in limbo
 		offset=0,
 			{"filter","round_id","==",H.round.key.id},
 			{"filter","buyer","==",0}, -- must be available to buy
@@ -286,12 +290,18 @@ function find_cheapest(H,opts,t)
 			{"sort","cost","ASC"}, -- we want the cheapest
 			{"sort","created","ASC"}, -- and we want the oldest so FIFO
 		})
+	
+	local best
 		
-	for i=1,#r do local v=r[i]
+	for i=1,#r do local v=r[i] -- look for the first one that has passed its limbo wait period
 		dat.build_cache(v)
+		if (v.cache.created+(v.cache.limbo or 0)) < H.srv.time then -- ignore new trades for a little while
+			best=v
+			break
+		end
 	end
 
-	cache.put(cachekey,Json.Encode(r),60*60) -- save this result for an hour
+	cache.put(cachekey,Json.Encode({best}),10*60) -- save this (possibly random) result for 10 mins
 	
-	return r[1]
+	return best
 end
