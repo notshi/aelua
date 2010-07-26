@@ -1422,7 +1422,7 @@ trade_row=function(d)
 	<div class="trade1">
 	<div class="chunk3line"></div>
 	<div class="trade2">
-	<div class="trade3">
+	<div class="trade3a">
 		<form action="{url}" method="POST" enctype="multipart/form-data">
 		
 		<input type="hidden" name="key" value="0" /> 
@@ -1450,7 +1450,7 @@ trade_row=function(d)
 	<div class="trade1">
 	<div class="chunk3line"></div>
 	<div class="trade2">
-	<div class="trade3">
+	<div class="trade3b">
 		<form action="{url}" method="POST" enctype="multipart/form-data">
 		
 		<input type="hidden" name="key" value="{best.id}" /> 

@@ -524,7 +524,7 @@ div.chunk8a, div.chunk8c {
 }
 
 /* TRADE container */
-div.trade, div.trade1, div.trade2, div.trade3, div.trade4 {
+div.trade, div.trade1, div.trade2, div.trade3a, div.trade3b, div.trade4 {
 	margin: 0px auto;
 	width: 960px;
 	
@@ -553,7 +553,9 @@ div.trade2 {
 .trade2 a:visited	{color: #00D400; text-decoration: none;}
 .trade2 a:hover		{color: #00ff00; text-decoration: underline;}
 .trade2 a:active	{color: #00D400; text-decoration: none;}
-div.trade3 {
+
+/* When NO ONE is offering anything */
+div.trade3a {
 	background-color: #444;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -563,6 +565,18 @@ div.trade3 {
 	
 	font-size: 23px;
 	color: #888;
+}
+/* When SOMEONE is offering something */
+div.trade3b {
+	background-color: #333;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	width: 700px;
+	padding: 5px 10px 5px 10px;
+	
+	font-size: 23px;
+	color: #FAFAFA;
 }
 
 
