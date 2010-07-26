@@ -1405,14 +1405,35 @@ trade_row=function(d)
 		<button type="submit" class="button">Sell!</button>
 		<input type="hidden" name="cmd" value="sell" /> 
 		<input type="hidden" name="trade" value="{trade.offer}4{trade.seek}" /> 
-		<input type="text" name="count" value="0" size="3" class="field"/> <img src="/art/{trade.offer}.png"> {trade.offer}
+		<input type="text" name="count" value="0" size="3" class="field" id="trade_{trade.offer}4{trade.seek}_count" /> <img src="/art/{trade.offer}.png"> {trade.offer}
 		
-		for <input type="text" name="cost" value="0" size="3" class="field"/> <img src="/art/{trade.seek}.png"> {trade.seek} each.
-		
+		for <input type="text" name="cost" value="0" size="3" class="field" id="trade_{trade.offer}4{trade.seek}_cost" /> <img src="/art/{trade.seek}.png"> {trade.seek} each.
+
+		<span id="trade_{trade.offer}4{trade.seek}_price" >poop</span>
 		</form>
 		<div class="clear"></div>
 	</div>
 </div>
+<script type="text/javascript" >
+$(document).ready(function() {
+	var changed=function() {
+		if (($('#trade_{trade.offer}4{trade.seek}_count').attr("value")).match(/^\d+$/) == null) 
+		{
+			$('#trade_{trade.offer}4{trade.seek}_count').attr("value",0);
+		}
+		if (($('#trade_{trade.offer}4{trade.seek}_cost').attr("value")).match(/^\d+$/) == null)
+		{
+			$('#trade_{trade.offer}4{trade.seek}_cost').attr("value",0);
+		}
+		var n=$('#trade_{trade.offer}4{trade.seek}_count').attr("value") * $('#trade_{trade.offer}4{trade.seek}_cost').attr("value") ;
+		var s="( "+n+" in total )";
+		$('#trade_{trade.offer}4{trade.seek}_price').html(s);
+		};
+	$('#trade_{trade.offer}4{trade.seek}_count').bind("change keyup", changed); 
+	$('#trade_{trade.offer}4{trade.seek}_cost').bind("change keyup", changed);
+	changed();
+	});
+</script>
 
 ]],d)
 
@@ -1423,17 +1444,7 @@ trade_row=function(d)
 	<div class="chunk3line"></div>
 	<div class="trade2">
 	<div class="trade3a">
-		<form action="{url}" method="POST" enctype="multipart/form-data">
-		
-		<input type="hidden" name="key" value="0" /> 
-		<input type="hidden" name="cmd" value="buy" /> 
-		<input type="hidden" name="count" value="0" /> 
-		<input type="hidden" name="cost" value="0" /> 
-		<input type="hidden" name="trade" value="{trade.offer}4{trade.seek}" /> 
-		
 		No one is offering any <img src="/art/{trade.offer}.png"> {trade.offer} for <img src="/art/{trade.seek}.png"> {trade.seek}
-		
-		</form>
 		<div class="clear"></div>
 	</div>
 	</div>
