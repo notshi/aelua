@@ -239,7 +239,7 @@ div.illgame1 {
 div.illbro1, div.illbro2, div.illbro3, div.illhoe1, div.illhoe2,
 div.illhoe3, div.illwork1, div.illwork2, div.illwork3, div.illleave1,
 div.illleave2, div.illleave3, div.illlist1, div.illlist2, div.illlist3,
-div.illshop1, div.illtrade1, div.illpro1 {
+div.illshop1, div.illtrade1, div.illpro1, div.illbrobux, div.illhoebro {
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
@@ -288,6 +288,14 @@ div.illleave2 {
 }
 div.illleave3 {
 	background-image:url('/art/illleave3.png');
+}
+div.illbrobux {
+	background-image:url('/art/illbrobux.png');
+	height: 70px;
+}
+div.illhoebro {
+	background-image:url('/art/illhoebro.png');
+	height: 70px;
 }
 div.illlist1, div.illlist2, div.illlist3,
 div.illshop1, div.illtrade1, div.illpro1  {
@@ -430,12 +438,12 @@ div.chunk5{
 	float: right;
 }
 /* ALERT container ie. Please login, click to join. */
-div.chunk6, div.chunk6a, div.chunk6b, div.chunk6c{
+div.chunk6, div.chunk6a, div.chunk6b, div.chunk6c, div.chunk6d{
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
 	border:1px dotted #ccc;
-	margin: 0 auto;
+	margin: auto;
 	margin-top: 20px;
 	width: 920px;
 	padding: 5px;
@@ -443,11 +451,15 @@ div.chunk6, div.chunk6a, div.chunk6b, div.chunk6c{
 div.chunk6{
 	background-color: #fff;
 }
+div.chunk6d{
+	background-color: #FFD9D9;
+}
 div.chunk6a, div.chunk6b, div.chunk6c{
 	background-color: #fff;
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
-	margin: 70px 0 0 0;
+	margin: auto;
+	margin-top: 70px;
 	width: 930px;
 	padding: 0;
 }
@@ -455,7 +467,7 @@ div.chunk6a{
 	background-color: #FFD9D9;
 }
 div.chunk6c{
-	margin: 40px 0 0 0;
+	margin-top: 40px;
 }
 /* ALERT fonts */
 div.alert{
@@ -510,6 +522,49 @@ div.chunk8a, div.chunk8c {
 	border: 2px solid #ccc;
 	border-top: 0;
 }
+
+/* TRADE container */
+div.trade, div.trade1, div.trade2, div.trade3, div.trade4 {
+	margin: 0px auto;
+	width: 960px;
+	
+	font-family: Georgia, serif;
+	color: #ccc;
+	font-size: 14px;
+	text-align: center;
+}
+div.trade1 {
+	padding-top: 20px;
+}
+div.trade4 {
+	text-align: center;
+	width: 920px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+div.trade2 {
+	width: 920px;
+	padding: 10px 20px 10px 20px;
+	
+	font-size: 23px;
+}
+.trade2 a:focus		{color: #00D400; text-decoration: none;}
+.trade2 a:link		{color: #00D400; text-decoration: none;}
+.trade2 a:visited	{color: #00D400; text-decoration: none;}
+.trade2 a:hover		{color: #00ff00; text-decoration: underline;}
+.trade2 a:active	{color: #00D400; text-decoration: none;}
+div.trade3 {
+	background-color: #444;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	width: 700px;
+	padding: 5px 10px 5px 10px;
+	
+	font-size: 23px;
+	color: #888;
+}
+
 
 /*PROFILE INFO containers */
 div.pro1, div.pro1a, div.pro1b, div.pro1b1, div.pro1c, div.pro1c1, div.pro1c2, div.prorob {
@@ -1088,6 +1143,48 @@ div.forminline{
 	color: #56FF56;
 }
 #buyit button:active {
+	background: #000;
+	border:1px solid #000;
+	color: #00d400;
+}
+
+/* TRADE INPUT/BUTTONS */
+div.trade2 input{
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	border: 0;
+	
+	font-family: Lucida Sans Unicode;
+	color: #374548;
+	font-size: 23px;
+	margin: 0 5px 0 5px;
+}
+div.trade2 button{
+	background: #000;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	border:1px solid #000;
+	
+	margin: 0 auto;
+	width: 90px;
+	height: 30px;
+	
+	font-family: Georgia, serif;
+	color: #00d400;
+	font-size: 23px;
+	font-weight: bold;
+	text-align: center;
+	
+	cursor:pointer;
+}
+div.trade2 button:hover {
+	background: #222;
+	border:1px solid #222;
+	color: #56FF56;
+}
+div.trade2 button:active {
 	background: #000;
 	border:1px solid #000;
 	color: #00d400;
