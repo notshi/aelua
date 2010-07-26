@@ -1487,7 +1487,7 @@ trade_buy_fail=function(d)
 <div class="cont">
 	<div class="chunk6d">
 		<div class="alert">
-			<img src="/art/fail.png"> Failed to buy anything. Someone else bought it first.
+			<img src="/art/fail.png"> Failed to buy anything. Someone else bought it first or a better offer has appeared!
 		</div>
 
 	<div class="clear"></div>
