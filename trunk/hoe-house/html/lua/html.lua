@@ -1351,12 +1351,27 @@ end
 -----------------------------------------------------------------------------
 trade_header=function(d)
 	return replace([[
-<br />
-Only the best offer in each catagory is available to buy, so you should consider selling for less than that price if you want a quick sell.<br />
-Remember that your trade offer will sit in the queue for a random amount of time, possibly a couple of hours before it shows up for anyone to buy.<br />
-You might want to keep checking this page in case someone is offering a good deal.<br />
-<br />
-<div>
+	
+<div class="cont">
+	<div class="chunk3a">
+		<div class="chunk3ait">
+			<img src="/art/trade.png" width="30" height="30"> Trade
+		<div class="chunk3line"></div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="illtrade1"></div>
+	<div class="chunk8a">
+		<div class="trade">
+			<div class="trade1">
+			<div class="trade4">
+			Only the best offer in each catagory is available to buy so you should consider selling for less than that price if you want a quick sell.<br />
+			Remember that your trade offer will sit in the queue for a random amount of time, possibly a couple of hours before it shows up for anyone to buy.<br />
+			You might want to keep checking this page in case someone is offering a good deal.
+			</div>
+			</div>
+		</div>
+		
 ]],d)
 end
 -----------------------------------------------------------------------------
@@ -1366,6 +1381,8 @@ end
 -----------------------------------------------------------------------------
 trade_footer=function(d)
 	return replace([[
+	<div class="clear"></div>
+	</div>
 </div>
 ]],d)
 
@@ -1379,42 +1396,80 @@ end
 trade_row=function(d)
 
 	d.form=replace([[
-<form action="{url}" method="POST" enctype="multipart/form-data">
-<button type="submit" class="button">Sell!</button>
-<input type="hidden" name="cmd" value="sell" /> 
-<input type="hidden" name="trade" value="{trade.offer}4{trade.seek}" /> 
-<input type="text" name="count" value="0" size="3" class="field"/> {trade.offer}
-for <input type="text" name="cost" value="0" size="3" class="field"/> {trade.seek} each.
-</form>
+	
+<div class="trade">
+	<div class="trade2">
+		<form action="{url}" method="POST" enctype="multipart/form-data">
+		
+		<button type="submit" class="button">Sell!</button>
+		<input type="hidden" name="cmd" value="sell" /> 
+		<input type="hidden" name="trade" value="{trade.offer}4{trade.seek}" /> 
+		<input type="text" name="count" value="0" size="3" class="field"/> <img src="/art/{trade.offer}.png"> {trade.offer}
+		
+		for <input type="text" name="cost" value="0" size="3" class="field"/> <img src="/art/{trade.seek}.png"> {trade.seek} each.
+		
+		</form>
+		<div class="clear"></div>
+	</div>
+</div>
+
 ]],d)
 
 	if not d.best then -- none available	
 		return replace([[
-<form action="{url}" method="POST" enctype="multipart/form-data">
-<input type="hidden" name="key" value="0" /> 
-<input type="hidden" name="cmd" value="buy" /> 
-<input type="hidden" name="count" value="0" /> 
-<input type="hidden" name="cost" value="0" /> 
-<input type="hidden" name="trade" value="{trade.offer}4{trade.seek}" /> 
-<button type="submit" class="button" disabled="disabled">Buy!</button>
-noone is offering any {trade.offer} for {trade.seek}
-</form>
-{form}<br/>
+<div class="trade">
+	<div class="trade1">
+	<div class="chunk3line"></div>
+	<div class="trade2">
+	<div class="trade3">
+		<form action="{url}" method="POST" enctype="multipart/form-data">
+		
+		<input type="hidden" name="key" value="0" /> 
+		<input type="hidden" name="cmd" value="buy" /> 
+		<input type="hidden" name="count" value="0" /> 
+		<input type="hidden" name="cost" value="0" /> 
+		<input type="hidden" name="trade" value="{trade.offer}4{trade.seek}" /> 
+		
+		No one is offering any <img src="/art/{trade.offer}.png"> {trade.offer} for <img src="/art/{trade.seek}.png"> {trade.seek}
+		
+		</form>
+		<div class="clear"></div>
+	</div>
+	</div>
+	</div>
+</div>
+		{form}
+		
 ]],d)
 	
 	end
 
 	return replace([[
-<form action="{url}" method="POST" enctype="multipart/form-data">
-<input type="hidden" name="key" value="{best.id}" /> 
-<input type="hidden" name="cmd" value="buy" /> 
-<input type="hidden" name="count" value="{best.count}" /> 
-<input type="hidden" name="cost" value="{best.cost}" /> 
-<input type="hidden" name="trade" value="{best.offer}4{best.seek}" /> 
-<button type="submit" class="button">Buy!</button>
-player <a href="{H.url_base}profile/{best.player}">#{best.player}</a> is offering {best.count} {best.offer} for {best.price} {best.seek} ( {best.cost} {best.seek} each )
-</form>
-{form}<br/>
+<div class="trade">
+	<div class="trade1">
+	<div class="chunk3line"></div>
+	<div class="trade2">
+	<div class="trade3">
+		<form action="{url}" method="POST" enctype="multipart/form-data">
+		
+		<input type="hidden" name="key" value="{best.id}" /> 
+		<input type="hidden" name="cmd" value="buy" /> 
+		<input type="hidden" name="count" value="{best.count}" /> 
+		<input type="hidden" name="cost" value="{best.cost}" /> 
+		<input type="hidden" name="trade" value="{best.offer}4{best.seek}" /> 
+		
+		Player <a href="{H.url_base}profile/{best.player}">#{best.player}</a> is offering {best.count} <img src="/art/{best.offer}.png"> {best.offer} for {best.price} <img src="/art/{best.seek}.png"> {best.seek}
+		<br /> ( {best.cost} <img src="/art/{best.seek}.png"> {best.seek} each )
+		<button type="submit" class="button">Buy!</button>
+		
+		</form>
+		<div class="clear"></div>
+	</div>
+	</div>
+	</div>
+</div>
+		{form}
+
 ]],d)
 
 end
@@ -1427,12 +1482,17 @@ end
 trade_buy_fail=function(d)
 
 	return replace([[
-<div>
-<br/>
-Failed to buy anything, maybe somebody else bought it first...
-<br/>
-<br/>
-<div>
+
+<div class="cont">
+	<div class="chunk6d">
+		<div class="alert">
+			Failed to buy anything, maybe somebody else bought it first...
+		</div>
+
+	<div class="clear"></div>
+	</div>
+</div>
+
 ]],d)
 
 end
@@ -1445,12 +1505,17 @@ end
 trade_buy_fail_cost=function(d)
 
 	return replace([[
-<div>
-<br/>
-You can not afford to buy that.
-<br/>
-<br/>
-<div>
+
+<div class="cont">
+	<div class="chunk6d">
+		<div class="alert">
+			You cannot afford to buy that.
+		</div>
+
+	<div class="clear"></div>
+	</div>
+</div>
+
 ]],d)
 
 end
@@ -1463,13 +1528,18 @@ end
 trade_buy=function(d)
 
 	return replace([[
-<div>
-<br/>
-Congratulations. You just bought {trade.count} {trade.offer} for {trade.price} {trade.seek}
-from player <a href="{H.url_base}profile/{trade.player}">#{trade.player}</a> 
-<br/>
-<br/>
-<div>
+
+<div class="cont">
+	<div class="chunk6">
+		<div class="alert">
+			Congratulations. You just bought {trade.count} <img src="/art/{trade.offer}.png"> {trade.offer} for {trade.price} <img src="/art/{trade.seek}.png"> {trade.seek}
+			from player <a href="{H.url_base}profile/{trade.player}">#{trade.player}</a> 
+		</div>
+
+	<div class="clear"></div>
+	</div>
+</div>
+
 ]],d)
 
 end
@@ -1482,13 +1552,19 @@ end
 trade_sell=function(d)
 
 	return replace([[
-<div>
-<br/>
-Congratulations. You just offered {trade.count} {trade.offer} for {trade.price} {trade.seek}.<br/>
-The {trade.offer} have been placed in escrow.<br/>
-Now you must wait for it to be added to the queue and for a buyer.<br/>
-<br/>
-<div>
+
+<div class="cont">
+	<div class="chunk6">
+		<div class="alert">
+			Congratulations. You just offered {trade.count} <img src="/art/{trade.offer}.png"> {trade.offer} for {trade.price} <img src="/art/{trade.seek}.png"> {trade.seek}.<br/>
+			The <img src="/art/{trade.offer}.png"> {trade.offer} have been placed in escrow.<br/>
+			Now you must wait for it to be added to the queue and for a buyer.
+		</div>
+
+	<div class="clear"></div>
+	</div>
+</div>
+
 ]],d)
 
 end
