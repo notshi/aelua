@@ -640,13 +640,13 @@ player_row_header=function(d)
 	<div class="illlist{random}"></div>
 	<div class="chunk8a">
 		<div class="chunk8b">
-			<div class="listat">Player Name</div>
+			<div class="listat"><img src="/art/name.png"> Player Name</div>
 			<div class="listat"><img src="/art/scoreb.png"> Score</div>
 			<div class="listat"><img src="/art/buxb.png"> Bux</div>
 			<div class="listbt"><img src="/art/hoesb.png"> Hoes</div>
 			<div class="listbt"><img src="/art/housesb.png"> Houses</div>
 			<div class="listbt"><img src="/art/scareb.png"> Bros</div>
-			<div class="listct">Shout</div>
+			<div class="listct"><img src="/art/shoutb.png"> Shout</div>
 		</div>
 		<div class="clear"></div>
 	
@@ -658,13 +658,13 @@ player_row_footer=function(d)
 	
 		<div class="clear"></div>
 		<div class="chunk8b">
-			<div class="listat">Player Name</div>
+			<div class="listat"><img src="/art/name.png"> Player Name</div>
 			<div class="listat"><img src="/art/scoreb.png"> Score</div>
 			<div class="listat"><img src="/art/buxb.png"> Bux</div>
 			<div class="listbt"><img src="/art/hoesb.png"> Hoes</div>
 			<div class="listbt"><img src="/art/housesb.png"> Houses</div>
 			<div class="listbt"><img src="/art/scareb.png"> Bros</div>
-			<div class="listct">Shout</div>
+			<div class="listct"><img src="/art/shoutb.png"> Shout</div>
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -1168,7 +1168,7 @@ player_profile=function(d)
 						<form action="" method="POST" enctype="multipart/form-data">
 						<div class="pro1c">
 							<div class="pro1c">
-								Name:
+								<img src="/art/name.png"> Name:
 							</div>
 							<div class="pro1c1">
 								( Max. 20 char )
@@ -1187,7 +1187,7 @@ player_profile=function(d)
 						<form action="" method="POST" enctype="multipart/form-data">
 						<div class="pro1c">
 							<div class="pro1c">
-								Shout:
+								<img src="/art/shoutb.png"> Shout:
 							</div>
 							<div class="pro1c1">
 								( Max. 100 char )
@@ -1233,7 +1233,7 @@ player_profile=function(d)
 {form}
 					<div class="pro1b1">
 						<div class="pro1c2">
-							Shout:
+							<img src="/art/shoutb.png"> Shout:
 						</div>
 						<div class="pro1d1">
 							{player.shout}
@@ -1311,7 +1311,7 @@ player_profile=function(d)
 							<i>{player.gloves}</i>
 						</div>
 						<div class="procat2">
-							Gloves
+							<img src="/art/glovesb.png"> Gloves
 						</div>
 					</div>
 					<div class="pro2e1">
@@ -1319,7 +1319,7 @@ player_profile=function(d)
 							<i>{player.manure}</i>
 						</div>
 						<div class="procat2">
-							Manure
+							<img src="/art/shitb.png"> Manure
 						</div>
 					</div>
 					<div class="pro2e2">
@@ -1327,7 +1327,7 @@ player_profile=function(d)
 							<i>{player.sticks}</i>
 						</div>
 						<div class="procat2">
-							Sticks
+							<img src="/art/sticksb.png"> Sticks
 						</div>
 					</div>
 					<div class="clear"></div>
@@ -1381,8 +1381,9 @@ end
 -----------------------------------------------------------------------------
 trade_footer=function(d)
 	return replace([[
-	<div class="clear"></div>
+	
 	</div>
+	<div class="clear"></div>
 </div>
 ]],d)
 
@@ -1486,7 +1487,7 @@ trade_buy_fail=function(d)
 <div class="cont">
 	<div class="chunk6d">
 		<div class="alert">
-			Failed to buy anything, maybe somebody else bought it first...
+			<img src="/art/fail.png"> Failed to buy anything. Someone else bought it first.
 		</div>
 
 	<div class="clear"></div>
@@ -1509,7 +1510,7 @@ trade_buy_fail_cost=function(d)
 <div class="cont">
 	<div class="chunk6d">
 		<div class="alert">
-			You cannot afford to buy that.
+			<img src="/art/fail.png"> You cannot afford to buy that.
 		</div>
 
 	<div class="clear"></div>
@@ -1532,8 +1533,8 @@ trade_buy=function(d)
 <div class="cont">
 	<div class="chunk6">
 		<div class="alert">
-			Congratulations. You just bought {trade.count} <img src="/art/{trade.offer}.png"> {trade.offer} for {trade.price} <img src="/art/{trade.seek}.png"> {trade.seek}
-			from player <a href="{H.url_base}profile/{trade.player}">#{trade.player}</a> 
+			<img src="/art/success.png"> Congratulations! You've just bought {trade.count} <img src="/art/{trade.offer}.png"> {trade.offer} for {trade.price} <img src="/art/{trade.seek}.png"> {trade.seek}
+			from player <a href="{H.url_base}profile/{trade.player}">#{trade.player}</a> .
 		</div>
 
 	<div class="clear"></div>
@@ -1556,9 +1557,9 @@ trade_sell=function(d)
 <div class="cont">
 	<div class="chunk6">
 		<div class="alert">
-			Congratulations. You just offered {trade.count} <img src="/art/{trade.offer}.png"> {trade.offer} for {trade.price} <img src="/art/{trade.seek}.png"> {trade.seek}.<br/>
+			<img src="/art/success.png"> Congratulations! You've just offered {trade.count} <img src="/art/{trade.offer}.png"> {trade.offer} for {trade.price} <img src="/art/{trade.seek}.png"> {trade.seek}.<br/>
 			The <img src="/art/{trade.offer}.png"> {trade.offer} have been placed in escrow.<br/>
-			Now you must wait for it to be added to the queue and for a buyer.
+			Please wait whilst we add it to the queue, a buyer will purchase it shortly.
 		</div>
 
 	<div class="clear"></div>
