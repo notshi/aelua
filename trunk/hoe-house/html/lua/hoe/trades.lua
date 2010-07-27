@@ -1,5 +1,5 @@
 
-local Json=require("Json")
+local json=require("json")
 
 local wet_html=require("wetgenes.html")
 
@@ -273,7 +273,7 @@ function find_cheapest(H,opts,t)
 	
 	if r then -- we cached the answer
 --	log(r)
-		r=Json.Decode(r) -- turn back into data
+		r=json.decode(r) -- turn back into data
 		return r["1"] or r[1] -- may be null and json may turn int keys to string keys
 	end
 	
@@ -301,7 +301,7 @@ function find_cheapest(H,opts,t)
 		end
 	end
 
-	cache.put(cachekey,Json.Encode({best}),10*60) -- save this (possibly random) result for 10 mins
+	cache.put(cachekey,json.encode({best}),10*60) -- save this (possibly random) result for 10 mins
 	
 	return best
 end
