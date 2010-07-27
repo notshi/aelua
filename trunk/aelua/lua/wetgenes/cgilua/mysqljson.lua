@@ -7,7 +7,7 @@ local tonumber=tonumber
 
 
 local sql=require("wetgenes.cgilua.mysql")
-local json=require("Json")
+local json=require("json")
 
 
 local cgi = require("wetgenes.cgilua")
