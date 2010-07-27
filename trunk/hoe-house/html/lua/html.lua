@@ -1417,14 +1417,16 @@ trade_row=function(d)
 <script type="text/javascript" >
 $(document).ready(function() {
 	var changed=function() {
-		if (($('#trade_{trade.offer}4{trade.seek}_count').attr("value")).match(/^\d+$/) == null) 
-		{
-			$('#trade_{trade.offer}4{trade.seek}_count').attr("value",0);
-		}
-		if (($('#trade_{trade.offer}4{trade.seek}_cost').attr("value")).match(/^\d+$/) == null)
-		{
-			$('#trade_{trade.offer}4{trade.seek}_cost').attr("value",0);
-		}
+		var sa,na,fa;
+		
+		fa=$('#trade_{trade.offer}4{trade.seek}_count');
+		sa=fa.attr("value"); na=parseInt(sa); if(isNaN(na)) { na=0; }
+		if(((na+"")!=sa)&&(sa!="")) { fa.attr("value",na); }
+		
+		fa=$('#trade_{trade.offer}4{trade.seek}_cost');
+		sa=fa.attr("value"); na=parseInt(sa); if(isNaN(na)) { na=0; }
+		if(((na+"")!=sa)&&(sa!="")) { fa.attr("value",na); }
+		
 		var n=$('#trade_{trade.offer}4{trade.seek}_count').attr("value") * $('#trade_{trade.offer}4{trade.seek}_cost').attr("value") ;
 		var s="( "+n+" in total )";
 		$('#trade_{trade.offer}4{trade.seek}_price').html(s);
