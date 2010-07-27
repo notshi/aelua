@@ -153,7 +153,14 @@ end
 -- the props will be copied into the cache
 --
 --------------------------------------------------------------------------------
-function get(H,ent,t)
+function get(H,id,t)
+
+	local ent=id
+	
+	if type(ent)~="table" then -- get by id
+		ent=create(H)
+		ent.key.id=id
+	end
 
 	t=t or dat -- use transaction?
 	
@@ -162,21 +169,6 @@ function get(H,ent,t)
 	
 	return check(H,ent)
 end
-
---------------------------------------------------------------------------------
---
--- Load a player by id from database
---
---------------------------------------------------------------------------------
-function get_id(H,id,t)
-
-	local ent=create(H)
-	ent.key.id=id
-	
-	return get(H,ent,t) -- set to nil on fail to load
-end
-
-
 
 --------------------------------------------------------------------------------
 --
@@ -211,7 +203,7 @@ function join(H,user)
 				-- this bit deals with the fact that we have two transactions and that
 				-- tu may get commited then tp might fail
 				if ud.player_id then -- already joined?
-					p=get_id(H,ud.player_id) -- does the player exist? (no transaction needed)
+					p=get(H,ud.player_id) -- does the player exist? (no transaction needed)
 					if p and p.cache.email==user.cache.email then -- check that link to player is good
 						tu.rollback()
 						tp.rollback()
@@ -342,7 +334,7 @@ function update(H,id,f)
 		
 	for retry=1,10 do
 		local t=dat.begin()
-		local p=get_id(H,id,t)
+		local p=get(H,id,t)
 		if p then
 			if not f(H,p.cache) then return false end -- hard fail, possibly due to lack of energy
 			check(H,p) -- also update the score

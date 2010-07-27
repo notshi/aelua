@@ -15,6 +15,10 @@ local core=require("wetgenes.aelua.data.core")
 module("wetgenes.aelua.data")
 
 
+local kind_props={}	-- default global props mapped to kinds
+
+
+
 function keyinfo(keystr)
 
 	return core.keyinfo(keystr)
