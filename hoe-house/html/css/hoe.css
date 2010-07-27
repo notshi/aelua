@@ -523,6 +523,41 @@ div.chunk8a, div.chunk8c {
 	border-top: 0;
 }
 
+/* PLAYER IMAGE container */
+div.player {
+	margin: 0;
+	width: 80px;
+	height: 100%;
+}
+div.player1, div.player2, div.player3, div.player4 {
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	margin: 0;
+	width: 60px;
+	height: 60px;
+	float: left;
+}
+div.player1 {
+	background-image:url('/art/player1.png');
+}
+div.player2 {
+	background-image:url('/art/player2.png');
+}
+div.player3 {
+	background-image:url('/art/player3.png');
+}
+div.player4 {
+	background-image:url('/art/player4.png');
+}
+div.playershout {
+	background-image:url('/art/playershout.png');
+	margin: 0;
+	width: 20px;
+	height: 60px;
+	float: left;
+}
+
 /* TRADE container */
 div.trade, div.trade1, div.trade2, div.trade3a, div.trade3b, div.trade4 {
 	margin: 0px auto;
@@ -561,6 +596,7 @@ div.trade3a {
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
 	width: 700px;
+	height: 100%;
 	padding: 5px 10px 5px 10px;
 	
 	font-size: 23px;
@@ -572,11 +608,13 @@ div.trade3b {
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
-	width: 700px;
+	width: 600px;
+	height: 100%;
 	padding: 5px 10px 5px 10px;
 	
 	font-size: 23px;
 	color: #FAFAFA;
+	float: left;
 }
 
 

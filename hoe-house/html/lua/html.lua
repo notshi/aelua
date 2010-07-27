@@ -1395,6 +1395,7 @@ end
 --
 -----------------------------------------------------------------------------
 trade_row=function(d)
+d.random=math.random(1,4)
 
 	d.form=replace([[
 	
@@ -1463,7 +1464,7 @@ $(document).ready(function() {
 	<div class="trade1">
 	<div class="chunk3line"></div>
 	<div class="trade2">
-	<div class="trade3b">
+	<div class="trade3a">
 		<form action="{url}" method="POST" enctype="multipart/form-data">
 		
 		<input type="hidden" name="key" value="{best.id}" /> 
@@ -1472,11 +1473,17 @@ $(document).ready(function() {
 		<input type="hidden" name="cost" value="{best.cost}" /> 
 		<input type="hidden" name="trade" value="{best.offer}4{best.seek}" /> 
 		
+		<div class="player">
+			<div class="player{random}"></div>
+			<div class="playershout"></div>
+		</div>
+		<div class="trade3b">
 		Player <a href="{H.url_base}profile/{best.player}">#{best.player}</a> is offering {best.count} <img src="/art/{best.offer}.png"> {best.offer} for {best.price} <img src="/art/{best.seek}.png"> {best.seek}
 		<br /> ( {best.cost} <img src="/art/{best.seek}.png"> {best.seek} each )
 		<button type="submit" class="button">Buy!</button>
 		
 		</form>
+		</div>
 		<div class="clear"></div>
 	</div>
 	</div>
