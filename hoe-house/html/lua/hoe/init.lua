@@ -95,7 +95,7 @@ function serv(srv)
 	local put=H.put
 	local roundid=tonumber(H.slash or 0) or 0
 	if roundid>0 then -- load a default round from given id
-		H.round=rounds.get_id(H,roundid)
+		H.round=rounds.get(H,roundid)
 	end
 	
 	if H.round then -- we have a round, let them handle everything
@@ -154,7 +154,7 @@ local put=H.put
 		local user_data=H.user.cache[H.user_data_name]
 
 		if user_data then -- we already have data, so use it
-			H.player=players.get_id(H,user_data.player_id)
+			H.player=players.get(H,user_data.player_id)
 		end
 		
 		if not H.player then -- no player in this round
@@ -517,7 +517,7 @@ function serv_round_profile(H)
 	local view=tonumber(H.arg(2) or 0) or 0
 	if view<=0 then view=nil end
 	if view then
-		view=players.get_id(H,view)
+		view=players.get(H,view)
 		if view then
 			if view.cache.round_id~=H.round.key.id then view=nil end -- check that player belongs to this round
 		end

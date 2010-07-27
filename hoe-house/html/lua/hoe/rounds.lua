@@ -127,7 +127,14 @@ end
 -- Load a round from database
 --
 --------------------------------------------------------------------------------
-function get(H,ent,t)
+function get(H,id,t)
+
+	local ent=id
+	
+	if type(ent)~="table" then -- get by id
+		ent=create(H)
+		ent.key.id=id
+	end
 
 	t=t or dat -- use transaction?
 	
@@ -135,19 +142,6 @@ function get(H,ent,t)
 	dat.build_cache(ent)
 	
 	return check(H,ent)
-end
-
---------------------------------------------------------------------------------
---
--- Load a round id from database
---
---------------------------------------------------------------------------------
-function get_id(H,id,t)
-
-	local ent=create(H)
-	ent.key.id=id
-	ent=get(H,ent,t) -- set to nil on fail to load
-	return ent
 end
 
 --------------------------------------------------------------------------------
@@ -185,7 +179,7 @@ function inc_players(H,id)
 	
 	for retry=1,10 do
 		local t=dat.begin()
-		local r=get_id(H,id,t)
+		local r=get(H,id,t)
 		if r then
 			r.cache.players=(r.cache.players or 0)+1
 			if put(H,r) then
