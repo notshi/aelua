@@ -70,6 +70,7 @@ public class Sys
 		reg_sleep(L,lib);
 		reg_file_exists(L,lib);
 		reg_file_read(L,lib);
+		reg_bytes_to_string(L,lib);
 		
 		return 0;
 	}
@@ -235,7 +236,31 @@ public class Sys
         return bytes;
 
     }
+//
+// convert bytearray to a string
+//
+	public void reg_bytes_to_string(Lua L,Object lib)
+	{ 
+		final Sys _base=this;
+		L.rawSet(lib, "bytes_to_string", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.bytes_to_string(L); } });
+	}
+	public int bytes_to_string(Lua L)
+	{
+		try
+		{
+			Object o=L.value(1);
+			if( L.isString(o) ) // already a string so return as is
+			{
+				L.push(o);
+				return 1;
+			}
+			byte[] bytes = (byte[])o; // the object is bytes
+			L.push( new String(bytes,"UTF-8") ); // convert to a string
+			return 1;
+		}
+		catch(IOException e)
+		{
+			return 0;
+		}
+	}
 }
-
-
-

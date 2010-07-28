@@ -547,9 +547,18 @@ end
 -----------------------------------------------------------------------------
 function serv_round_fight(H)
 
-	local put=H.put
+	local put,get=H.put,H.get
+	local url=H.url_base.."fight"
 	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."fight/",title="fight",link="fight",}
 
+	local posts={} -- remove any gunk from the posts input
+	-- check if this post probably came from this page before allowing post params
+	if H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
+		for i,v in pairs(H.srv.posts) do
+			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
+		end
+	end
+	
 	local player=H.player
 	local victim=tonumber(H.arg(2) or 0) or 0
 	if victim<=0 then victim=nil end
@@ -561,18 +570,38 @@ function serv_round_fight(H)
 	end
 	if victim and player and victim.key.id==player.key.id then victim=nil end -- cannot attack self
 	
+	local result
+	if posts.victim and victim then
+		if tonumber(posts.victim)~=victim.key.id then victim=nil end
+		if victim and player then 
+			if posts.attack == "rob" then -- perform a robery
+			
+				local fight=fights.create_robbery(H,player,victim) -- prepare fight
+				local fdat={}
+				
+				result=get("fight_rob",{})
+			end
+		end
+	end
 	
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
+	
+	if result then
+		put(result)
+	end
 
 	if player and victim then
 	
 		local fight_rob=fights.create_robbery(H,player,victim)	
 		
-		put("fight_rob_preview",{ player=player and player.cache, victim=victim and victim.cache, fight=fight_rob.cache})
+		local tab={ url=url.."/"..victim.key.id , player=player.cache, victim=victim.cache, fight=fight_rob.cache}
+		put("fight_header",tab)
+		put("fight_rob_preview",tab)
+		put("fight_footer",tab)
 		
 	else
 	

@@ -33,11 +33,29 @@ local tostring=tostring
 local tonumber=tonumber
 local type=type
 
--- manage fights so contains fight logic, try to break stuff down to % which can then
--- be displayed to the user before they decide to try.
--- however the entity manipulated here is more a smart log of interactions than anything else
+-- lists of important activities
+-- mostly displayed in user profiles
+-- sometimes msgs from the other player are also stored
+-- when an activity is for two players, two entities are created, one each
+-- actors timestamp and type of act should be enough to spot these dupes
+-- the only parts that will change is props.owner and the key.id
 
-module("hoe.fights")
+module("hoe.acts")
+
+--
+-- available global msg templates, lookup by name
+--
+temps={}
+
+temps.act={
+	html=[[{act} {actor1} {actor2}]],
+	text=[[{act} {actor1} {actor2}]],
+}
+
+temps.traded={
+	html=[[{name1} traded {count} {offer} for {price} {seek} with {name2}]],
+	text=[[{name1} traded {count} {offer} for {price} {seek} with {name2}]],
+}
 
 --------------------------------------------------------------------------------
 --
@@ -46,13 +64,13 @@ module("hoe.fights")
 --
 --------------------------------------------------------------------------------
 function kind(H)
-	if not H.srv.flavour or H.srv.flavour=="hoe" then return "hoe.fight" end
-	return H.srv.flavour..".hoe.fight"
+	if not H.srv.flavour or H.srv.flavour=="hoe" then return "hoe.act" end
+	return H.srv.flavour..".hoe.act"
 end
 
 --------------------------------------------------------------------------------
 --
--- Create a new local fight in H.round filled with initial data
+-- Create a new local entity in H.round filled with initial data
 --
 --------------------------------------------------------------------------------
 function create(H)
@@ -68,18 +86,34 @@ function create(H)
 	
 	p.created=H.srv.time
 	p.updated=H.srv.time
+	
+	p.owner=0			-- the player whoes profile this act should be displayed on
+	p.private=0			-- is this a private msgs? set to 0 if public or the player id if only intended for them
+						-- so private==0 if we want a public stream
+	
+	p.form="act"		-- what form of act this is, eg robbery, purchase etc
+	
+	p.actor1=0			-- the primary actor or 0 if none
+	p.actor2=0			-- the secondary actor or 0 if none
 		
 	dat.build_cache(ent) -- this just copies the props across
 	
 -- these are json only vars
 	local c=ent.cache
+	
+	c.temp_name="act" -- the global template used
+	c.temp={} -- cached version of this global template in case we dont have access to the global templates
+	c.temp.html=temps.act.html	-- html weplace, for page display with links etc
+	c.temp.text=temps.act.text	-- text weplace, for twitter like sms
+	
+	c.data={} -- the data available for all templates, also includes some calculated entity data.
 
 	return check(H,ent)
 end
 
 --------------------------------------------------------------------------------
 --
--- check that a fight has initial data and set any missing defaults
+-- check that entity has initial data and set any missing defaults
 -- the second return value is false if this is not a valid entity
 --
 --------------------------------------------------------------------------------
@@ -95,7 +129,7 @@ end
 
 --------------------------------------------------------------------------------
 --
--- Save a fight to database
+-- Save to database
 -- this calls check before putting and does not put if check says it is invalid
 -- build_props is called so code should always be updating the cache values
 --
@@ -121,7 +155,7 @@ end
 
 --------------------------------------------------------------------------------
 --
--- Load a fight from database, pass in id or entity
+-- Load from database, pass in id or entity
 -- the props will be copied into the cache
 --
 --------------------------------------------------------------------------------
@@ -144,7 +178,7 @@ end
 
 --------------------------------------------------------------------------------
 --
--- change a fight by a table, each value present is set
+-- change entity by a table, each value present is set
 --
 --------------------------------------------------------------------------------
 function update_set(H,id,by)
@@ -194,7 +228,7 @@ end
 
 --------------------------------------------------------------------------------
 --
--- given an entity return or update a list of cache keys we should recalculate
+-- given an entity return or update a list of memcache keys we should recalculate
 -- this list is a name->bool lookup
 --
 --------------------------------------------------------------------------------
@@ -217,71 +251,3 @@ function fix_memcache(H,mc)
 	end
 end
 
-
---------------------------------------------------------------------------------
---
--- create a robbery, nothing is written to the databse it just works out fight data locally
---
--- a robbery is an attempt to steal money from a player
---
---------------------------------------------------------------------------------
-function create_robbery(H,p1,p2)
-
-	local ent=create(H)
-	local c=ent.cache
-	
-	c.sides={ {player=p1.cache} , {player=p2.cache} } -- the sides involved [1] is attacker and [2] is defender
-	
-	for i=1,#c.sides do local v=c.sides[i]
-		v.win={} -- the change if the attacker wins
-		v.los={} -- the change if the attacker loses
-		v.bros_min=math.ceil(v.player.bros/v.player.houses) -- minimum bros involved, houses spread out your bros
-		v.bros_max=v.player.bros -- maximum bros involved
-		v.bros=math.random(v.bros_min,v.bros_max) -- randomised number of bros involved in this fight
-		v.sticks=v.bros -- every bro gets a stick
-		if v.bros>v.player.sticks then v.sticks=v.player.sticks end -- unless there are not enough sticks
-		v.power=v.bros+v.sticks -- total fighting power
-	end
-	
-	local att=c.sides[1]
-	local def=c.sides[2]
-	
-	local function winchance(pow1,pow2) -- given two power values return chance of pow1 winning as a percentage
-		local best=90
-		if (pow1<=0) or pow1 <= (pow2*0.5) then return 0 end -- no chance of winning
-		if (pow2<=0) or pow1 >= (pow2*4.5) then return best end -- best chance of winning
-		
-		local p=pow1-(pow2*0.5) -- if the attacker has half the power of the defender, they stand a chance
-		p=p/(pow2*(4.5-0.5)) -- their chance increase until they have about 4.5x the power of the defender
-		p=math.floor(100*p)
-		
-		if p<1    then p=0    end
-		if p>best then p=best end
-	
-		return p
-	end
-	
-	 -- the user sees this number, which is an average
-	c.display_percent=winchance(att.bros_min+att.bros_max,def.bros_min+def.bros_max)
-	
-	c.percent=winchance(att.power,def.power) -- this is the real chance of attacker winning (randomised)
-
-	c.win={}
-	c.los={}
-	
-	local frand=function(min,max,div) return math.random(min,max)/div end
-
--- win 
-	c.win.bux     = math.floor(def.player.bux*frand(5,15,100))		-- att gains 5%->15% bux from def
-	att.win.bros  =-math.floor(att.bros      *frand(0,200,10000))	-- att loses 0%->2% of bros
-	att.win.sticks=-math.floor(att.sticks    *frand(0,100,100))		-- att loses 0%->100% of sticks
-	def.win.bros  =-math.floor(def.bros      *frand(0,100,10000))	-- def loses 0%->1% of bros
-	def.win.sticks=-math.floor(def.sticks    *frand(0,100,100))		-- def loses 0%->100% of sticks
-	
---lose
-	att.los.bros  =-math.floor(att.bros      *frand(0,500,10000))	-- att loses 0%->5% of bros
-	att.los.sticks=-math.floor(att.sticks    *frand(0,100,100))		-- att loses 0%->100% of sticks
-	
-	return ent
-	
-end

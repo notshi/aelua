@@ -561,7 +561,7 @@ public final class Lua
    */
   public LuaTable getMetatable(Object o)
   {
-    LuaTable mt;
+    LuaTable mt=null;
 
     if (o instanceof LuaTable)
     {
@@ -575,7 +575,15 @@ public final class Lua
     }
     else
     {
-      mt = metatable[type(o)];
+		try
+		{
+			mt = metatable[type(o)];
+			return mt;
+		}
+		catch(java.lang.ArrayIndexOutOfBoundsException ex) // atempt to index something that is non indexable
+		{
+			dThrow(-1); // give an easier to debug error
+		}
     }
     return mt;
   }

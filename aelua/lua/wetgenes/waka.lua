@@ -220,7 +220,7 @@ function text_to_chunks(text)
 	
 	for i=1,#chunks do local v=chunks[i] -- perform some final actions on all chunks
 	
-		v.text=table.concat(chunk.lines) -- merge the split lines back together into one string
+		v.text=table.concat(v.lines) -- merge the split lines back together into one string
 		
 	end
 	
