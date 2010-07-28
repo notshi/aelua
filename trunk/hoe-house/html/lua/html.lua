@@ -1056,9 +1056,11 @@ player_shop_form=function(d)
 	d.gloves_bux=num_to_thousands(d.cost.gloves)
 	d.sticks_bux=num_to_thousands(d.cost.sticks)
 	d.manure_bux=num_to_thousands(d.cost.manure)
+	d.random=math.random(1,3)
 
 	return replace([[	
-			
+
+				
 <div class="cont">
 	<div class="chunk3a">
 		<div class="chunk3ait">
@@ -1069,6 +1071,24 @@ player_shop_form=function(d)
 	</div>
 	<div class="illshop1"></div>
 	<div class="chunk8a">
+	
+	<div class="trade">
+	<div class="trade1">
+	<div class="trade2">
+		<div class="witcha">
+			<div class="shopwitch">
+				<div class="shopwitch{random}"></div>
+				<div class="witchshout"></div>
+			</div>
+			<div class="witchb">
+				I sense a soul in search of hoes.
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	</div>
+	</div>
+	
 	<div class="formta">
 	<form class="notjNice" name="hoe_player_shop_form" id="hoe_player_shop_form" action="" method="POST" enctype="multipart/form-data">
 
@@ -1600,11 +1620,15 @@ fight_rob_preview=function(d)
 
 	return replace([[
 
-<div>
+<div class="cont">
+	<div class="chunk6">
+		<div class="alert">
+			{victim.name} has {victim.houses} <img src="/art/houses.png"> houses and {victim.bros} <img src="/art/bros.png"> bros with a stockpile of {victim.sticks} <img src="/art/sticksb.png"> sticks.<br/>
+			You have a {fight.display_percent}% chance of robbing some of their {victim.bux} <img src="/art/bux.png"> bux.
+		</div>
 
-{victim.name} has {victim.houses} houses and {victim.bros} bros with a stockpile of {victim.sticks} sticks.<br/>
-You have a {fight.display_percent}% chance of robbing some of their {victim.bux} bux.
-
+	<div class="clear"></div>
+	</div>
 </div>
 
 ]],d)
