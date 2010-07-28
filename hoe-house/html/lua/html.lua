@@ -1589,3 +1589,24 @@ trade_sell=function(d)
 ]],d)
 
 end
+
+
+-----------------------------------------------------------------------------
+--
+-- fight preview robbery
+--
+-----------------------------------------------------------------------------
+fight_rob_preview=function(d)
+
+	return replace([[
+
+<div>
+
+{victim.name} has {victim.houses} houses and {victim.bros} bros with a stockpile of {victim.sticks} sticks.<br/>
+You have a {fight.display_percent}% chance of robbing some of their {victim.bux} bux.
+
+</div>
+
+]],d)
+
+end

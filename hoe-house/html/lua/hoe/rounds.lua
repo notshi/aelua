@@ -1,6 +1,6 @@
 
 local wet_html=require("wetgenes.html")
-local Json=require("Json")
+local json=require("json")
 
 local dat=require("wetgenes.aelua.data")
 
