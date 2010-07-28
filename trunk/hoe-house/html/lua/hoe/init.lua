@@ -13,13 +13,14 @@ local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
 local serialize=wet_string.serialize
 
-local Json=require("Json")
+local json=require("json")
 
 -- require all the module sub parts
 local html=require("html")
 local players=require("hoe.players")
 local rounds=require("hoe.rounds")
 local trades=require("hoe.trades")
+local fights=require("hoe.fights")
 
 
 
@@ -549,13 +550,35 @@ function serv_round_fight(H)
 	local put=H.put
 	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."fight/",title="fight",link="fight",}
 
+	local player=H.player
+	local victim=tonumber(H.arg(2) or 0) or 0
+	if victim<=0 then victim=nil end
+	if victim then
+		victim=players.get(H,victim)
+		if victim then
+			if victim.cache.round_id~=H.round.key.id then victim=nil end -- check that player belongs to this round
+		end
+	end
+	if victim and player and victim.key.id==player.key.id then victim=nil end -- cannot attack self
+	
+	
 	H.srv.set_mimetype("text/html")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
+
+	if player and victim then
 	
-	put("missing_content",{})
+		local fight_rob=fights.create_robbery(H,player,victim)	
+		
+		put("fight_rob_preview",{ player=player and player.cache, victim=victim and victim.cache, fight=fight_rob.cache})
+		
+	else
+	
+		put("missing_content",{})
+		
+	end
 		
 	put("footer",footer_data)
 
