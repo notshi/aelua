@@ -530,6 +530,7 @@ div.player {
 	height: 100%;
 }
 div.player1, div.player2, div.player3, div.player4 {
+	background-repeat:no-repeat;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
@@ -550,16 +551,48 @@ div.player3 {
 div.player4 {
 	background-image:url('/art/player4.png');
 }
-div.playershout {
+div.playershout, div.witchshout {
 	background-image:url('/art/playershout.png');
+	background-repeat:no-repeat;
 	margin: 0;
 	width: 20px;
 	height: 60px;
 	float: left;
 }
+div.witchshout {
+	background-image:url('/art/witchshout.png');
+	height: 100px;
+}
+
+/* SHOPWITCH IMAGE container */
+div.shopwitch {
+	margin: 0;
+	width: 120px;
+	height: 100%;
+}
+div.shopwitch1, div.shopwitch2, div.shopwitch3 {
+	background-repeat:no-repeat;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	margin: 0;
+	width: 100px;
+	height: 100px;
+	float: left;
+}
+div.shopwitch1 {
+	background-image:url('/art/shopwitch1.png');
+}
+div.shopwitch2 {
+	background-image:url('/art/shopwitch2.png');
+}
+div.shopwitch3 {
+	background-image:url('/art/shopwitch3.png');
+}
 
 /* TRADE container */
-div.trade, div.trade1, div.trade2, div.trade3a, div.trade3b, div.trade4 {
+div.trade, div.trade1, div.trade2, div.trade3a, div.trade3b, div.trade4, 
+div.witcha, div.witchb {
 	margin: 0px auto;
 	width: 960px;
 	
@@ -590,7 +623,7 @@ div.trade2 {
 .trade2 a:active	{color: #00D400; text-decoration: none;}
 
 /* When NO ONE is offering anything */
-div.trade3a {
+div.trade3a, div.witcha {
 	background-color: #444;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -602,8 +635,11 @@ div.trade3a {
 	font-size: 23px;
 	color: #888;
 }
+div.witcha {
+	width: 800px;
+}
 /* When SOMEONE is offering something */
-div.trade3b {
+div.trade3b, div.witchb {
 	background-color: #333;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -615,6 +651,12 @@ div.trade3b {
 	font-size: 23px;
 	color: #FAFAFA;
 	float: left;
+}
+div.witchb {
+	width: 660px;
+	height: 75px;
+	margin-top: 5px;
+	padding-top: 10px;
 }
 
 
@@ -687,6 +729,7 @@ div.pro1c1 {
 div.pro1c2 {
 	height: 30px;
 	background-image:url('/art/shout.png');
+	background-repeat:no-repeat;
 }
 /*PROFILE INFO Form container */
 div.pro1d, div.pro1d1 {
