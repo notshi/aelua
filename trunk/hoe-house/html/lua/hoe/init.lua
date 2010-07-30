@@ -515,7 +515,7 @@ function serv_round_profile(H)
 		if r then
 			if by.name then -- name change, log it in the actions
 				acts.add_namechange(H,{
-					player = H.player.key.id ,
+					actor1 = H.player.key.id ,
 					name1  = H.player.cache.name ,
 					name2  = r.cache.name ,
 					})
@@ -742,6 +742,20 @@ function serv_round_trade(H)
 								results=results..get("trade_buy",{trade=best.cache}) -- finally say we bought stuff				
 								
 								H.player=players.get(H,H.player) -- get updated self
+								
+								local seller=players.get(H,best.cache.player) -- get buyers name
+
+								acts.add_trade(H,{
+									actor1 = seller.key.id ,
+									name1  = seller.cache.name ,
+									actor2 = H.player.key.id ,
+									name2  = H.player.cache.name ,
+									offer  = best.cache.offer,
+									seek   = best.cache.seek,
+									count  = best.cache.count,
+									cost   = best.cache.cost,
+									price  = best.cache.price,
+									})
 							else
 								undo_trade() -- release the trade
 								results=results..get("trade_buy_fail_cost") -- failed to buy					
@@ -789,6 +803,16 @@ function serv_round_trade(H)
 						results=results..get("trade_sell",{trade=ent.cache}) -- we added a trade
 						
 						H.player=players.get(H,H.player) -- get updated self
+						
+						acts.add_tradeoffer(H,{
+							actor1 = H.player.key.id ,
+							name1  = H.player.cache.name ,
+							offer  = ent.cache.offer,
+							seek   = ent.cache.seek,
+							count  = ent.cache.count,
+							cost   = ent.cache.cost,
+							price  = ent.cache.price,
+							})
 					end
 				
 				end

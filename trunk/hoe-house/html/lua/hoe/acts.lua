@@ -255,31 +255,109 @@ end
 
 --------------------------------------------------------------------------------
 --
--- add a namechange act, d contains:
+-- add a namechange act, tab should contain:
 --
--- player	= id of player changing name
+-- actor1	= id of player
 -- name1	= old name
 -- name2	= new name
 --
 --------------------------------------------------------------------------------
-function add_namechange(H,d)
+function add_namechange(H,tab)
 
 	local e=create(H)
 	local c=e.cache
 	
 	c.act="namechange" -- type of act
-	c.owner=d.player
+	c.owner=tab.actor1
 	c.private=0
-	c.actor1=d.player
+	c.actor1=tab.actor1
 	c.actor2=0
 	
-	c.data.name1=d.name1
-	c.data.name2=d.name2
+	for i,v in pairs(tab) do -- just copy tab into data
+		c.data[i]=v
+	end
 	
 	put(H,e)
+	
+	return e
 end
 
 
+--------------------------------------------------------------------------------
+--
+-- add a tradeoffer act, tab should contain:
+--
+-- actor1	= id of player
+-- name1	= name of player
+-- offer	= name of item offered
+-- seek		= name of item sought
+-- count 	= number of items offered
+-- cost		= number of items sought per items offered
+-- price	= total number of items sought
+--
+--------------------------------------------------------------------------------
+function add_tradeoffer(H,tab)
+
+	local e=create(H)
+	local c=e.cache
+	
+	c.act="tradeoffer" -- type of act
+	c.owner=tab.actor1
+	c.private=0
+	c.actor1=tab.actor1
+	c.actor2=0
+	
+	for i,v in pairs(tab) do -- just copy tab into data
+		c.data[i]=v
+	end
+	
+	put(H,e)
+	
+	return e
+end
+
+--------------------------------------------------------------------------------
+--
+-- add a trade act, tab should contain:
+--
+-- actor1	= id of player
+-- name1	= name of player
+-- actor2	= id of buyer
+-- name2	= name of buyer
+-- offer	= name of item offered
+-- seek		= name of item sought
+-- count 	= number of items offered
+-- cost		= number of items sought per items offered
+-- price	= total number of items sought
+--
+--------------------------------------------------------------------------------
+function add_trade(H,tab)
+
+	local e=create(H)
+	local c=e.cache
+	
+	c.act="trade" -- type of act
+	c.owner=tab.actor1
+	c.private=0
+	c.actor1=tab.actor1
+	c.actor2=tab.actor2
+	
+	for i,v in pairs(tab) do -- just copy tab into data
+		c.data[i]=v
+	end
+	
+	put(H,e)
+	
+-- actor2 also gets the same act saved specially for them unless this is a self trade (buyback)
+	if tab.actor1~=tab.actor2 then
+		e.key.id=nil
+		e.cache.id=nil
+		c.owner=tab.actor2 -- just change the owner and put again
+		put(H,e)
+	end
+	
+	return e
+end
 
 --------------------------------------------------------------------------------
 --
