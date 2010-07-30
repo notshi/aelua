@@ -12,6 +12,8 @@
 -- which is a table of numbers and strings of only the differences
 -- and that format can be used to convert either string into the other string
 --
+-- most of the changes are actually commented and are just mild changes really
+--
 -----------------------------------------------------------------------------
 
 

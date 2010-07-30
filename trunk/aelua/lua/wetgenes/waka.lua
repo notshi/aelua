@@ -125,18 +125,18 @@ end
 
 -----------------------------------------------------------------------------
 --
--- take a multichunk of text and break it into named chunks
--- returns a lookup table of chunks and numerical list of chunks in the order they where first defined
--- body is always defined
+-- take some text and break it into named chunks
+-- returns a lookup table of chunks and numerical list of these chunks in the order they where first defined
+-- body is the default chunk name
 --
 -- a chunk is a line that begins with #
--- the part after the . and ending with whitespace is the chunk name
+-- the part after the # and ending with whitespace is the chunk name
 -- all text following this line is part of that chunk
 -- the default section if none is give is "body", so any whitespace at the start of the file
--- before the first # line will be assigned into this chunk
+-- before the first # line will be assigned to this chunk
 -- data may follow this chunk name, if multiple chunks of the same name
 -- are defined they are simple merged into one
--- and each #chunk line is combined into one chunk
+-- and each #chunk line is combined into one chunk data
 --
 -- use option=value after the section name to provide options, so somthing like this
 --
@@ -145,6 +145,8 @@ end
 -- here is some text
 -- # opt=val
 -- here is some more text
+-- ## special comment, this line is ignored
+-- ## comments are just a line that begins with two hashes
 --
 -- is a valid chunk, all of the opt=val will be assigned to the same chunk
 -- and all the other text will be joined as that chunks body
@@ -207,8 +209,12 @@ function text_to_chunks(text)
 		
 		if c=="#" then -- start of chunk
 
-			chunk=manifest_chunk(v,chunk)
-		
+			if v:sub(2,2)~="#" then -- skip all comments
+
+				chunk=manifest_chunk(v,chunk)
+
+			end
+	
 		else -- normal lime add to the current chunk
 		
 			if not chunk then chunk=manifest_chunk("#body") end --sanity

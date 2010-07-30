@@ -626,3 +626,36 @@ fight_rob_preview=function(d)
 	return replace(get_plate("fight_rob_preview"),d)
 
 end
+
+-----------------------------------------------------------------------------
+--
+-- acts
+--
+-----------------------------------------------------------------------------
+profile_acts_header=function(d)
+
+	return replace(get_plate("profile_acts_header"),d)
+
+end
+-----------------------------------------------------------------------------
+--
+-- acts
+--
+-----------------------------------------------------------------------------
+profile_acts_footer=function(d)
+
+	return replace(get_plate("profile_acts_footer"),d)
+
+end
+-----------------------------------------------------------------------------
+--
+-- acts
+--
+-----------------------------------------------------------------------------
+profile_act=function(d)
+
+	d.ago=rough_english_duration(d.srv.time-d.act.created)
+
+	return replace(get_plate("profile_act"),d)
+
+end

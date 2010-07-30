@@ -21,6 +21,7 @@ local players=require("hoe.players")
 local rounds=require("hoe.rounds")
 local trades=require("hoe.trades")
 local fights=require("hoe.fights")
+local acts=require("hoe.acts")
 
 
 
@@ -497,10 +498,11 @@ function serv_round_profile(H)
 	if H.player and (posts.name or posts.shout) then
 		local by={}
 		
-		if posts.do_name and posts.name then
+		if posts.do_name and posts.name and posts.name~=H.player.cache.name then
 			local s=posts.name
 			if string.len(s) > 20 then s=string.sub(s,1,20) end
 			by.name=wet_html.esc(s)
+			by.energy=-1				-- costs one energy to change your name
 		end
 
 		if posts.do_shout and posts.shout then
@@ -511,6 +513,13 @@ function serv_round_profile(H)
 		
 		local r=players.update_add(H,H.player,by)
 		if r then
+			if by.name then -- name change, log it in the actions
+				acts.add_namechange(H,{
+					player = H.player.key.id ,
+					name1  = H.player.cache.name ,
+					name2  = r.cache.name ,
+					})
+			end
 			H.player=r
 		end
 	end
@@ -530,11 +539,25 @@ function serv_round_profile(H)
 	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
+	local a
 	if view and view.cache then 
 		put("player_profile",{player=view.cache,edit=false,fight=true})
+		a=acts.list(H,{ player=view.cache.id , private=0 , limit=20 , offset=0 })
+
 	elseif H.player then
 		put("player_profile",{player=H.player.cache,edit=true})
+		a=acts.list(H,{ player=H.player.key.id , limit=20 , offset=0 })
 	end
+	
+	if a then
+		put("profile_acts_header")
+		for i=1,#a do local v=a[i]
+			local s=acts.plate(H,v,"html")
+			put("profile_act",{act=v.cache,html=s})
+		end
+		put("profile_acts_footer")
+	end
+	
 	
 	put("footer",footer_data)
 
@@ -644,7 +667,7 @@ function serv_round_trade(H)
 	local trade -- offering [1] want to be paid in [2], use string names for items
 	local results="" -- any extra result html
 	
-	if posts.trade then -- we want to trade
+	if H.player and posts.trade then -- we want to trade
 	
 		if posts.trade~="" then
 			local aa=str_split("4",posts.trade)

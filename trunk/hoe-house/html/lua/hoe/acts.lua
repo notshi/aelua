@@ -32,6 +32,7 @@ local pairs=pairs
 local tostring=tostring
 local tonumber=tonumber
 local type=type
+local setmetatable=setmetatable
 
 -- lists of important activities
 -- mostly displayed in user profiles
@@ -41,21 +42,6 @@ local type=type
 -- the only parts that will change is props.owner and the key.id
 
 module("hoe.acts")
-
---
--- available global msg templates, lookup by name
---
-temps={}
-
-temps.act={
-	html=[[{act} {actor1} {actor2}]],
-	text=[[{act} {actor1} {actor2}]],
-}
-
-temps.traded={
-	html=[[{name1} traded {count} {offer} for {price} {seek} with {name2}]],
-	text=[[{name1} traded {count} {offer} for {price} {seek} with {name2}]],
-}
 
 --------------------------------------------------------------------------------
 --
@@ -87,24 +73,20 @@ function create(H)
 	p.created=H.srv.time
 	p.updated=H.srv.time
 	
+	p.act="act"			-- what type of act this is, eg robbery, purchase etc
+	
 	p.owner=0			-- the player whoes profile this act should be displayed on
 	p.private=0			-- is this a private msgs? set to 0 if public or the player id if only intended for them
 						-- so private==0 if we want a public stream
 	
-	p.form="act"		-- what form of act this is, eg robbery, purchase etc
-	
 	p.actor1=0			-- the primary actor or 0 if none
 	p.actor2=0			-- the secondary actor or 0 if none
-		
+	
 	dat.build_cache(ent) -- this just copies the props across
 	
 -- these are json only vars
 	local c=ent.cache
 	
-	c.temp_name="act" -- the global template used
-	c.temp={} -- cached version of this global template in case we dont have access to the global templates
-	c.temp.html=temps.act.html	-- html weplace, for page display with links etc
-	c.temp.text=temps.act.text	-- text weplace, for twitter like sms
 	
 	c.data={} -- the data available for all templates, also includes some calculated entity data.
 
@@ -251,3 +233,83 @@ function fix_memcache(H,mc)
 	end
 end
 
+--------------------------------------------------------------------------------
+--
+-- convert entity into a "html" chunk or "text" line
+--
+--------------------------------------------------------------------------------
+function plate(H,ent,plate)
+
+	local t=html.get_plate("act_"..ent.cache.act.."_"..plate) or "{act}"	
+	local c=ent.cache
+	local d={}
+	setmetatable(d,{__index=ent.cache.data}) -- use a meta table so we can
+-- add some more basedata for use in the plate without disturbing the original datas
+
+	d.act=c.act
+	d.actor1=c.actor1
+	d.actor2=c.actor2
+	
+	return wet_html.replace(t,d)
+end
+
+--------------------------------------------------------------------------------
+--
+-- add a namechange act, d contains:
+--
+-- player	= id of player changing name
+-- name1	= old name
+-- name2	= new name
+--
+--------------------------------------------------------------------------------
+function add_namechange(H,d)
+
+	local e=create(H)
+	local c=e.cache
+	
+	c.act="namechange" -- type of act
+	c.owner=d.player
+	c.private=0
+	c.actor1=d.player
+	c.actor2=0
+	
+	c.data.name1=d.name1
+	c.data.name2=d.name2
+	
+	put(H,e)
+end
+
+
+
+--------------------------------------------------------------------------------
+--
+-- Load a list of actions from database
+--
+--------------------------------------------------------------------------------
+function list(H,opts,t)
+	opts=opts or {} -- stop opts from being nil
+	
+	t=t or dat -- use transaction?
+	
+	local q={
+		kind=kind(H),
+		limit=opts.limit or 100,
+		offset=opts.offset or 0,
+			{"filter","round_id","==",H.round.key.id},
+			{"filter","owner","==",opts.player or H.player.key.id},
+		}
+		
+	if opts.private then -- optional privacy/public check
+		q[#q+1]={"filter","private","==",opts.private}
+	end
+	
+	q[#q+1]={"sort","created","DESC"} -- blog LIFO order
+		
+	local r=t.query(q)
+		
+	for i=1,#r do local v=r[i]
+		dat.build_cache(v)
+	end
+
+	return r
+end
