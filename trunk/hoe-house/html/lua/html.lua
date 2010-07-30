@@ -54,7 +54,7 @@ function rough_english_duration(t)
 	if t>=2*365*24*60*60 then
 		return math.floor(t/(365*24*60*60)).." years"
 	elseif t>=2*30*24*60*60 then
-		return math.floor(t/(30*24*60*60)).." months" -- aproximate months
+		return math.floor(t/(30*24*60*60)).." months" -- approximate months
 	elseif t>=2*7*24*60*60 then
 		return math.floor(t/(7*24*60*60)).." weeks"
 	elseif t>=2*24*60*60 then
@@ -544,7 +544,7 @@ end
 --
 -----------------------------------------------------------------------------
 trade_row=function(d)
-d.random=math.random(1,4)
+d.random=math.random(1,12)
 
 	d.form=replace(get_plate("trade_row_sell"),d)
 

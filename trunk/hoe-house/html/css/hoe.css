@@ -529,7 +529,9 @@ div.player {
 	width: 80px;
 	height: 100%;
 }
-div.player1, div.player2, div.player3, div.player4 {
+div.player1, div.player2, div.player3, div.player4, 
+div.player5, div.player6, div.player7, div.player8, 
+div.player9, div.player10, div.player11, div.player12 {
 	background-repeat:no-repeat;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -550,6 +552,30 @@ div.player3 {
 }
 div.player4 {
 	background-image:url('/art/player4.png');
+}
+div.player5 {
+	background-image:url('/art/player5.png');
+}
+div.player6 {
+	background-image:url('/art/player6.png');
+}
+div.player7 {
+	background-image:url('/art/player7.png');
+}
+div.player8 {
+	background-image:url('/art/player8.png');
+}
+div.player9 {
+	background-image:url('/art/player9.png');
+}
+div.player10 {
+	background-image:url('/art/player10.png');
+}
+div.player11 {
+	background-image:url('/art/player11.png');
+}
+div.player12 {
+	background-image:url('/art/player12.png');
 }
 div.playershout, div.witchshout {
 	background-image:url('/art/playershout.png');
