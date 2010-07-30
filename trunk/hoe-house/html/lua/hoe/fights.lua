@@ -229,6 +229,8 @@ function create_robbery(H,p1,p2)
 
 	local ent=create(H)
 	local c=ent.cache
+
+	c.energy=math.ceil(p1.cache.bros/1000) -- costs 1 energy per 1000 bros to rob
 	
 	c.sides={ {player=p1.cache} , {player=p2.cache} } -- the sides involved [1] is attacker and [2] is defender
 	
