@@ -295,7 +295,7 @@ function update_add(H,id,by)
 			if type(v)=="number" then -- add it
 				p[i]=(p[i] or 0)+v
 				if p[i]<0 then p[i]=0 end -- not allowed to go bellow 0
-			else -- just set it
+			else -- just set it, since adding strings/tables doesnt make any sense
 				p[i]=v
 			end
 		end
