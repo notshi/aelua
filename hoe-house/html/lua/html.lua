@@ -36,7 +36,12 @@ do
 	end
 end
 function get_plate(name)
-	return plates[name] or name
+	return ( plates[name] or name )
+end
+local get_plate_orig=get_plate
+
+local function get_plate(name) -- some simple debug
+	return "\n<!-- #"..name.." -->\n\n"..get_plate_orig(name)
 end
 
 -----------------------------------------------------------------------------
@@ -115,7 +120,7 @@ header=function(d)
 		d.title=s
 	end
 
-	return replace(get_plate("header"),d)
+	return replace(get_plate_orig("header"),d)
 
 end
 
