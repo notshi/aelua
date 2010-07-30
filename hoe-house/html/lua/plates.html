@@ -936,7 +936,7 @@ You do not have the {need} bux needed.
 		
 		for <input type="text" name="cost" value="0" size="3" class="field" id="trade_{trade.offer}4{trade.seek}_cost" /> <img src="/art/{trade.seek}.png"> {trade.seek} each.
 
-		<span id="trade_{trade.offer}4{trade.seek}_price" >poop</span>
+		<span id="trade_{trade.offer}4{trade.seek}_price" ></span>
 		</form>
 		<div class="clear"></div>
 	</div>
@@ -1094,16 +1094,22 @@ $(document).ready(function() {
 </div>
 
 #profile_acts_header
-<div>
+
 
 #profile_acts_footer
-</div>
+
 
 #profile_act
-<div style="position:relative;">
-<span style="width:200px;float:left;"> {ago} ago : </span>
-{html}
-<div style="clear:both;"></div>
+<div class="cont">
+	<div class="chunk6">
+		<div class="alert">
+			<div style="position:relative;">
+			<span style="width:200px;float:left;"> {ago} ago : </span>
+			{html}
+			<div style="clear:both;"></div>
+			</div>
+		</div>
+	</div>
 </div>
 
 #act_trade_text
