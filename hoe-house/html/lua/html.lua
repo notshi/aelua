@@ -632,6 +632,19 @@ fight_rob_preview=function(d)
 
 end
 
+fight_rob_fail=function(d)
+
+	return replace(get_plate("fight_rob_fail"),d)
+
+end
+
+
+fight_rob_win=function(d)
+
+	return replace(get_plate("fight_rob_win"),d)
+
+end
+
 -----------------------------------------------------------------------------
 --
 -- acts

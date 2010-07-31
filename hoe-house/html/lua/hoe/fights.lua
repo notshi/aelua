@@ -222,7 +222,7 @@ end
 --
 -- create a robbery, nothing is written to the databse it just works out fight data locally
 --
--- a robbery is an attempt to steal money from a player
+-- a robbery is an attempt to steal money from another player
 --
 --------------------------------------------------------------------------------
 function create_robbery(H,p1,p2)
@@ -230,16 +230,16 @@ function create_robbery(H,p1,p2)
 	local ent=create(H)
 	local c=ent.cache
 
-	c.energy=math.ceil(p1.cache.bros/1000) -- costs 1 energy per 1000 bros to rob
+	c.energy=math.ceil(p1.cache.bros/1000) -- costs 1 energy per 1000 bros
+	if c.energy<1 then c.energy=1 end
 	
 	c.sides={ {player=p1.cache} , {player=p2.cache} } -- the sides involved [1] is attacker and [2] is defender
 	
 	for i=1,#c.sides do local v=c.sides[i]
-		v.win={} -- the change if the attacker wins
-		v.los={} -- the change if the attacker loses
+		v.result={} -- the change in stats
 		v.bros_min=math.ceil(v.player.bros/v.player.houses) -- minimum bros involved, houses spread out your bros
 		v.bros_max=v.player.bros -- maximum bros involved
-		v.bros=math.random(v.bros_min,v.bros_max) -- randomised number of bros involved in this fight
+		v.bros=math.floor((v.bros_min+v.bros_max)/2) -- number of bros involved in this fight
 		v.sticks=v.bros -- every bro gets a stick
 		if v.bros>v.player.sticks then v.sticks=v.player.sticks end -- unless there are not enough sticks
 		v.power=v.bros+v.sticks -- total fighting power
@@ -263,26 +263,38 @@ function create_robbery(H,p1,p2)
 		return p
 	end
 	
-	 -- the user sees this number, which is an average
-	c.display_percent=winchance(att.bros_min+att.bros_max,def.bros_min+def.bros_max)
-	
 	c.percent=winchance(att.power,def.power) -- this is the real chance of attacker winning (randomised)
+	
+	c.display_percent=c.percent -- display this number, in case we wish to lie slightly
 
-	c.win={}
-	c.los={}
+	c.result={}
 	
 	local frand=function(min,max,div) return math.random(min,max)/div end
 
--- win 
-	c.win.bux     = math.floor(def.player.bux*frand(5,15,100))		-- att gains 5%->15% bux from def
-	att.win.bros  =-math.floor(att.bros      *frand(0,200,10000))	-- att loses 0%->2% of bros
-	att.win.sticks=-math.floor(att.sticks    *frand(0,100,100))		-- att loses 0%->100% of sticks
-	def.win.bros  =-math.floor(def.bros      *frand(0,100,10000))	-- def loses 0%->1% of bros
-	def.win.sticks=-math.floor(def.sticks    *frand(0,100,100))		-- def loses 0%->100% of sticks
+	if math.random(0,99)<c.percent then -- we win
 	
---lose
-	att.los.bros  =-math.floor(att.bros      *frand(0,500,10000))	-- att loses 0%->5% of bros
-	att.los.sticks=-math.floor(att.sticks    *frand(0,100,100))		-- att loses 0%->100% of sticks
+		c.act="robwin"
+		c.result.bux     = math.floor(def.player.bux*frand(5,15,100))		-- att gains 5%->15% bux from def
+		
+		att.result.bux   =c.result.bux
+		att.result.bros  =-math.floor(att.bros      *frand(0,200,10000))	-- att loses 0%->2% of bros
+		att.result.sticks=-math.floor(att.sticks    *frand(0,100,100))		-- att loses 0%->100% of sticks
+		
+		def.result.bux   =-c.result.bux
+		def.result.bros  =-math.floor(def.bros      *frand(0,100,10000))	-- def loses 0%->1% of bros
+		def.result.sticks=-math.floor(def.sticks    *frand(0,100,100))		-- def loses 0%->100% of sticks
+		
+	else --lose
+	
+		c.act="robfail"
+		c.result.bux     =0
+		
+		att.result.bros  =-math.floor(att.bros      *frand(0,500,10000))	-- att loses 0%->5% of bros
+		att.result.sticks=-math.floor(att.sticks    *frand(0,100,100))		-- att loses 0%->100% of sticks
+		
+		def.result.bros  =0
+		def.result.sticks=0
+	end
 	
 	return ent
 	

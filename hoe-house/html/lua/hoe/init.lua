@@ -600,9 +600,64 @@ function serv_round_fight(H)
 			if posts.attack == "rob" then -- perform a robery
 			
 				local fight=fights.create_robbery(H,player,victim) -- prepare fight
-				local fdat={}
 				
-				result=get("fight_rob",{})
+				-- apply the results, first remove energy from the player
+				
+				if players.update_add(H,player,{energy=-fight.cache.energy}) then -- edit the energy
+				
+					-- adjust victim, only on a win
+					if fight.cache.act=="robwin" then
+					
+						if players.update_add(H,victim,fight.cache.sides[2].result) then -- things went ok
+
+							if players.update_add(H,player,fight.cache.sides[1].result) then -- things went ok
+
+								local a=acts.add_rob(H,{
+									actor1  = player.key.id ,
+									name1   = player.cache.name ,
+									actor2  = victim.key.id ,
+									name2   = victim.cache.name ,
+									bux     = fight.cache.result.bux,
+									bros1   = -fight.cache.sides[1].result.bros,
+									sticks1 = -fight.cache.sides[1].result.sticks,
+									bros2   = -fight.cache.sides[2].result.bros,
+									sticks2 = -fight.cache.sides[2].result.sticks,
+									act     = fight.cache.act,
+									})
+
+								result=get("fight_rob_win",{html=acts.plate(H,a,"html")})
+								
+								player=players.get(H,player)
+								victim=players.get(H,victim)
+							end
+							
+						end
+						
+					elseif fight.cache.act=="robfail" then -- a failure only damages the attacker
+					
+						if players.update_add(H,player,fight.cache.sides[1].result) then -- things went ok
+						
+							local a=acts.add_rob(H,{
+								actor1  = player.key.id ,
+								name1   = player.cache.name ,
+								actor2  = victim.key.id ,
+								name2   = victim.cache.name ,
+								bux     = fight.cache.result.bux,
+								bros1   = -fight.cache.sides[1].result.bros,
+								sticks1 = -fight.cache.sides[1].result.sticks,
+								bros2   = -fight.cache.sides[2].result.bros,
+								sticks2 = -fight.cache.sides[2].result.sticks,
+								act     = fight.cache.act,
+								})
+									
+							result=get("fight_rob_fail",{html=acts.plate(H,a,"html")})
+							
+							victim=players.get(H,victim)
+						end
+						
+					end
+				end
+				
 			end
 		end
 	end
