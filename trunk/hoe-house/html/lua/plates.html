@@ -1067,44 +1067,76 @@ $(document).ready(function() {
 #fight_header
 
 <div class="cont">
-	<div class="chunk6">
-		<div class="alert">
-			{victim.name} has {victim.houses} <img src="/art/houses.png"> houses and {victim.bros} <img src="/art/bros.png"> bros with a stockpile of {victim.sticks} <img src="/art/sticksb.png"> sticks.<br/>
+	<div class="chunk3a">
+		<div class="chunk3ait">
+			<img src="/art/fight.png" width="30" height="30"> Fight
+		<div class="chunk3line"></div>
 		</div>
+		<div class="clear"></div>
 	</div>
-</div>
+	<div class="illtrade1"></div>
+	<div class="chunk8a">		
+		<div class="trade">
+			<div class="trade1">
+			<div class="trade2">
+			<div class="trade3a">
+				
+				<div class="player">
+					<div class="player{random}"></div>
+					<div class="playershout"></div>
+				</div>
+				<div class="trade3b">
+					{victim.name} has {victim.houses} <img src="/art/houses.png"> houses and {victim.bros} <img src="/art/bros.png"> bros with a stockpile of {victim.sticks} <img src="/art/sticksb.png"> sticks.<br/>	
+				</div>
+				<div class="clear"></div>
+			</div>
+			</div>
+			</div>
+		</div>
 
 #fight_footer
 
-<div>
+	</div>
+	<div class="clear"></div>
 </div>
 
 #fight_rob_preview
 
-<div class="cont">
-	<div class="chunk6">
-		<div class="alert">
-			You have a {fight.display_percent}% chance of robbing some of their {victim.bux} <img src="/art/bux.png"> bux.
+<div class="trade">
+	<div class="trade2">
+			You have a <b>{fight.display_percent}%</b> chance of robbing some of their {victim.bux} <img src="/art/bux.png"> bux.
 			<form action="{url}" method="POST" enctype="multipart/form-data">
 				<input type="hidden" name="victim" value="{victim.id}" /> 
 				<input type="hidden" name="attack" value="rob" /> 
-				<input type="text" size="100" maxlength="100" name="shout" value="" class="field"/> <br/>
-				<button type="submit" class="button">Perform Robbery!</button> (costs {fight.energy} energy)
+				<img src="/art/shoutb.png"> Shout: <input type="text" size="50" maxlength="100" name="shout" value="" class="field"/> <br/>
+				<div class="fight"><button type="submit" class="button">Perform Robbery!</button></div> (costs {fight.energy} energy)
 			</form>		
-		</div>
+		<div class="clear"></div>
 	</div>
 </div>
 
 #fight_rob_win
 
-<div>
-{html}
+<div class="cont">
+	<div class="chunk6">
+		<div class="alert">
+			{html}
+		</div>
+
+	<div class="clear"></div>
+	</div>
 </div>
 
 #fight_rob_fail
 
-<div>
-{html}
+<div class="cont">
+	<div class="chunk6">
+		<div class="alert">
+			{html}
+		</div>
+
+	<div class="clear"></div>
+	</div>
 </div>
 
 
@@ -1118,11 +1150,11 @@ $(document).ready(function() {
 <div class="cont">
 	<div class="chunk6">
 		<div class="alert">
-			<div style="position:relative;">
+			
 			<span style="width:200px;float:left;"> {ago} ago : </span>
 			{html}
-			<div style="clear:both;"></div>
-			</div>
+			<div class="clear"></div>
+			
 		</div>
 	</div>
 </div>
@@ -1147,7 +1179,7 @@ $(document).ready(function() {
 
 #act_tradeoffer_text
 
-{name1} ofered {count} {offer} for {price} {seek}
+{name1} offered {count} {offer} for {price} {seek}
 
 #act_tradeoffer_html
 
@@ -1155,27 +1187,23 @@ $(document).ready(function() {
 
 
 #act_robwin_text
-
 {name1} stole {bux} bux from {name2} whilst shouting :
 "{shout}"
 {name1} lost {bros1} bros and {sticks1} sticks during the robbery.
 {name2} also lost {bros2} bros and {sticks2} sticks attempting to defend themselves.
 
 #act_robwin_html
-
 <a href="{url}profile/{actor1}">{name1}</a> stole {bux} bux from <a href="{url}profile/{actor2}">{name2}</a> whilst shouting :<br/>
 "{shout}"<br/>
 <a href="{url}profile/{actor1}">{name1}</a> lost {bros1} bros and {sticks1} sticks during the robbery.<br/>
 <a href="{url}profile/{actor2}">{name2}</a> also lost {bros2} bros and {sticks2} sticks attempting to defend themselves.<br/>
 
 #act_robfail_text
-
 {name1} tried to steal some bux from {name2} whilst shouting :
 "{shout}"
 {name1} lost {bros1} bros and {sticks1} sticks during the attempt.
 
 #act_robfail_html
-
 <a href="{url}profile/{actor1}">{name1}</a> tried to steal some bux from <a href="{url}profile/{actor2}">{name2}</a> whilst shouting :<br/>
 "{shout}"<br/>
 <a href="{url}profile/{actor1}">{name1}</a> lost {bros1} bros and {sticks1} sticks during the attempt.<br/>

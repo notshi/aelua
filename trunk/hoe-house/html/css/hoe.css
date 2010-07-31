@@ -469,7 +469,8 @@ div.chunk6a{
 div.chunk6c{
 	margin-top: 40px;
 }
-/* ALERT fonts */
+
+/* ALERT fonts RED */
 div.alert{
 	font-family: Georgia, serif;
 	color: #374548;
@@ -481,6 +482,19 @@ div.alert{
 .alert a:visited	{color: #ff5555; font-weight: bold; text-decoration: none;}
 .alert a:hover		{color: #ff5555; font-weight: bold; text-decoration: underline;}
 .alert a:active		{color: #ff5555; font-weight: bold; text-decoration: none;}
+/* ALERT fonts GREEN */
+div.alert1{
+	font-family: Georgia, serif;
+	color: #374548;
+	font-size: 18px;
+	text-align: center;
+}
+.alert1 a:focus		{color: #00d400; font-weight: bold; text-decoration: none;}
+.alert1 a:link		{color: #00d400; font-weight: bold; text-decoration: none;}
+.alert1 a:visited	{color: #00d400; font-weight: bold; text-decoration: none;}
+.alert1 a:hover		{color: #00d400; font-weight: bold; text-decoration: underline;}
+.alert1 a:active	{color: #00d400; font-weight: bold; text-decoration: none;}
+
 /* Form container */
 div.chunk7, div.chunk7a{
 	background-color: #555;
@@ -1269,7 +1283,7 @@ div.forminline{
 	color: #00d400;
 }
 
-/* TRADE INPUT/BUTTONS */
+/* TRADE INPUT/BUTTONS & FIGHT INPUT/BUTTONS */
 div.trade2 input{
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -1299,6 +1313,11 @@ div.trade2 button{
 	text-align: center;
 	
 	cursor:pointer;
+}
+div.fight button {
+	margin-top: 10px;
+	width: 350px;
+	height: 30px;
 }
 div.trade2 button:hover {
 	background: #222;
