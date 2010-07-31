@@ -281,7 +281,7 @@ function create_robbery(H,p1,p2)
 		att.result.sticks=-math.floor(att.sticks    *frand(0,100,100))		-- att loses 0%->100% of sticks
 		
 		def.result.bux   =-c.result.bux
-		def.result.bros  =-math.floor(def.bros      *frand(0,100,10000))	-- def loses 0%->1% of bros
+		def.result.bros  =-math.floor(def.bros      *frand(0,10,10000))		-- def loses 0%->0.1% of bros
 		def.result.sticks=-math.floor(def.sticks    *frand(0,100,100))		-- def loses 0%->100% of sticks
 		
 	else --lose

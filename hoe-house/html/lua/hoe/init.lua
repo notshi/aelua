@@ -605,13 +605,20 @@ function serv_round_fight(H)
 				
 				if players.update_add(H,player,{energy=-fight.cache.energy}) then -- edit the energy
 				
+					local shout=""
+					if posts.shout then
+						local s=posts.shout or ""
+						if string.len(s) > 100 then s=string.sub(s,1,100) end	
+						shout=wet_html.esc(s)
+					end
+								
 					-- adjust victim, only on a win
 					if fight.cache.act=="robwin" then
 					
 						if players.update_add(H,victim,fight.cache.sides[2].result) then -- things went ok
 
 							if players.update_add(H,player,fight.cache.sides[1].result) then -- things went ok
-
+		
 								local a=acts.add_rob(H,{
 									actor1  = player.key.id ,
 									name1   = player.cache.name ,
@@ -623,6 +630,7 @@ function serv_round_fight(H)
 									bros2   = -fight.cache.sides[2].result.bros,
 									sticks2 = -fight.cache.sides[2].result.sticks,
 									act     = fight.cache.act,
+									shout   = shout,
 									})
 
 								result=get("fight_rob_win",{html=acts.plate(H,a,"html")})
@@ -648,6 +656,7 @@ function serv_round_fight(H)
 								bros2   = -fight.cache.sides[2].result.bros,
 								sticks2 = -fight.cache.sides[2].result.sticks,
 								act     = fight.cache.act,
+								shout   = shout,
 								})
 									
 							result=get("fight_rob_fail",{html=acts.plate(H,a,"html")})
