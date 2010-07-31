@@ -246,6 +246,7 @@ function plate(H,ent,plate)
 	setmetatable(d,{__index=ent.cache.data}) -- use a meta table so we can
 -- add some more basedata for use in the plate without disturbing the original datas
 
+	d.url=H.srv.url_base..H.round.key.id.."/"
 	d.act=c.act
 	d.actor1=c.actor1
 	d.actor2=c.actor2
@@ -352,9 +353,51 @@ function add_trade(H,tab)
 	if tab.actor1~=tab.actor2 then
 		e.key.id=nil
 		e.cache.id=nil
-		c.owner=tab.actor2 -- just change the owner and put again
+		e.cache.owner=tab.actor2 -- just change the owner and put again
 		put(H,e)
 	end
+	
+	return e
+end
+
+--------------------------------------------------------------------------------
+--
+-- add a rob act, tab should contain:
+--
+-- actor1	= id of player
+-- name1	= name of player
+-- actor2	= id of victim
+-- name2	= name of victim
+-- bux		= amount of bux stolen
+-- bros1    = number of bros attacker lost
+-- sticks1  = number of sticks attacker lost
+-- bros2    = number of bros defender lost
+-- sticks2  = number of sticks defender lost
+-- act      = "robwin" or "robfail" was this a win or fail?
+--
+--------------------------------------------------------------------------------
+function add_rob(H,tab)
+
+	local e=create(H)
+	local c=e.cache
+	
+	c.act=tab.act -- type of act
+	c.owner=tab.actor1
+	c.private=0
+	c.actor1=tab.actor1
+	c.actor2=tab.actor2
+	
+	for i,v in pairs(tab) do -- just copy tab into data
+		c.data[i]=v
+	end
+	
+	put(H,e)
+	
+-- actor2 also gets the same act saved specially for them
+	e.key.id=nil
+	e.cache.id=nil
+	e.cache.owner=tab.actor2 -- just change the owner and put again
+	put(H,e)
 	
 	return e
 end

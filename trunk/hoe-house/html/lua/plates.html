@@ -1094,6 +1094,19 @@ $(document).ready(function() {
 	</div>
 </div>
 
+#fight_rob_win
+
+<div>
+{html}
+</div>
+
+#fight_rob_fail
+
+<div>
+{html}
+</div>
+
+
 #profile_acts_header
 
 
@@ -1114,13 +1127,22 @@ $(document).ready(function() {
 </div>
 
 #act_trade_text
+
 {name1} traded {count} {offer} for {price} {seek} with {name2}
+
 #act_trade_html
-{name1} traded {count} {offer} for {price} {seek} with {name2}
+
+<a href="{url}profile/{actor1}">{name1}</a> traded {count} {offer} for {price} {seek} with <a href="{url}profile/{actor2}">{name2}</a>
+
+
 #act_namechange_text
+
 {name1} changed their name to {name2}
+
 #act_namechange_html
-{name1} changed their name to {name2}
+
+<a href="{url}profile/{actor1}">{name1}</a> changed their name to <a href="{url}profile/{actor1}">{name2}</a>
+
 
 #act_tradeoffer_text
 
@@ -1128,5 +1150,27 @@ $(document).ready(function() {
 
 #act_tradeoffer_html
 
-{name1} offered {count} {offer} for {price} {seek}
+<a href="{url}profile/{actor1}">{name1}</a> offered {count} {offer} for {price} {seek}
 
+
+#act_robwin_text
+
+{name1} stole {bux} bux from {name2}.
+{name1} lost {bros1} bros and {sticks1} sticks during the robbery.
+{name2} also lost {bros2} bros and {sticks2} sticks attempting to defend themselves.
+
+#act_robwin_html
+
+<a href="{url}profile/{actor1}">{name1}</a> stole {bux} bux from <a href="{url}profile/{actor2}">{name2}</a>.<br/>
+<a href="{url}profile/{actor1}">{name1}</a> lost {bros1} bros and {sticks1} sticks during the robbery.<br/>
+<a href="{url}profile/{actor2}">{name2}</a> also lost {bros2} bros and {sticks2} sticks attempting to defend themselves.<br/>
+
+#act_robfail_text
+
+{name1} tried to steal some bux from {name2}.
+{name1} lost {bros1} bros and {sticks1} sticks during the attempt.
+
+#act_robfail_html
+
+<a href="{url}profile/{actor1}">{name1}</a> tried to steal some bux from <a href="{url}profile/{actor2}">{name2}</a>.<br/>
+<a href="{url}profile/{actor1}">{name1}</a> lost {bros1} bros and {sticks1} sticks during the attempt.<br/>
