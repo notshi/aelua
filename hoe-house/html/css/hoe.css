@@ -75,14 +75,14 @@ html, body {
 	min-height: 100%;
 	height: auto !important;
 	height: 100%;
-	margin: 0 auto -50px;
+	margin: 0 auto -200px;
 }
 .footer, .push {
-	height: 50px;
+	height: 200px;
 	clear: both;
 }
 .footer {
-	background-color: none;
+	background-image:url('/art/footer.png')
 }
 
 	
@@ -152,33 +152,33 @@ div.header{
 
 /* Footer container */
 div.desc, div.desc1 {
-	font-family: Georgia, serif;
-	color: #374548;
+	font-family: Lucida Sans Unicode, sans-serif;
+	color: #7C9277;
 	font-size: 12px;
 	
 	width: 480px;
 	margin: 0 auto;
 	padding: 0px;
-	padding-top: 10px;
+	padding-top: 100px;
 	float: left;
 }
-.desc a:focus		{color: #779494; text-decoration: none;}
-.desc a:link		{color: #779494; text-decoration: none;}
-.desc a:visited		{color: #779494; text-decoration: none;}
-.desc a:hover		{color: #779494; text-decoration: underline;}
-.desc a:active		{color: #779494; text-decoration: none;}
+.desc a:focus		{color: #55BE41; text-decoration: none;}
+.desc a:link		{color: #55BE41; text-decoration: none;}
+.desc a:visited		{color: #55BE41; text-decoration: none;}
+.desc a:hover		{color: #55BE41; text-decoration: underline;}
+.desc a:active		{color: #55BE41; text-decoration: none;}
 div.desc1 {
 	text-align: right;
 	float: right;
 }
-.desc1 a:focus		{color: #779494; text-decoration: none;}
-.desc1 a:link		{color: #779494; text-decoration: none;}
-.desc1 a:visited		{color: #779494; text-decoration: none;}
-.desc1 a:hover		{color: #779494; text-decoration: underline;}
-.desc1 a:active		{color: #779494; text-decoration: none;}
+.desc1 a:focus		{color: #55BE41; text-decoration: none;}
+.desc1 a:link		{color: #55BE41; text-decoration: none;}
+.desc1 a:visited	{color: #55BE41; text-decoration: none;}
+.desc1 a:hover		{color: #55BE41; text-decoration: underline;}
+.desc1 a:active		{color: #55BE41; text-decoration: none;}
 
 /* Game Start container */
-div.game, div.game1, div.game2, div.game3 {
+div.game, div.game1, div.game2, div.game3, div.game4, div.game5 {
 	border-left: 1px dotted #fff;
 	border-bottom: 1px dotted #fff;
 	margin: 0 auto;
@@ -223,6 +223,20 @@ div.game3 {
 	border-left: 0;
 }
 
+div.game4 {
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
+	border-left: 0;
+	border-bottom: 0;
+}
+
+div.game5 {
+	border-bottom: 0;
+}
+
 /* Game Start illustration container */
 div.illgame1 {
 	background-image:url('/art/illgame1.png');
@@ -240,7 +254,7 @@ div.illbro1, div.illbro2, div.illbro3, div.illhoe1, div.illhoe2,
 div.illhoe3, div.illwork1, div.illwork2, div.illwork3, div.illleave1,
 div.illleave2, div.illleave3, div.illlist1, div.illlist2, div.illlist3,
 div.illshop1, div.illtrade1, div.illpro1, div.illfight1, div.illfight2, 
-div.illfight3, 
+div.illfight3, div.illchoose,  
 div.illbrobux, div.illhoebro {
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -301,7 +315,8 @@ div.illhoebro {
 }
 div.illlist1, div.illlist2, div.illlist3,
 div.illshop1, div.illtrade1, div.illpro1, 
-div.illfight1, div.illfight2, div.illfight3  {
+div.illfight1, div.illfight2, div.illfight3, 
+div.illchoose  {
 	border: 0;
 
 	border-bottom-left-radius: 0px;
@@ -337,15 +352,19 @@ div.illfight2 {
 div.illfight3 {
 	background-image:url('/art/illfight3.png');
 }
+div.illchoose {
+	background-image:url('/art/illchoose.png');
+}
+
 
 /* div big bold fonts */
-div.chunk, div.intro, div.intro1 {
+div.chunk, div.intro, div.intro1,div.intro2 {
 	font-family: Georgia, serif;
 	color: #374548;
 	font-size: 23px;
 	font-weight: bold;
 	
-	margin: 0 auto;
+	margin: auto;
 	width: 960px;
 	padding: 0px;
 }
@@ -361,10 +380,12 @@ div.intro {
 	height: 267px;
 }
 /*Start page fonts and container*/
-div.intro1 {
-	margin: 40px 0px 20px 20px;
+div.intro1, div.intro2 {
+	margin: 40px 0px 0px 20px;
 	width: 600px;
 	
+	font-family: Lucida Sans Unicode, sans-serif;
+	font-weight: normal;
 	color: #555;
 	font-size: 23px;
 	float: left;
@@ -374,6 +395,17 @@ div.intro1 {
 .intro1 a:visited	{color: #779494; text-decoration: none;}
 .intro1 a:hover		{color: #779494; text-decoration: underline;}
 .intro1 a:active	{color: #779494; text-decoration: none;}
+
+/* START PAGE Wetgenes Linkage */
+div.intro2 {
+	margin: 0;
+	font-size: 16px;
+}
+.intro2 a:focus		{color: #779494; text-decoration: none;}
+.intro2 a:link		{color: #779494; text-decoration: none;}
+.intro2 a:visited	{color: #779494; text-decoration: none;}
+.intro2 a:hover		{color: #779494; text-decoration: underline;}
+.intro2 a:active	{color: #779494; text-decoration: none;}
 
 /* CRUMBS container */
 div.chunk1{
@@ -388,16 +420,19 @@ div.chunk2{
 	float:right;
 }
 /* Menu headers. chunk3: Basic Menu, chunk3a: List */
-div.chunk3, div.chunk3a{
+div.chunk3a{
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
-	border:0px solid #ccc;
+	border: 0px solid #ccc;
 	margin: 0 auto;
-	width: 624px;
+	width: 960px;
 	padding: 0px;
 	padding-top: 10px;
+}
+div.chunk3ait {
+	width: 960px;
 }
 div.chunk3it, div.chunk3ait{
 	font-family: Georgia, serif;
@@ -406,7 +441,8 @@ div.chunk3it, div.chunk3ait{
 	font-weight: bold;
 	text-align: center;
 
-	margin: 10px;
+	margin: auto;
+	margin-bottom: 10px;
 	float:left;
 }
 div.chunk3line {	
@@ -415,9 +451,6 @@ div.chunk3line {
 	width: 560px;
 	margin: 0 auto;
 }
-/*div.chunk3a, div.chunk3ait {
-	width: 960px;
-}*/
 
 /* Icon navigation container*/
 div.chunk4{
@@ -954,7 +987,9 @@ div.procat2 {
 }
 
 /* lista: LIST fat columns */
-div.lista, div.listb, div.listat, div.listbt, div.listc, div.listct {
+div.lista, div.listb, div.listc, 
+div.listat, div.listbt, div.listct, 
+div.listat1, div.listbt1, div.listct1 {
 	border-right: 1px dotted #fff;
 	border-bottom: 1px solid #374548;
 	
@@ -970,41 +1005,43 @@ div.lista, div.listb, div.listat, div.listbt, div.listc, div.listct {
 	float: left;
 }
 /* LIST thin columns */
-div.listb, div.listbt{	
+div.listb, div.listbt, div.listbt1{	
 	border-right: 1px dotted #fff;
 	width: 80px;
 }
 /* LIST TOP ROW has different height */
-div.listat, div.listbt, div.listct{	
+div.listat, div.listbt, div.listct, 
+div.listat1, div.listbt1, div.listct1 {	
 	height: 25px;
 	border-top: 1px dotted #fff;
 	border-right: 1px dotted #fff;
 	border-bottom: 1px dotted #fff;
-}
-/* LIST TOP ROW names */
-div.listat, div.listbt, div.listct{	
+	
 	color: #ccc;
 	font-size: 18px;
 }
+
 /* SHOUT TOP ROW with no right border */
-div.listct{	
+div.listct, div.listct1 {	
 	border: 0px;
 	border-top: 1px dotted #fff;
 	border-bottom: 1px dotted #fff;
 	width: 163px;
 }
-/* SHOUT COLUMN with no borders */
+/* SHOUT COLUMN with no borders & special, left aligned text */
 div.listc{	
 	border: 0px;
 	border-bottom: 1px solid #374548;
 	width: 163px;
-}
-/* SHOUT COLUMN has special, left aligned text */
-div.listc{	
+	
 	font-family: Lucida Sans Unicode;
 	line-height: 1.2em;
 	font-size: 10px;
 	text-align: left;
+}
+/* BOTTOM ROW has no bottom border */
+div.listat1, div.listbt1, div.listct1 {	
+	border-bottom: 0;
 }
 
 /* Form horizontal line */
