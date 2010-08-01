@@ -68,7 +68,11 @@ function create(H)
 	
 	p.created=H.srv.time
 	p.updated=H.srv.time
-		
+	
+	p.act="fight"
+	p.actor1=0
+	p.actor2=0
+	
 	dat.build_cache(ent) -- this just copies the props across
 	
 -- these are json only vars
@@ -162,7 +166,7 @@ end
 --
 -- get - update - put
 --
--- f must be a function that changes the trade.cache and returns true on success
+-- f must be a function that changes the ent.cache and returns true on success
 -- id can be an id or an entity from which we will get the id
 --
 --------------------------------------------------------------------------------
@@ -231,7 +235,14 @@ function create_robbery(H,p1,p2)
 	local c=ent.cache
 
 	c.energy=math.ceil(p1.cache.bros/1000) -- costs 1 energy per 1000 bros
-	if c.energy<1 then c.energy=1 end
+	if c.energy<1  then c.energy=1  end
+	if c.energy>20 then c.energy=20 end -- cap it at about 3 hours worth of energy
+	
+	c.actor1=p1.key.id
+	c.actor2=p2.key.id
+	
+	c.name1=p1.cache.name
+	c.name2=p2.cache.name
 	
 	c.sides={ {player=p1.cache} , {player=p2.cache} } -- the sides involved [1] is attacker and [2] is defender
 	
@@ -254,8 +265,8 @@ function create_robbery(H,p1,p2)
 		if (pow2<=0) or pow1 >= (pow2*4.5) then return best end -- best chance of winning
 		
 		local p=pow1-(pow2*0.5) -- if the attacker has half the power of the defender, they stand a chance
-		p=p/(pow2*(4.5-0.5)) -- their chance increase until they have about 4.5x the power of the defender
-		p=math.floor(100*p)
+		p=p/(pow2*(4.5-0.5)) -- their chance increases until they have about 4.5x the power of the defender
+		p=math.floor(best*p)
 		
 		if p<1    then p=0    end
 		if p>best then p=best end
