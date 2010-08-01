@@ -1074,7 +1074,7 @@ $(document).ready(function() {
 		</div>
 		<div class="clear"></div>
 	</div>
-	<div class="illtrade1"></div>
+	<div class="illfight{random1}"></div>
 	<div class="chunk8a">		
 		<div class="trade">
 			<div class="trade1">
@@ -1109,7 +1109,7 @@ $(document).ready(function() {
 				<input type="hidden" name="victim" value="{victim.id}" /> 
 				<input type="hidden" name="attack" value="rob" /> 
 				<img src="/art/shoutb.png"> Shout: <input type="text" size="50" maxlength="100" name="shout" value="" class="field"/> <br/>
-				<div class="fight"><button type="submit" class="button">Perform Robbery!</button></div> (costs {fight.energy} energy)
+				<div class="fight"><button type="submit" class="button">Perform Robbery!</button></div> (costs {fight.energy} <img src="/art/energyb.png"> energy)
 			</form>		
 		<div class="clear"></div>
 	</div>
@@ -1165,7 +1165,7 @@ $(document).ready(function() {
 
 #act_trade_html
 
-<a href="{url}profile/{actor1}">{name1}</a> traded {count} {offer} for {price} {seek} with <a href="{url}profile/{actor2}">{name2}</a>
+<a href="{url}profile/{actor1}">{name1}</a> traded {count} <img src="/art/{offer}.png"> {offer} for {price} <img src="/art/{seek}.png"> {seek} with <a href="{url}profile/{actor2}">{name2}</a>
 
 
 #act_namechange_text
@@ -1174,7 +1174,7 @@ $(document).ready(function() {
 
 #act_namechange_html
 
-<a href="{url}profile/{actor1}">{name1}</a> changed their name to <a href="{url}profile/{actor1}">{name2}</a>
+<a href="{url}profile/{actor1}">{name1}</a> changed their <img src="/art/name.png"> name to <a href="{url}profile/{actor1}">{name2}</a>
 
 
 #act_tradeoffer_text
@@ -1183,7 +1183,7 @@ $(document).ready(function() {
 
 #act_tradeoffer_html
 
-<a href="{url}profile/{actor1}">{name1}</a> offered {count} {offer} for {price} {seek}
+<a href="{url}profile/{actor1}">{name1}</a> offered {count} <img src="/art/{offer}.png"> {offer} for {price} <img src="/art/{seek}.png"> {seek}
 
 
 #act_robwin_text
@@ -1193,10 +1193,10 @@ $(document).ready(function() {
 {name2} also lost {bros2} bros and {sticks2} sticks attempting to defend themselves.
 
 #act_robwin_html
-<a href="{url}profile/{actor1}">{name1}</a> stole {bux} bux from <a href="{url}profile/{actor2}">{name2}</a> whilst shouting :<br/>
+<a href="{url}profile/{actor1}">{name1}</a> stole {bux} <img src="/art/buxb.png"> bux from <a href="{url}profile/{actor2}">{name2}</a> <img src="/art/shoutb.png"> shouting :<br/>
 "{shout}"<br/>
-<a href="{url}profile/{actor1}">{name1}</a> lost {bros1} bros and {sticks1} sticks during the robbery.<br/>
-<a href="{url}profile/{actor2}">{name2}</a> also lost {bros2} bros and {sticks2} sticks attempting to defend themselves.<br/>
+<a href="{url}profile/{actor1}">{name1}</a> lost {bros1} <img src="/art/bros.png"> bros and {sticks1} <img src="/art/sticksb.png"> sticks during the robbery.<br/>
+<a href="{url}profile/{actor2}">{name2}</a> also lost {bros2} <img src="/art/bros.png"> bros and {sticks2} <img src="/art/sticksb.png"> sticks attempting to defend themselves.<br/>
 
 #act_robfail_text
 {name1} tried to steal some bux from {name2} whilst shouting :
