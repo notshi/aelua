@@ -608,9 +608,10 @@ function serv_round_fight(H)
 					local shout=""
 					if posts.shout then
 						local s=posts.shout or ""
-						if string.len(s) > 100 then s=string.sub(s,1,100) end	
+						if string.len(s) > 100 then s=string.sub(s,1,100) end
 						shout=wet_html.esc(s)
 					end
+					fight.cache.shout=shout -- include shout in fight data, so it can be saved to db
 								
 					-- adjust victim, only on a win
 					if fight.cache.act=="robwin" then
@@ -619,6 +620,8 @@ function serv_round_fight(H)
 
 							if players.update_add(H,player,fight.cache.sides[1].result) then -- things went ok
 		
+								fights.put(H,fight) -- save this fight to db
+							
 								local a=acts.add_rob(H,{
 									actor1  = player.key.id ,
 									name1   = player.cache.name ,
@@ -645,6 +648,8 @@ function serv_round_fight(H)
 					
 						if players.update_add(H,player,fight.cache.sides[1].result) then -- things went ok
 						
+							fights.put(H,fight) -- save this fight to db
+							
 							local a=acts.add_rob(H,{
 								actor1  = player.key.id ,
 								name1   = player.cache.name ,
