@@ -608,6 +608,7 @@ end
 -----------------------------------------------------------------------------
 fight_header=function(d)
 d.random=math.random(1,12)
+d.random1=math.random(1,3)
 
 	return replace(get_plate("fight_header"),d)
 

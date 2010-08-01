@@ -239,7 +239,9 @@ div.illgame1 {
 div.illbro1, div.illbro2, div.illbro3, div.illhoe1, div.illhoe2,
 div.illhoe3, div.illwork1, div.illwork2, div.illwork3, div.illleave1,
 div.illleave2, div.illleave3, div.illlist1, div.illlist2, div.illlist3,
-div.illshop1, div.illtrade1, div.illpro1, div.illbrobux, div.illhoebro {
+div.illshop1, div.illtrade1, div.illpro1, div.illfight1, div.illfight2, 
+div.illfight3, 
+div.illbrobux, div.illhoebro {
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
@@ -298,7 +300,8 @@ div.illhoebro {
 	height: 70px;
 }
 div.illlist1, div.illlist2, div.illlist3,
-div.illshop1, div.illtrade1, div.illpro1  {
+div.illshop1, div.illtrade1, div.illpro1, 
+div.illfight1, div.illfight2, div.illfight3  {
 	border: 0;
 
 	border-bottom-left-radius: 0px;
@@ -324,6 +327,15 @@ div.illtrade1 {
 }
 div.illpro1 {
 	background-image:url('/art/illpro1.png');
+}
+div.illfight1 {
+	background-image:url('/art/illfight1.png');
+}
+div.illfight2 {
+	background-image:url('/art/illfight2.png');
+}
+div.illfight3 {
+	background-image:url('/art/illfight3.png');
 }
 
 /* div big bold fonts */
