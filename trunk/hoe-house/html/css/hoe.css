@@ -182,6 +182,7 @@ div.desc1 {
 div.game, div.game1, div.game2, div.game3, div.game4, div.game5 {
 	border-left: 1px dotted #fff;
 	border-bottom: 1px dotted #fff;
+	padding-top: 5px;
 	margin: 0 auto;
 	width: 190px;
 	height: 30px;
