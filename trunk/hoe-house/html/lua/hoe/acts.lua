@@ -417,11 +417,12 @@ function list(H,opts,t)
 		limit=opts.limit or 100,
 		offset=opts.offset or 0,
 			{"filter","round_id","==",H.round.key.id},
-			{"filter","owner","==",opts.player or H.player.key.id},
 		}
 		
-	if opts.private then -- optional privacy/public check
-		q[#q+1]={"filter","private","==",opts.private}
+	for i,v in ipairs{"owner","private","act"} do
+		if opts[v] then -- optional options
+			q[#q+1]={"filter",v,"==",opts[v]}
+		end
 	end
 	
 	q[#q+1]={"sort","created","DESC"} -- blog LIFO order

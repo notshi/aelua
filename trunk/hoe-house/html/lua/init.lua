@@ -54,6 +54,11 @@ serv_apps={ -- base lookup table
 						["#default"]	=	"dumid", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
 					},
+					
+["help"]		=	{			-- a wiki module
+						["#default"]	=	"waka", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+					},
 }
 
 
@@ -123,6 +128,7 @@ function serv(srv)
 			srv.flavour=lookup[ "#flavour" ] -- get flavour of this table
 		
 			srv.url_base=srv.url_base..slash.."/"
+			srv.slash=slash -- the last slash table we looked up
 			
 		elseif type(cmd)=="string" then -- a string so require that module and use its serv func
 		
