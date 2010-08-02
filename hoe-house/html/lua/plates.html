@@ -350,13 +350,13 @@ $(function(){show_energy("#player_energy",{player.energy},{H.energy_frac},{H.ene
 #
 	<div class="chunk8b">
 		<div class="game1">
-			<a class="hoe_round_row" href="{url}">Round <i>{round.id}</i></a>	
+			<a class="hoe_round_row" href="{url}"><i>Round {round.id}</i></a>	
 		</div>
 		<div class="game">
 			<a class="hoe_round_row" href="{url}"><i>{players}</i></a>
 		</div>
 		<div class="game">
-			<a class="hoe_round_row" href="{url}"><i>{speed}</i> eph</a>
+			<a class="hoe_round_row" href="{url}"><i>{speed} eph</i></a>
 		</div>
 		<div class="game">
 			<a class="hoe_round_row" href="{url}"><i>{start}</i></a>
@@ -409,10 +409,12 @@ $(function(){show_energy("#player_energy",{player.energy},{H.energy_frac},{H.ene
 		</div>
 		<div class="clear"></div>
 	</div>
-<a href="{url}">TOP</a>
-<a href="{url}?off={page.prev}">PREV</a>
-<a href="{url}?off={page.next}">NEXT</a>
-</div>
+<span style="font-size:12px;font-weight:bold;margin:20px;">
+	<a href="{url}">^TOP</a>
+	<a href="{url}?off={page.prev}"> | PREV</a>
+	<a href="{url}?off={page.next}"> | NEXT</a>
+	</div>
+</span>
 
 #player_row
 
