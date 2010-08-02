@@ -542,11 +542,11 @@ function serv_round_profile(H)
 	local a
 	if view and view.cache then 
 		put("player_profile",{player=view.cache,edit=false,fight=true})
-		a=acts.list(H,{ player=view.cache.id , private=0 , limit=20 , offset=0 })
+		a=acts.list(H,{ owner=view.cache.id , private=0 , limit=20 , offset=0 })
 
 	elseif H.player then
 		put("player_profile",{player=H.player.cache,edit=true})
-		a=acts.list(H,{ player=H.player.key.id , limit=20 , offset=0 })
+		a=acts.list(H,{ owner=H.player.key.id , limit=20 , offset=0 })
 	end
 	
 	if a then
@@ -911,6 +911,16 @@ function serv_round_trade(H)
 	end
 	put("trade_footer",{trades=trades})
 	
+	local a=acts.list(H,{ act="tradeoffer" , private=0 , limit=20 , offset=0 })
+	if a then
+		put("profile_acts_header")
+		for i=1,#a do local v=a[i]
+			local s=acts.plate(H,v,"html")
+			put("profile_act",{act=v.cache,html=s})
+		end
+		put("profile_acts_footer")
+	end
+
 	put("footer",footer_data)
 
 end
