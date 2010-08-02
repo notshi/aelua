@@ -33,6 +33,7 @@ http://whorehouse.naken.cc
 	margin: 0;
 }
 b {font-weight: bold;}
+u {font-style: italic; text-decoration: none;}
 i {font-family: Lucida Sans Unicode; font-weight: bold; letter-spacing: -0.1em; line-height: 30px;}
 a img, :link img, :visited img {border: 0;}
 form, button{border:0; margin:0; padding:0;}
@@ -492,6 +493,7 @@ div.chunk6, div.chunk6a, div.chunk6b, div.chunk6c, div.chunk6d{
 	margin-top: 20px;
 	width: 920px;
 	padding: 5px;
+	overflow: hidden;
 }
 div.chunk6{
 	background-color: #fff;
@@ -539,6 +541,18 @@ div.alert1{
 .alert1 a:visited	{color: #00d400; font-weight: bold; text-decoration: none;}
 .alert1 a:hover		{color: #00d400; font-weight: bold; text-decoration: underline;}
 .alert1 a:active	{color: #00d400; font-weight: bold; text-decoration: none;}
+/* ALERT fonts NEUTRAL */
+div.alert2{
+	font-family: Georgia, serif;
+	color: #374548;
+	font-size: 18px;
+	text-align: center;
+}
+.alert2 a:focus		{color: #374548; font-weight: bold; text-decoration: none;}
+.alert2 a:link		{color: #374548; font-weight: bold; text-decoration: none;}
+.alert2 a:visited	{color: #374548; font-weight: bold; text-decoration: none;}
+.alert2 a:hover		{color: #374548; font-weight: bold; text-decoration: underline;}
+.alert2 a:active	{color: #374548; font-weight: bold; text-decoration: none;}
 
 /* Form container */
 div.chunk7, div.chunk7a{

@@ -932,6 +932,16 @@ You do not have the {need} bux needed.
 	<div class="clear"></div>
 </div>
 
+<div class="cont">
+	<div class="chunk3a">
+		<div class="chunk3ait">
+			<br/><img src="/art/upoffer.png" width="30" height="30"> Upcoming Offers<br/>
+		<div class="chunk3line"></div>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+
 #trade_row_sell
 	
 <div class="trade">
@@ -1050,7 +1060,7 @@ $(document).ready(function() {
 <div class="cont">
 	<div class="chunk6">
 		<div class="alert">
-			<img src="/art/success.png"> Congratulations! You've just bought {trade.count} <img src="/art/{trade.offer}.png"> {trade.offer} for {trade.price} <img src="/art/{trade.seek}.png"> {trade.seek}
+			<img src="/art/win.png"> Congratulations! You've just bought {trade.count} <img src="/art/{trade.offer}.png"> {trade.offer} for {trade.price} <img src="/art/{trade.seek}.png"> {trade.seek}
 			from player <a href="{H.url_base}profile/{trade.player}">#{trade.player}</a> .
 		</div>
 
@@ -1063,7 +1073,7 @@ $(document).ready(function() {
 <div class="cont">
 	<div class="chunk6">
 		<div class="alert">
-			<img src="/art/success.png"> Congratulations! You've just offered {trade.count} <img src="/art/{trade.offer}.png"> {trade.offer} for {trade.price} <img src="/art/{trade.seek}.png"> {trade.seek}.<br/>
+			<img src="/art/win.png"> Congratulations! You've just offered {trade.count} <img src="/art/{trade.offer}.png"> {trade.offer} for {trade.price} <img src="/art/{trade.seek}.png"> {trade.seek}.<br/>
 			The <img src="/art/{trade.offer}.png"> {trade.offer} have been placed in escrow.<br/>
 			Please wait whilst we add it to the queue, a buyer will purchase it shortly.
 		</div>
@@ -1149,7 +1159,15 @@ $(document).ready(function() {
 
 
 #profile_acts_header
-
+<div class="cont">
+	<div class="chunk3a">
+		<div class="chunk3ait">
+			<br/><img src="/art/recacts.png" width="30" height="30"> Recent Activities<br/>
+		<div class="chunk3line"></div>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
 
 #profile_acts_footer
 
@@ -1157,10 +1175,12 @@ $(document).ready(function() {
 #profile_act
 <div class="cont">
 	<div class="chunk6">
-		<div class="alert">
+		<div class="alert2">
 			
-			<span style="width:200px;float:left;"> {ago} ago : </span>
-			{html}
+			<span style="width:150px;float:left;"> {ago} ago : <br/><img src="/art/{act.act}d.png"> </span>
+
+			
+			<span style="width:770px;float:left;"> {html} </span>
 			<div class="clear"></div>
 			
 		</div>
@@ -1195,23 +1215,25 @@ $(document).ready(function() {
 
 
 #act_robwin_text
-{name1} stole {bux} bux from {name2} whilst shouting :
-"{shout}"
+{name1} stole {bux} bux from {name2} shouting :
+Upon leaving, they shouted : "{shout}"
 {name1} lost {bros1} bros and {sticks1} sticks during the robbery.
-{name2} also lost {bros2} bros and {sticks2} sticks attempting to defend themselves.
+{name2} lost {bros2} bros and {sticks2} sticks attempting to defend themselves.
 
 #act_robwin_html
-<a href="{url}profile/{actor1}">{name1}</a> stole {bux} <img src="/art/buxb.png"> bux from <a href="{url}profile/{actor2}">{name2}</a> <img src="/art/shoutb.png"> shouting :<br/>
-"{shout}"<br/>
+<a href="{url}profile/{actor1}">{name1}</a> stole {bux} <img src="/art/buxb.png"> bux from <a href="{url}profile/{actor2}">{name2}</a>. <br/>
+Upon leaving, they <img src="/art/shoutb.png"> shouted : "<span style="color:#00d400"><b>{shout}</b></span>" <br/>
 <a href="{url}profile/{actor1}">{name1}</a> lost {bros1} <img src="/art/bros.png"> bros and {sticks1} <img src="/art/sticksb.png"> sticks during the robbery.<br/>
-<a href="{url}profile/{actor2}">{name2}</a> also lost {bros2} <img src="/art/bros.png"> bros and {sticks2} <img src="/art/sticksb.png"> sticks attempting to defend themselves.<br/>
+<a href="{url}profile/{actor2}">{name2}</a> lost {bros2} <img src="/art/bros.png"> bros and {sticks2} <img src="/art/sticksb.png"> sticks attempting to defend themselves.<br/>
+
 
 #act_robfail_text
-{name1} tried to steal some bux from {name2} whilst shouting :
-"{shout}"
+{name1} failed to steal any bux from {name2}.
+They were last seen shouting : "{shout}"
 {name1} lost {bros1} bros and {sticks1} sticks during the attempt.
 
 #act_robfail_html
-<a href="{url}profile/{actor1}">{name1}</a> tried to steal some bux from <a href="{url}profile/{actor2}">{name2}</a> whilst shouting :<br/>
-"{shout}"<br/>
-<a href="{url}profile/{actor1}">{name1}</a> lost {bros1} bros and {sticks1} sticks during the attempt.<br/>
+<a href="{url}profile/{actor1}">{name1}</a> failed to steal any <img src="/art/buxb.png"> bux from <a href="{url}profile/{actor2}">{name2}</a>. <br/>
+They were last seen <img src="/art/shoutb.png"> shouting : "<span style="color:#ff5555"><b>{shout}</b></span>" <br/>
+<a href="{url}profile/{actor1}">{name1}</a> lost {bros1} <img src="/art/bros.png"> bros and {sticks1} <img src="/art/sticksb.png"> sticks during the attempt.<br/>
+
