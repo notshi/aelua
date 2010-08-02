@@ -913,12 +913,12 @@ function serv_round_trade(H)
 	
 	local a=acts.list(H,{ act="tradeoffer" , private=0 , limit=20 , offset=0 })
 	if a then
-		put("profile_acts_header")
+--		put("profile_acts_header")
 		for i=1,#a do local v=a[i]
 			local s=acts.plate(H,v,"html")
 			put("profile_act",{act=v.cache,html=s})
 		end
-		put("profile_acts_footer")
+--		put("profile_acts_footer")
 	end
 
 	put("footer",footer_data)
