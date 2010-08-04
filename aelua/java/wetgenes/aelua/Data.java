@@ -631,7 +631,11 @@ public class Data
 		while(!L.isNil(o));
 		
 		
-		t=L.newTable();		
+		t=L.newTable();
+		
+		LuaTable list=L.newTable();
+		L.rawSet(t,"list", list );	// store the array in a subtable, so we can encode full results as json
+		
 		L.rawSet(t,"code", q.toString() );
 		
 		try
@@ -657,7 +661,7 @@ public class Data
 			i=1;
 			for(Object e : ql )
 			{
-				L.rawSetI(t,i, luaentity_create(L,(Entity)e) );
+				L.rawSetI(list,i, luaentity_create(L,(Entity)e) );
 				i=i+1;
 			}
 			L.rawSet(t,"cursor", ql.getCursor().toWebSafeString() );

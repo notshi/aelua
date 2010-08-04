@@ -280,28 +280,30 @@ function create_robbery(H,p1,p2)
 
 	c.result={}
 	
-	local frand=function(min,max,div) return math.random(min,max)/div end
+	local frand=function(count,min,max,div)
+		return math.floor(math.random(min*count,max*count)/div)
+	end
 
 	if math.random(0,99)<c.percent then -- we win
 	
 		c.act="robwin"
-		c.result.bux     = math.floor(def.player.bux*frand(5,15,100))		-- att gains 5%->15% bux from def
+		c.result.bux     = frand(	def.player.bux,	5,15,100)		-- att gains 5%->15% bux from def
 		
 		att.result.bux   =c.result.bux
-		att.result.bros  =-math.floor(att.bros      *frand(0,200,10000))	-- att loses 0%->2% of bros
-		att.result.sticks=-math.floor(att.sticks    *frand(0,100,100))		-- att loses 0%->100% of sticks
+		att.result.bros  =-frand(	att.bros,		0,  2,100)		-- att loses 0%->2% of bros
+		att.result.sticks=-frand(	att.sticks,		0,100,100)		-- att loses 0%->100% of sticks
 		
 		def.result.bux   =-c.result.bux
-		def.result.bros  =-math.floor(def.bros      *frand(0,10,10000))		-- def loses 0%->0.1% of bros
-		def.result.sticks=-math.floor(def.sticks    *frand(0,100,100))		-- def loses 0%->100% of sticks
+		def.result.bros  =-frand(	def.bros,		0,  2,100)		-- def loses 0%->2% of bros
+		def.result.sticks=-frand(	def.sticks,		0,100,100)		-- def loses 0%->100% of sticks
 		
 	else --lose
 	
 		c.act="robfail"
 		c.result.bux     =0
 		
-		att.result.bros  =-math.floor(att.bros      *frand(0,500,10000))	-- att loses 0%->5% of bros
-		att.result.sticks=-math.floor(att.sticks    *frand(0,100,100))		-- att loses 0%->100% of sticks
+		att.result.bros  =-frand(	att.bros,		0,  5,100)		-- att loses 0%->5% of bros
+		att.result.sticks=-frand(	att.sticks,		0,100,100)		-- att loses 0%->100% of sticks
 		
 		def.result.bros  =0
 		def.result.sticks=0

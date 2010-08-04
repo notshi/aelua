@@ -51,6 +51,16 @@ waka_bar=function(d)
 	
 	end
 	
+	if user and user.cache and user.cache.admin then -- admin
+		d.admin=replace([[
+	<div style="float:right">
+		<form action="" method="POST" enctype="multipart/form-data">
+			<button type="submit" name="edit" class="button" >Edit</button>
+		</form>
+	</div>
+]],d)
+	end
+	
 	return replace([[
 <div style="display:relative">
 <div style="float:left">
@@ -59,6 +69,7 @@ waka_bar=function(d)
 <div style="float:right">
 {hello} {action}
 </div>
+{admin}
 <div style="clear:both"></div>
 </div>
 ]],d)
