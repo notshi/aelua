@@ -1,9 +1,11 @@
 
+-- this all needs to be rewritten now i know what I'm doing :)
+
 
 -- load up html template strings
 local html=require("wetgenes.html")
 
-local Json=require("Json")
+local json=require("json")
 
 local sys=require("wetgenes.aelua.sys")
 
@@ -57,7 +59,7 @@ local function msg_ent(tab)
 	ent.props={
 		email=tab.email,
 		ip=tab.ip,
-		json=Json.Encode(dat),
+		json=json.encode(dat),
 		updated=t,
 		created=t,
 		}
@@ -174,9 +176,9 @@ function get_threads(how)
 			{"sort","updated","<"},
 		})
 		
-	for i,v in ipairs(t) do
+	for i,v in ipairs(t.list) do
 		dat.build_cache(v)
 	end
 		
-	return t
+	return t.list
 end
