@@ -1,5 +1,6 @@
 
 local wet_html=require("wetgenes.html")
+local replace=wet_html.replace
 
 local sys=require("wetgenes.aelua.sys")
 
@@ -67,22 +68,42 @@ local put=make_put(srv)
 		aa[#aa+1]=srv.url_slash[ i ]
 	end
 	local url=string.sub(srv.url_base,1,#srv.url_base-1)
+	local baseurl=url
 	local crumbs=" <a href=\"/\">home</a> / <a href=\""..url.."\">"..srv.slash.."</a> "
 	if not aa[1] then aa[1]="" end
 	for i,v in ipairs(aa) do
+		baseurl=url
 		url=url.."/"..v
 		crumbs=crumbs.." / <a href=\""..url.."\">"..v.."</a> "
 	end
-	local page="/"..table.concat(aa,"/")
+	local pagename="/"..table.concat(aa,"/")
 	
-	put("header",{title="waka : "..page})
 	
-	put("waka_bar",{crumbs=crumbs,page=page})
+	put("header",{title="waka : "..pagename:sub(2)})
 	
-	local page=pages.manifest(srv,page)
+	put("waka_bar",{crumbs=crumbs,page=pagename})
+	
+	local page=pages.manifest(srv,pagename)
 	local chunks=wet_waka.text_to_chunks(page.cache.text)
-	put(tostring(chunks))
-
+	
+	local form={}
+	
+	for i,v in ipairs(chunks) do -- do basic process of all of the page chunks into the form 
+		local s=""
+		if v.opts.form=="raw" then -- predefined html
+			s=v.text
+		else
+			s=wet_waka.chunk_to_html(v,baseurl) -- default to waka
+		end
+		s=replace(s,form) -- later chunks can also include earlier chunks
+		form[v.name]=s
+	end
+	
+	put(replace([[
+	<h1>{title}</h1>
+	{body}
+	]],form))
+	
 --	put(tostring(srv))
 	
 	put("footer")

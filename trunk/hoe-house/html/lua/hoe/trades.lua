@@ -293,13 +293,14 @@ function find_cheapest(H,opts,t)
 	
 	local best
 		
-	for i=1,#r do local v=r[i] -- look for the first one that has passed its limbo wait period
+	for i=1,#r.list do local v=r.list[i] -- look for the first one that has passed its limbo wait period
 		dat.build_cache(v)
 		if (v.cache.created+(v.cache.limbo or 0)) < H.srv.time then -- ignore new trades for a little while
 			best=v
 			break
 		end
 	end
+	-- if we have 100 trades in limbo then no trades will be available...
 
 	cache.put(cachekey,json.encode({best}),10*60) -- save this (possibly random) result for 10 mins
 	

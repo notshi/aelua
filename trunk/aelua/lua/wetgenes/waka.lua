@@ -184,7 +184,7 @@ function text_to_chunks(text)
 			
 			for i=1,#opts do local v=opts[i]
 				local a,b=split_equal(v)
-				if a then chunk.opts[a]=b end
+				if a then opts[a]=b end
 			end
 			
 			chunk.id=#chunks+1
@@ -278,9 +278,9 @@ function chunk_to_html(chunk,baseurl)
 				
 				if c1 == "/" then -- a very simple link relative to where we are
 				
-					local chars="[%w/%-_#]+"
+					local chars="[%w/%-%+_#]+"
 					
-					if token:sub(1,3)=="///" then chars="[%w/%-_#%.:]+" end -- allow common domains chars
+					if token:sub(1,3)=="///" then chars="[%w/%-%+_#%.:]+" end -- allow common domain chars
 				
 					local s=token:sub(2) -- skip this first char
 					
@@ -297,6 +297,10 @@ function chunk_to_html(chunk,baseurl)
 					end
 					
 				elseif token:sub(1,7)=="http://" then
+						link(token,token)
+						done=true
+
+				elseif token:sub(1,8)=="https://" then
 						link(token,token)
 						done=true
 				end

@@ -161,11 +161,11 @@ function list(H,opts)
 			{"sort","updated","DESC"},
 		})
 		
-	for i=1,#ret do local v=ret[i]
+	for i=1,#ret.list do local v=ret.list[i]
 		dat.build_cache(v)
 	end
 
-	return ret
+	return ret.list
 end
 
 --------------------------------------------------------------------------------

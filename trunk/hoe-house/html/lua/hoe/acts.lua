@@ -429,9 +429,9 @@ function list(H,opts,t)
 		
 	local r=t.query(q)
 		
-	for i=1,#r do local v=r[i]
+	for i=1,#r.list do local v=r.list[i]
 		dat.build_cache(v)
 	end
 
-	return r
+	return r.list
 end
