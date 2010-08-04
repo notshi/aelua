@@ -1124,11 +1124,11 @@ $(document).ready(function() {
 
 <div class="trade">
 	<div class="trade2">
-			You have a <b>{fight.display_percent}%</b> chance of robbing some of their {victim.bux} <img src="/art/bux.png"> bux.
+			You have a <span style="color:#00ff00;"><b>{fight.display_percent}%</b></span> chance of robbing some of their <span style="color:#00ff00;">{victim.bux}</span> <img src="/art/bux.png"> bux.
 			<form action="{url}" method="POST" enctype="multipart/form-data">
 				<input type="hidden" name="victim" value="{victim.id}" /> 
 				<input type="hidden" name="attack" value="rob" /> 
-				<img src="/art/shoutb.png"> Shout: <input type="text" size="50" maxlength="100" name="shout" value="" class="field"/> <br/>
+				<span style="font-size:16px;"><img src="/art/shoutb.png"> Shout: <input type="text" size="50" maxlength="100" name="shout" value="" class="field"/></span> <br/>
 				<div class="fight"><button type="submit" class="button">Perform Robbery!</button></div> (costs {fight.energy} <img src="/art/energyb.png"> energy)
 			</form>		
 		<div class="clear"></div>

@@ -89,8 +89,8 @@ html, body {
 	
 body{
 	background-color: #f7f7f7;
-/*	background-image:url('hoe.600x450.png');
-	background-repeat:repeat; */
+	background-image:url('/art/header.png');
+	background-repeat:repeat-x;
 }
 a:focus		{color: #444; text-decoration: none;}
 a:link		{color: #444; text-decoration: none;}
