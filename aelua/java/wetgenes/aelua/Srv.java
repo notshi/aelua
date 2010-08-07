@@ -20,6 +20,7 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+
 public class Srv
 {
 
@@ -105,18 +106,22 @@ public class Srv
 //
 // Java is great, all hail java and its standard standards! *rolls eyes*
 //
+// We may hit other problems with multipart/form-data , so back to the orignial hack as an option
+// it is probably OK just to check that the method is POST, doing it again in the lua code wont hurt either
+// just remember any gets included in a post will turn up in the posts table...
+//
 
-/*
+			String param=( req.getParameter(name) );
+
  			if(req.getMethod()=="POST")
 			{
-				L.rawSet( posts , name , req.getParameter(name) );
-				L.rawSet( vars , name , req.getParameter(name) );
+				L.rawSet( posts , name , param );
+				L.rawSet( vars , name , param );
 			}
 			else
-*/
 			{
-				L.rawSet( gets , name , req.getParameter(name) );
-				L.rawSet( vars , name , req.getParameter(name) ); // merge gets and posts into vars
+				L.rawSet( gets , name , param );
+				L.rawSet( vars , name , param ); // merge gets and posts into vars
 			}
 		}
 		
@@ -142,7 +147,6 @@ public class Srv
 					{
 						sb.append(line).append("\n");
 					}
-
 					String data=sb.toString();
 					
 					L.rawSet( posts , item.getFieldName() , data );
@@ -207,6 +211,8 @@ public class Srv
 	
 //
 // Set the mimetype response
+//
+// you probably want to set "text/html; charset=UTF-8"
 //
 	public void reg_set_mimetype(Lua L,Object lib)
 	{ 

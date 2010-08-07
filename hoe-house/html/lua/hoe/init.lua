@@ -110,12 +110,14 @@ function serv(srv)
 		return serv_round(H)
 	end
 	
--- post handled everything
-	
+	if H.slash=="spew" then -- spew is requesting info, give it
+		return serv_spew(H)
+	end
+
 		
 
 
-	H.srv.set_mimetype("text/html")
+	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{})
@@ -135,6 +137,26 @@ function serv(srv)
 end
 
 
+-----------------------------------------------------------------------------
+--
+-- dump some info that my spew server wants
+-- the spew server should only ask this once an hour, max
+--
+-----------------------------------------------------------------------------
+function serv_spew(H)
+
+local put=H.put
+
+	H.srv.set_mimetype("text/html")
+	
+	local list=rounds.list(H)
+	if list[1] then -- this be the round that gets crowns
+	
+		put("round found",{})
+	
+	end
+	
+end
 
 -----------------------------------------------------------------------------
 --
@@ -212,7 +234,7 @@ local put=H.put
 
 -- or display base menu
 
-	H.srv.set_mimetype("text/html")
+	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{})
@@ -242,7 +264,7 @@ local put=H.put
 
 	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."list/",title="list",link="list",}
 
-	H.srv.set_mimetype("text/html")
+	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{})
@@ -292,7 +314,7 @@ local put=H.put
 	
 	local posts={} -- remove any gunk from the posts input
 	-- check if this post probably came from this page before allowing post params
-	if H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
+	if H.srv.method=="POST" and H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
 		for i,v in pairs(H.srv.posts) do
 			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
 		end
@@ -366,7 +388,7 @@ local put=H.put
 		end
 	end
 
-	H.srv.set_mimetype("text/html")
+	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{})
@@ -399,7 +421,7 @@ function serv_round_shop(H)
 		
 	local posts={} -- remove any gunk from the posts input
 	-- check if this post probably came from this page before allowing post params
-	if H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
+	if H.srv.method=="POST" and H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
 		for i,v in pairs(H.srv.posts) do
 			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
 		end
@@ -456,7 +478,7 @@ function serv_round_shop(H)
 		
 	end
 	
-	H.srv.set_mimetype("text/html")
+	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{})
@@ -489,7 +511,7 @@ function serv_round_profile(H)
 	
 	local posts={} -- remove any gunk from the posts input
 	-- check if this post probably came from this page before allowing post params
-	if H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
+	if H.srv.method=="POST" and H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
 		for i,v in pairs(H.srv.posts) do
 			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
 		end
@@ -533,7 +555,7 @@ function serv_round_profile(H)
 		end
 	end
 
-	H.srv.set_mimetype("text/html")
+	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{})
@@ -576,7 +598,7 @@ function serv_round_fight(H)
 
 	local posts={} -- remove any gunk from the posts input
 	-- check if this post probably came from this page before allowing post params
-	if H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
+	if H.srv.method=="POST" and H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
 		for i,v in pairs(H.srv.posts) do
 			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
 		end
@@ -676,7 +698,7 @@ function serv_round_fight(H)
 		end
 	end
 	
-	H.srv.set_mimetype("text/html")
+	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{})
@@ -727,7 +749,7 @@ function serv_round_trade(H)
 	
 	local posts={} -- remove any gunk from the posts input
 	-- check if this post probably came from this page before allowing post params
-	if H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
+	if H.srv.method=="POST" and H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
 		for i,v in pairs(H.srv.posts) do
 			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
 		end
@@ -893,7 +915,7 @@ function serv_round_trade(H)
 	end
 	
 	
-	H.srv.set_mimetype("text/html")
+	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
 	put("home_bar",{})
 	put("user_bar",{})

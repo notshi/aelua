@@ -262,10 +262,10 @@ function create_robbery(H,p1,p2)
 	local function winchance(pow1,pow2) -- given two power values return chance of pow1 winning as a percentage
 		local best=90
 		if (pow1<=0) or pow1 <= (pow2*0.5) then return 0 end -- no chance of winning
-		if (pow2<=0) or pow1 >= (pow2*4.5) then return best end -- best chance of winning
+		if (pow2<=0) or pow1 >= (pow2*4.0) then return best end -- best chance of winning
 		
 		local p=pow1-(pow2*0.5) -- if the attacker has half the power of the defender, they stand a chance
-		p=p/(pow2*(4.5-0.5)) -- their chance increases until they have about 4.5x the power of the defender
+		p=p/(pow2*(4.0-0.5)) -- their chance increases until they have about 4x the power of the defender
 		p=math.floor(best*p)
 		
 		if p<1    then p=0    end
@@ -290,23 +290,28 @@ function create_robbery(H,p1,p2)
 		c.result.bux     = frand(	def.player.bux,	5,15,100)		-- att gains 5%->15% bux from def
 		
 		att.result.bux   =c.result.bux
-		att.result.bros  =-frand(	att.bros,		0,  2,100)		-- att loses 0%->2% of bros
 		att.result.sticks=-frand(	att.sticks,		0,100,100)		-- att loses 0%->100% of sticks
+		att.result.bros  =-frand(	att.bros,		0,  2,100)		-- att loses 0%->2% of bros
 		
 		def.result.bux   =-c.result.bux
+		local sticks=def.sticks
+		if att.sticks < def.sticks then sticks=att.sticks end		-- less stick loss on a small attack
+		def.result.sticks=-frand(	sticks,			0,100,100)		-- def loses 0%->100% of min sticks
 		def.result.bros  =-frand(	def.bros,		0,  2,100)		-- def loses 0%->2% of bros
-		def.result.sticks=-frand(	def.sticks,		0,100,100)		-- def loses 0%->100% of sticks
 		
 	else --lose
 	
 		c.act="robfail"
 		c.result.bux     =0
 		
-		att.result.bros  =-frand(	att.bros,		0,  5,100)		-- att loses 0%->5% of bros
 		att.result.sticks=-frand(	att.sticks,		0,100,100)		-- att loses 0%->100% of sticks
+		att.result.bros  =-frand(	att.bros,		0,  5,100)		-- att loses 0%->5% of bros
+		
+		local sticks=def.sticks
+		if att.sticks < def.sticks then sticks=att.sticks end		-- less stick loss on a small attack
+		def.result.sticks=-frand(	sticks,			0,100,100)		-- def loses 0%->100% of min sticks
 		
 		def.result.bros  =0
-		def.result.sticks=0
 	end
 	
 	return ent

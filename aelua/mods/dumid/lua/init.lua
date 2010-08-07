@@ -3,7 +3,7 @@ local wet_html=require("wetgenes.html")
 
 local sys=require("wetgenes.aelua.sys")
 
-local Json=require("Json")
+local json=require("json")
 local dat=require("wetgenes.aelua.data")
 
 local users=require("wetgenes.aelua.users")
@@ -108,9 +108,9 @@ local put=make_put(srv)
 		
 	end
 
-	srv.set_mimetype("text/html")
+	srv.set_mimetype("text/html; charset=UTF-8")
 	put("dumid_header",{})
-	put("dumid_choose",{continue=continue})	
+	put("dumid_choose",{continue=continue})
 	put("dumid_footer",{})
 	
 end
@@ -149,7 +149,7 @@ local put=make_put(srv)
 			
 			local got=fetch.get(s.."&hash="..hash) -- ask for confirmation from server
 			if type(got.body=="string") then
-				got=Json.Decode(got.body)
+				got=json.decode(got.body)
 				if got.id then -- we now know who they are
 					name=got.name
 					email=got.id.."@id.wetgenes.com"
@@ -216,7 +216,7 @@ local put=make_put(srv)
 
 	return srv.redirect(continue)
 --[[
-	srv.set_mimetype("text/html")
+	srv.set_mimetype("text/html; charset=UTF-8")
 	put("dumid_header",{})	
 	put("dumid_choose",{continue=continue})	
 	put("dumid_footer",{})
