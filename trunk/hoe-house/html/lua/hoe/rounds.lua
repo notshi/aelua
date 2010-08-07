@@ -170,6 +170,30 @@ end
 
 --------------------------------------------------------------------------------
 --
+-- find current active round, the one we really really care about.
+--
+--------------------------------------------------------------------------------
+function list(H,opts)
+
+	local list={}
+	
+	local ret=dat.query({
+		kind=kind(H),
+		limit=10,
+		offset=0,
+			{"filter","state","==","active"},
+			{"sort","updated","DESC"},
+		})
+		
+	for i=1,#ret.list do local v=ret.list[i]
+		dat.build_cache(v)
+	end
+
+	return ret.list
+end
+
+--------------------------------------------------------------------------------
+--
 -- inc the number of players in this round
 -- this may get out pf sync and need to be recalculated
 --

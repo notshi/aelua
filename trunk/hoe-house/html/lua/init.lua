@@ -16,7 +16,7 @@ local serialize=wet_string.serialize
 -----------------------------------------------------------------------------
 function serv_fail(srv)
 
-	srv.set_mimetype("text/html")
+	srv.set_mimetype("text/html; charset=UTF-8")
 	srv.put([[
 	
 PAGE MISSING<br/>
