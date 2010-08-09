@@ -458,23 +458,32 @@ div.chunk3line {
 }
 
 /* Icon navigation container*/
-div.chunk4{
+#menu_hover {
+	position: absolute;
+	overflow: hidden;
+	height: 61px;
+}
+div.chunk4, div.chunk4a{
 	background-color: #e3e3e3;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
-	border-top-left-radius: 0px;
-	border-top-right-radius: 0px;
+	border-radius: 8px 8px;
 	border-bottom:1px solid #ccc;
 	border-left:1px solid #ccc;
 	border-right:1px solid #ccc;
 	margin: 0px;
-	width: 60px;
-	height: 380px;
+	width: 100px;
 	height: 55px;
 	padding: 0px 5px 5px 5px;
-	float: left;
-	position: absolute;
-	overflow:hidden;
+}
+div.chunk4 {
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+}
+div.chunk4a {
+	border-top:1px solid #ccc;
+	margin-top: 5px;
+	width: 350px;
 }
 /* HUD container */
 div.chunk5{
@@ -1464,7 +1473,7 @@ div.clear{
 	clear: both;
 }
 /* TOP LEFT navigation container */
-div.act{
+div.act, div.acta{
 	background-color: #555;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -1474,17 +1483,30 @@ div.act{
 	margin: 5px 2px 0px 2px;
 	float:left;
 }
-div.act:hover {
+div.act:hover, div.acta:hover {
 	background-color: #666;
 }
-div.act:active {
+div.act:active, div.acta:active {
 	background-color: #555;
+}
+div.acta {
+	width: 93px;
 }
 
 /* TOP LEFT NAVIGATION ICONS */
-div.actp{
+div.actp {
 	width: 50px;
 	margin: 5px 10px 5px 10px;
+}
+div.actpa {
+	width: 83px;
+	margin: 7px 10px 8px 10px;
+	
+	font-family: Georgia, serif;
+	color: #ccc;
+	font-size: 12px;
+	font-weight: bold;
+	float:left;
 }
 
 /* HUD icons */
