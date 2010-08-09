@@ -668,29 +668,31 @@ function serv_round_fight(H)
 						
 					elseif fight.cache.act=="robfail" then -- a failure only damages the attacker
 					
-						if players.update_add(H,player,fight.cache.sides[1].result) then -- things went ok
-						
-							fights.put(H,fight) -- save this fight to db
+						if players.update_add(H,victim,fight.cache.sides[2].result) then -- things went ok
+
+							if players.update_add(H,player,fight.cache.sides[1].result) then -- things went ok
 							
-							local a=acts.add_rob(H,{
-								actor1  = player.key.id ,
-								name1   = player.cache.name ,
-								actor2  = victim.key.id ,
-								name2   = victim.cache.name ,
-								bux     = fight.cache.result.bux,
-								bros1   = -fight.cache.sides[1].result.bros,
-								sticks1 = -fight.cache.sides[1].result.sticks,
-								bros2   = -fight.cache.sides[2].result.bros,
-								sticks2 = -fight.cache.sides[2].result.sticks,
-								act     = fight.cache.act,
-								shout   = shout,
-								})
-									
-							result=get("fight_rob_fail",{html=acts.plate(H,a,"html")})
-							
-							victim=players.get(H,victim)
+								fights.put(H,fight) -- save this fight to db
+								
+								local a=acts.add_rob(H,{
+									actor1  = player.key.id ,
+									name1   = player.cache.name ,
+									actor2  = victim.key.id ,
+									name2   = victim.cache.name ,
+									bux     = fight.cache.result.bux,
+									bros1   = -fight.cache.sides[1].result.bros,
+									sticks1 = -fight.cache.sides[1].result.sticks,
+									bros2   = -fight.cache.sides[2].result.bros,
+									sticks2 = -fight.cache.sides[2].result.sticks,
+									act     = fight.cache.act,
+									shout   = shout,
+									})
+										
+								result=get("fight_rob_fail",{html=acts.plate(H,a,"html")})
+								
+								victim=players.get(H,victim)
+							end
 						end
-						
 					end
 				end
 				
