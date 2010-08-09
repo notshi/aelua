@@ -160,9 +160,9 @@
 
 $(document).ready(function() {
 $("#menu_hover").hover(function(){
-		$("#menu_hover").animate({height:380});
+		$("#menu_hover").stop(true,true).animate({height:380});
 	},function(){
-		$("#menu_hover").animate({height:55});
+		$("#menu_hover").stop(true,true).animate({height:55});
 	});
 });
 
