@@ -131,7 +131,7 @@ function del_sess(email)
 			{"filter","email","==",email},
 		})
 		
-	for i=1,#r do local v=r[i]
+	for i=1,#r.list do local v=r.list[i]
 		dat.del(v.key)
 		cache.del("user=sess&"..v.key.id) -- remove any memcache, after the del
 	end
