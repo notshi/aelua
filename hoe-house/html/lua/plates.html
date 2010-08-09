@@ -160,21 +160,24 @@
 
 $(document).ready(function() {
 $("#menu_hover").hover(function(){
-		$("#menu_hover").stop(true,true).animate({height:380});
+		$("#menu_hover").stop(true,true).animate({height:130,width:380});
 	},function(){
-		$("#menu_hover").stop(true,true).animate({height:55});
+		$("#menu_hover").stop(true,true).animate({height:61,width:125});
 	});
 });
 
 </script>
 
 <div class="cont">
-	<div class="chunk4" id="menu_hover">
-		<div class="act">
-			<div class="actp">
-				<a href="{H.url_base}"><img src="/art/menu.png" width="30" height="30"></a>
+	<div id="menu_hover">
+	<div class="chunk4">
+		<div class="acta">
+			<div class="actpa">
+				<a href="{H.url_base}"><img src="/art/menu.png" width="30" height="30" style="vertical-align:middle;"></a> MENU
 			</div>
 		</div>
+	</div>
+	<div class="chunk4a">
 		<div class="act">
 			<div class="actp">
 				<a href="{H.url_base}work"><img src="/art/work.png" width="30" height="30"></a>
@@ -206,6 +209,7 @@ $("#menu_hover").hover(function(){
 			</div>
 		</div>
 		<div class="clear"></div>
+	</div>
 	</div>
 </div>
 		
