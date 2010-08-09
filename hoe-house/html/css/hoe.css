@@ -472,7 +472,7 @@ div.chunk4, div.chunk4a{
 	border-left:1px solid #ccc;
 	border-right:1px solid #ccc;
 	margin: 0px;
-	width: 100px;
+	width: 55px;
 	height: 55px;
 	padding: 0px 5px 5px 5px;
 }
@@ -483,7 +483,7 @@ div.chunk4 {
 div.chunk4a {
 	border-top:1px solid #ccc;
 	margin-top: 5px;
-	width: 350px;
+	width: 348px;
 }
 /* HUD container */
 div.chunk5{
@@ -496,7 +496,7 @@ div.chunk5{
 	border-left:1px solid #ccc;
 	border-right:1px solid #ccc;
 	margin: 0px;
-	width: 830px;
+	width: 880px;
 	padding: 5px;
 	float: right;
 }
@@ -1473,7 +1473,7 @@ div.clear{
 	clear: both;
 }
 /* TOP LEFT navigation container */
-div.act, div.acta{
+div.act {
 	background-color: #555;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -1483,30 +1483,17 @@ div.act, div.acta{
 	margin: 5px 2px 0px 2px;
 	float:left;
 }
-div.act:hover, div.acta:hover {
+div.act:hover{
 	background-color: #666;
 }
-div.act:active, div.acta:active {
+div.act:active{
 	background-color: #555;
-}
-div.acta {
-	width: 93px;
 }
 
 /* TOP LEFT NAVIGATION ICONS */
 div.actp {
 	width: 50px;
 	margin: 5px 10px 5px 10px;
-}
-div.actpa {
-	width: 83px;
-	margin: 7px 10px 8px 10px;
-	
-	font-family: Georgia, serif;
-	color: #ccc;
-	font-size: 12px;
-	font-weight: bold;
-	float:left;
 }
 
 /* HUD icons */
@@ -1516,7 +1503,7 @@ div.hud{
 	-webkit-border-radius: 8px;
 	border-radius: 8px;
 	border: 2px solid #ccc;
-	width: 825px;
+	width: 875px;
 	margin: 0px;
 	float:left;
 }
