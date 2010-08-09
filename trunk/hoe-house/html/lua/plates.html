@@ -91,7 +91,7 @@
 <div class="cont">
 <div class="chunk3a">
 <div class="chunk3ait">
-Basic Menu
+<img src="/art/menu.png" width="30" height="30"> Basic Menu
 <!--<div class="chunk3line"></div>-->
 </div>
 <div class="clear"></div>
@@ -157,134 +157,172 @@ Basic Menu
 #player_bar
 
 <div class="cont">
-<div class="chunk4">
-<div class="act">
-<div class="actp">
-<a href="{H.url_base}work"><img src="/art/work.png" width="30" height="30"></a>
-</div>
-</div>
-<div class="act">
-<div class="actp">
-<a href="{H.url_base}shop"><img src="/art/shop.png" width="30" height="30"></a>
-</div>
-</div>
-<div class="act">
-<div class="actp">
-<a href="{H.url_base}profile"><img src="/art/pro.png" width="30" height="30"></a>
-</div>
-</div>
-<div class="act">
-<div class="actp">
-<a href="{H.url_base}list"><img src="/art/list.png" width="30" height="30"></a>
-</div>
-</div>
-<div class="act">
-<div class="actp">
-<a href="{H.url_base}fight"><img src="/art/fight.png" width="30" height="30"></a>
-</div>
-</div>
-<div class="act">
-<div class="actp">
-<a href="{H.url_base}trade"><img src="/art/trade.png" width="30" height="30"></a>
-</div>
-</div>
-<div class="clear"></div>
-</div>
+	<div class="chunk4">
+		<div class="act">
+			<div class="actp">
+				<a href="{H.url_base}"><img src="/art/menu.png" width="30" height="30"></a>
+			</div>
+		</div>
+		<div class="act">
+			<div class="actp">
+				<a href="{H.url_base}work"><img src="/art/work.png" width="30" height="30"></a>
+			</div>
+		</div>
+		<div class="act">
+			<div class="actp">
+				<a href="{H.url_base}shop"><img src="/art/shop.png" width="30" height="30"></a>
+			</div>
+		</div>
+		<div class="act">
+			<div class="actp">
+				<a href="{H.url_base}profile"><img src="/art/pro.png" width="30" height="30"></a>
+			</div>
+		</div>
+		<div class="act">
+			<div class="actp">
+				<a href="{H.url_base}list"><img src="/art/list.png" width="30" height="30"></a>
+			</div>
+		</div>
+		<div class="act">
+			<div class="actp">
+				<a href="{H.url_base}fight"><img src="/art/fight.png" width="30" height="30"></a>
+			</div>
+		</div>
+		<div class="act">
+			<div class="actp">
+				<a href="{H.url_base}trade"><img src="/art/trade.png" width="30" height="30"></a>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
 </div>
 		
 <div class="cont">
-<div class="chunk5">
-<div class="hud">
-<div class="hud2">
-<div class="hud2it">
-<i id="player_energy">{player.energy}</i>
-<script type="text/javascript">
-function show_energy(nam,num,frac,upd)
-{
-	var start_time=(new Date()).getTime();
-	var tid;
-	var update=function() {
-		var now_time=(new Date()).getTime();
-		var t=(now_time-start_time)/upd; // grows over time
-		t=(t+frac+num);
-		if(t>300) // max
-		{
-			t=300;
-			clearInterval(tid);
-		}
-		$(nam).text(t.toFixed(2));
-	};
-	update();
-	tld=setInterval(update,1000);
-}
-$(function(){show_energy("#player_energy",{player.energy},{H.energy_frac},{H.energy_step}*1000);});
+	<div class="chunk5">
+		<div class="hud">
+			<div class="hud2">
+				<div class="hud2it">
+				<i id="player_energy">{player.energy}</i>
+				<script type="text/javascript">
+				function show_energy(nam,num,frac,upd)
+				{
+					var start_time=(new Date()).getTime();
+					var tid;
+					var update=function() {
+						var now_time=(new Date()).getTime();
+						var t=(now_time-start_time)/upd; // grows over time
+						t=(t+frac+num);
+						if(t>300) // max
+						{
+							t=300;
+							clearInterval(tid);
+						}
+						$(nam).text(t.toFixed(2));
+					};
+					update();
+					tld=setInterval(update,1000);
+				}
+				$(function(){show_energy("#player_energy",{player.energy},{H.energy_frac},{H.energy_step}*1000);});
 
-</script>
-</div>
-<div class="hud2">
-<div class="hud2n">
-<img src="/art/energyb.png"> Energy
-</div>
-</div>
-</div>
-<div class="hudline"></div>
-<div class="hud1">
-<div class="hudit">
-<i>{score}</i>
-</div>
-<div class="hud1">
-<div class="hudn">
-<img src="/art/scoreb.png"> Score
-</div>
-</div>
-</div>
-<div class="hudline"></div>
-<div class="hud1">
-<div class="hudit">
-<i>{bux}</i>
-</div>
-<div class="hud1">
-<div class="hudn">
-<img src="/art/buxb.png"> Bux
-</div>
-</div>
-</div>
-<div class="hudline"></div>
-<div class="hud2">
-<div class="hud2it">
-<i>{player.hoes}</i>
-</div>
-<div class="hud2">
-<div class="hud2n">
-<img src="/art/hoesb.png"> Hoes
-</div>
-</div>
-</div>
-<div class="hudline"></div>
-<div class="hud2">
-<div class="hud2it">
-<i>{player.houses}</i>
-</div>
-<div class="hud2">
-<div class="hud2n">
-<img src="/art/housesb.png"> Houses
-</div>
-</div>
-</div>
-<div class="hudline"></div>
-<div class="hud2">
-<div class="hud2it">
-<i>{player.bros}</i>
-</div>
-<div class="hud2">
-<div class="hud2n">
-<img src="/art/scareb.png"> Bros
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="clear"></div>
+				</script>
+				</div>
+				<div class="hud2">
+					<div class="hud2n">
+					<img src="/art/energyb.png"> Energy
+					</div>
+				</div>
+			</div>
+			<div class="hudline"></div>
+			<div class="hud1">
+				<div class="hudit">
+					<i>{bux}</i>
+				</div>
+				<div class="hud1">
+					<div class="hudn">
+						<img src="/art/buxb.png"> Bux
+					</div>
+				</div>
+			</div>
+			<div class="hudline"></div>
+			<div class="hud2">
+				<div class="hud2it">
+					<i>{player.hoes}</i>
+				</div>
+				<div class="hud2">
+					<div class="hud2n">
+						<img src="/art/hoesb.png"> Hoes
+					</div>
+				</div>
+			</div>
+			<div class="hudline"></div>
+			<div class="hud2">
+				<div class="hud2it">
+					<i>{player.gloves}</i>
+				</div>
+				<div class="hud2">
+					<div class="hud2n">
+						<img src="/art/glovesb.png"> Gloves
+					</div>
+				</div>
+			</div>
+			<div class="hudline"></div>
+			<div class="hud2">
+				<div class="hud2it">
+					<i>{player.houses}</i>
+				</div>
+				<div class="hud2">
+					<div class="hud2n">
+						<img src="/art/housesb.png"> Houses
+					</div>
+				</div>
+			</div>
+			<div class="hudline"></div>
+			<div class="hud2">
+				<div class="hud2it">
+					<i>{player.manure}</i>
+				</div>
+				<div class="hud2">
+					<div class="hud2n">
+						<img src="/art/shitb.png"> Manure
+					</div>
+				</div>
+			</div>
+			<div class="hudline"></div>
+			<div class="hud2">
+				<div class="hud2it">
+					<i>{player.bros}</i>
+				</div>
+				<div class="hud2">
+					<div class="hud2n">
+						<img src="/art/scareb.png"> Bros
+					</div>
+				</div>
+			</div>
+			<div class="hudline"></div>
+			<div class="hud2">
+				<div class="hud2it">
+					<i>{player.sticks}</i>
+				</div>
+				<div class="hud2">
+					<div class="hud2n">
+						<img src="/art/sticksb.png"> Sticks
+					</div>
+				</div>
+			</div>
+			<div class="hudline"></div>
+			<div class="hud1">
+				<div class="hudit">
+					<i>{score}</i>
+				</div>
+				<div class="hud1">
+					<div class="hudn">
+						<img src="/art/scoreb.png"> Score
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="clear"></div>
 </div>
 
 #player_bar_empty
