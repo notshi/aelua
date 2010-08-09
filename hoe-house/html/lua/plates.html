@@ -156,8 +156,20 @@
 
 #player_bar
 
+<script type="text/javascript">
+
+$(document).ready(function() {
+$("#menu_hover").hover(function(){
+		$("#menu_hover").animate({height:380});
+	},function(){
+		$("#menu_hover").animate({height:55});
+	});
+});
+
+</script>
+
 <div class="cont">
-	<div class="chunk4">
+	<div class="chunk4" id="menu_hover">
 		<div class="act">
 			<div class="actp">
 				<a href="{H.url_base}"><img src="/art/menu.png" width="30" height="30"></a>
@@ -324,6 +336,9 @@
 	</div>
 	<div class="clear"></div>
 </div>
+
+
+
 
 #player_bar_empty
 
