@@ -473,7 +473,7 @@ div.chunk4, div.chunk4a{
 	border-right:1px solid #ccc;
 	margin: 0px;
 	width: 55px;
-	height: 55px;
+	height: 54px;
 	padding: 0px 5px 5px 5px;
 }
 div.chunk4 {
@@ -482,8 +482,9 @@ div.chunk4 {
 }
 div.chunk4a {
 	border-top:1px solid #ccc;
-	margin-top: 5px;
+	margin-top: 1px;
 	width: 348px;
+	height: 48px;
 }
 /* HUD container */
 div.chunk5{
@@ -1491,9 +1492,12 @@ div.act:active{
 }
 
 /* TOP LEFT NAVIGATION ICONS */
-div.actp {
+div.actp, div.actpa {
 	width: 50px;
-	margin: 5px 10px 5px 10px;
+	margin: 5px 10px 0px 10px;
+}
+div.actpa {
+	margin: 7px 10px 3px 10px;
 }
 
 /* HUD icons */
