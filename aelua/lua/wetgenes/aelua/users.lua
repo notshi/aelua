@@ -90,7 +90,7 @@ function get_sess(hash,tt)
 	
 	dat.build_cache(sess) -- most data is kept in json
 	
-	sess.cache.user=get_user(sess.cache.user.key.id) -- refresh user
+	sess.cache.user=get_user(sess.cache.user.key.id,tt) -- refresh user
 	
 	if not tt then -- not a transaction so write it to memcache as well
 		cache.put(cachekey,json.encode(sess.cache),60*60)
