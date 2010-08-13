@@ -123,7 +123,7 @@ local put=make_put(srv)
 	local ps={}
 	local p=page
 	ps[1]=p
-	if p.cache.group ~= p.cache.id then -- grab each page going upwards
+	while p.cache.group ~= p.cache.id do -- grab each page going upwards
 		p=pages.manifest(srv,p.cache.group)
 		ps[#ps+1]=p
 	end

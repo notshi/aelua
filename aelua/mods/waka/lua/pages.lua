@@ -241,6 +241,7 @@ local c=e.cache
 	if c.edit then -- what to save
 		edit=edits.create(srv)
 		edit.cache.page=e.key.id
+		edit.cache.group=e.cache.group
 		edit.cache.from=c.edit.from
 		edit.cache.time=c.edit.time
 		edit.cache.diff=c.edit.diff
