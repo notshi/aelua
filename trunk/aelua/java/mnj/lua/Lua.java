@@ -2332,7 +2332,7 @@ protect:
     stacksetsize(oldtop+1);
   }
 
-  String dStackDumpString()
+  public String dStackDumpString()
   {
 // simple lua stack dump so we have a chance to debug...	
 	int i=0;
@@ -2354,7 +2354,7 @@ protect:
 	
 	return s;
   }
-  void dThrow(int status)
+  public void dThrow(int status)
   {
 
 	

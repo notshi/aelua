@@ -1,6 +1,7 @@
 
 package wetgenes.aelua;
 
+import java.util.logging.Logger;
 
 import mnj.lua.LuaJavaCallback;
 import mnj.lua.LuaTable;
@@ -12,6 +13,8 @@ import javax.servlet.http.*;
 import java.util.*;
 
 import com.google.appengine.api.datastore.*;
+import static com.google.appengine.api.datastore.DatastoreServiceConfig.Builder.*;
+import com.google.appengine.api.datastore.ReadPolicy.Consistency;
 
 public class Data
 {
@@ -24,6 +27,8 @@ public class Data
 
 	public Data()
 	{
+//		DatastoreServiceConfig config = withImplicitTransactionManagementPolicy(ImplicitTransactionManagementPolicy.NONE);
+//		ds = DatastoreServiceFactory.getDatastoreService(config);
 		ds = DatastoreServiceFactory.getDatastoreService();
 	}
 
@@ -92,6 +97,8 @@ public class Data
 	}
 	int begin(Lua L)
 	{
+//Logger.getLogger("").info("begin transaction");
+
 		Transaction trans=ds.beginTransaction();
 		L.push( trans );
 		return 1;
@@ -104,6 +111,7 @@ public class Data
 	}
 	int rollback(Lua L)
 	{
+//Logger.getLogger("").info("rollback transaction");
 		Transaction trans=(Transaction)L.value(1); // transaction core
 		trans.rollback();
 		L.push(L.valueOfBoolean(false) );
@@ -117,6 +125,7 @@ public class Data
 	}
 	int commit(Lua L)
 	{
+//Logger.getLogger("").info("commit transaction");
 		Transaction trans=(Transaction)L.value(1); // transaction core
 		try
 		{
@@ -444,13 +453,23 @@ public class Data
 		
 		Key k=keystr_makekey(L,L.rawGet(key, "kind"),L.rawGet(key, "id"),L.rawGet(key, "parent"));
 
-		Entity e;
+		Entity e=null;
 		
 		try
 		{
 			if(trans_core==null)
 			{
 				e=ds.get(k);
+/*
+ * 				if(ds.getCurrentTransaction(null)!=null) // a transaction left hanging?
+				{
+					e=ds.get(k);
+				}
+				else // there should never be a transaction?
+				{
+					L.dThrow(20);
+				}
+*/
 			}
 			else
 			{
@@ -461,6 +480,15 @@ public class Data
 		{
 			return 0; // return nil if not found, if it returns nil everything else was OK
 		}
+		catch(java.lang.IllegalArgumentException ex)
+		{
+//			print(L.dStackDumpString());
+//			L.push(L.dStackDumpString());
+//			return 1;
+			throw ex;
+		}
+		
+		if(e==null) { return 0; }
 		
 		luaentity_fill(L,ent,e);
 		

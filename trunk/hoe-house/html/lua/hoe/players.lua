@@ -336,7 +336,7 @@ function update(H,id,f)
 		local t=dat.begin()
 		local p=get(H,id,t)
 		if p then
-			if not f(H,p.cache) then return false end -- hard fail, possibly due to lack of energy
+			if not f(H,p.cache) then t.rollback() return false end -- hard fail, possibly due to lack of energy
 			check(H,p) -- also update the score
 			if put(H,p,t) then -- player put ok
 				if t.commit() then -- success

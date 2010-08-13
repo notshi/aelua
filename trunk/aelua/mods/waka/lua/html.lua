@@ -51,11 +51,12 @@ waka_bar=function(d)
 	
 	end
 	
+	d.admin=""
 	if user and user.cache and user.cache.admin then -- admin
 		d.admin=replace([[
 	<div style="float:right">
 		<form action="" method="POST" enctype="multipart/form-data">
-			<button type="submit" name="edit" class="button" >Edit</button>
+			<button type="submit" name="submit" value="edit" class="button" >Edit</button>
 		</form>
 	</div>
 ]],d)
@@ -72,6 +73,25 @@ waka_bar=function(d)
 {admin}
 <div style="clear:both"></div>
 </div>
+]],d)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- edit form
+--
+-----------------------------------------------------------------------------
+waka_edit_form=function(d)
+
+	return replace([[
+<form name="post" id="post" action="" method="post" enctype="multipart/form-data">
+	<textarea name="text" cols="120" rows="24" class="field" >{text}</textarea>
+	<br/>
+	<input type="submit" name="submit" value="Save" class="button" />
+	<input type="submit" name="submit" value="Preview" class="button" />
+	<br/>	
+</form>
 ]],d)
 
 end

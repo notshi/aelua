@@ -18,9 +18,12 @@ local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
 local serialize=wet_string.serialize
 
+local wet_diff=require("wetgenes.diff")
+
 
 -- require all the module sub parts
 local html=require("waka.html")
+local edits=require("waka.edits")
 
 
 
@@ -30,6 +33,7 @@ local table=table
 local os=os
 
 local ipairs=ipairs
+local pairs=pairs
 local tostring=tostring
 local tonumber=tonumber
 local type=type
@@ -73,7 +77,8 @@ function create(srv)
 	p.created=srv.time
 	p.updated=srv.time
 	
-		
+	p.group=""
+	
 	dat.build_cache(ent) -- this just copies the props across
 	
 -- these are json only vars
@@ -95,6 +100,14 @@ function check(srv,ent)
 	local ok=true
 
 	local c=ent.cache
+	
+	if c.id then -- build group from path, we might need to list all pages in a group
+		local aa=str_split("/",c.id,true)
+		aa[#aa]=nil
+		local group="/" -- default master group
+		if aa[1] and aa[2] then group=table.concat(aa,"/") end
+		c.group=group
+	end
 		
 	return ent,ok
 end
@@ -153,9 +166,10 @@ end
 -- get or create a blank page
 --
 --------------------------------------------------------------------------------
-function manifest(srv,id)
+function manifest(srv,id,t)
 
-	local ent=get(srv,id)
+	local ent=get(srv,id,t)
+	
 	if not ent then -- make new
 		ent=create(srv)
 		ent.key.id=id -- force id which is page name string
@@ -168,25 +182,85 @@ end
 
 --------------------------------------------------------------------------------
 --
--- change entity by a table, each value present is set
+-- change the text of this page, creating it if necesary
 --
 --------------------------------------------------------------------------------
-function update_set(srv,id,by)
+function edit(srv,id,by)
 
-	local f=function(srv,p)
-		for i,v in pairs(by) do
-			p[i]=v
-		end
+	local f=function(srv,e)
+		local c=e.cache
+	
+		local text=by.text or c.text
+		local author=by.author or ""
+		local note=by.note or ""
+	
+		c.last=c.edit -- also remember the last edit, which may be null
+		
+		local d={}
+		c.edit=d -- remember what we just changed in edit, 
+		
+		d.from=e.props.updated -- old time stamp
+		d.time=e.cache.updated -- new time stamp
+		
+		d.diff=wet_diff.diff(c.text, text) -- what was changed		
+		
+		if #d.diff==1 then return false end-- no changes, no need to write, so return a fail to stop it
+		
+		d.author=author
+		d.note=note
+		
+		c.text=text -- change the actual text
+		
 		return true
 	end		
-	return update(srv,id,f)	
+	return update(srv,id,f)
+end
+
+--------------------------------------------------------------------------------
+--
+-- create a new edit entry in the history, the entity will know what has just changed
+-- we check that the last edit also exists (there are many reasons why it may not)
+-- if it does we store a delta if it doesnt we store a delta AND current full text
+-- as such there are technical limits to page sizes that are less than normal google limits.
+-- So probably best to keep pages less than 500k I'd say 256k is a good maximum string size
+-- to aim for and big enough for an entire book to be stored in one page.
+--
+--------------------------------------------------------------------------------
+function add_edit_log(srv,e,fulltext)
+local c=e.cache
+
+	local edit
+	
+	if c.last then -- find old edit
+		local old=edits.find(srv,{page=e.key.id,from=c.last.from,time=c.last.time})
+		if not old then fulltext=true end -- mising last edit 
+	else
+		fulltext=true -- flag a full text dump
+	end
+	
+	if c.edit then -- what to save
+		edit=edits.create(srv)
+		edit.cache.page=e.key.id
+		edit.cache.from=c.edit.from
+		edit.cache.time=c.edit.time
+		edit.cache.diff=c.edit.diff
+		edit.cache.author=c.edit.author
+		
+		if fulltext then -- include full text
+			edit.cache.text=c.text
+		end
+		
+		edits.put(srv,edit)
+	end
+	
+	return edit -- may be null or maybe the edit we just created
 end
 
 --------------------------------------------------------------------------------
 --
 -- get - update - put
 --
--- f must be a function that changes the trade.cache and returns true on success
+-- f must be a function that changes the entity and returns true on success
 -- id can be an id or an entity from which we will get the id
 --
 --------------------------------------------------------------------------------
@@ -197,15 +271,20 @@ function update(srv,id,f)
 	for retry=1,10 do
 		local mc={}
 		local t=dat.begin()
-		local e=get(srv,id,t)
+		local e=manifest(srv,id,t)
 		if e then
 			what_memcache(srv,e,mc) -- the original values
-			if not f(srv,e.cache) then return false end -- hard fail
+			if e.props.created~=srv.time then -- not a newly created entity
+				if e.cache.updated>=srv.time then t.rollback() return false end -- stop any updates that time travel
+			end
+			e.cache.updated=srv.time -- the function can change this change if it wishes
+			if not f(srv,e) then t.rollback() return false end -- hard fail
 			check(srv,e) -- keep consistant
 			if put(srv,e,t) then -- entity put ok
 				if t.commit() then -- success
 					what_memcache(srv,e,mc) -- the new values
 					fix_memcache(srv,mc) -- change any memcached values we just adjusted
+					add_edit_log(srv,e) -- also adjust edits history
 					return e -- return the adjusted entity
 				end
 			end

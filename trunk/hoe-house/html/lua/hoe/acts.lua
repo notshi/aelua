@@ -192,7 +192,7 @@ function update(H,id,f)
 		local e=get(H,id,t)
 		if e then
 			what_memcache(H,e,mc) -- the original values
-			if not f(H,e.cache) then return false end -- hard fail
+			if not f(H,e.cache) then t.rollback() return false end -- hard fail
 			check(H,e) -- keep consistant
 			if put(H,e,t) then -- entity put ok
 				if t.commit() then -- success

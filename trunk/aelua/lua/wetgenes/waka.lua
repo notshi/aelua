@@ -10,6 +10,9 @@ local table=table
 local string=string
 
 
+local ipairs=ipairs
+local pairs=pairs
+
 local string=string
 local type=type
 local tostring=tostring
@@ -151,11 +154,13 @@ end
 -- is a valid chunk, all of the opt=val will be assigned to the same chunk
 -- and all the other text will be joined as that chunks body
 --
+-- pass in chunks and you can merge multiple texts into one chunk
+--
 -----------------------------------------------------------------------------
-function text_to_chunks(text)
+function text_to_chunks(text,chunks)
 
-	local chunks={}
-	
+	chunks=chunks or {}
+
 	local function manifest_chunk(line,oldchunk)
 		local opts=split_words( line:sub(2) ) -- skip # at start of line
 		local name=string.lower( opts[1] or "body" )
@@ -232,6 +237,44 @@ function text_to_chunks(text)
 	
 	return chunks
 	
+end
+
+-----------------------------------------------------------------------------
+--
+-- merge source data into dest data, dest data may be nil in which case this 
+-- works like a copy. Return the dest chunk. It is intended that you have a
+-- a numbe of chunks and then merge them together into a final data chunk
+-- using this function, the first merge creates a new dest chunk. the final result
+-- will have a new ordering depending on the merged chunks but the numerical array
+-- can still be used to loop through chunks
+--
+-----------------------------------------------------------------------------
+function chunks_merge(dest,source)
+
+	local dest=dest or {}
+	
+	for i,v in ipairs(source) do
+	
+		local c=dest[v.name] -- merge or
+		if not c then -- make a new chunk
+			c={}
+			c.id=#dest+1
+			c.name=v.name
+			c.opts={}
+			dest[c.id]=c -- link it into dest by array
+			dest[c.name]=c -- and by name
+		end
+
+		c.lines=v.lines -- overwritten
+		c.text=v.text -- overwritten
+		
+		for i,v in pairs(v.opts) do -- merge options
+			c.opts[i]=v
+		end
+
+	end
+
+	return dest
 end
 
 
