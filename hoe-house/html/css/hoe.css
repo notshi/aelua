@@ -462,9 +462,10 @@ div.chunk3line {
 	position: absolute;
 	overflow: hidden;
 	height: 61px;
+	width: 67px;
 }
 div.chunk4, div.chunk4a{
-	background-color: #e3e3e3;
+	background-color: #ECEAEA;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
@@ -481,6 +482,7 @@ div.chunk4 {
 	border-top-right-radius: 0px;
 }
 div.chunk4a {
+	background-color: #ECEAEA;
 	border-top:1px solid #ccc;
 	margin-top: 1px;
 	width: 348px;
@@ -1475,20 +1477,20 @@ div.clear{
 }
 /* TOP LEFT navigation container */
 div.act {
-	background-color: #555;
+	background-color: #F5F5F5;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px;
-	border: 2px solid #ccc;
+	border: 2px solid #e8e8e8;
 	width: 50px;
 	margin: 5px 2px 0px 2px;
 	float:left;
 }
 div.act:hover{
-	background-color: #666;
+	background-color: #fff;
 }
 div.act:active{
-	background-color: #555;
+	background-color: #F5F5F5;
 }
 
 /* TOP LEFT NAVIGATION ICONS */
