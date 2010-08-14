@@ -77,6 +77,9 @@ function create(srv)
 	p.created=srv.time
 	p.updated=srv.time
 	
+-- the layer is also used in the key name by appending :1 if it is set to 1 
+-- when it is 0 then the key name needs no layer to be appended
+	p.layer=0
 	p.group=""
 	
 	dat.build_cache(ent) -- this just copies the props across
@@ -242,6 +245,7 @@ local c=e.cache
 		edit=edits.create(srv)
 		edit.cache.page=e.key.id
 		edit.cache.group=e.cache.group
+		edit.cache.layer=e.cache.layer
 		edit.cache.from=c.edit.from
 		edit.cache.time=c.edit.time
 		edit.cache.diff=c.edit.diff
