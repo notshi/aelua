@@ -57,6 +57,13 @@ local function make_put(srv)
 		srv.put(wet_html.get(html,a,b))
 	end
 end
+local function make_get(srv)
+	return function(a,b)
+		b=b or {}
+		b.srv=srv
+		return wet_html.get(html,a,b)
+	end
+end
 -----------------------------------------------------------------------------
 --
 -- the serv function, where the action happens.
@@ -65,21 +72,50 @@ end
 function serv(srv)
 local sess,user=users.get_viewer_session(srv)
 local put=make_put(srv)
+local get=make_get(srv)
+
+local display_edit
+local ext
 
 	local aa={}
 	for i=srv.url_slash_idx,#srv.url_slash do
 		aa[#aa+1]=srv.url_slash[ i ]
 	end
 	if aa[#aa]=="" then aa[#aa]=nil end-- kill any trailing slash
-	local url=string.sub(srv.url_base,1,#srv.url_base-1)
+	
+	if aa[#aa] then
+		local ap=str_split(".",aa[#aa])
+		log(tostring(ap))
+		if ap[#ap] then
+			if ap[#ap]=="css" then -- css
+				ext="css"
+			elseif ap[#ap]=="html" then -- raw html 
+				ext="html"
+			end
+			if ext then
+				ap[#ap]=nil
+				aa[#aa]=table.concat(ap,".")
+				if aa[#aa]=="" then aa[#aa]=nil end-- kill any trailing slash we may have just created
+			end
+		end
+	end
+	
+	local url=srv.url_base
 	local baseurl=url
 	local crumbs=" <a href=\"/\">home</a> / <a href=\""..url.."\">"..srv.slash.."</a> "
 	for i,v in ipairs(aa) do
 		baseurl=url
-		url=url.."/"..v
+		url=url..v
 		crumbs=crumbs.." / <a href=\""..url.."\">"..v.."</a> "
+		url=url.."/"
 	end
 	local pagename="/"..table.concat(aa,"/")
+	local url=srv.url_base..table.concat(aa,"/")
+	if ext then url=url.."."..ext end -- this is a page extension
+	
+	if srv.url~=url then -- force a redirect to the perfect page name with or without a trailing slash
+		return srv.redirect(url)
+	end
 	
 	local posts={} -- remove any gunk from the posts input
 	-- check if this post probably came from this page before allowing post params
@@ -90,10 +126,6 @@ local put=make_put(srv)
 		end
 	end
 	if posts.submit then posts.submit=trim(posts.submit) end
-	
-	put("header",{title="waka : "..pagename:sub(2)})
-	
-	put("waka_bar",{crumbs=crumbs,page=pagename})
 	
 	local page=pages.manifest(srv,pagename)
 
@@ -115,7 +147,7 @@ local put=make_put(srv)
 						})
 				end
 			else
-				put("waka_edit_form",{text=page.cache.text}) -- still editing
+				display_edit=get("waka_edit_form",{text=page.cache.text}) -- still editing
 			end
 		end
 	end
@@ -147,20 +179,27 @@ local put=make_put(srv)
 		form[v.name]=s
 	end
 	
-	for recursive=1,2 do -- chunks may include chunks which may include chunks, but only 2 deep
+	for recursive=1,4 do -- chunks may include chunks which may include chunks, but only 4 deep
 		for i,v in pairs(form) do -- include chunks data into each other {}
 			form[i]=replace(v,form) -- later chunks can also include earlier chunks
 		end
 	end
 	
-	
-	put(replace(form.plate or [[
-	<h1>{title}</h1>
-	{body}
-	]],form))
-	
---	put(tostring(srv))
-	
-	put("footer")
+	if ext=="css" then -- css only
+		put(form.css or "")
+	else
+		put("header",{title="waka : "..pagename:sub(2),css=url..".css"})
+		
+		put("waka_bar",{crumbs=crumbs,page=pagename})
+		
+		if display_edit then srv.put(display_edit) end
+		
+		put(replace(form.plate or [[
+		<h1>{title}</h1>
+		{body}
+		]],form))
+		
+		put("footer")
+	end
 end
 
