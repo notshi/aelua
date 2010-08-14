@@ -89,8 +89,10 @@ local ext
 		if ap[#ap] then
 			if ap[#ap]=="css" then -- css
 				ext="css"
-			elseif ap[#ap]=="html" then -- raw html 
+			elseif ap[#ap]=="html" then -- just the pages html 
 				ext="html"
+			elseif ap[#ap]=="data" then -- just this pages raw page data as text
+				ext="data"
 			end
 			if ext then
 				ap[#ap]=nil
@@ -179,6 +181,7 @@ local ext
 		form[v.name]=s
 	end
 	
+-- this needs to be smarter
 	for recursive=1,4 do -- chunks may include chunks which may include chunks, but only 4 deep
 		for i,v in pairs(form) do -- include chunks data into each other {}
 			form[i]=replace(v,form) -- later chunks can also include earlier chunks
@@ -186,8 +189,18 @@ local ext
 	end
 	
 	if ext=="css" then -- css only
-		put(form.css or "")
+	
+		srv.set_mimetype("text/css; charset=UTF-8")
+		srv.put(form.css or "")
+		
+	elseif ext=="data" then -- raw chunk data
+	
+		srv.set_mimetype("text/plain; charset=UTF-8")
+		srv.put(page.cache.text or "")
+		
 	else
+	
+		srv.set_mimetype("text/html; charset=UTF-8")
 		put("header",{title="waka : "..pagename:sub(2),css=url..".css"})
 		
 		put("waka_bar",{crumbs=crumbs,page=pagename})

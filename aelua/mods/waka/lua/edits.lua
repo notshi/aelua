@@ -79,6 +79,7 @@ function create(srv)
 	p.group=""
 	p.from=srv.time
 	p.time=srv.time
+	p.layer=0
 		
 	dat.build_cache(ent) -- this just copies the props across
 	
