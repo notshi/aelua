@@ -174,7 +174,7 @@ function manifest(srv,id,t)
 		ent=create(srv)
 		ent.key.id=id -- force id which is page name string
 		ent.cache.id=id -- copy here
-		ent.cache.text="#title form=raw\n"..id.."\n#body\n".."MISSING CONTENT\n"
+		ent.cache.text="#title\n# trim=ends\n"..string.gsub(id,"/"," ").."\n#body\n".."MISSING CONTENT\n"
 	end
 	
 	return check(srv,ent)
