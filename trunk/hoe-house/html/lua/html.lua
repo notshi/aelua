@@ -99,7 +99,12 @@ end
 --
 -----------------------------------------------------------------------------
 header=function(d)
-
+	d.extra=""
+	
+	if d.css then
+		d.extra=d.extra.."<script type=\"text/javascript\" src=\""..d.css.."\"></script>"
+	end
+	
 	d.jquery_js="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
 	d.jquery_ui_js="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"
 	d.swfobject_js="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"
