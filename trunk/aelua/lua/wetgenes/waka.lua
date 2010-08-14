@@ -280,24 +280,40 @@ end
 
 -----------------------------------------------------------------------------
 --
--- get a html string given a chunk
+-- get a html given some simple waka text
 --
 -- \n are turned into <br/> tags
 -- and words that look like links are turned into links
 -- any included html should get escaped so this is "safe" to use on user input
 --
--- we need to lnow the baseurl of this page when building links, if this is not given
--- then relative links are not built
+-- aditiona opts
+--
+-- we need to know the base_url of this page when building links, if this is not given
+-- then relative links may bork
+--
+-- setting escape_html to true prevents any html from getting through
 --
 -----------------------------------------------------------------------------
-function chunk_to_html(chunk,baseurl)
+function waka_to_html(input,opts)
+	opts=opts or {}
+
+local base_url=opts.base_url or ""
+local escape_html=opts.escape_html or false
 
 	local r={}
-	
-	local function esc(s)
-		local escaped = { ['<']='&lt;', ['>']='&gt;', ["&"]='&amp;' , ["\n"]='<br/>' }
-		return (s:gsub("[<>&\n]", function(c) return escaped[c] end))
+	local esc
+	if escape_html then -- simple html escape
+		esc=function(s) 
+			local escaped = { ['<']='&lt;', ['>']='&gt;', ["&"]='&amp;' , ["\n"]='<br/>' }
+			return (s:gsub("[<>&\n]", function(c) return escaped[c] end))
+		end
+	else -- no escape just convert \n to <br/>
+		esc=function(s) 
+			local escaped = { ["\n"]='<br/>' }
+			return (s:gsub("[\n]", function(c) return escaped[c] end))
+		end
 	end
+	
 	local function link( url , str )
 		table.insert(r,"<a href=\""..url.."\">"..esc(str).."</a>")
 	end
@@ -305,64 +321,56 @@ function chunk_to_html(chunk,baseurl)
 		table.insert(r,esc(str))
 	end
 
-	for i=1,#chunk.lines do local line=chunk.lines[i]
+	local tokens=split_whitespace(input)
 	
-		local tokens=split_whitespace(line)
+	for i2=1,#tokens do local token=tokens[i2]
+	
+		local done=false
 		
-		for i2=1,#tokens do local token=tokens[i2]
+		local len=token:len()
 		
-			local done=false
+		if len>=2 then -- too short to be a link
+		
+			local c1=token:sub(1,1) -- some chars to check
 			
-			local len=token:len()
+			if c1 == "/" then -- a very simple link relative to where we are
 			
-			if len>=2 then -- too short to be a link
+				local chars="[%w/%-%+_#]+"
+				
+				if token:sub(1,3)=="///" then chars="[%w/%-%+_#%.:]+" end -- allow common domain chars
 			
-				local c1=token:sub(1,1) -- some chars to check
+				local s=token:sub(2) -- skip this first char
 				
-				if c1 == "/" then -- a very simple link relative to where we are
-				
-					local chars="[%w/%-%+_#]+"
-					
-					if token:sub(1,3)=="///" then chars="[%w/%-%+_#%.:]+" end -- allow common domain chars
-				
-					local s=token:sub(2) -- skip this first char
-					
-					local f1,f2=s:find(chars)
-					if f1 then -- must find a word
-						local s1=s:sub(f1,f2)
-						local ss=split_words(s1,"/")
-						local tail=ss[#ss] 
-						link(s1,tail)
-						if f2<s:len() then -- some left over string
-							text(s:sub(f2+1))
-						end
-						done=true
+				local f1,f2=s:find(chars)
+				if f1 then -- must find a word
+					local s1=s:sub(f1,f2)
+					local ss=split_words(s1,"/")
+					local tail=ss[#ss] 
+					link(s1,tail)
+					if f2<s:len() then -- some left over string
+						text(s:sub(f2+1))
 					end
-					
-				elseif token:sub(1,7)=="http://" then
-						link(token,token)
-						done=true
-
-				elseif token:sub(1,8)=="https://" then
-						link(token,token)
-						done=true
+					done=true
 				end
 				
+			elseif token:sub(1,7)=="http://" then
+					link(token,token)
+					done=true
+
+			elseif token:sub(1,8)=="https://" then
+					link(token,token)
+					done=true
 			end
 			
-			
-			if not done then -- unhandled token, just add it
-				text(token)				
-			end
-			
+		end
 		
 		
+		if not done then -- unhandled token, just add it
+			text(token)				
 		end
 	
 	end
 	
-	
 	return table.concat(r)
-
 end
 

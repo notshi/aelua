@@ -136,13 +136,12 @@ local put=make_put(srv)
 	
 	local form={}
 	for i,v in ipairs(chunks) do -- do basic process of all of the page chunks into their prefered form 
-		local s=""
-		if v.opts.form=="raw" then -- predefined, use exactly as is, html
-			s=v.text
-		elseif v.opts.form=="trim" then -- like raw but with leading and trailing whitespace removed
-			s=trim(v.text)
-		else
-			s=wet_waka.chunk_to_html(v,baseurl) -- default to waka
+		local s=v.text
+		if v.opts.trim=="ends" then s=trim(s) end -- trim?
+		if v.opts.form=="raw" or v.opts.form=="html" then -- predefined, use exactly as is, html
+			s=s
+		else -- default to basic waka format, html allowed
+			s=wet_waka.waka_to_html(s,{base_url=baseurl,escape_html=false}) 
 		end
 		form[v.name]=s
 	end
