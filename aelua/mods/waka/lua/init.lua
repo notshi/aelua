@@ -103,20 +103,21 @@ local put=make_put(srv)
 			page.cache.text=posts.text
 		end
 		
-		if posts.submit=="Save" then -- save page to database
-			if posts.text then
-				local chunks=wet_waka.text_to_chunks(posts.text)
-				pages.edit(srv,pagename,
-					{
-						text=posts.text,
-						author=user.cache.email,
-						note=(chunks.note and chunks.note.text) or "",
-					})
+		if user and user.cache and user.cache.admin then -- admin
+			if posts.submit=="Save" then -- save page to database
+				if posts.text then
+					local chunks=wet_waka.text_to_chunks(posts.text)
+					pages.edit(srv,pagename,
+						{
+							text=posts.text,
+							author=user.cache.email,
+							note=(chunks.note and chunks.note.text) or "",
+						})
+				end
+			else
+				put("waka_edit_form",{text=page.cache.text}) -- still editing
 			end
-		else
-			put("waka_edit_form",{text=page.cache.text}) -- still editing
 		end
-		
 	end
 	
 	
