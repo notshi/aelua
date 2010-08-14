@@ -102,7 +102,7 @@ header=function(d)
 	d.extra=""
 	
 	if d.css then
-		d.extra=d.extra.."<script type=\"text/javascript\" src=\""..d.css.."\"></script>"
+		d.extra=d.extra.."<link rel=\"stylesheet\" type=\"text/css\" href=\""..d.css.."\">"
 	end
 	
 	d.jquery_js="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
