@@ -111,7 +111,7 @@ div.cont{
 }
 /* Main container horizontal line */
 div.line{	
-	border-bottom:1px dotted #000000;
+	border-bottom:1px solid #CACACA;
 	
 	width: 960px;
 	margin: 0px;
@@ -144,11 +144,15 @@ div.header{
 	position:absolute;
 	bottom:0px;
 	right:0px;
-	background-color:#ddf;
-	padding:2px;
+	background-color:#888;
+	font-family: Lucida Sans Unicode, sans-serif;
+	color: #fff;
+	font-size: 11px;
+	padding: 4px;
 }
 #tv_switch:hover{
 	background-color:#FEC7C7;
+	color: #555;
 }
 
 /* Footer container */
@@ -461,7 +465,7 @@ div.chunk3line {
 #menu_hover {
 	position: absolute;
 	overflow: hidden;
-	height: 61px;
+	height: 60px;
 	width: 67px;
 }
 div.chunk4, div.chunk4a{
@@ -487,6 +491,9 @@ div.chunk4a {
 	margin-top: 1px;
 	width: 348px;
 	height: 48px;
+	-moz-box-shadow: 2px 2px 5px #000;
+	-webkit-box-shadow: 2px 2px 5px #000;
+    box-shadow: 2px 2px 5px #000;
 }
 /* HUD container */
 div.chunk5{
@@ -1615,10 +1622,11 @@ div.logit{
 	font-family: Georgia, serif;
 	color: #ffffff;
 	font-size: 16px;
-	font-weight: bold;
+	font-weight: normal;
 
-	width: 60px;
-	margin: 10px 3px 10px 7px;
+	width: 70px;
+	margin: auto;
+	margin: 5px 5px 5px 10px;
 	float:left;
 }
 .logit a:focus		{color: #ffffff; text-decoration: none;}
@@ -1628,20 +1636,20 @@ div.logit{
 .logit a:active		{color: #ffffff; text-decoration: none;}
 div.logn{
 	font-family: Georgia, serif;
-	color: #374548;
+	color: #888;
 	font-size: 16px;
-	font-weight: bold;
+	font-weight: normal;
 	text-align: right;
 
 	width: 300px;
-	margin: 10px;
+	margin: 5px;
 	float:left;
 }
-.logn a:focus		{color: #374548; text-decoration: none;}
-.logn a:link		{color: #374548; text-decoration: none;}
-.logn a:visited		{color: #374548; text-decoration: none;}
-.logn a:hover		{color: #374548; text-decoration: underline;}
-.logn a:active		{color: #374548; text-decoration: none;}
+.logn a:focus		{color: #888; text-decoration: none;}
+.logn a:link		{color: #888; text-decoration: none;}
+.logn a:visited		{color: #888; text-decoration: none;}
+.logn a:hover		{color: #888; text-decoration: underline;}
+.logn a:active		{color: #888; text-decoration: none;}
 /* CRUMBS */
 div.crum{
 	width: 560px;
@@ -1650,29 +1658,21 @@ div.crum{
 }
 div.crumit{
 	font-family: Georgia, serif;
-	color: #374548;
+	color: #888;
 	font-size: 16px;
-	font-weight: bold;
+	font-weight: normal;
+	font-style: italic;
 
 	width: 550px;
-	margin: 10px 0px;
+	margin: 5px 0px;
 	float:left;
 }
-.crumit a:focus		{color: #374548; text-decoration: none;}
-.crumit a:link		{color: #374548; text-decoration: none;}
-.crumit a:visited	{color: #374548; text-decoration: none;}
+.crumit a:focus		{color: #888; text-decoration: none;}
+.crumit a:link		{color: #888; text-decoration: none;}
+.crumit a:visited	{color: #888; text-decoration: none;}
 .crumit a:hover		{color: #00d400; text-decoration: underline;}
 .crumit a:active	{color: #00d400; text-decoration: none;}
-div.crumn{
-	font-family: Georgia, serif;
-	color: #374548;
-	font-size: 12px;
-	font-weight: bold;
 
-	width: 860px;
-	margin: 0px;
-	float:left;
-}
 /* FOOTER */
 div.foot{
 	background-color: #f7f7f7;
