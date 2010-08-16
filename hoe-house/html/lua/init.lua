@@ -45,10 +45,13 @@ serv_apps={ -- base lookup table
 						["#flavour"]	=	"hoe", 		-- use this flavour when serving
 					},
 					
-["console"]		=	{			-- a console module
+["admin"]		=	{			-- all admin stuff
+	["#default"]	=	serv_fail, -- bad link if we do not understand
+	["console"]		=	{			-- a console module
 						["#default"]	=	"console", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
 					},
+},
 					
 ["dumid"]		=	{			-- a dumid module
 						["#default"]	=	"dumid", 		-- no badlinks, we own everything under here
@@ -57,6 +60,11 @@ serv_apps={ -- base lookup table
 					
 ["help"]		=	{			-- a wiki module
 						["#default"]	=	"waka", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+					},
+					
+["note"]		=	{			-- a sitewide comment module
+						["#default"]	=	"note", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
 					},
 }

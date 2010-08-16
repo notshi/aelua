@@ -1,4 +1,5 @@
 
+
 local wet_html=require("wetgenes.html")
 
 local sys=require("wetgenes.aelua.sys")
@@ -17,6 +18,10 @@ local log=require("wetgenes.aelua.log").log -- grab the func from the package
 local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
 local serialize=wet_string.serialize
+
+
+local opts=require("opts")
+local opts_users_admin=( opts and opts.users and opts.users.admin ) or {}
 
 
 -- require all the module sub parts
@@ -172,6 +177,8 @@ local put=make_put(srv)
 	end
 	
 	if email then -- try and load or create a new user by email
+		if opts_users_admin[email] then admin=true end -- set admin flag to true for these users
+
 		for retry=1,10 do -- get or create user in database
 			
 			local t=dat.begin()

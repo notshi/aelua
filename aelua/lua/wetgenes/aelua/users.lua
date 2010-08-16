@@ -1,6 +1,4 @@
 
-
-
 local json=require("json")
 
 local dat=require("wetgenes.aelua.data")
