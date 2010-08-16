@@ -85,7 +85,6 @@ local ext
 	
 	if aa[#aa] then
 		local ap=str_split(".",aa[#aa])
-		log(tostring(ap))
 		if ap[#ap] then
 			if ap[#ap]=="css" then -- css
 				ext="css"
