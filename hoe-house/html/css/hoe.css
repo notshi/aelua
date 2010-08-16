@@ -480,6 +480,9 @@ div.chunk4, div.chunk4a{
 	width: 55px;
 	height: 54px;
 	padding: 0px 5px 5px 5px;
+	-moz-box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, white 0px 20px 20px -10px inset;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, white 0px 20px 20px -10px inset;
+    box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, white 0px 20px 20px -10px inset;
 }
 div.chunk4 {
 	border-top-left-radius: 0px;
@@ -491,9 +494,6 @@ div.chunk4a {
 	margin-top: 1px;
 	width: 348px;
 	height: 48px;
-    -moz-box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, white 0px 20px 20px -10px inset;
-    -webkit-box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, white 0px 20px 20px -10px inset;
-    box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, white 0px 20px 20px -10px inset;
 }
 /* HUD container */
 div.chunk5{
@@ -509,6 +509,9 @@ div.chunk5{
 	width: 880px;
 	padding: 5px;
 	float: right;
+	-moz-box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, #fff 0px 20px 20px -10px inset;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, #fff 0px 20px 20px -10px inset;
+    box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, #fff 0px 20px 20px -10px inset;
 }
 /* ALERT container ie. Please login, click to join. */
 div.chunk6, div.chunk6a, div.chunk6b, div.chunk6c, div.chunk6d{
