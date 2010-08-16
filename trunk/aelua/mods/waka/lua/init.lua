@@ -1,6 +1,5 @@
 
 local wet_html=require("wetgenes.html")
-local replace=wet_html.replace
 
 local sys=require("wetgenes.aelua.sys")
 
@@ -16,6 +15,8 @@ local img=require("wetgenes.aelua.img")
 local log=require("wetgenes.aelua.log").log -- grab the func from the package
 
 local wet_string=require("wetgenes.string")
+local replace=wet_string.replace
+local macro_replace=wet_string.macro_replace
 local trim=wet_string.trim
 local str_split=wet_string.str_split
 local serialize=wet_string.serialize
@@ -179,13 +180,7 @@ local ext
 		end
 		form[v.name]=s
 	end
-	
--- this needs to be smarter
-	for recursive=1,4 do -- chunks may include chunks which may include chunks, but only 4 deep
-		for i,v in pairs(form) do -- include chunks data into each other {}
-			form[i]=replace(v,form) -- later chunks can also include earlier chunks
-		end
-	end
+
 	
 	if ext=="css" then -- css only
 	
@@ -206,7 +201,7 @@ local ext
 		
 		if display_edit then srv.put(display_edit) end
 		
-		put(replace(form.plate or [[
+		put(macro_replace(form.plate or [[
 		<h1>{title}</h1>
 		{body}
 		]],form))

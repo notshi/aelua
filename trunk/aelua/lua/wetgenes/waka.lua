@@ -17,114 +17,16 @@ local string=string
 local type=type
 local tostring=tostring
 
+-- my string functions
+local str=require("wetgenes.string")
+
 
 module("wetgenes.waka")
 
-
------------------------------------------------------------------------------
---
--- split on \n, each line also includes its own \n
---
------------------------------------------------------------------------------
-local function split_lines(text)
-	local separator = "\n"
-	
-	local parts = {}  
-	local start = 1
-	
-	local split_start, split_end = text:find(separator, start,true)
-	
-	while split_start do
-		table.insert(parts, text:sub(start, split_end))
-		start = split_end + 1
-		split_start, split_end = text:find(separator, start,true)
-	end
-	
-	if text:sub(start)~="" then
-		table.insert(parts, text:sub(start) )
-	end
-	
-	return parts
-end
-
-
-
------------------------------------------------------------------------------
---
--- split on whitespace, throw away all whitespace return only the words
---
------------------------------------------------------------------------------
-local function split_words(text,split)
-	local separator = split or "%s+"
-	
-	local parts = {}  
-	local start = 1
-	
-	local split_start, split_end = text:find(separator, start)
-	
-	while split_start do
-		if split_start>1 then table.insert(parts, text:sub(start, split_start-1)) end
-		start = split_end + 1
-		split_start, split_end = text:find(separator, start)
-	end
-	
-	if text:sub(start)~="" then
-		table.insert(parts, text:sub(start) )
-	end
-	
-	return parts
-end
-
------------------------------------------------------------------------------
---
--- split on whitespace, include this white space in its own token
---
--- such that a concat on the result would be a perfect reproduction of the original
---
------------------------------------------------------------------------------
-local function split_whitespace(text)
-	local separator = "%s+"
-	
-	local parts = {}  
-	local start = 1
-	
-	local split_start, split_end = text:find(separator, start)
-	
-	while split_start do
-		if split_start>1 then table.insert(parts, text:sub(start, split_start-1)) end		-- the word
-		table.insert(parts, text:sub(split_start, split_end))	-- the white space
-		start = split_end + 1
-		split_start, split_end = text:find(separator, start)
-	end
-	
-	if text:sub(start)~="" then
-		table.insert(parts, text:sub(start) )
-	end
-	
-	return parts
-end
-
------------------------------------------------------------------------------
---
--- split a string in two on =
---
------------------------------------------------------------------------------
-local function split_equal(text)
-	local separator = "="
-	
-	local parts = {}
-	local start = 1
-	
-	local split_start, split_end = text:find(separator, start)
-	
-	if split_start and split_start>1 and split_end<#text then -- data either side of seperator
-	
-		return text:sub(1,split_start-1) , text:sub(split_end+1)
-		
-	end
-	
-	return nil
-end
+local split_lines		=str.split_lines
+local split_words		=str.split_words
+local split_whitespace	=str.split_whitespace
+local split_equal		=str.split_equal
 
 -----------------------------------------------------------------------------
 --
@@ -243,7 +145,7 @@ end
 --
 -- merge source data into dest data, dest data may be nil in which case this 
 -- works like a copy. Return the dest chunk. It is intended that you have a
--- a numbe of chunks and then merge them together into a final data chunk
+-- a number of chunks and then merge them together into a final data chunk
 -- using this function, the first merge creates a new dest chunk. the final result
 -- will have a new ordering depending on the merged chunks but the numerical array
 -- can still be used to loop through chunks
@@ -286,10 +188,10 @@ end
 -- and words that look like links are turned into links
 -- any included html should get escaped so this is "safe" to use on user input
 --
--- aditiona opts
+-- aditional opts
 --
 -- we need to know the base_url of this page when building links, if this is not given
--- then relative links may bork
+-- then relative links may bork?
 --
 -- setting escape_html to true prevents any html from getting through
 --
@@ -304,13 +206,13 @@ local escape_html=opts.escape_html or false
 	local esc
 	if escape_html then -- simple html escape
 		esc=function(s) 
-			local escaped = { ['<']='&lt;', ['>']='&gt;', ["&"]='&amp;' , ["\n"]='<br/>' }
-			return (s:gsub("[<>&\n]", function(c) return escaped[c] end))
+			local escaped = { ['<']='&lt;', ['>']='&gt;', ["&"]='&amp;' , ["\n"]='<br/>\n' }
+			return (s:gsub("[<>&\n]", function(c) return escaped[c] or c end))
 		end
 	else -- no escape just convert \n to <br/>
 		esc=function(s) 
-			local escaped = { ["\n"]='<br/>' }
-			return (s:gsub("[\n]", function(c) return escaped[c] end))
+			local escaped = { ["\n"]='<br/>\n' }
+			return (s:gsub("[\n]", function(c) return escaped[c] or c end))
 		end
 	end
 	
