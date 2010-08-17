@@ -325,3 +325,28 @@ function fix_memcache(srv,mc)
 		cache.del(n)
 	end
 end
+
+--------------------------------------------------------------------------------
+--
+-- list pages
+--
+--------------------------------------------------------------------------------
+function list(srv,opts,t)
+	opts=opts or {} -- stop opts from being nil
+	
+	t=t or dat -- use transaction?
+	
+	local r=t.query({
+		kind=kind(srv),
+		limit=opts.limit or 100,
+		offset=opts.offset or 0,
+			{"filter","layer","==",0},
+			{"sort","updated","DESC"},
+		})
+		
+	for i=1,#r.list do local v=r.list[i]
+		dat.build_cache(v)
+	end
+
+	return r.list
+end

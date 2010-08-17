@@ -101,8 +101,10 @@ end
 header=function(d)
 	d.extra=""
 	
-	if d.css then
-		d.extra=d.extra.."<link rel=\"stylesheet\" type=\"text/css\" href=\""..d.css.."\">"
+	if d.css then --embed some css
+		d.extra=d.extra.."<style type=\"text/css\">"..d.css.."</style>"
+		
+--		d.extra=d.extra.."<link rel=\"stylesheet\" type=\"text/css\" href=\""..d.css.."\">"
 	end
 	
 	d.jquery_js="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"

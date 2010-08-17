@@ -65,6 +65,7 @@ local function make_get(srv)
 		return wet_html.get(html,a,b)
 	end
 end
+
 -----------------------------------------------------------------------------
 --
 -- the serv function, where the action happens.
@@ -83,6 +84,10 @@ local ext
 		aa[#aa+1]=srv.url_slash[ i ]
 	end
 	if aa[#aa]=="" then aa[#aa]=nil end-- kill any trailing slash
+	
+	if aa[1]=="" and aa[2]=="admin" then
+		return serv_admin(srv)
+	end
 	
 	if aa[#aa] then
 		local ap=str_split(".",aa[#aa])
@@ -195,7 +200,10 @@ local ext
 	else
 	
 		srv.set_mimetype("text/html; charset=UTF-8")
-		put("header",{title="waka : "..pagename:sub(2),css=url..".css"})
+		local css
+		if form.css then css=macro_replace(form.css,form) end
+		
+		put("header",{title="waka : "..pagename:sub(2),css=css--[[,css=url..".css"]]})
 		
 		put("waka_bar",{crumbs=crumbs,page=pagename})
 		
@@ -210,3 +218,71 @@ local ext
 	end
 end
 
+
+
+-----------------------------------------------------------------------------
+--
+-- handle admin special pages/lists
+--
+-----------------------------------------------------------------------------
+function serv_admin(srv)
+local sess,user=users.get_viewer_session(srv)
+local put=make_put(srv)
+local get=make_get(srv)
+
+	local crumbs=" <a href=\"/\">home</a> / <a href=\""..srv.url_base.."\">"..srv.slash.."</a> "
+	
+	local cmd= srv.url_slash[ srv.url_slash_idx+2]
+
+	put("header",{title="waka : admin"})
+
+	put("waka_bar",{crumbs=crumbs})
+	
+	if cmd=="pages" then
+	
+		local list=pages.list(srv,{})
+		
+		for i=1,#list do local v=list[i]
+		
+			local dat={
+				page=v.cache,
+				page_name=v.cache.id,
+				url_base=srv.url_base:sub(1,-2),
+				time=os.date("%Y/%m/%d %H:%M:%S",v.cache.updated),
+				author=(v.cache.edit.author or "")
+				}
+			put([[
+<a style="position:relative;display:block;width:960px" href="{url_base}{page_name}">
+{time} : {page_name} 
+<span style="position:absolute;right:0px">{author}</span>
+</a>]],dat)
+
+		end
+	
+	elseif cmd=="edits" then
+	
+		local list=edits.list(srv,{})
+		
+		for i=1,#list do local v=list[i]
+		
+			local dat={
+				page=v.cache,
+				page_name=v.cache.page,
+				url_base=srv.url_base:sub(1,-2),
+				time=os.date("%Y/%m/%d %H:%M:%S",v.cache.time),
+				author=(v.cache.author or "")
+				}
+			put([[
+<a style="position:relative;display:block;width:960px" href="{url_base}{page_name}">
+{time} : {page_name}
+<span style="position:absolute;right:0px">{author}</span>
+</a>]],dat)
+
+		end
+		
+	end
+	
+
+	put("footer")
+	
+end
