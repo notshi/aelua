@@ -140,6 +140,10 @@ div.header{
 }
 
 #tv_switch{
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
 	display:block;
 	position:absolute;
 	bottom:0px;
@@ -151,8 +155,29 @@ div.header{
 	padding: 4px;
 }
 #tv_switch:hover{
-	background-color:#FEC7C7;
-	color: #555;
+	background-color:#82CDF0;
+	color: #fff;
+	text-decoration: none;
+}
+#help{
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+	display:block;
+	position:absolute;
+	bottom:0px;
+	left:0px;
+	background-color:#04A800;
+	font-family: Lucida Sans Unicode, sans-serif;
+	color: #fff;
+	font-size: 11px;
+	padding: 4px;
+}
+#help:hover{
+	background-color:#FF2600;
+	color: #fff;
+	text-decoration: none;
 }
 
 /* Footer container */
