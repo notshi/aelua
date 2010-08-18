@@ -66,5 +66,6 @@ function make_round(H,timestep)
 
 	local r=rounds.create(H)
 	r.cache.timestep=timestep or 1
+	r.cache.endtime=H.srv.time+(r.cache.timestep*4032) -- default game end
 	rounds.put(H,r)
 end

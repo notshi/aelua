@@ -319,6 +319,7 @@ local put=H.put
 			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
 		end
 	end
+	if H.round.cache.state~="active" then posts={} end -- no actions unless round is active
 
 	local result
 	local payout
@@ -426,6 +427,7 @@ function serv_round_shop(H)
 			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
 		end
 	end
+	if H.round.cache.state~="active" then posts={} end -- no actions unless round is active
 	
 	local cost={}
 		
@@ -516,6 +518,7 @@ function serv_round_profile(H)
 			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
 		end
 	end
+	if H.round.cache.state~="active" then posts={} end -- no actions unless round is active
 	
 	if H.player and (posts.name or posts.shout) then
 		local by={}
@@ -603,6 +606,7 @@ function serv_round_fight(H)
 			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
 		end
 	end
+	if H.round.cache.state~="active" then posts={} end -- no actions unless round is active
 	
 	local player=H.player
 	local victim=tonumber(H.arg(2) or 0) or 0
@@ -756,6 +760,7 @@ function serv_round_trade(H)
 			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
 		end
 	end
+	if H.round.cache.state~="active" then posts={} end -- no actions unless round is active
 	
 	local trade -- offering [1] want to be paid in [2], use string names for items
 	local results="" -- any extra result html
