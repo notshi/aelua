@@ -37,6 +37,7 @@
       <xs:element type="ns:inboundServicesType" name="inbound-services" minOccurs="0" xmlns:ns="http://appengine.google.com/ns/1.0"/>
       <xs:element type="xs:boolean" name="precompilation-enabled" minOccurs="0" xmlns:ns="http://appengine.google.com/ns/1.0"/>
       <xs:element type="ns:admin-console" name="admin-console" minOccurs="0" xmlns:ns="http://appengine.google.com/ns/1.0"/>
+      <xs:element type="ns:static-error-handlers" name="static-error-handlers" minOccurs="0" xmlns:ns="http://appengine.google.com/ns/1.0"/>
     </xs:all>
   </xs:complexType>
   <xs:complexType name="env-variablesType">
@@ -111,6 +112,19 @@
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name" use="required"/>
         <xs:attribute type="xs:string" name="url" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="static-error-handlers">
+    <xs:sequence>
+      <xs:element type="ns:static-error-handlers-handler" name="handler" maxOccurs="unbounded" minOccurs="0" xmlns:ns="http://appengine.google.com/ns/1.0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="static-error-handlers-handler">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="file" use="required"/>
+        <xs:attribute type="xs:string" name="error-code" use="optional"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
