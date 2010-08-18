@@ -1,4 +1,6 @@
+com.google.appengine.api
 com.google.appengine.api.blobstore
+com.google.appengine.api.capabilities
 com.google.appengine.api.datastore
 com.google.appengine.api.images
 com.google.appengine.api.labs.taskqueue
