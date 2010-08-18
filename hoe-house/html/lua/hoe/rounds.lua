@@ -95,6 +95,12 @@ function check(H,ent)
 
 	local c=ent.cache
 	
+	if c.endtime<H.srv.time then -- round has ended
+		if c.state~="over" then
+			c.state="over"
+		end
+	end
+	
 	return ent
 end
 
@@ -173,23 +179,8 @@ end
 -- find current active round, the one we really really care about.
 --
 --------------------------------------------------------------------------------
-function list(H,opts)
-
-	local list={}
-	
-	local ret=dat.query({
-		kind=kind(H),
-		limit=10,
-		offset=0,
-			{"filter","state","==","active"},
-			{"sort","updated","DESC"},
-		})
-		
-	for i=1,#ret.list do local v=ret.list[i]
-		dat.build_cache(v)
-	end
-
-	return ret.list
+function get_active(H)
+	return (list(H)[1])
 end
 
 --------------------------------------------------------------------------------

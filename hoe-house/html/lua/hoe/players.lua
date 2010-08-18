@@ -180,6 +180,7 @@ end
 --
 --------------------------------------------------------------------------------
 function join(H,user)
+	if H.round.cache.state~="active" then return false end -- can only join active round
 
 	for retry=1,10 do
 
