@@ -269,6 +269,32 @@ div.game5 {
 	border-bottom: 0;
 }
 
+/* JOIN text */
+div.join, div.leave {
+	background-color: #444;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	margin: 0 auto;
+	width: 350px;
+	margin: 17px 0px 10px 10px;
+	padding: 10px;
+	float: right;
+	
+	font-family: Georgia, serif;
+	color: #fff;
+	font-size: 23px;
+
+	text-align: center;
+}
+div.join {
+	text-shadow: #374548 2px 1px 1px;
+}
+div.leave {
+	background-color: #F05151;
+}
+
 /* Game Start illustration container */
 div.illgame1 {
 	background-image:url('/art/illgame1.png');
@@ -300,21 +326,27 @@ div.illbrobux, div.illhoebro {
 }
 div.illbro1 {
 	background-image:url('/art/illbro1.png');
+	height: 80px;
 }
 div.illbro2 {
 	background-image:url('/art/illbro2.png');
+	height: 80px;
 }
 div.illbro3 {
 	background-image:url('/art/illbro3.png');
+	height: 80px;
 }
 div.illhoe1 {
 	background-image:url('/art/illhoe1.png');
+	height: 80px;
 }
 div.illhoe2 {
 	background-image:url('/art/illhoe2.png');
+	height: 80px;
 }
 div.illhoe3 {
 	background-image:url('/art/illhoe3.png');
+	height: 80px;
 }
 div.illwork1 {
 	background-image:url('/art/illwork1.png');
@@ -330,12 +362,15 @@ div.illwork3 {
 }
 div.illleave1 {
 	background-image:url('/art/illleave1.png');
+	height: 80px;
 }
 div.illleave2 {
 	background-image:url('/art/illleave2.png');
+	height: 80px;
 }
 div.illleave3 {
 	background-image:url('/art/illleave3.png');
+	height: 80px;
 }
 div.illbrobux {
 	background-image:url('/art/illbrobux.png');
@@ -1085,7 +1120,7 @@ div.listat1, div.listbt1, div.listct1 {
 	border-right: 1px dotted #fff;
 	border-bottom: 1px solid #374548;
 	
-	font-family: Georgia, serif;
+	font-family: 'Lucida Sans Unicode';
 	color: #fff;
 	font-size: 16px;
 	text-align: center;
@@ -1110,7 +1145,8 @@ div.listat1, div.listbt1, div.listct1 {
 	border-bottom: 1px dotted #fff;
 	
 	color: #ccc;
-	font-size: 18px;
+	font-size: 16px;
+	font-variant: small-caps;
 }
 
 /* SHOUT TOP ROW with no right border */
@@ -1275,8 +1311,8 @@ div.formi{
 }
 
 div.slide{
-	background: #000;
-	border: 1px solid #000;
+	background: #333;
+	border: 1px solid #333;
 	margin: 0 auto;
 	width: 480px;
 	padding: 0px;
@@ -1589,7 +1625,8 @@ div.hudit{
 	float:left;
 }
 div.hudn{
-	font-family: Georgia, serif;
+	font-family: 'Lucida Sans Unicode';
+	font-variant: small-caps;
 	color: #ccc;
 	font-size: 14px;
 	text-align:center;
@@ -1623,7 +1660,8 @@ div.hud2it{
 	float:left;
 }
 div.hud2n{
-	font-family: Georgia, serif;
+	font-family: 'Lucida Sans Unicode';
+	font-variant: small-caps;
 	color: #ccc;
 	font-size: 14px;
 	text-align:center;
@@ -1707,6 +1745,30 @@ div.crum{
 	margin: 0px;
 	float:left;
 }
+div.help{
+	background-color:#00C224;
+	font-family: Lucida Sans Unicode, sans-serif;
+	color: #fff;
+	font-size: 16px;
+	font-weight: normal;
+	text-align: center;
+	padding: 4px 5px 4px 5px;
+	width: 20px;
+	float:left;
+}
+.help a:focus		{color: #fff; text-decoration: none;}
+.help a:link		{color: #fff; text-decoration: none;}
+.help a:visited		{color: #fff; text-decoration: none;}
+.help a:hover		{color: #fff; text-decoration: underline;}
+.help a:active		{color: #fff; text-decoration: none;}
+
+div.help:hover{
+	background-color:#12F13B;
+}
+div.help:active{
+	background-color:#00C224;
+}
+
 div.crumit{
 	font-family: Georgia, serif;
 	color: #888;
@@ -1714,8 +1776,8 @@ div.crumit{
 	font-weight: normal;
 	font-style: italic;
 
-	width: 550px;
-	margin: 5px 0px;
+	width: 520px;
+	margin: 5px 0px 0px 5px;
 	float:left;
 }
 .crumit a:focus		{color: #888; text-decoration: none;}
