@@ -253,7 +253,7 @@ function list(H,opts,t)
 	
 	local sort=opts.sort or "score"
 	local order=opts.order or "DESC"
-	q[#q+1]={"sort","score","DESC"}
+	q[#q+1]={"sort",sort,order}
 
 	local r=t.query(q)
 		
