@@ -22,6 +22,7 @@ local rounds=require("hoe.rounds")
 local trades=require("hoe.trades")
 local fights=require("hoe.fights")
 local acts=require("hoe.acts")
+local feats=require("hoe.feats")
 
 
 
@@ -93,6 +94,10 @@ function serv(srv)
 
 	local H=create(srv)
 	H.srv.crumbs[#H.srv.crumbs+1]={url="/",title="Hoe House",link="Home",}
+	
+	if H.slash=="api" then
+		return serv_api(H)
+	end
 	
 	local put=H.put
 	local roundid=tonumber(H.slash or 0) or 0
@@ -954,3 +959,29 @@ function serv_round_trade(H)
 
 end
 
+-----------------------------------------------------------------------------
+--
+-- base api
+--
+-----------------------------------------------------------------------------
+function serv_api(H)
+	local put,get=H.put,H.get
+	
+	local cmd=H.arg(1)
+	
+	local jret={}
+	
+	jret.result="ERROR"
+	
+	if cmd=="tops" then
+	
+		local round=rounds.get_active(H) -- get active round
+		
+		jret.active=feats.get_top_players(H,round.key.id)
+		jret.result="OK"
+		
+	end
+	
+	H.srv.set_mimetype("text/plain; charset=UTF-8")
+	put(json.encode(jret))
+end

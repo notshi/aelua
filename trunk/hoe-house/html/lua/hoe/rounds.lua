@@ -156,12 +156,13 @@ end
 --
 --------------------------------------------------------------------------------
 function list(H,opts)
+opts=opts or {}
 
 	local list={}
 	
 	local ret=dat.query({
 		kind=kind(H),
-		limit=10,
+		limit=opts.limit or 10,
 		offset=0,
 			{"filter","state","==","active"},
 			{"sort","updated","DESC"},
@@ -180,7 +181,7 @@ end
 --
 --------------------------------------------------------------------------------
 function get_active(H)
-	return (list(H)[1])
+	return (list(H,{limit=1})[1])
 end
 
 --------------------------------------------------------------------------------

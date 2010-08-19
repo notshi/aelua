@@ -243,13 +243,19 @@ function list(H,opts,t)
 	
 	t=t or dat -- use transaction?
 	
-	local r=t.query({
+	local q={
 		kind=kind(H),
 		limit=opts.limit or 100,
 		offset=opts.offset or 0,
-			{"filter","round_id","==",H.round.key.id},
-			{"sort","score","DESC"},
-		})
+		}
+		
+	q[#q+1]={"filter","round_id","==",opts.round_id or H.round.key.id}
+	
+	local sort=opts.sort or "score"
+	local order=opts.order or "DESC"
+	q[#q+1]={"sort","score","DESC"}
+
+	local r=t.query(q)
 		
 	for i=1,#r.list do local v=r.list[i]
 		dat.build_cache(v)
