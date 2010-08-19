@@ -24,7 +24,7 @@
 <div class="cont">
 	<div class="header" id="header">
 		<a href="/"><img src="/art/hoe.960x180.png" width="960" height="180"></a>
-		<a id="alfa" href="http://forum.wetgenes.com" target="_new"></a>
+		<!--<a id="alfa" href="http://forum.wetgenes.com" target="_new"></a>-->
 		<a id="tv_switch" href="#" onclick='swfobject.embedSWF("http://www.wetgenes.com/link/WetV.swf", "header", "960", "480", "8");return false;'>TURN ON TV?</a>
 		<a id="help" href="/help" target="_blank" title="Opens Help in a new page.">DON'T PANIC.</a>
 	</div>
@@ -59,20 +59,16 @@
 
 <br/>
 <div class="cont">
-	<div class="chunk">
 		<div class="intro">
-			<div class="illgame1"></div>
+			<div style=""></div>
+			<div class="introshout"></div>
 			<div class="intro1">
 				{hoehouse} is a friendly hommage to {whorehouse}.<br/>
 				{hoehouse} is an example {aelua} app.<br/>
-				<br/>
-				<div class="intro2">
 				{aelua} is a {lua} core and framework compatible with {appengine}.<br/>
 				{aelua} and {hoehouse} are designed and developed by {wetgenes}.<br/>
-				</div>
 			</div>
 		</div>
-	</div>
 	<div class="clear"></div>
 </div>
 
@@ -352,30 +348,23 @@ $("#menu_hover").hover(function(){
 #round_row_header
 
 <div class="cont">
-	<div class="chunk3a">
-		<div class="chunk3ait">
-			Choose the round you want to join.
-		<!--<div class="chunk3line"></div>-->
-		</div>
-		<div class="clear"></div>
-	</div>	
-	<div class="illchoose"></div>
+	<div class="illchoose">choose your round</div>
 	<div class="chunk8a">	
 	<div class="chunk8b">
 		<div class="game2">
-			Round #	
+			round #	
 		</div>
 		<div class="game">
-			Players
+			players
 		</div>
 		<div class="game">
-			Speed
+			speed
 		</div>
 		<div class="game">
-			Start Date
+			start date
 		</div>
 		<div class="game">
-			Time Remaining
+			time remaining
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -385,19 +374,19 @@ $("#menu_hover").hover(function(){
 	<div class="clear"></div>
 	<div class="chunk8b">
 		<div class="game4">
-			Round #	
+			round #	
 		</div>
 		<div class="game5">
-			Players
+			players
 		</div>
 		<div class="game5">
-			Speed
+			speed
 		</div>
 		<div class="game5">
-			Start Date
+			start date
 		</div>
 		<div class="game5">
-			Time Remaining
+			time remaining
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -408,7 +397,7 @@ $("#menu_hover").hover(function(){
 #
 	<div class="chunk8b">
 		<div class="game1">
-			<a class="hoe_round_row" href="{url}"><i>Round {round.id}</i></a>	
+			<a class="hoe_round_row" href="{url}"><i>round {round.id}</i></a>	
 		</div>
 		<div class="game">
 			<a class="hoe_round_row" href="{url}"><i>{players}</i></a>
@@ -429,6 +418,76 @@ $("#menu_hover").hover(function(){
 
 <div class="hoe_round_row">
 </div>
+
+#old_round_row_header
+
+<div class="cont">
+	<div class="illchoose1">archives</div>
+	<div class="chunk8a">	
+	<div class="chunk8b">
+		<div class="game2">
+			round #	
+		</div>
+		<div class="game">
+			players
+		</div>
+		<div class="game">
+			speed
+		</div>
+		<div class="game">
+			start date
+		</div>
+		<div class="game">
+			time remaining
+		</div>
+		<div class="clear"></div>
+	</div>
+
+#old_round_row_footer
+	
+	<div class="clear"></div>
+	<div class="chunk8b">
+		<div class="game4">
+			round #	
+		</div>
+		<div class="game5">
+			players
+		</div>
+		<div class="game5">
+			speed
+		</div>
+		<div class="game5">
+			start date
+		</div>
+		<div class="game5">
+			time remaining
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+</div>
+#
+#old_round_row
+#
+	<div class="chunk8b">
+		<div class="game" style="border-left: 0;">
+			<a class="hoe_round_row" href="{url}"><i>round {round.id}</i></a>	
+		</div>
+		<div class="game">
+			<a class="hoe_round_row" href="{url}"><i>{players}</i></a>
+		</div>
+		<div class="game">
+			<a class="hoe_round_row" href="{url}"><i>{speed} eph</i></a>
+		</div>
+		<div class="game">
+			<a class="hoe_round_row" href="{url}"><i>{start}</i></a>
+		</div>
+		<div class="game">
+			<a class="hoe_round_row" href="{url}"><i>{remaining}</i></a>
+		</div>
+		<div class="clear"></div>
+	</div>
+
 
 #player_row_header
 

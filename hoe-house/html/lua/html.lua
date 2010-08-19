@@ -293,6 +293,41 @@ end
 
 -----------------------------------------------------------------------------
 --
+-- display an old round row, for use in a "table" list of rounds 
+--
+-----------------------------------------------------------------------------
+old_round_row_header=function(d)
+
+	return replace(get_plate("old_round_row_header"),d)
+end	
+
+old_round_row_footer=function(d)
+	return replace(get_plate("old_round_row_footer"),d)
+end
+
+old_round_row=function(d)
+
+	local r=d.round
+	
+	if r then
+	
+		d.speed=math.floor(60*60 / r.timestep) -- energy per hour
+		d.start=os.date("%Y%m%d",r.created) -- 8 digit year-month-day number
+		d.remaining=rough_english_duration(r.endtime-d.srv.time).." remaining" -- remaining play time
+		if r.endtime-d.srv.time <= 0 then d.remaining="game over man" end
+		d.players=r.players
+		d.url=d.srv.url_base..r.id
+			
+		return replace(get_plate("old_round_row"),d)
+	end
+	
+	return replace(get_plate("old_round_row_empty"),d)
+
+end
+
+
+-----------------------------------------------------------------------------
+--
 -- display a player row
 --
 -----------------------------------------------------------------------------
