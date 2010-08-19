@@ -137,6 +137,13 @@ function serv(srv)
 	put("round_row_footer",{})
 	put("about",{})	
 	
+	local list=rounds.list(H)
+	put("old_round_row_header",{})
+	for i=1,#list do local v=list[i]
+		put("old_round_row",{round=v.cache})		
+	end
+	put("old_round_row_footer",{})
+	
 	put("footer",footer_data)
 	
 end

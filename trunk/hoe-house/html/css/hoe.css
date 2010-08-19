@@ -216,9 +216,10 @@ div.game, div.game1, div.game2, div.game3, div.game4, div.game5 {
 	width: 190px;
 	height: 30px;
 	
-	font-family: Georgia, serif;
+	font-family: Lucida Sans Unicode, sans-serif;
 	color: #ccc;
 	font-size: 18px;
+	font-variant: small-caps;
 	text-align: center;
 	float: left;
 }
@@ -285,7 +286,7 @@ div.illbro1, div.illbro2, div.illbro3, div.illhoe1, div.illhoe2,
 div.illhoe3, div.illwork1, div.illwork2, div.illwork3, div.illleave1,
 div.illleave2, div.illleave3, div.illlist1, div.illlist2, div.illlist3,
 div.illshop1, div.illtrade1, div.illpro1, div.illpro1, div.illfight1, 
-div.illfight2, div.illfight3, div.illchoose,  
+div.illfight2, div.illfight3, div.illchoose,  div.illchoose1,
 div.illbrobux, div.illhoebro {
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -347,9 +348,8 @@ div.illhoebro {
 div.illlist1, div.illlist2, div.illlist3,
 div.illshop1, div.illtrade1, div.illpro1, 
 div.illpro2, div.illfight1, div.illfight2, 
-div.illfight3, div.illchoose  {
+div.illfight3, div.illchoose, div.illchoose1  {
 	border: 0;
-
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
 	margin: 0 auto;
@@ -386,21 +386,37 @@ div.illfight2 {
 div.illfight3 {
 	background-image:url('/art/illfight3.png');
 }
-div.illchoose {
-	background-image:url('/art/illchoose.png');
+div.illchoose, div.illchoose1 {
+	/*background-image:url('/art/illchoose.png');*/
+	background-color: #888;
+	font-family: Lucida Sans Unicode, sans-serif;
+	color: #fff;
+	font-size: 23px;
+	font-variant: small-caps;
+	text-align: center;
+	width: 960px;
+	height: 30px;
+	border: 2px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	margin: auto;
+	margin-top: 20px;
+	padding: 0;
+}
+div.illchoose1 {
+	background-color: #555;
 }
 
 
 /* div big bold fonts */
-div.chunk, div.intro, div.intro1,div.intro2 {
-	font-family: Georgia, serif;
-	color: #374548;
-	font-size: 23px;
-	font-weight: bold;
-	
+div.chunk, div.intro, div.intro1 {
 	margin: auto;
 	width: 960px;
 	padding: 0px;
+	
+	font-family: Lucida Sans Unicode, sans-serif;
+	color: #374548;
+	font-size: 23px;
+	font-weight: bold;
 }
 .chunk a:focus		{color: #779494; text-decoration: none;}
 .chunk a:link		{color: #779494; text-decoration: none;}
@@ -408,15 +424,32 @@ div.chunk, div.intro, div.intro1,div.intro2 {
 .chunk a:hover		{color: #779494; text-decoration: underline;}
 .chunk a:active		{color: #779494; text-decoration: none;}
 
-/*Start page container*/
-div.intro {
-	width: 860px;
-	height: 267px;
+/* INTRO shout thingy */
+div.introshout {
+	background-image:url('/art/introshout.png');
+	background-repeat: no-repeat;
+	margin: 0px 0px 0px 100px;
+	width: 100px;
+	height: 200px;
+	float: left;
 }
-/*Start page fonts and container*/
-div.intro1, div.intro2 {
-	margin: 40px 0px 0px 20px;
-	width: 600px;
+
+/* INTRO about container */
+div.intro {
+	background-image:url('/art/introchar.png');
+	background-repeat: no-repeat;
+	width: 960px;
+	height: 200px;
+}
+/* INTRO about fonts and container */
+div.intro1 {
+	background-color: #fff;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	margin: 20px 0px 0px 0px;
+	padding: 20px;
+	width: 705px;
 	
 	font-family: Lucida Sans Unicode, sans-serif;
 	font-weight: normal;
@@ -429,17 +462,6 @@ div.intro1, div.intro2 {
 .intro1 a:visited	{color: #779494; text-decoration: none;}
 .intro1 a:hover		{color: #779494; text-decoration: underline;}
 .intro1 a:active	{color: #779494; text-decoration: none;}
-
-/* START PAGE Wetgenes Linkage */
-div.intro2 {
-	margin: 0;
-	font-size: 16px;
-}
-.intro2 a:focus		{color: #779494; text-decoration: none;}
-.intro2 a:link		{color: #779494; text-decoration: none;}
-.intro2 a:visited	{color: #779494; text-decoration: none;}
-.intro2 a:hover		{color: #779494; text-decoration: underline;}
-.intro2 a:active	{color: #779494; text-decoration: none;}
 
 /* CRUMBS container */
 div.chunk1{
@@ -634,6 +656,7 @@ div.chunk8, div.chunk8a, div.chunk8b, div.chunk8c {
 .chunk8b a:visited	{color: #fff; text-decoration: none;}
 .chunk8b a:hover	{color: #fff; text-decoration: underline;}
 .chunk8b a:active	{color: #fff; text-decoration: none;}
+
 div.chunk8 {
 	margin: auto;
 	margin-top: 10px;
