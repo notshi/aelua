@@ -990,13 +990,18 @@ function serv_cron(H)
 	
 	local cmd=H.arg(1)
 	
--- check we have admin	
+-- check we have admin
+-- turns out cron jobs do not get real admin
+-- so we have to use web.xml to admin lock this page
+-- how sucky, can we have a cron user please...
+--[[
 	if not H.page_admin then -- can not view this page
 	
 		H.srv.set_mimetype("text/plain; charset=UTF-8")
 		H.srv.put("Admin required to view this page\n")
 		return
 	end
+]]
 		
 	H.srv.set_mimetype("text/plain; charset=UTF-8")
 	H.srv.put("Performing cron "..H.srv.time.."\n")
