@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+  <cron>
+    <url>/hoe/cron</url>
+    <description>trigger some hoe house action</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+</cronentries>

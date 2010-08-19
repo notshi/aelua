@@ -78,6 +78,8 @@ local sess,user=users.get_viewer_session(srv)
 	
 	H.arg=function(i) return srv.url_slash[ srv.url_slash_idx + i ]	end -- get an arg from the url
 	
+	H.page_admin=( users.core.user and users.core.user.admin) or (H.user and H.user.cache and H.user.cache.admin) -- page admin flag
+	
 	return H
 
 end
@@ -97,6 +99,8 @@ function serv(srv)
 	
 	if H.slash=="api" then
 		return serv_api(H)
+	elseif H.slash=="cron" then
+		return serv_cron(H)
 	end
 	
 	local put=H.put
@@ -115,12 +119,6 @@ function serv(srv)
 		return serv_round(H)
 	end
 	
-	if H.slash=="spew" then -- spew is requesting info, give it
-		return serv_spew(H)
-	end
-
-		
-
 
 	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
@@ -137,7 +135,7 @@ function serv(srv)
 	put("round_row_footer",{})
 	put("about",{})	
 	
-	local list=rounds.list(H)
+	local list=rounds.list(H,{state="over"})
 	put("old_round_row_header",{})
 	for i=1,#list do local v=list[i]
 		put("old_round_row",{round=v.cache})		
@@ -149,26 +147,6 @@ function serv(srv)
 end
 
 
------------------------------------------------------------------------------
---
--- dump some info that my spew server wants
--- the spew server should only ask this once an hour, max
---
------------------------------------------------------------------------------
-function serv_spew(H)
-
-local put=H.put
-
-	H.srv.set_mimetype("text/html")
-	
-	local list=rounds.list(H)
-	if list[1] then -- this be the round that gets crowns
-	
-		put("round found",{})
-	
-	end
-	
-end
 
 -----------------------------------------------------------------------------
 --
@@ -983,12 +961,78 @@ function serv_api(H)
 	if cmd=="tops" then
 	
 		local round=rounds.get_active(H) -- get active round
+		if round then
+			jret.active=feats.get_top_players(H,round.key.id)
+			jret.result="OK"
+		end
 		
-		jret.active=feats.get_top_players(H,round.key.id)
-		jret.result="OK"
+		local round=rounds.get_last(H) -- get last round		
+		if round then
+			jret.last=feats.get_top_players(H,round.key.id)
+			jret.result="OK"
+		end
+		
 		
 	end
 	
 	H.srv.set_mimetype("text/plain; charset=UTF-8")
 	put(json.encode(jret))
+end
+
+
+-----------------------------------------------------------------------------
+--
+-- base cron
+--
+-----------------------------------------------------------------------------
+function serv_cron(H)
+	local put,get=H.put,H.get
+	
+	local cmd=H.arg(1)
+	
+-- check we have admin	
+	if not H.page_admin then -- can not view this page
+	
+		H.srv.set_mimetype("text/plain; charset=UTF-8")
+		H.srv.put("Admin required to view this page\n")
+		return
+	end
+		
+	H.srv.set_mimetype("text/plain; charset=UTF-8")
+	H.srv.put("Performing cron "..H.srv.time.."\n")
+	
+	
+	local list=rounds.list(H)
+	
+	for i,v in ipairs(list) do	
+	
+		rounds.check(H,v)
+		
+		H.srv.put("checking round "..v.key.id.."\n")
+		
+		if v.cache.state ~= v.props.state then -- we should update		
+			if v.props.state=="active" and v.cache.state=="over" then
+				if rounds.update(H,v,function(H,e)
+					if e.props.state=="active" then e.cache.state="over" return true end -- change state
+					return false
+				end) then
+					H.srv.put("round "..v.key.id.." marked as over\n")
+				else
+					H.srv.put("round "..v.key.id.." update failed\n")
+				end
+			end
+		end
+		
+	end
+	
+	if #list==0 then -- when all rounds are over, create a new default active round
+	
+		H.srv.put("there are no active rounds\n")
+					
+		local r=rounds.create(H)
+		rounds.put(H,r)
+		H.srv.put("created new round "..r.key.id.."\n")
+		
+	end
+
 end

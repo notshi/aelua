@@ -164,7 +164,7 @@ opts=opts or {}
 		kind=kind(H),
 		limit=opts.limit or 10,
 		offset=0,
-			{"filter","state","==","active"},
+			{"filter","state","==",opts.state or "active"},
 			{"sort","updated","DESC"},
 		})
 		
@@ -182,6 +182,9 @@ end
 --------------------------------------------------------------------------------
 function get_active(H)
 	return (list(H,{limit=1})[1])
+end
+function get_last(H)
+	return (list(H,{state="over",limit=1})[1])
 end
 
 --------------------------------------------------------------------------------
@@ -209,3 +212,29 @@ function inc_players(H,id)
 	return false
 end
 
+--------------------------------------------------------------------------------
+--
+-- get - update - put
+--
+-- f must be a function that changes the entity.cache and returns true on success
+-- id can be an id or an entity table from which we will get the id
+--
+--------------------------------------------------------------------------------
+function update(H,id,f)
+	if type(id)=="table" then id=id.key.id end -- can turn an entity into an id
+	for retry=1,10 do
+		local t=dat.begin()
+		local e=get(H,id,t)
+		if e then
+			e.cache.updated=H.srv.time
+			if not f(H,e) then t.rollback() return false end -- callback says fail
+			check(H,e) -- keep everything valid
+			if put(H,e,t) then -- entity put ok
+				if t.commit() then -- success
+					return e -- return the adjusted entity
+				end
+			end
+		end
+		t.rollback() -- undo everything ready to try again
+	end
+end
