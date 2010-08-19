@@ -194,7 +194,7 @@ public class Srv
 			Object o=L.value(1);
 			if(L.isString(o))
 			{
-				resp.getWriter().println((String)o);
+				resp.getWriter().write((String)o);
 			}
 			else // output a bytearray
 			{
