@@ -6,6 +6,7 @@ local dat=require("wetgenes.aelua.data")
 local users=require("wetgenes.aelua.users")
 
 local img=require("wetgenes.aelua.img")
+local sys=require("wetgenes.aelua.sys")
 
 local log=require("wetgenes.aelua.log").log -- grab the func from the package
 
@@ -972,7 +973,13 @@ function serv_api(H)
 			jret.result="OK"
 		end
 		
-		
+--[[
+	elseif cmd=="test" then
+		local t="secret"
+		jret.md5 =sys.md5(t)
+		jret.sha1=sys.sha1(t)
+]]
+
 	end
 	
 	H.srv.set_mimetype("text/plain; charset=UTF-8")
