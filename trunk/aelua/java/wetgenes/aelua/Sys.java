@@ -16,11 +16,12 @@ import java.lang.Thread;
 
 import java.util.*;
 
+import java.security.MessageDigest;
+import java.io.FileInputStream;
+
 
 public class Sys
 {
-
-
 	public Sys()
 	{
 	}
@@ -71,6 +72,9 @@ public class Sys
 		reg_file_exists(L,lib);
 		reg_file_read(L,lib);
 		reg_bytes_to_string(L,lib);
+		
+		reg_md5(L,lib);
+		reg_sha1(L,lib);
 		
 		return 0;
 	}
@@ -263,4 +267,70 @@ public class Sys
 			return 0;
 		}
 	}
+
+//
+// this probably works
+//
+	private static String toHex(byte[] digest) {
+		StringBuilder sb = new StringBuilder();
+		for (byte b : digest) {
+			sb.append(String.format("%1$02X", b));
+		}
+
+		return sb.toString();
+	}
+
+//
+// convert string(UTF8) to its md5 hash in hex
+//
+	public void reg_md5(Lua L,Object lib)
+	{
+		final Sys _base=this;
+		L.rawSet(lib, "md5", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.md5(L); } });
+	}
+	public int md5(Lua L)
+	{
+		try
+		{
+			String s=L.checkString(1);
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			L.push(toHex(md.digest(s.getBytes("UTF-8"))) );
+			return 1;
+		}
+   		catch(java.security.NoSuchAlgorithmException e)
+		{
+			return 0;
+		}
+   		catch(java.io.UnsupportedEncodingException e)
+		{
+			return 0;
+		}
+	}
+//
+// convert string(UTF8) to its sha1 hash in hex
+//
+	public void reg_sha1(Lua L,Object lib)
+	{
+		final Sys _base=this;
+		L.rawSet(lib, "sha1", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.sha1(L); } });
+	}
+	public int sha1(Lua L)
+	{
+		try
+		{
+			String s=L.checkString(1);
+			MessageDigest md = MessageDigest.getInstance("SHA1");
+			L.push(toHex(md.digest(s.getBytes("UTF-8"))) );
+			return 1;
+		}
+   		catch(java.security.NoSuchAlgorithmException e)
+		{
+			return 0;
+		}
+   		catch(java.io.UnsupportedEncodingException e)
+		{
+			return 0;
+		}
+	}
+	
 }
