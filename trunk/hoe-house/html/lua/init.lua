@@ -51,6 +51,10 @@ serv_apps={ -- base lookup table
 						["#default"]	=	"console", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
 					},
+	["opts"]		=	{			-- a wiki module containing admin only options
+						["#default"]	=	"waka", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"opts",			-- use this flavour when serving
+					},
 },
 					
 ["dumid"]		=	{			-- a dumid module

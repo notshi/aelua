@@ -17,10 +17,17 @@
 	</servlet-mapping>
   
 	<security-constraint>
-		<display-name>Disabled</display-name>
 		<web-resource-collection> 
-			<web-resource-name>Lua</web-resource-name> 
 			<url-pattern>/lua/*</url-pattern>
+		</web-resource-collection> 
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<web-resource-collection> 
+			<url-pattern>/admin/*</url-pattern>
 		</web-resource-collection> 
 		<auth-constraint>
 			<role-name>admin</role-name>
