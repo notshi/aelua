@@ -72,9 +72,10 @@ public class Sys
 		reg_file_exists(L,lib);
 		reg_file_read(L,lib);
 		reg_bytes_to_string(L,lib);
-		
+		reg_bin_encode(L,lib);
 		reg_md5(L,lib);
 		reg_sha1(L,lib);
+		reg_hmac_sha1(L,lib);
 		
 		return 0;
 	}
@@ -276,10 +277,73 @@ public class Sys
 		for (byte b : digest) {
 			sb.append(String.format("%1$02X", b));
 		}
-
 		return sb.toString();
 	}
+//
+// and so does this
+//
+	private static byte[] fromHex(String s) {
+    int len = s.length();
+    byte[] data = new byte[len / 2];
+    for (int i = 0; i < len; i += 2) {
+        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                             + Character.digit(s.charAt(i+1), 16));
+    }
+    return data;
+}
 
+    private static byte[] BfromS(String t,String s) throws java.io.UnsupportedEncodingException {
+		if(t=="hex")
+		{
+			return fromHex(s);
+		}
+		else
+		if(t=="base64")
+		{
+			return util.Base64.decode(s);
+		}
+		else
+		{
+			return (s.getBytes("UTF-8"));
+		}
+	}
+   	private static String SfromB(String t,byte[] b) throws java.io.UnsupportedEncodingException {
+		if(t=="hex")
+		{
+			return toHex(b);
+		}
+		else
+		if(t=="base64")
+		{
+			return util.Base64.encodeToString(b,false);
+		}
+		else
+		{
+			return new String(b,"UTF-8");
+		}
+	}
+//
+// encode a ( string or byte[] ) as hex or base64
+//
+	public void reg_bin_encode(Lua L,Object lib)
+	{
+		final Sys _base=this;
+		L.rawSet(lib, "bin_encode", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.bin_encode(L); } });
+	}
+	public int bin_encode(Lua L)
+	{
+		try
+		{
+			String t=L.checkString(1);
+			byte[] b;
+			if( L.isString(L.value(2)) ) { b=L.checkString(2).getBytes("UTF-8"); }
+			else { b=(byte[]) L.value(2); }
+			L.push( SfromB(t,b) );
+			return 1;
+		}
+   		catch(Exception e) { return 0; }
+	}
+	
 //
 // convert string(UTF8) to its md5 hash in hex
 //
@@ -290,21 +354,20 @@ public class Sys
 	}
 	public int md5(Lua L)
 	{
+		String t="hex";
+		if( L.isString(L.value(2)) ) { t=L.checkString(2); }
+		
 		try
 		{
 			String s=L.checkString(1);
 			MessageDigest md = MessageDigest.getInstance("MD5");
-			L.push(toHex(md.digest(s.getBytes("UTF-8"))) );
+			byte[] b=md.digest(s.getBytes("UTF-8"));
+			
+			if(t=="bin") { L.push( b ); } // very raw
+			else { L.push( SfromB(t,b) ); } // slightly raw
 			return 1;
 		}
-   		catch(java.security.NoSuchAlgorithmException e)
-		{
-			return 0;
-		}
-   		catch(java.io.UnsupportedEncodingException e)
-		{
-			return 0;
-		}
+   		catch(Exception e) { return 0; }
 	}
 //
 // convert string(UTF8) to its sha1 hash in hex
@@ -316,21 +379,47 @@ public class Sys
 	}
 	public int sha1(Lua L)
 	{
+		String t="hex";
+		if( L.isString(L.value(2)) ) { t=L.checkString(2); }
+		
 		try
 		{
 			String s=L.checkString(1);
 			MessageDigest md = MessageDigest.getInstance("SHA1");
-			L.push(toHex(md.digest(s.getBytes("UTF-8"))) );
+			byte[] b=md.digest(s.getBytes("UTF-8"));
+			
+			if(t=="bin") { L.push( b ); } // very raw
+			else { L.push( SfromB(t,b) ); } // slightly raw
 			return 1;
 		}
-   		catch(java.security.NoSuchAlgorithmException e)
-		{
-			return 0;
-		}
-   		catch(java.io.UnsupportedEncodingException e)
-		{
-			return 0;
-		}
+   		catch(Exception e) { return 0; }
 	}
 	
+//
+// convert key(hex) and string(UTF8) into its hmac sha1 hash in hex
+//
+	public void reg_hmac_sha1(Lua L,Object lib)
+	{
+		final Sys _base=this;
+		L.rawSet(lib, "hmac_sha1", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.hmac_sha1(L); } });
+	}
+	public int hmac_sha1(Lua L)
+	{
+		String t="hex";
+		if( L.isString(L.value(3)) ) { t=L.checkString(3); }
+		
+		try
+		{
+			byte[] key=BfromS(t,L.checkString(1));
+			String s=L.checkString(2);
+			javax.crypto.Mac mac = javax.crypto.Mac.getInstance("HmacSHA1");
+			mac.init( new javax.crypto.spec.SecretKeySpec(key,"HmacSHA1") );
+			byte[] b=mac.doFinal(s.getBytes("UTF-8"));
+			
+			if(t=="bin") { L.push( b ); } // very raw
+			else { L.push( SfromB(t,b) ); } // slightly raw
+			return 1;
+		}
+   		catch(Exception e) { return 0; }
+	}
 }

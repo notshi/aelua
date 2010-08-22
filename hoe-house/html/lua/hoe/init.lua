@@ -973,7 +973,18 @@ function serv_api(H)
 			jret.result="OK"
 		end
 		
+
 --[[
+	elseif cmd=="test" then
+	
+		local k="0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c"
+		local t="Test With Truncation"
+		jret.sha1=sys.bin_encode("base64",sys.hmac_sha1(k,t,"bin"))
+		
+	elseif cmd=="test" then
+		local k="0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c"
+		local t="Test With Truncation"
+		jret.sha1=sys.hmac_sha1(k,t)
 	elseif cmd=="test" then
 		local t="secret"
 		jret.md5 =sys.md5(t)
