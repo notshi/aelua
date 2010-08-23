@@ -614,6 +614,17 @@ end
 -- trade options
 --
 -----------------------------------------------------------------------------
+trade_buy_fail_self=function(d)
+
+	return replace(get_plate("trade_buy_fail_self"),d)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- trade options
+--
+-----------------------------------------------------------------------------
 trade_buy_fail_cost=function(d)
 
 	return replace(get_plate("trade_buy_fail_cost"),d)
