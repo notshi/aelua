@@ -787,7 +787,11 @@ function serv_round_trade(H)
 			
 				local best=trades.find_cheapest(H,{offer=trade[1],seek=trade[2]}) -- get the best trade
 				
-				if (not best) or best.cache.id~=key then -- fail if best is not the one we wanted...
+				if best.cache.player==H.player.key.id then -- buyer and seller are same
+				
+					results=results..get("trade_buy_fail_self") -- failed to buy
+					
+				elseif (not best) or best.cache.id~=key then -- fail if best is not the one we wanted...
 				
 					results=results..get("trade_buy_fail") -- failed to buy
 					
@@ -805,7 +809,7 @@ function serv_round_trade(H)
 								if p.buyer==H.player.cache.id then p.buyer=0 return true end
 							end)
 						end
-						
+												
 						if claim_trade() then -- first we claim the trade
 						
 							local f=function(H,p)
@@ -832,7 +836,7 @@ function serv_round_trade(H)
 								
 								H.player=players.get(H,H.player) -- get updated self
 								
-								local seller=players.get(H,best.cache.player) -- get buyers name
+								local seller=players.get(H,best.cache.player) -- get sellers name
 
 								acts.add_trade(H,{
 									actor1 = seller.key.id ,
@@ -972,25 +976,6 @@ function serv_api(H)
 			jret.last=feats.get_top_players(H,round.key.id)
 			jret.result="OK"
 		end
-		
-
---[[
-	elseif cmd=="test" then
-	
-		local k="0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c"
-		local t="Test With Truncation"
-		jret.sha1=sys.bin_encode("base64",sys.hmac_sha1(k,t,"bin"))
-		
-	elseif cmd=="test" then
-		local k="0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c"
-		local t="Test With Truncation"
-		jret.sha1=sys.hmac_sha1(k,t)
-	elseif cmd=="test" then
-		local t="secret"
-		jret.md5 =sys.md5(t)
-		jret.sha1=sys.sha1(t)
-]]
-
 	end
 	
 	H.srv.set_mimetype("text/plain; charset=UTF-8")
