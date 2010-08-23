@@ -75,8 +75,9 @@ dumid_choose=function(d)
 	d.continue=url_esc(d.continue)
 	return replace([[
 <div>
-Login with<br/><br/> <a class="button" href="{srv.url_base}login/wetgenes/?continue={continue}">your wetgenes account</a><br/><br/>
-or login with<br/><br/> <a class="button" href="{srv.url_base}login/google/?continue={continue}">your google account</a>
+Login with<br/><br/> <a class="button" href="{srv.url_base}login/wetgenes/?continue={continue}">your wetgenes account</a> or <br/>
+<br/> <a class="button" href="{srv.url_base}login/google/?continue={continue}">your google account</a> or <br/>
+<br/> <a class="button" href="{srv.url_base}login/twitter/?continue={continue}">your twitter account</a> <br/>
 </div>
 ]],d)
 

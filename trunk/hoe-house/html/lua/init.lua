@@ -46,14 +46,10 @@ serv_apps={ -- base lookup table
 					},
 					
 ["admin"]		=	{			-- all admin stuff
-	["#default"]	=	serv_fail, -- bad link if we do not understand
+	["#default"]	=	"admin",
 	["console"]		=	{			-- a console module
 						["#default"]	=	"console", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
-					},
-	["opts"]		=	{			-- a wiki module containing admin only options
-						["#default"]	=	"waka", 		-- no badlinks, we own everything under here
-						["#flavour"]	=	"opts",			-- use this flavour when serving
 					},
 },
 					
@@ -62,7 +58,7 @@ serv_apps={ -- base lookup table
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
 					},
 					
-["help"]		=	{			-- a wiki module
+["help"]		=	{			-- a wiki like module
 						["#default"]	=	"waka", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
 					},
