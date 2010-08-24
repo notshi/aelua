@@ -441,13 +441,13 @@ function serv_round_shop(H)
 			by.bros=tonumber(posts.bros)
 			by.gloves=tonumber(posts.gloves)
 			by.sticks=tonumber(posts.sticks)
-			by.manure=tonumber(posts.manure)
 			for i,v in pairs(by) do
 				v=math.floor(v)
 				if v<0 then v=0 end
 				by[i]=v
 			end
-			if by.houses>1 then by.houses=1 end -- may only buy one house at a time
+			if by.houses>2  then by.houses=2  end -- may only buy 2 houses at a time
+			if by.bros>1000 then by.bros=1000 end -- may only buy 1000 bros at a time
 			by.bux=0
 			for i,v in pairs(cost) do
 				if by[i] then
@@ -464,7 +464,7 @@ function serv_round_shop(H)
 					workout_cost()
 					result=by
 				else
-					result=nil -- failed, but do not report
+					result=nil -- failed, but do not report?
 				end
 			end
 		end
