@@ -13,7 +13,7 @@ local string=string
 
 local wet_html=require("wetgenes.html")
 
-local cgi = require("wetgenes.cgilua")
+local cgi = wetgenes.cgilua or require("wetgenes.cgilua")
 local cfg = cfg
 
 
