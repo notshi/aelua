@@ -1751,9 +1751,10 @@ div.help{
 	color: #fff;
 	font-size: 16px;
 	font-weight: normal;
+	font-variant: small-caps;
 	text-align: center;
-	padding: 4px 5px 4px 5px;
-	width: 20px;
+	padding: 2px 5px 6px 5px;
+	width: 30px;
 	float:left;
 }
 .help a:focus		{color: #fff; text-decoration: none;}
@@ -1776,7 +1777,7 @@ div.crumit{
 	font-weight: normal;
 	font-style: italic;
 
-	width: 520px;
+	width: 510px;
 	margin: 5px 0px 0px 5px;
 	float:left;
 }
