@@ -282,35 +282,5 @@ function get_viewer_session(srv)
 	
 	return sess,srv.user -- return sess , user
 	
---[[ this old simple code has moved into the dumbid module
-	local user
-
-	if core.user then -- is there a viewer?
-
-		for retry=1,10 do -- get or create user in database
-			
-			local t=dat.begin()
-			
-			user=get_user(core.user.email,t) -- try and read a current user
-			
-			if not user then -- didint get, so make and put a new user?
-			
-				user=new_user(core.user.email,core.user.name)				
-				if not put_user(user,t) then user=nil end
-			end
-			
-			if user then -- things are looking good try a commit (we may not have actually written anything)
-				if t.commit() then break end -- success
-			end
-			
-			t.rollback()	
-		end
-		
-		user.admin=core.user.admin -- copy admin flag for ease of access
-	end
-	
-	return user -- may be nil
-]]
-
 end
 
