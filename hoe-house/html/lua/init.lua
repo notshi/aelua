@@ -8,6 +8,7 @@ local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
 local serialize=wet_string.serialize
 
+local iplog=require("wetgenes.aelua.iplog")
 
 -----------------------------------------------------------------------------
 --
@@ -77,6 +78,10 @@ serv_apps={ -- base lookup table
 --
 -----------------------------------------------------------------------------
 function serv(srv)
+
+	local allow,tab=iplog.ratelimit(srv.ip)
+	srv.iplog=tab -- iplog info
+	if not allow then srv.put("RATELIMITED") return end -- drop request
 
 	srv.clock=os.clock() -- a relative time we started at
 	srv.time=os.time() -- the absolute time we started
