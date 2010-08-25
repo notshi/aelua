@@ -636,6 +636,17 @@ end
 -- trade options
 --
 -----------------------------------------------------------------------------
+trade_buy_fail_energy=function(d)
+
+	return replace(get_plate("trade_buy_fail_energy"),d)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- trade options
+--
+-----------------------------------------------------------------------------
 trade_buy=function(d)
 
 	return replace(get_plate("trade_buy"),d)

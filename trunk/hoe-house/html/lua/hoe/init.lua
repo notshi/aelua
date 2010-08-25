@@ -787,13 +787,17 @@ function serv_round_trade(H)
 			
 				local best=trades.find_cheapest(H,{offer=trade[1],seek=trade[2]}) -- get the best trade
 				
-				if best.cache.player==H.player.key.id then -- buyer and seller are same
+				if (not best) or best.cache.id~=key then -- fail if best is not the one we wanted...
+				
+					results=results..get("trade_buy_fail") -- failed to buy
+					
+				elseif best.cache.player==H.player.key.id then -- buyer and seller are same
 				
 					results=results..get("trade_buy_fail_self") -- failed to buy
 					
-				elseif (not best) or best.cache.id~=key then -- fail if best is not the one we wanted...
+				elseif H.player.cache.energy<1 then -- we need the energy to buy
 				
-					results=results..get("trade_buy_fail") -- failed to buy
+					results=results..get("trade_buy_fail_energy") -- failed to buy
 					
 				else
 				
@@ -813,6 +817,10 @@ function serv_round_trade(H)
 						if claim_trade() then -- first we claim the trade
 						
 							local f=function(H,p)
+							
+								if p.energy<1 then return false end -- costs 1 energy to trade
+								p.energy=p.energy-1
+								
 								if p[ trade[2] ]<(best.cache.price) then -- must have goods available
 									return false
 								end
