@@ -13,6 +13,7 @@
 
 <script type="text/javascript" src="{jquery_js}"></script>
 <script type="text/javascript" src="{jquery_ui_js}"></script>
+<script type="text/javascript" src="{jquery_validate_js}"></script>
 <script type="text/javascript" src="{swfobject_js}"></script>
 {extra}
 
@@ -1072,7 +1073,7 @@ You do not have the {need} bux needed.
 	
 <div class="trade">
 	<div class="trade2">
-		<form action="{url}" method="POST" enctype="multipart/form-data">
+		<form action="{url}" method="POST" enctype="multipart/form-data" id="trade_{trade.offer}4{trade.seek}">
 		
 		<button type="submit" class="button">Sell!</button>
 		<input type="hidden" name="cmd" value="sell" /> 
@@ -1084,9 +1085,40 @@ You do not have the {need} bux needed.
 		<span id="trade_{trade.offer}4{trade.seek}_price" ></span>
 		</form>
 		<div class="clear"></div>
+		<div id="trade_{trade.offer}4{trade.seek}_message"></div>
 	</div>
 </div>
 <script type="text/javascript" >
+
+$("#trade_{trade.offer}4{trade.seek}").validate({
+ showErrors: function(errorMap, errorList) {
+		var s="";
+		if(errorList[0])
+		{
+			s=errorList[0].message;
+		}
+		else
+		{
+			var n=$('#trade_{trade.offer}4{trade.seek}_count').attr("value") * $('#trade_{trade.offer}4{trade.seek}_cost').attr("value") ;
+			s="( "+n+" in total )";
+		}
+		$("#trade_{trade.offer}4{trade.seek}_message").html(s);
+	},
+  rules: {
+    count: {
+      required: true,
+      digits: true,
+      range: [{count.min}, {count.max}]
+    },
+    cost: {
+      required: true,
+      digits: true,
+      range: [{cost.min}, {cost.max}]
+    }
+  }
+   });
+
+/*
 $(document).ready(function() {
 	var changed=function() {
 		var sa,na,fa;
@@ -1107,6 +1139,7 @@ $(document).ready(function() {
 	$('#trade_{trade.offer}4{trade.seek}_cost').bind("change keyup", changed);
 	changed();
 	});
+*/
 </script>
 
 #trade_row_none
