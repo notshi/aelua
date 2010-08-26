@@ -735,9 +735,9 @@ function serv_round_trade(H)
 	-- these are the allowed trades , the first name is offered
 	-- and the second name is the payment type
 	local valid_trades={
-			{"houses","hoes"},
-			{"hoes","bros"},
-			{"bros","bux"},
+			{"houses","hoes",min=5,max=50,},
+			{"hoes","bros",min=10,max=100,},
+			{"bros","bux",min=1000,max=10000,},
 		}
 
 	local put,get=H.put,H.get
@@ -939,7 +939,7 @@ function serv_round_trade(H)
 		trade.offer=v[1]
 		trade.seek=v[2]
 		trade.best=trades.find_cheapest(H,trade)
-		put("trade_row",{trade=trade,best=trade.best and trade.best.cache,url=url})
+		put("trade_row",{trade=trade,best=trade.best and trade.best.cache,url=url,cost=v,count={min=1,max=1000}})
 	end
 	put("trade_footer",{trades=trades})
 	
