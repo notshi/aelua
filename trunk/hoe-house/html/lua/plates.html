@@ -1085,7 +1085,7 @@ You do not have the {need} bux needed.
 		<span id="trade_{trade.offer}4{trade.seek}_price" ></span>
 		</form>
 		<div class="clear"></div>
-		<div id="trade_{trade.offer}4{trade.seek}_message"></div>
+		<div id="trade_{trade.offer}4{trade.seek}_message" class="trademsg"></div>
 	</div>
 </div>
 <script type="text/javascript" >
@@ -1102,7 +1102,7 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 			var n=$('#trade_{trade.offer}4{trade.seek}_count').attr("value") * $('#trade_{trade.offer}4{trade.seek}_cost').attr("value") ;
 			s="( "+n+" in total )";
 		}
-		$("#trade_{trade.offer}4{trade.seek}_message").html(s);
+		$("#trade_{trade.offer}4{trade.seek}_message").html(s.toUpperCase());
 	},
   rules: {
     count: {
