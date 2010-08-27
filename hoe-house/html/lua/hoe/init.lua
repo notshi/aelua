@@ -869,7 +869,7 @@ function serv_round_trade(H)
 				end
 
 			
-			elseif posts.cmd=="sell" and count>0 and cost>0 then -- must sell something
+			elseif posts.cmd=="sell" and count>0 and count<1000 and trade and cost>=trade.min and cost<=trade.max then -- valid?
 			
 				if H.player.cache[ trade[1] ] >= count then -- must have goods available
 				

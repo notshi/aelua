@@ -882,6 +882,10 @@ div.trademsg {
 	font-size: 14px;
 }
 
+.form_validate_error {
+	color:#f00;
+}
+
 /*PROFILE INFO containers */
 div.pro1, div.pro1a, div.pro1b, div.pro1b1, div.pro1c, div.pro1c1, div.pro1c2, div.prorob {
 	width: 430px;
@@ -977,7 +981,6 @@ div.pro1d input {
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
 	
-	color: #374548;
 	width: 310px;
 	height: 30px;
 	padding: 0px 0px 0px 10px;
@@ -1471,6 +1474,10 @@ div.forminline{
 }
 
 /* TRADE INPUT/BUTTONS & FIGHT INPUT/BUTTONS */
+input{
+	color: #374548;
+}
+
 div.trade2 input{
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -1478,7 +1485,6 @@ div.trade2 input{
 	border: 0;
 	
 	font-family: Lucida Sans Unicode, sans-serif;
-	color: #374548;
 	font-size: 23px;
 	margin: 0 5px 0 5px;
 }
