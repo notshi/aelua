@@ -34,7 +34,7 @@ http://whorehouse.naken.cc
 }
 b {font-weight: bold;}
 u {font-style: italic; text-decoration: none;}
-i {font-family: Lucida Sans Unicode; font-weight: bold; letter-spacing: -0.1em; line-height: 30px;}
+i {font-family: Lucida Sans Unicode, sans-serif; font-weight: bold; letter-spacing: -0.1em; line-height: 30px;}
 a img, :link img, :visited img {border: 0;}
 form, button{border:0; margin:0; padding:0;}
 
@@ -871,6 +871,16 @@ div.witchb {
 	padding-top: 10px;
 }
 
+/* TRADE MESSAGE */
+div.trademsg {
+	margin: 0 auto;
+	margin-top: 10px;
+	padding: 0;
+	font-family: Lucida Sans Unicode, sans-serif;
+	font-variant: small-caps;
+	color: #BBBBBB;
+	font-size: 14px;
+}
 
 /*PROFILE INFO containers */
 div.pro1, div.pro1a, div.pro1b, div.pro1b1, div.pro1c, div.pro1c1, div.pro1c2, div.prorob {
@@ -1120,7 +1130,7 @@ div.listat1, div.listbt1, div.listct1 {
 	border-right: 1px dotted #fff;
 	border-bottom: 1px solid #374548;
 	
-	font-family: 'Lucida Sans Unicode';
+	font-family: Lucida Sans Unicode, sans-serif;
 	color: #fff;
 	font-size: 16px;
 	text-align: center;
@@ -1162,7 +1172,7 @@ div.listc{
 	border-bottom: 1px solid #374548;
 	width: 163px;
 	
-	font-family: Lucida Sans Unicode;
+	font-family: Lucida Sans Unicode, sans-serif;
 	line-height: 1.2em;
 	font-size: 10px;
 	text-align: left;
@@ -1319,7 +1329,7 @@ div.slide{
 }
 /* html+css= ugly web */
 div.formin, div.formina, div.forminb, div.forminline{		
-	font-family: Lucida Sans Unicode;
+	font-family: Lucida Sans Unicode, sans-serif;
 	color: #e3e3e3;
 	font-size: 12px;
 		
@@ -1363,7 +1373,7 @@ div.forminline{
 	height: 50px;
 	float: left;
 	
-	font-family: Lucida Sans Unicode;
+	font-family: Lucida Sans Unicode, sans-serif;
 	color: #e3e3e3;
 	font-size: 42px;
 	font-weight: bold;
@@ -1423,7 +1433,7 @@ div.forminline{
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
 	
-	font-family: Lucida Sans Unicode;
+	font-family: Lucida Sans Unicode, sans-serif;
 	color: #374548;
 	font-size: 23px;
 	margin: 0 5px 0 5px;
@@ -1467,7 +1477,7 @@ div.trade2 input{
 	border-radius: 8px 8px;
 	border: 0;
 	
-	font-family: Lucida Sans Unicode;
+	font-family: Lucida Sans Unicode, sans-serif;
 	color: #374548;
 	font-size: 23px;
 	margin: 0 5px 0 5px;
@@ -1625,7 +1635,7 @@ div.hudit{
 	float:left;
 }
 div.hudn{
-	font-family: 'Lucida Sans Unicode';
+	font-family: Lucida Sans Unicode, sans-serif;
 	font-variant: small-caps;
 	color: #ccc;
 	font-size: 14px;
@@ -1660,7 +1670,7 @@ div.hud2it{
 	float:left;
 }
 div.hud2n{
-	font-family: 'Lucida Sans Unicode';
+	font-family: Lucida Sans Unicode, sans-serif;
 	font-variant: small-caps;
 	color: #ccc;
 	font-size: 14px;
