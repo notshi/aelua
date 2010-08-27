@@ -11,6 +11,8 @@
 <link rel="stylesheet" type="text/css" href="/css/jquery/smoothness/jquery-ui-1.8.2.custom.css" />
 <link rel="stylesheet" type="text/css" href="/css/hoe.css" /> 
 
+
+
 <script type="text/javascript" src="{jquery_js}"></script>
 <script type="text/javascript" src="{jquery_ui_js}"></script>
 <script type="text/javascript" src="{jquery_validate_js}"></script>
@@ -1073,14 +1075,14 @@ You do not have the {need} bux needed.
 	
 <div class="trade">
 	<div class="trade2">
-		<form action="{url}" method="POST" enctype="multipart/form-data" id="trade_{trade.offer}4{trade.seek}">
+		<form action="{url}" method="POST" enctype="multipart/form-data" id="trade_{trade.offer}4{trade.seek}" class="tradeform">
 		
 		<button type="submit" class="button">Sell!</button>
 		<input type="hidden" name="cmd" value="sell" /> 
 		<input type="hidden" name="trade" value="{trade.offer}4{trade.seek}" /> 
 		<input type="text" name="count" value="0" size="3" class="field" id="trade_{trade.offer}4{trade.seek}_count" /> <img src="/art/{trade.offer}.png"> {trade.offer}
 		
-		for <input type="text" name="cost" value="0" size="3" class="field" id="trade_{trade.offer}4{trade.seek}_cost" /> <img src="/art/{trade.seek}.png"> {trade.seek} each.
+		for <input type="text" name="cost" value="0" size="3" id="trade_{trade.offer}4{trade.seek}_cost" /> <img src="/art/{trade.seek}.png"> {trade.seek} each.
 
 		<span id="trade_{trade.offer}4{trade.seek}_price" ></span>
 		</form>
@@ -1091,7 +1093,8 @@ You do not have the {need} bux needed.
 <script type="text/javascript" >
 
 $("#trade_{trade.offer}4{trade.seek}").validate({
- showErrors: function(errorMap, errorList) {
+	onkeyup: function(element) { this.element(element);	}, // always validate
+  showErrors: function(errorMap, errorList) {
 		var s="";
 		if(errorList[0])
 		{
@@ -1103,7 +1106,10 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 			s="( "+n+" in total )";
 		}
 		$("#trade_{trade.offer}4{trade.seek}_message").html(s.toUpperCase());
+		this.defaultShowErrors(); // this shows default errors as well as doing inportant stuff
 	},
+  wrapper:"div style=\"display:none\"", // so we also hide all default error messages
+  errorClass:"form_validate_error",
   rules: {
     count: {
       required: true,
@@ -1117,6 +1123,7 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
     }
   }
    });
+   
 
 /*
 $(document).ready(function() {
