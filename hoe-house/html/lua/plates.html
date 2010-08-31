@@ -17,6 +17,7 @@
 <script type="text/javascript" src="{jquery_ui_js}"></script>
 <script type="text/javascript" src="{jquery_validate_js}"></script>
 <script type="text/javascript" src="{swfobject_js}"></script>
+<script type="text/javascript" src="/js/hoe.js"></script>
 {extra}
 
  </head>
@@ -808,15 +809,91 @@ Click {action} to {action} this game.
 
 	<div id="buyit">
 		Buy <i><input type="text" name="houses" id="hoe_player_work_form_houses" value="0" style="width:100px;"/></i> <img src="/art/housesb.png"> houses at <img src="/art/buxb.png"> <i>{houses_bux}</i> bux each. (max 2)
+		<div id="hoe_player_shop_form_houses_error" class="trademsg"></div>
 		<div class="formline1"></div>
 		Buy <i><input type="text" name="bros" id="hoe_player_work_form_bros" value="0" style="width:100px;"/></i> <img src="/art/scareb.png"> bros at <img src="/art/buxb.png"> <i>{bros_bux}</i> bux each. (max 1000)
+		<div id="hoe_player_shop_form_bros_error" class="trademsg"></div>
 		<div class="formline1"></div>
 		Buy <i><input type="text" name="gloves" id="hoe_player_work_form_gloves" value="0" style="width:100px;"/></i> <img src="/art/glovesb.png"> gloves at <img src="/art/buxb.png"> <i>{gloves_bux}</i> bux each.
+		<div id="hoe_player_shop_form_gloves_error" class="trademsg"></div>
 		<div class="formline1"></div>
 		Buy <i><input type="text" name="sticks" id="hoe_player_work_form_sticks" value="0" style="width:100px;"/></i> <img src="/art/sticksb.png"> sticks at <img src="/art/buxb.png"> <i>{sticks_bux}</i> bux each.
+		<div id="hoe_player_shop_form_sticks_error" class="trademsg"></div>
 		<div class="formline1"></div>
 
 		<button class="button" type="submit" name="submit" value="Buy!">Buy!</button>
+		<div id="hoe_player_shop_form_total" class="trademsg"></div>
+
+		
+<script type="text/javascript" >
+
+$("#hoe_player_shop_form").validate({
+	onkeyup: function(element) { this.element(element);	}, // always validate
+	showErrors: function(errorMap, errorList) {
+		var ns=["houses","bros","gloves","sticks"];
+		var cost=[];
+		cost["houses"]=comma3_to_number("{houses_bux}");
+		cost["bros"]  =comma3_to_number("{bros_bux}");
+		cost["gloves"]=comma3_to_number("{gloves_bux}");
+		cost["sticks"]=comma3_to_number("{sticks_bux}");
+		var total=0;
+		for (i in ns)
+		{
+			var v=ns[i];
+			var errdiv="#hoe_player_shop_form_"+v+"_error";
+			var s=undefined;
+			if(errorMap[v])
+			{
+				s=errorMap[v];
+			}
+			if(!s) // hint
+			{
+				var c=comma3_to_number($("#hoe_player_work_form_"+v).attr("value"));
+				if(c!=0)
+				{
+					s=comma3(c)+" "+v+" for a total of "+comma3(cost[v]*c)+" bux";
+					total=total+(cost[v]*c);
+				}
+				else
+				{
+					s="";
+				}
+			}
+			$(errdiv).html(s.toUpperCase());
+		}
+		if(total>0)
+		{
+			s="for a grand total of "+comma3(total)+" bux";
+		}
+		else
+		{
+			s="";
+		}
+		$("#hoe_player_shop_form_total").html(s.toUpperCase());
+		
+		this.defaultShowErrors(); // this shows default errors as well as doing important other stuff
+	},
+	errorPlacement: function(error, element) {}, // so we also have to hide all the default error messages
+  rules: {
+    houses: {
+      digits: true,
+      range: [0, 2]
+    },
+    bros: {
+      digits: true,
+      range: [0, 1000]
+    },
+    gloves: {
+      digits: true,
+    },
+    sticks: {
+      digits: true,
+    }
+  }
+   });
+   
+</script>
+
 	</div>
 	
 	</form>
@@ -1102,13 +1179,15 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 		}
 		else
 		{
-			var n=$('#trade_{trade.offer}4{trade.seek}_count').attr("value") * $('#trade_{trade.offer}4{trade.seek}_cost').attr("value") ;
-			s="( "+n+" in total )";
+			var a=parseInt($('#trade_{trade.offer}4{trade.seek}_count').attr("value"));
+			var b=parseInt($('#trade_{trade.offer}4{trade.seek}_cost').attr("value"));
+			var c=a*b;
+			s="( "+comma3(a)+" {trade.offer} for "+comma3(c)+" {trade.seek} )";
 		}
 		$("#trade_{trade.offer}4{trade.seek}_message").html(s.toUpperCase());
-		this.defaultShowErrors(); // this shows default errors as well as doing inportant stuff
+		this.defaultShowErrors(); // this shows default errors as well as doing important stuff
 	},
-  wrapper:"div style=\"display:none\"", // so we also hide all default error messages
+	errorPlacement: function(error, element) {}, // so we also have to hide all the default error messages
   errorClass:"form_validate_error",
   rules: {
     count: {
@@ -1124,29 +1203,6 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
   }
    });
    
-
-/*
-$(document).ready(function() {
-	var changed=function() {
-		var sa,na,fa;
-		
-		fa=$('#trade_{trade.offer}4{trade.seek}_count');
-		sa=fa.attr("value"); na=parseInt(sa); if(isNaN(na)) { na=0; }
-		if(((na+"")!=sa)&&(sa!="")) { fa.attr("value",na); }
-		
-		fa=$('#trade_{trade.offer}4{trade.seek}_cost');
-		sa=fa.attr("value"); na=parseInt(sa); if(isNaN(na)) { na=0; }
-		if(((na+"")!=sa)&&(sa!="")) { fa.attr("value",na); }
-		
-		var n=$('#trade_{trade.offer}4{trade.seek}_count').attr("value") * $('#trade_{trade.offer}4{trade.seek}_cost').attr("value") ;
-		var s="( "+n+" in total )";
-		$('#trade_{trade.offer}4{trade.seek}_price').html(s);
-		};
-	$('#trade_{trade.offer}4{trade.seek}_count').bind("change keyup", changed); 
-	$('#trade_{trade.offer}4{trade.seek}_cost').bind("change keyup", changed);
-	changed();
-	});
-*/
 </script>
 
 #trade_row_none
