@@ -111,11 +111,17 @@ function check(H,ent)
 	
 -- how long to sit in limbo for?
 
-	c.limbo=c.limbo or math.random( 6*H.round.cache.timestep , 4*6*H.round.cache.timestep ) --  1-4 hours with 10min timestep
-
--- price can be rebuilt
+	c.limbo=c.limbo or math.random( 6*H.round.cache.timestep , 12*6*H.round.cache.timestep ) --  1-12 hours with 10min timestep
+	c.limbo=0
 	
-	c.price= c.count*c.cost
+-- price can be rebuilt?
+--[[
+	if c.reverse then
+		c.price= c.count/c.cost
+	else
+		c.price= c.count*c.cost
+	end
+]]
 
 -- check?
 	if c.price<=0 then ok=false end
@@ -263,14 +269,21 @@ end
 --
 --------------------------------------------------------------------------------
 function find_cheapest(H,opts,t)
+local reverse=false
 	opts=opts or {} -- stop opts from being nil
 	if not ( opts.offer and opts.seek ) then return nil end -- really need these opts
+	
+	if type(opts.reverse)=="string" then -- this could be a string rather than a bool
+		if opts.reverse=="true" then reverse=true end
+	else
+		reverse=opts.revers
+	end
 
 	-- a unique keyname for this query
 	local cachekey="kind="..kind(H).."&find=cheapest&offer="..opts.offer.."&seek="..opts.seek
 	
 	local r=cache.get(cachekey) -- do we already know the answer
-	
+
 	if r then -- we cached the answer
 --	log(r)
 		r=json.decode(r) -- turn back into data
@@ -279,7 +292,7 @@ function find_cheapest(H,opts,t)
 	
 	t=t or dat -- transactions shouldnt be used anyhow?
 	
-	local r=t.query({
+	local q={
 		kind=kind(H),
 		limit=100, -- there are probably not 100, and we need to skip any in limbo
 		offset=0,
@@ -287,9 +300,18 @@ function find_cheapest(H,opts,t)
 			{"filter","buyer","==",0}, -- must be available to buy
 			{"filter","offer","==",opts.offer},
 			{"filter","seek","==",opts.seek},
-			{"sort","cost","ASC"}, -- we want the cheapest
-			{"sort","created","ASC"}, -- and we want the oldest so FIFO
-		})
+		}
+	
+	if reverse then
+			q[#q+1]={"sort","cost","DESC"} -- we want the most expensive
+			q[#q+1]={"sort","created","ASC"} -- and we want the oldest so FIFO	
+	else
+			q[#q+1]={"sort","cost","ASC"} -- we want the cheapest
+			q[#q+1]={"sort","created","ASC"} -- and we want the oldest so FIFO	
+	end
+		
+		
+	local r=t.query(q)
 	
 	local best
 		
