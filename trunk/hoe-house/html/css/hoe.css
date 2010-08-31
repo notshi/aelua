@@ -882,6 +882,10 @@ div.trademsg {
 	font-size: 14px;
 }
 
+#buyit input.error{
+	color:#f00;
+}
+
 .form_validate_error {
 	color:#f00;
 }
