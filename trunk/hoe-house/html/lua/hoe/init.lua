@@ -426,7 +426,7 @@ function serv_round_shop(H)
 	
 		local function workout_cost()
 			cost.houses=50000 * H.player.cache.houses
-			cost.bros=1000 + (10 * H.player.cache.bros)
+			cost.bros=1000 + (1 * H.player.cache.bros)
 			cost.gloves=1
 			cost.sticks=10
 			cost.manure=100
@@ -754,16 +754,26 @@ function serv_round_trade(H)
 	if H.round.cache.state~="active" then posts={} end -- no actions unless round is active
 	
 	local trade -- offering [1] want to be paid in [2], use string names for items
+	local tradea,tradeb -- [1] and [2] fixed for reverse purchase
 	local results="" -- any extra result html
 	
 	if H.player and posts.trade then -- we want to trade
 	
+		local reverse=false 
 		if posts.trade~="" then
 			local aa=str_split("4",posts.trade)
 			if aa[1] and aa[2] then -- possible
 				for i=1,#valid_trades do local v=valid_trades[i]
 					if v[1]==aa[1] and v[2]==aa[2] then -- found valid trade
+						tradea=aa[1]
+						tradeb=aa[2]
 						trade=v
+						break
+					elseif v[1]==aa[2] and v[2]==aa[1] then -- found valid reverse trade
+						tradea=aa[1]
+						tradeb=aa[2]
+						trade=v
+						reverse=true
 						break
 					end
 				end
@@ -775,17 +785,24 @@ function serv_round_trade(H)
 			local key=math.floor(tonumber(posts.key or 0) or 0)
 			local count=math.floor(tonumber(posts.count or 0) or 0)
 			local cost=math.floor(tonumber(posts.cost or 0) or 0)
+			local price=0
 			
 			if count<0 then count=0 end
 			if cost <0 then cost =0 end
 			
-			if count>1000000 then count=1000000 end -- best to also have a max, 1 million? sure why not?
-			if cost >1000000 then cost =1000000 end
+--			if count>1000000 then count=1000000 end -- best to also have a max, 1 million? sure why not?
+--			if cost >1000000 then cost =1000000 end
+			
+			if reverse then -- a reverse trade
+				price=math.floor(count/cost)
+				count=price*cost -- must be a multiple of cost
+			else
+				price=count*cost
+			end
 			
 			if posts.cmd=="buy" then
 			
-			
-				local best=trades.find_cheapest(H,{offer=trade[1],seek=trade[2]}) -- get the best trade
+				local best=trades.find_cheapest(H,{offer=tradea,seek=tradeb,reverse=reverse}) -- get the best trade
 				
 				if (not best) or best.cache.id~=key then -- fail if best is not the one we wanted...
 				
@@ -801,8 +818,8 @@ function serv_round_trade(H)
 					
 				else
 				
-					if H.player.cache[ trade[2] ] >= best.cache.price then -- must have price available
-				
+					if H.player.cache[ tradeb ] >= best.cache.price then -- must have price available
+					
 						local claim_trade=function()
 							return trades.update(H,best,function(H,p)
 								if p.buyer==0 then p.buyer=H.player.cache.id return true end
@@ -821,23 +838,23 @@ function serv_round_trade(H)
 								if p.energy<1 then return false end -- costs 1 energy to trade
 								p.energy=p.energy-1
 								
-								if p[ trade[2] ]<(best.cache.price) then -- must have goods available
+								if p[ tradeb ]<(best.cache.price) then -- must have goods available
 									return false
 								end
-								if trade[2]=="houses" then -- must always own at least one house...
-									if p[ trade[2] ]<=(count) then
+								if tradeb=="houses" then -- must always own at least one house...
+									if p[ tradeb ]<=(best.cache.price) then
 										return false
 									end
 								end
-								p[ trade[1] ]=p[ trade[1] ]+(best.cache.count) -- give goods right now
-								p[ trade[2] ]=p[ trade[2] ]-(best.cache.price) -- remove price right now
+								p[ tradea ]=p[ tradea ]+(best.cache.count) -- give goods right now
+								p[ tradeb ]=p[ tradeb ]-(best.cache.price) -- remove price right now
 								return true
 							end
 			
 							if players.update(H,H.player,f) then -- goods where removed, now give price to trader
 							
 								local adjust={}
-								adjust[ trade[2] ]=best.cache.price
+								adjust[ tradeb ]=best.cache.price
 								players.update_add(H,best.cache.player,adjust) -- hand over the price
 								
 								results=results..get("trade_buy",{trade=best.cache}) -- finally say we bought stuff				
@@ -869,53 +886,109 @@ function serv_round_trade(H)
 				end
 
 			
-			elseif posts.cmd=="sell" and count>0 and count<1000 and trade and cost>=trade.min and cost<=trade.max then -- valid?
+			elseif posts.cmd=="sell" and trade and cost>=trade.min and cost<=trade.max then -- valid?
 			
-				if H.player.cache[ trade[1] ] >= count then -- must have goods available
-				
-					local f=function(H,p)
-						if p[ trade[1] ]<(count) then -- must have goods available
-							return false
-						end
-						if trade[1]=="houses" then -- must always own at least one house...
-							if p[ trade[1] ]<=(count) then
-								return false
+				if reverse then
+					if count>=trade.min and count<=(1000*trade.max) then
+						if H.player.cache[ trade[2] ] >= count then -- must have goods available
+						
+							local f=function(H,p)
+								if p[ trade[2] ]<(count) then -- must have goods available
+									return false
+								end
+								if trade[2]=="houses" then -- must always own at least one house...
+									if p[ trade[2] ]<=(count) then
+										return false
+									end
+								end
+								p[ trade[2] ]=p[ trade[2] ]-(count) -- remove goods right now
+								return true
 							end
+			
+							if players.update(H,H.player,f) then -- goods where removed
+							
+								local ent=trades.create(H)
+								ent.cache.player=H.player.cache.id
+								ent.cache.offer=trade[2]
+								ent.cache.seek=trade[1]
+								ent.cache.count=count
+								ent.cache.cost=cost
+								ent.cache.price=price
+								ent.cache.reverse=true
+								
+								trades.check(H,ent)		-- check
+								trades.put(H,ent)		-- create trade in database
+								
+								trades.fix_memcache(H,trades.what_memcache(H,ent)) -- update cache values
+								
+								results=results..get("trade_sell",{trade=ent.cache}) -- we added a trade
+								
+								H.player=players.get(H,H.player) -- get updated self
+								
+								acts.add_tradeoffer(H,{
+									actor1 = H.player.key.id ,
+									name1  = H.player.cache.name ,
+									offer  = ent.cache.offer,
+									seek   = ent.cache.seek,
+									count  = ent.cache.count,
+									cost   = ent.cache.cost,
+									price  = ent.cache.price,
+									reverse= ent.cache.reverse,
+									})
+							end
+						
 						end
-						p[ trade[1] ]=p[ trade[1] ]-(count) -- remove goods right now
-						return true
+					end				
+				else
+					if count>0 and count<=1000 then
+						if H.player.cache[ trade[1] ] >= count then -- must have goods available
+						
+							local f=function(H,p)
+								if p[ trade[1] ]<(count) then -- must have goods available
+									return false
+								end
+								if trade[1]=="houses" then -- must always own at least one house...
+									if p[ trade[1] ]<=(count) then
+										return false
+									end
+								end
+								p[ trade[1] ]=p[ trade[1] ]-(count) -- remove goods right now
+								return true
+							end
+			
+							if players.update(H,H.player,f) then -- goods where removed
+							
+								local ent=trades.create(H)
+								ent.cache.player=H.player.cache.id
+								ent.cache.offer=trade[1]
+								ent.cache.seek=trade[2]
+								ent.cache.count=count
+								ent.cache.cost=cost
+								ent.cache.price=price
+								ent.cache.reverse=false
+								
+								trades.check(H,ent)		-- check								
+								trades.put(H,ent)		-- create trade in database
+								
+								trades.fix_memcache(H,trades.what_memcache(H,ent)) -- update cache values
+								
+								results=results..get("trade_sell",{trade=ent.cache}) -- we added a trade
+								
+								H.player=players.get(H,H.player) -- get updated self
+								
+								acts.add_tradeoffer(H,{
+									actor1 = H.player.key.id ,
+									name1  = H.player.cache.name ,
+									offer  = ent.cache.offer,
+									seek   = ent.cache.seek,
+									count  = ent.cache.count,
+									cost   = ent.cache.cost,
+									price  = ent.cache.price,
+									})
+							end
+						
+						end
 					end
-	
-					if players.update(H,H.player,f) then -- goods where removed
-					
-						local ent=trades.create(H)
-						ent.cache.player=H.player.cache.id
-						ent.cache.offer=trade[1]
-						ent.cache.seek=trade[2]
-						ent.cache.count=count
-						ent.cache.cost=cost
-						
-						trades.check(H,ent)		-- this will calculate the total price
-						
-						trades.put(H,ent)		-- create trade in database
-						
-						trades.fix_memcache(H,trades.what_memcache(H,ent)) -- update cache values
-						
-						results=results..get("trade_sell",{trade=ent.cache}) -- we added a trade
-						
-						H.player=players.get(H,H.player) -- get updated self
-						
-						acts.add_tradeoffer(H,{
-							actor1 = H.player.key.id ,
-							name1  = H.player.cache.name ,
-							offer  = ent.cache.offer,
-							seek   = ent.cache.seek,
-							count  = ent.cache.count,
-							cost   = ent.cache.cost,
-							price  = ent.cache.price,
-							})
-					end
-				
 				end
 			
 			end
@@ -936,10 +1009,21 @@ function serv_round_trade(H)
 	put("trade_header",{trades=trades})
 	for i=1,#valid_trades do local v=valid_trades[i]
 		local trade={}
+		trade.reverse="false"
+		trade.a=v[1]
+		trade.b=v[2]
 		trade.offer=v[1]
 		trade.seek=v[2]
 		trade.best=trades.find_cheapest(H,trade)
 		put("trade_row",{trade=trade,best=trade.best and trade.best.cache,url=url,cost=v,count={min=1,max=1000}})
+		
+		trade.reverse="true" -- flag a reverse trade
+		trade.a=v[1]
+		trade.b=v[2]
+		trade.offer=v[2]
+		trade.seek=v[1]
+		trade.best=trades.find_cheapest(H,trade)
+		put("trade_row",{trade=trade,best=trade.best and trade.best.cache,url=url,cost=v,count={min=1*v.min,max=1000*v.max}})
 	end
 	put("trade_footer",{trades=trades})
 	
