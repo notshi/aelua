@@ -112,7 +112,7 @@ function check(H,ent)
 -- how long to sit in limbo for?
 
 	c.limbo=c.limbo or math.random( 6*H.round.cache.timestep , 12*6*H.round.cache.timestep ) --  1-12 hours with 10min timestep
-	c.limbo=0
+--dbg	c.limbo=0
 	
 -- price can be rebuilt?
 --[[
