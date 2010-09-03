@@ -1131,6 +1131,36 @@ You do not have the {need} bux needed.
 			</div>
 		</div>
 
+<center>
+<a href="#" onclick="return tradeshowtab('houses');"><img src="/art/trade_househoe.png"/></a>
+<a href="#" onclick="return tradeshowtab('hoes');"><img src="/art/trade_hoebro.png"/></a>
+<a href="#" onclick="return tradeshowtab('bros');"><img src="/art/trade_brobux.png"/></a>
+<a href="#" onclick="return tradeshowtab('all');"><img src="/art/trade_showall.png"/></a>
+</center>
+
+<script type="text/javascript" >
+function tradeshowtab(n)
+{
+	var tabs=["houses","hoes","bros","all"];
+	for (i in tabs)
+	{
+		var v=tabs[i];
+		if(n==v) // show
+		{
+			$("#trade_tab_"+v).show();
+		}
+		else
+		{
+			$("#trade_tab_"+v).hide();
+		}
+	}
+	return false;
+}
+
+$(function(){ tradeshowtab("all"); });
+
+</script>
+
 #trade_footer
 
 	</div>
@@ -1145,6 +1175,12 @@ You do not have the {need} bux needed.
 		</div>
 		<div class="clear"></div>
 	</div>
+</div>
+
+#trade_wrap_head
+<div id="trade_tab_{name}">
+
+#trade_wrap_foot
 </div>
 
 #trade_row_sell
@@ -1227,7 +1263,6 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 	</div>
 	</div>
 </div>
-		{form}
 		
 #trade_row_best
 
@@ -1260,7 +1295,10 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 	</div>
 	</div>
 </div>
-		{form}
+
+#trade_row_parts
+{part1}
+{part2}
 
 #trade_buy_fail
 
