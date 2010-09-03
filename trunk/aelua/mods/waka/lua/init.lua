@@ -231,13 +231,21 @@ local put=make_put(srv)
 local get=make_get(srv)
 
 	local crumbs=" <a href=\"/\">home</a> / <a href=\""..srv.url_base.."\">"..srv.slash.."</a> "
-	
+	crumbs=crumbs.." / <a href=\""..srv.url_base.."/admin\">admin</a> "
 	local cmd= srv.url_slash[ srv.url_slash_idx+2]
 
+	if not ( user and user.cache and user.cache.admin ) then -- not admin, no access
+		put("header",{title="waka : admin"})
+		put("waka_bar",{crumbs=crumbs})
+		put("footer")
+		return
+	end
+	
+	
 	put("header",{title="waka : admin"})
 
 	put("waka_bar",{crumbs=crumbs})
-	
+
 	if cmd=="pages" then
 	
 		local list=pages.list(srv,{})
@@ -279,7 +287,13 @@ local get=make_get(srv)
 </a>]],dat)
 
 		end
-		
+	else
+	
+			put([[
+			<a href="{srv.url_base}/admin/pages"> view all pages </a><br/>
+			<a href="{srv.url_base}/admin/edits"> view all edits </a><br/>
+]],{})
+
 	end
 	
 

@@ -584,20 +584,40 @@ end
 
 -----------------------------------------------------------------------------
 --
+-- trade wrap
+--
+-----------------------------------------------------------------------------
+trade_wrap_head=function(d)
+	return replace(get_plate("trade_wrap_head"),d)
+end
+trade_wrap_foot=function(d)
+	return replace(get_plate("trade_wrap_foot"),d)
+end
+
+
+trade_row_best=function(d)
+d.random=math.random(1,12)
+	return replace(get_plate("trade_row_best"),d)
+end
+
+-----------------------------------------------------------------------------
+--
 -- trade options
 --
 -----------------------------------------------------------------------------
 trade_row=function(d)
 d.random=math.random(1,12)
 
-	d.form=replace(get_plate("trade_row_sell"),d)
+	d.part1=replace(get_plate("trade_row_sell"),d)
+	d.part2=""
 
 	if not d.best then -- none available	
-		return replace(get_plate("trade_row_none"),d)
+		d.part2=replace(get_plate("trade_row_none"),d)
+	else
+		d.part2=replace(get_plate("trade_row_best"),d)
 	end
 
-	return replace(get_plate("trade_row_best"),d)
-	
+	return replace(get_plate("trade_row_parts"),d)
 end
 
 -----------------------------------------------------------------------------

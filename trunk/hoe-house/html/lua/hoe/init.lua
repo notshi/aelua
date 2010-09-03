@@ -1006,8 +1006,13 @@ function serv_round_trade(H)
 	
 	put(results)
 	
+	local tradebests={}
+	
 	put("trade_header",{trades=trades})
 	for i=1,#valid_trades do local v=valid_trades[i]
+	
+		put("trade_wrap_head",{name=v[1]})
+	
 		local trade={}
 		trade.reverse="false"
 		trade.a=v[1]
@@ -1015,6 +1020,7 @@ function serv_round_trade(H)
 		trade.offer=v[1]
 		trade.seek=v[2]
 		trade.best=trades.find_cheapest(H,trade)
+		if trade.best then tradebests[#tradebests+1]={trade=trade,best=trade.best.cache,url=url} end
 		put("trade_row",{trade=trade,best=trade.best and trade.best.cache,url=url,cost=v,count={min=1,max=1000}})
 		
 		trade.reverse="true" -- flag a reverse trade
@@ -1023,8 +1029,18 @@ function serv_round_trade(H)
 		trade.offer=v[2]
 		trade.seek=v[1]
 		trade.best=trades.find_cheapest(H,trade)
+		if trade.best then tradebests[#tradebests+1]={trade=trade,best=trade.best.cache,url=url} end
 		put("trade_row",{trade=trade,best=trade.best and trade.best.cache,url=url,cost=v,count={min=1*v.min,max=1000*v.max}})
+		
+		put("trade_wrap_foot",{})
 	end
+	
+	put("trade_wrap_head",{name="all"})
+	for i,vv in ipairs(tradebests) do
+		put("trade_row_best",vv)
+	end
+	put("trade_wrap_foot",{})
+	
 	put("trade_footer",{trades=trades})
 	
 	local a=acts.list(H,{ act="tradeoffer" , private=0 , limit=20 , offset=0 })
