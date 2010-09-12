@@ -64,10 +64,16 @@ serv_apps={ -- base lookup table
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
 					},
 					
+["blog"]		=	{			-- a blog module
+						["#default"]	=	"blog", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+					},
+--[[					
 ["note"]		=	{			-- a sitewide comment module
 						["#default"]	=	"note", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
 					},
+]]
 }
 
 
