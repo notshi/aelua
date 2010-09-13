@@ -61,6 +61,15 @@ end
 
 --------------------------------------------------------------------------------
 --
+-- what key name should we use to cache an entity?
+--
+--------------------------------------------------------------------------------
+function cache_key(pubname)
+	return "type=ent&blog="..pubname
+end
+
+--------------------------------------------------------------------------------
+--
 -- Create a new local entity filled with initial data
 --
 --------------------------------------------------------------------------------
@@ -81,9 +90,9 @@ function create(srv)
 	p.author="" -- email of last editor of this post
 	
 	p.pubname="" -- the published name of this page if published, or "" if not published yet
-	p.pubdate=0  -- the date published (unixtime), 0 if not published yet
+	p.pubdate=srv.time  -- the date published (unixtime)
 
-	p.layer=0 -- we use layer 0 as live and published, other layers for special hidden posts
+	p.layer=0 -- we use layer 0 as live and published, other layers for special or hidden pages
 	
 	dat.build_cache(ent) -- this just copies the props across
 	
@@ -209,6 +218,8 @@ function what_memcache(srv,ent,mc)
 	local mc=mc or {} -- can supply your own result table for merges	
 	local c=ent.cache
 	
+	mc[ cache_key(c.pubname) ] = true
+	
 	return mc
 end
 
@@ -221,6 +232,7 @@ end
 function fix_memcache(srv,mc)
 	for n,b in pairs(mc) do
 		cache.del(n)
+		srv.cache[n]=nil
 	end
 end
 
@@ -290,15 +302,22 @@ function find_by_pubname(srv,pubname,t)
 end
 
 
---------------------------------------------------------------------------------
---
--- like find but with as much cache as we can use, cache is a table that can be
--- passed into this function and will be filled up with cache info
--- mem cache will also be used as much as possible
---
---------------------------------------------------------------------------------
-function cache_find_by_pubname(srv,cache,pubname,t)
 
-	return find_by_pubname(srv,pubname,t)
+--------------------------------------------------------------------------------
+--
+-- like find but with as much cache as we can use so ( no transactions available )
+--
+--------------------------------------------------------------------------------
+function cache_find_by_pubname(srv,pubname)
+
+	local key=cache_key(pubname)
+	
+	if srv.cache[key] then return srv.cache[key] end
+	
+	ent=find_by_pubname(srv,pubname)
+	
+	srv.cache[key]=ent
+	
+	return ent
 end
 

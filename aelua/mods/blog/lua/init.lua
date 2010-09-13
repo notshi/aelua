@@ -133,7 +133,7 @@ function bubble(srv,ent)
 		ps[#ps+1]=p
 		local s=check(p)
 		if s then
-			p=pages.find_by_pubname(srv,s)
+			p=pages.cache_find_by_pubname(srv,s)
 		else
 			p=nil
 		end
@@ -162,7 +162,7 @@ function bubble(srv,ent)
 		form.title=string.sub(form.body,1,80)
   	end
 	
-	return form -- return the merged, processed chunks as a lookup table
+	return form -- return the merged, processed chunks as an easy lookup table
 end
 -----------------------------------------------------------------------------
 --
@@ -181,24 +181,71 @@ local get,put=make_get_put(srv)
 	for i=srv.url_slash_idx,#srv.url_slash do
 		aa[#aa+1]=srv.url_slash[ i ]
 	end
-	if aa[#aa]=="" then aa[#aa]=nil end-- kill any trailing slash
+--	if aa[#aa]=="" then aa[#aa]=nil end-- kill any trailing slash
 	
 	local group
 	local page
-	if #aa > 1 then
-		page=aa[#aa]
-		aa[#aa]=nil
-		group="/"..table.concat(aa,"/").."/"
-	elseif #aa == 1 then
-		page=aa[1]
-		group="/"
-	else
-		page=""
-		group="/"
+	local hash
+	
+	if aa[1] then
+		local n=tonumber(aa[1]) or 0
+		if aa[1]==tostring(n) then  -- lookup by id only?
+			hash=n
+		end
+	end
+	
+	if not hash then
+		if #aa > 1 then
+			page=aa[#aa]
+			aa[#aa]=nil
+			group="/"..table.concat(aa,"/").."/"
+		elseif #aa == 1 then
+			page=aa[1]
+			group="/"
+		else
+			page=""
+			group="/"
+		end
 	end
 
-	put("header",{title="blog : "..group..page})
-	put("footer")
+	
+	if page=="" then -- a list
+
+		put("header",{title="blog : "..group..page})
+		put("blog_admin_links",{user=user})
+	
+		local list=pages.list(srv,{group=group,limit=10,layer=LAYER_PUBLISHED,sort="pubdate"})
+		
+		for i,v in ipairs(list) do
+		
+			local chunks=bubble(srv,v) -- this gets parent entities
+			local text=get(macro_replace(chunks.plate or "{body}",chunks))
+			
+			put("blog_post_wrapper",{it=v.cache,chunks=chunks,text=text})
+		end
+		
+		put("footer")
+	
+	else -- a single page
+	
+		local ent
+		if hash then -- by id only
+			ent=pages.get(srv,hash)
+		else
+			ent=pages.cache_find_by_pubname(srv,group..page)
+		end
+		if ent and ent.cache.layer==LAYER_PUBLISHED then -- must be published
+		
+			put("header",{title="blog : "..ent.cache.pubname})
+			put("blog_admin_links",{it=ent.cache,user=user})
+			local chunks=bubble(srv,ent) -- this gets parent entities
+			put(macro_replace(chunks.plate or "{body}",chunks))
+			put("footer")
+			
+		end
+			
+	end
+	
 end
 
 
@@ -211,6 +258,12 @@ function serv_admin(srv)
 local sess,user=users.get_viewer_session(srv)
 local get,put=make_get_put(srv)
 
+local output_que={} -- delayed page content
+
+	local function que(a,b) -- que
+		output_que[#output_que+1]=get(a,b)
+	end
+	
 	if not ( user and user.cache and user.cache.admin ) then -- not admin, no access
 		put("header",{title="blog : admin"})
 		put("footer")
@@ -229,33 +282,19 @@ local get,put=make_get_put(srv)
 	for i,v in pairs({"layer"}) do
 		if posts[v] then posts[v]=tonumber(posts[v]) end
 	end
-	
-
 
 	local cmd=srv.url_slash[srv.url_slash_idx+2]
-	
-	put("header",{title="blog : admin"})
-	
-	local admin_links=get([[
-	<div>
-		<a href="{srv.url_base}/admin/pages" class="button" > list </a> 
-		<a href="{srv.url_base}/admin/edit/$newpage" class="button" > new post </a>
-	</div>
-]],{})
-
-
-	put(admin_links)
 
 	if cmd=="pages" then
 	
 		local list=pages.list(srv,{sort="updated"})
 		
-		put("blog_admin_head",{})
+		que("blog_admin_head",{})
 		for i=1,#list do local v=list[i]
 			local chunks=wet_waka.text_to_chunks(v.cache.text)
-			put("blog_admin_item",{it=v.cache,chunks=chunks})
+			que("blog_admin_item",{it=v.cache,chunks=chunks})
 		end
-		put("blog_admin_foot",{})
+		que("blog_admin_foot",{})
 
 	elseif cmd=="edit" then
 	
@@ -306,7 +345,7 @@ Read my new blog http://bit.ly/a1b2c3 about the end of the world!
 		elseif name=="$newpage" then
 			ent=nil
 		else 
-			ent=pages.find_by_pubname(srv,group..name)
+			ent=pages.cache_find_by_pubname(srv,group..name)
 		end
 		
 		if not ent then -- make a new ent but do not write it to the database unless it needs an id
@@ -331,6 +370,7 @@ For simple blogging you can just replace all of this text with your html blog po
 				pages.put(srv,ent) 
 				ent.cache.pubname=group..ent.key.id
 				pages.put(srv,ent)
+				return srv.redirect(srv.url_base.."/admin/edit/$hash/"..ent.key.id)
 			end
 			
 		end
@@ -340,7 +380,13 @@ For simple blogging you can just replace all of this text with your html blog po
 -- if two people edit a page at the same time, one edit will be lost
 -- this is however a blog, you should not need to cope with that problem :)
 			if user and user.cache and user.cache.admin then -- admin only, so less need to validate inputs
-				if posts.submit=="Save" then -- save page to database
+				if		posts.submit=="Save" or
+						posts.submit=="Publish" or
+						posts.submit=="UnPublish" then -- save page to database
+					
+					if posts.submit=="Publish" then posts.layer=LAYER_PUBLISHED end
+					if posts.submit=="UnPublish" then posts.layer=LAYER_DRAFT end
+					
 					ent.cache.author=user.cache.email
 					for i,v in pairs({"text","group","pubname","layer"}) do -- can change these parts
 						if posts[v] then ent.cache[v]=posts[v] end
@@ -351,12 +397,13 @@ For simple blogging you can just replace all of this text with your html blog po
 			end
 			
 		end
-					
-		put("blog_edit_form",{it=ent.cache})
 		
-		local chunks=bubble(srv,ent)
+		local publish="Publish"
+		if ent.cache.layer==LAYER_PUBLISHED then publish="UnPublish" end
+		que("blog_edit_form",{it=ent.cache,publish=publish,url=url})
 		
-		put(macro_replace(chunks.plate or "{body}",chunks))
+		local chunks=bubble(srv,ent) -- this gets parent entities
+		que(macro_replace(chunks.plate or "{body}",chunks))
 
 	
 	else -- default
@@ -365,7 +412,13 @@ For simple blogging you can just replace all of this text with your html blog po
 
 	end
 	
-
+	put("header",{title="blog : admin"})
+	put("blog_admin_links",{user=user})
+	
+	for i,v in ipairs(output_que) do
+		put(v)
+	end
+	
 	put("footer")
 	
 end
