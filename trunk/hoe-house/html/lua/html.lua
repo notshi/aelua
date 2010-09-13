@@ -608,13 +608,13 @@ end
 trade_row=function(d)
 d.random=math.random(1,12)
 
-	d.part1=replace(get_plate("trade_row_sell"),d)
-	d.part2=""
+	d.part2=replace(get_plate("trade_row_sell"),d)
+	d.part1=""
 
 	if not d.best then -- none available	
-		d.part2=replace(get_plate("trade_row_none"),d)
+		d.part1=replace(get_plate("trade_row_none"),d)
 	else
-		d.part2=replace(get_plate("trade_row_best"),d)
+		d.part1=replace(get_plate("trade_row_best"),d)
 	end
 
 	return replace(get_plate("trade_row_parts"),d)
