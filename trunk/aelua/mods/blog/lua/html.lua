@@ -8,6 +8,9 @@ local html=require("html")
 
 local setmetatable=setmetatable
 
+local os=require("os")
+local string=require("string")
+
 module("blog.html")
 
 setmetatable(_M,{__index=html}) -- use a meta table to also return html base 
@@ -47,10 +50,35 @@ blog_edit_form=function(d)
 	<br/>
 	<input type="submit" name="submit" value="Save" class="button" />
 	<input type="submit" name="submit" value="Preview" class="button" />
+	<input type="submit" name="submit" value="{publish}" class="button" />
 	<br/>	
 </form>
 ]],d)
 
+end
+
+-----------------------------------------------------------------------------
+--
+-- a tool bar only admins get to see
+--
+-----------------------------------------------------------------------------
+blog_admin_links=function(d)
+
+	if not ( d and d.user and d.user.cache and d.user.cache.admin ) then return "" end
+	
+	if d.it then
+		d.edit_post=replace([[<a href="{srv.url_base}/admin/edit/$hash/{it.id}" class="button" > Edit Post </a>]],d)
+	else
+		d.edit_post=""
+	end
+	return replace([[
+	<div>
+		<a href="{srv.url_base}" class="button" > Home </a> 
+		<a href="{srv.url_base}/admin/pages" class="button" > List </a> 
+		<a href="{srv.url_base}/admin/edit/$newpage" class="button" > New Post </a>
+		{edit_post}
+	</div>
+]],d)
 end
 
 
@@ -87,3 +115,26 @@ blog_admin_item=function(d)
 
 end
 
+-----------------------------------------------------------------------------
+--
+-- wrap a post in extra info for multiple post displays
+--
+-----------------------------------------------------------------------------
+blog_post_wrapper=function(d)
+
+	d.pubdate=(os.date("%Y/%m/%d %H:%M:%S",d.it.pubdate))
+	d.link=d.srv.url_base..string.sub(d.it.pubname,2)
+	return replace( (d.chunks and d.chunks.plate_wrap) or [[
+<div>
+<br/>
+<div>
+<a href="{link}">
+{pubdate} : {it.id} by {it.author}
+</a>
+</div>
+<br/>
+{text}
+</div>
+]],d)
+
+end

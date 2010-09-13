@@ -48,6 +48,8 @@ public class Srv
 		reg_set_cookie(L,lib);
 		reg_redirect(L,lib);
 		
+		L.rawSet(lib, "cache", L.createTable(0,0) ); // empty cache table for user handled key->data 
+		
 		L.rawSet(lib,"method",req.getMethod());
 		
 		L.rawSet(lib,"ip",req.getRemoteAddr());
@@ -92,7 +94,7 @@ public class Srv
 		L.rawSet(lib, "gets", gets );
 		
 		LuaTable vars=L.createTable(0,0);	// create merged vars table
-		L.rawSet(lib, "vars", gets );
+		L.rawSet(lib, "vars", vars );
 		
 		for( java.util.Enumeration e = req.getParameterNames() ; e.hasMoreElements() ; )
 		{
