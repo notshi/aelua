@@ -26,6 +26,7 @@ local acts=require("hoe.acts")
 local feats=require("hoe.feats")
 
 
+local blog=require("blog")
 
 local os=os
 local math=math
@@ -134,6 +135,9 @@ function serv(srv)
 		put("round_row",{round=v.cache})		
 	end
 	put("round_row_footer",{})
+	
+	put(blog.recent_posts(srv,5))
+	
 	put("about",{})	
 	
 	local list=rounds.list(H,{state="over"})
