@@ -123,7 +123,7 @@ end
 blog_post_wrapper=function(d)
 
 	d.pubdate=(os.date("%Y/%m/%d %H:%M:%S",d.it.pubdate))
-	d.link=d.srv.url_base..string.sub(d.it.pubname,2)
+	d.link="/blog"..d.it.pubname
 	return replace( (d.chunks and d.chunks.plate_wrap) or [[
 <div>
 <br/>
@@ -138,3 +138,70 @@ blog_post_wrapper=function(d)
 ]],d)
 
 end
+
+-----------------------------------------------------------------------------
+--
+-- wrap a post in extra info for single post displays
+--
+-----------------------------------------------------------------------------
+blog_post_single=function(d)
+
+	d.pubdate=(os.date("%Y/%m/%d %H:%M:%S",d.it.pubdate))
+	d.link="/blog"..d.it.pubname
+	return replace( (d.chunks and d.chunks.plate_page) or [[
+<div>
+<br/>
+<div>
+<a href="{link}">
+{pubdate} : {it.id} by {it.author}
+</a>
+</div>
+<br/>
+{text}
+</div>
+]],d)
+
+end
+
+
+-----------------------------------------------------------------------------
+--
+-- atom wrappers
+--
+-----------------------------------------------------------------------------
+blog_atom_head=function(d)
+	return replace([[<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+	<title>{title}</title>
+	<link rel="self" href="{srv.url_base}.atom"/>
+	<updated>{updated}</updated>
+	<author>
+		<name>{author_name}</name>
+	</author>
+	<id>{srv.url_base}.atom</id>
+]],d)
+
+end
+
+blog_atom_foot=function(d)
+	return replace([[</feed>
+]],d)
+
+end
+blog_atom_item=function(d)
+	d.pubdate=(os.date("%Y-%m-%dT%H:%M:%SZ",d.it.pubdate))
+	d.link=d.srv.url_base..d.it.pubname:sub(2)
+	d.id=d.link
+	return replace([[
+	<entry>
+		<title>{chunks.title}</title>
+		<link href="{link}"/>
+		<id>{id}</id>
+		<updated>{pubdate}</updated>
+		<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">{text}</div></content>
+	</entry>
+]],d)
+
+end
+

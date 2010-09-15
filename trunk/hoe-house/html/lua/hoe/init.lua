@@ -121,9 +121,10 @@ function serv(srv)
 		return serv_round(H)
 	end
 	
+	local blog_html,blog_css=blog.recent_posts(srv,5,"/frontpage")
 
 	H.srv.set_mimetype("text/html; charset=UTF-8")
-	put("header",{})
+	put("header",{css=blog_css})
 	put("home_bar",{})
 	put("user_bar",{})
 	
@@ -136,7 +137,7 @@ function serv(srv)
 	end
 	put("round_row_footer",{})
 	
-	put(blog.recent_posts(srv,5))
+	put(blog_html)
 	
 	put("about",{})	
 	
