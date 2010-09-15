@@ -103,7 +103,7 @@ end
 -- return the merged chunks
 --
 -----------------------------------------------------------------------------
-function bubble(srv,ent)
+function bubble(srv,ent,overload)
 	local chunks={}	-- merge all pages and their parents into this
 	local ps={}
 	
@@ -143,6 +143,11 @@ function bubble(srv,ent)
 		v.chunks = wet_waka.text_to_chunks(v.cache.text) -- build this page only
 		wet_waka.chunks_merge(chunks,v.chunks) -- merge all pages chunks
 	end
+	
+	if overload then
+		local oc = wet_waka.text_to_chunks(overload.cache.text) -- build this overload page only
+		wet_waka.chunks_merge(chunks,oc) -- replace given chunks with new chunks
+	end
 
 	local form={}
 	for i,v in ipairs(chunks) do -- do basic process of all of the page chunks into their prefered form 
@@ -164,6 +169,40 @@ function bubble(srv,ent)
 	
 	return form -- return the merged, processed chunks as an easy lookup table
 end
+
+-----------------------------------------------------------------------------
+--
+-- arg over is the name of a blogpost whoes chunks should overide all other chunks
+-- this is useful to restyle a normal blog into something special
+--
+-- get a html block which is a handful of recent blog posts
+-- and an optional css chunk to style this
+--
+-----------------------------------------------------------------------------
+function recent_posts(srv,num,over)
+
+local get,put=make_get_put(srv)
+
+	local t={}
+	local css=""
+	local list=pages.list(srv,{group=group,limit=num,layer=LAYER_PUBLISHED,sort="pubdate"})
+	
+	if over and type(over)=="string" then over=pages.cache_find_by_pubname(srv,over) end 
+	
+	for i,v in ipairs(list) do
+	
+		local chunks=bubble(srv,v,over) -- this gets parent entities
+		local text=get(macro_replace(chunks.plate or "{body}",chunks))
+		
+		if chunks.css then css=chunks.css end -- need to pass out some css too
+		
+		t[#t+1]=get("blog_post_wrapper",{it=v.cache,chunks=chunks,text=text})
+	end
+	
+	return table.concat(t),css
+		
+end
+
 -----------------------------------------------------------------------------
 --
 -- the serv function, where the action happens.
@@ -177,11 +216,29 @@ function serv(srv)
 local sess,user=users.get_viewer_session(srv)
 local get,put=make_get_put(srv)
 
+	local ext -- an extension if any
 	local aa={}
 	for i=srv.url_slash_idx,#srv.url_slash do
 		aa[#aa+1]=srv.url_slash[ i ]
 	end
 --	if aa[#aa]=="" then aa[#aa]=nil end-- kill any trailing slash
+
+	if aa[#aa] and aa[#aa]~="" then
+		local ap=str_split(".",aa[#aa])
+		if ap[#ap] then
+			if ap[#ap]=="atom" then -- the pages in atom wrapper
+				ext="atom"
+			elseif ap[#ap]=="data" then -- just this pages raw data as text
+				ext="data"
+			end
+			if ext then
+				ap[#ap]=nil
+				aa[#aa]=table.concat(ap,".")
+--				if aa[#aa]=="" then aa[#aa]=nil end-- kill any trailing slash we may have just created
+			end
+		end
+	end
+	
 	
 	local group
 	local page
@@ -210,22 +267,49 @@ local get,put=make_get_put(srv)
 
 	
 	if page=="" then -- a list
-
-		put("header",{title="blog : "..group..page})
-		put("blog_admin_links",{user=user})
-	
-		local list=pages.list(srv,{group=group,limit=10,layer=LAYER_PUBLISHED,sort="pubdate"})
 		
-		for i,v in ipairs(list) do
+		if ext=="atom" then -- an atom feed
 		
-			local chunks=bubble(srv,v) -- this gets parent entities
-			local text=get(macro_replace(chunks.plate or "{body}",chunks))
+			local list=pages.list(srv,{group=group,limit=23,layer=LAYER_PUBLISHED,sort="pubdate"})
 			
-			put("blog_post_wrapper",{it=v.cache,chunks=chunks,text=text})
+			local updated=0
+			local author_name=""
+			if list[1] then
+				updated=list[1].cache.pubdate
+				author_name=list[1].cache.author_name
+			end
+			
+			updated=os.date("%Y-%m-%dT%H:%M:%SZ",updated)
+			srv.set_mimetype("application/atom+xml; charset=UTF-8")
+			put("blog_atom_head",{title="blog",updated=updated,author_name=author_name})
+			for i,v in ipairs(list) do
+			
+				local chunks=bubble(srv,v) -- this gets parent entities
+				local text=get(macro_replace(chunks.plate or "{body}",chunks))
+				
+				put("blog_atom_item",{it=v.cache,chunks=chunks,text=text})
+			end
+			put("blog_atom_foot",{})
+			
+		
+		else
+			srv.set_mimetype("text/html; charset=UTF-8")
+			put("header",{title="blog : "..group..page})
+			put("blog_admin_links",{user=user})
+		
+			local list=pages.list(srv,{group=group,limit=10,layer=LAYER_PUBLISHED,sort="pubdate"})
+			
+			for i,v in ipairs(list) do
+			
+				local chunks=bubble(srv,v) -- this gets parent entities
+				local text=get(macro_replace(chunks.plate or "{body}",chunks))
+				
+				put("blog_post_wrapper",{it=v.cache,chunks=chunks,text=text})
+			end
+			
+			put("footer")
 		end
 		
-		put("footer")
-	
 	else -- a single page
 	
 		local ent
@@ -236,10 +320,12 @@ local get,put=make_get_put(srv)
 		end
 		if ent and ent.cache.layer==LAYER_PUBLISHED then -- must be published
 		
+			srv.set_mimetype("text/html; charset=UTF-8")
 			put("header",{title="blog : "..ent.cache.pubname})
 			put("blog_admin_links",{it=ent.cache,user=user})
 			local chunks=bubble(srv,ent) -- this gets parent entities
-			put(macro_replace(chunks.plate or "{body}",chunks))
+			local text=get(macro_replace(chunks.plate or "{body}",chunks))			
+			put("blog_post_single",{it=ent.cache,chunks=chunks,text=text})
 			put("footer")
 			
 		end
@@ -265,6 +351,7 @@ local output_que={} -- delayed page content
 	end
 	
 	if not ( user and user.cache and user.cache.admin ) then -- not admin, no access
+		srv.set_mimetype("text/html; charset=UTF-8")
 		put("header",{title="blog : admin"})
 		put("footer")
 		return
@@ -388,6 +475,7 @@ For simple blogging you can just replace all of this text with your html blog po
 					if posts.submit=="UnPublish" then posts.layer=LAYER_DRAFT end
 					
 					ent.cache.author=user.cache.email
+					ent.cache.author_name=user.cache.name
 					for i,v in pairs({"text","group","pubname","layer"}) do -- can change these parts
 						if posts[v] then ent.cache[v]=posts[v] end
 					end
@@ -412,6 +500,7 @@ For simple blogging you can just replace all of this text with your html blog po
 
 	end
 	
+	srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{title="blog : admin"})
 	put("blog_admin_links",{user=user})
 	
