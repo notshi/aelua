@@ -22,7 +22,51 @@ users.admin={ -- users with admin rights for this app
 	["2@id.wetgenes.com"]=true,
 }
 
+map={ -- base lookup table 
+
+["#default"]	=	serv_fail, -- bad link if we do not understand
+["#flavour"]	=	"hoe", 
+["#index"]		=	"hoe", 
+					
+["hoe"]			=	{			-- the base module
+						["#default"]	=	"hoe", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"hoe", 		-- use this flavour when serving
+					},
+					
+["admin"]		=	{			-- all admin stuff
+	["#default"]	=	"admin",
+	["console"]		=	{			-- a console module
+						["#default"]	=	"console", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+					},
+},
+					
+["dumid"]		=	{			-- a dumid module
+						["#default"]	=	"dumid", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+					},
+					
+["help"]		=	{			-- a wiki like module
+						["#default"]	=	"waka", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+					},
+					
+["blog"]		=	{			-- a blog module
+						["#default"]	=	"blog", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+					},
+--[[					
+["note"]		=	{			-- a sitewide comment module
+						["#default"]	=	"note", 		-- no badlinks, we own everything under here
+						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+					},
+]]
+}
+
+
 mods={}
+
+mods.init={}
 
 mods.console={}
 
