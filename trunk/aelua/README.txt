@@ -6,7 +6,7 @@ websites in lua and on appengine easy. This code is reasonably stable and should
 be considered beta quality.
 
 Look inside the mods directory for more information about what each module is
-hopoing to achieve and if it is a good idea to try and use it yet.
+hoping to achieve and if it is a good idea to try and use it yet.
 
  All content is MIT licenesed unless explicitly stated otherwise.
 
