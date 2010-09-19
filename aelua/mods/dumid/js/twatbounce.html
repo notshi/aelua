@@ -1,0 +1,51 @@
+<html>
+<head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> 
+</head>
+<body>
+
+<div id="result">
+</div>
+
+<script type="text/javascript"> 
+ 
+ jQuery.extend({
+    'Q' : window.location.search.length <= 1 ? {}
+        : function(a){
+            var i = a.length, 
+                r = /%25/g,  // Ensure '%' is properly represented 
+                h = {};      // (Safari auto-encodes '%', Firefox 1.5 does not)
+            while(i--) {
+                var p = a[i].split('=');
+                h[ p[0] ] = r.test( p[1] ) ? decodeURIComponent( p[1] ) : p[1];
+            }
+            return h;
+        }(window.location.search.substr(1).split('&'))
+});
+
+
+// This wank redirects a twitter id to a twitter profile
+// Yes there does not seem to be another way...
+
+$(document).ready(function() {
+
+	if($.Q.id)
+	{
+		$.getJSON('http://twitter.com/statuses/user_timeline/'+$.Q.id+'.json?callback=?', function(data) {
+			var name=""
+			if( data[0] && data[0].user && data[0].user.screen_name )
+			{
+				$('#result').html( "Redirecting you to twitter : "+ data[0].user.screen_name );
+				name=data[0].user.screen_name;
+			}
+			window.location.replace("http://twitter.com/"+name);
+		});
+	}
+	
+});
+ 
+</script> 
+
+</body>
+</html>
+

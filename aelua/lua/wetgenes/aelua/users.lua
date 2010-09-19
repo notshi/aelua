@@ -284,3 +284,32 @@ function get_viewer_session(srv)
 	
 end
 
+-----------------------------------------------------------------------------
+--
+-- convert an email into a profile link, a 16x16 icon linked to a profile
+-- returns nil if we cant
+--
+-----------------------------------------------------------------------------
+function email_to_profile_link(email)
+
+	local profile
+	local url
+
+	local ending="@id.wetgenes.com"
+	local endlen=string.len(ending)
+
+	if string.sub(email,-endlen)==ending then
+		url="http://like.wetgenes.com/-/profile/$"..string.sub(email,1,-(endlen+1))
+		profile="<a href="..url.."><img src=\"/art/icon_wet.png\" /></a>"
+	end
+
+	local ending="@id.twitter.com"
+	local endlen=string.len(ending)
+
+	if string.sub(email,-endlen)==ending then
+		url="/js/dumid/twatbounce.html?id="..string.sub(email,1,-(endlen+1))
+		profile="<a href="..url.."><img src=\"/art/icon_twat.png\" /></a>"
+	end
+
+	return profile
+end
