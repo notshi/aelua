@@ -75,6 +75,11 @@ function create(H)
 	
 	p.act="act"			-- what type of act this is, eg robbery, purchase etc
 	
+	p.type="act"		-- the type of action for more general grouping
+	
+	p.dupe=0			-- set to the id this act is a dupe of, or 0 if it is unique
+						-- we record dupes for actions with multiple owners
+	
 	p.owner=0			-- the player whoes profile this act should be displayed on
 	p.private=0			-- is this a private msgs? set to 0 if public or the player id if only intended for them
 						-- so private==0 if we want a public stream
@@ -303,6 +308,7 @@ function add_tradeoffer(H,tab)
 	local c=e.cache
 	
 	c.act="tradeoffer" -- type of act
+	c.type="trade"
 	c.owner=tab.actor1
 	c.private=0
 	c.actor1=tab.actor1
@@ -338,6 +344,7 @@ function add_trade(H,tab)
 	local c=e.cache
 	
 	c.act="trade" -- type of act
+	c.type="trade"
 	c.owner=tab.actor1
 	c.private=0
 	c.actor1=tab.actor1
@@ -348,11 +355,13 @@ function add_trade(H,tab)
 	end
 	
 	put(H,e)
+	local id=e.key.id
 	
 -- actor2 also gets the same act saved specially for them unless this is a self trade (buyback)
 	if tab.actor1~=tab.actor2 then
 		e.key.id=nil
 		e.cache.id=nil
+		e.cache.dupe=id -- flag as duplicate
 		e.cache.owner=tab.actor2 -- just change the owner and put again
 		put(H,e)
 	end
@@ -382,6 +391,7 @@ function add_rob(H,tab)
 	local c=e.cache
 	
 	c.act=tab.act -- type of act
+	c.type="fight"
 	c.owner=tab.actor1
 	c.private=0
 	c.actor1=tab.actor1
@@ -392,10 +402,12 @@ function add_rob(H,tab)
 	end
 	
 	put(H,e)
+	local id=e.key.id
 	
 -- actor2 also gets the same act saved specially for them
 	e.key.id=nil
 	e.cache.id=nil
+	e.cache.dupe=id -- flag as duplicate
 	e.cache.owner=tab.actor2 -- just change the owner and put again
 	put(H,e)
 	
@@ -419,7 +431,7 @@ function list(H,opts,t)
 			{"filter","round_id","==",H.round.key.id},
 		}
 		
-	for i,v in ipairs{"owner","private","act"} do
+	for i,v in ipairs{"owner","private","act","type","dupe"} do
 		if opts[v] then -- optional options
 			q[#q+1]={"filter",v,"==",opts[v]}
 		end

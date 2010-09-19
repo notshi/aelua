@@ -542,7 +542,11 @@ $("#menu_hover").hover(function(){
 #player_row
 
 		<div class="chunk8b">
-			<div class="lista"><a href="{H.url_base}profile/{player.id}">{player.name}</a></div>
+			<div class="lista">
+				<a href="{H.url_base}profile/{player.id}">{player.name}</a>
+				<div class="lista_bl">{profile}</div>
+				<div class="lista_br">{crowns}</div>
+			</div>
 			<div class="lista"><i>{score}</i></div>
 			<div class="lista"><i>{bux}</i></div>
 			<div class="listb"><i>{player.hoes}</i></div>

@@ -3,6 +3,7 @@ local wet_html=require("wetgenes.html")
 local json=require("json")
 
 local dat=require("wetgenes.aelua.data")
+local cache=require("wetgenes.aelua.cache")
 
 local users=require("wetgenes.aelua.users")
 
@@ -43,11 +44,18 @@ module("hoe.feats")
 --
 --------------------------------------------------------------------------------
 function get_top_players(H,round_id)
+
+	-- a unique keyname for this query
+	local cachekey="feats=get_top_players&round="..round_id
+
+	local r=cache.get(cachekey) -- do we already know the answer
+	if r then return json.decode(r) end
+
 	local ret={}
 	
 	for _,stat in ipairs{"score","bux","houses","hoes","bros"} do
 	
-		local list=players.list(H,{sort=stat,limit=10,order="DESC",round_id=round_id})
+		local list=players.list(H,{sort=stat,limit=20,order="DESC",round_id=round_id})
 		
 		local t={}
 		for i=1,#list do local v=list[i].cache
@@ -55,13 +63,14 @@ function get_top_players(H,round_id)
 			if v.email:sub(-tst:len())==tst then -- privacy check, only publish wetgenes ids
 				t[#t+1]=v.email
 			end
-			if #t>=3 then break end -- first three only
+			if #t>=10 then break end -- first ten only
 		end
 		
 		ret[stat]=t
 	
 	end
 	
+	cache.put(cachekey,json.encode(ret),10*60) -- save this new result for 10 mins
 	return ret
 end
 
