@@ -224,6 +224,7 @@ local put=H.put
 		profile=serv_round_profile,
 		fight=	serv_round_fight,
 		trade=	serv_round_trade,
+		acts=	serv_round_acts,
 	}
 	local f=cmds[ string.lower(cmd or "") ]
 	if f then return f(H) end
@@ -244,6 +245,14 @@ local put=H.put
 	
 	put("hoe_menu_items",{})
 	
+	local a=acts.list(H,{ dupe=0 , private=0 , limit=5 , offset=0 })
+	if a then
+		for i=1,#a do local v=a[i]
+			local s=acts.plate(H,v,"html")
+			put("profile_act",{act=v.cache,html=s})
+		end
+	end
+
 	put("footer",footer_data)
 	
 end
@@ -284,9 +293,22 @@ local put=H.put
 	if page.prev<0 then page.prev=0 end -- and prev does not go below 0 either	
 	if #list < lim then page.next=0 end -- looks last page so set to 0
 	
+	local ending="@id.wetgenes.com"
+	local endlen=string.len(ending)
+	local c=10
 	put("player_row_header",{url=H.srv.url,page=page})
 	for i=1,#list do local v=list[i]
-		put("player_row",{player=v.cache,idx=i+page.show})
+		local crowns=""
+		local profile=users.email_to_profile_link(v.cache.email) or ""
+		if string.sub(v.cache.email,-endlen)==ending then
+			if page.show==0 then -- can calculate crowns
+				if c>0 then
+					crowns="+"..c
+					c=c-1
+				end
+			end
+		end
+		put("player_row",{player=v.cache,idx=i+page.show,crowns=crowns,profile=profile})
 	end
 	put("player_row_footer",{url=H.srv.url,page=page})
 		
@@ -721,7 +743,13 @@ function serv_round_fight(H)
 		
 	else
 	
-		put("missing_content",{})
+	local a=acts.list(H,{ type="fight" , dupe=0 , private=0 , limit=20 , offset=0 })
+	if a then
+		for i=1,#a do local v=a[i]
+			local s=acts.plate(H,v,"html")
+			put("profile_act",{act=v.cache,html=s})
+		end
+	end
 		
 	end
 		
@@ -1061,6 +1089,47 @@ function serv_round_trade(H)
 	put("footer",footer_data)
 
 end
+
+
+-----------------------------------------------------------------------------
+--
+-- acts
+--
+-----------------------------------------------------------------------------
+function serv_round_acts(H)
+
+	local put,get=H.put,H.get
+	local url=H.url_base.."acts"
+	H.srv.crumbs[#H.srv.crumbs+1]={url=H.url_base.."acts/",title="acts",link="acts",}
+
+	local posts={} -- remove any gunk from the posts input
+	-- check if this post probably came from this page before allowing post params
+	if H.srv.method=="POST" and H.srv.headers.Referer and string.sub(H.srv.headers.Referer,1,string.len(url))==url then
+		for i,v in pairs(H.srv.posts) do
+			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
+		end
+	end
+	if H.round.cache.state~="active" then posts={} end -- no actions unless round is active
+	
+	H.srv.set_mimetype("text/html; charset=UTF-8")
+	put("header",{})
+	put("home_bar",{})
+	put("user_bar",{})
+	put("player_bar",{player=H.player and H.player.cache})
+	
+	local a=acts.list(H,{ dupe=0 , private=0 , limit=20 , offset=0 })
+	if a then
+		for i=1,#a do local v=a[i]
+			local s=acts.plate(H,v,"html")
+			put("profile_act",{act=v.cache,html=s})
+		end
+	end
+		
+	put("footer",footer_data)
+
+end
+
+
 
 -----------------------------------------------------------------------------
 --

@@ -1130,6 +1130,22 @@ div.procat2 {
 	width: 160px;
 }
 
+
+/* bottom right overlay, may be empty "" so keep it transparent */
+div.lista_br{
+	position:absolute;
+	right:0px;
+	bottom:0px;
+	margin:2px;
+}
+/* bottom left overlay, may be empty "" so keep it transparent */
+div.lista_bl{
+	position:absolute;
+	left:0px;
+	bottom:0px;
+	margin:2px;
+}
+
 /* lista: LIST fat columns */
 div.lista, div.listb, div.listc, 
 div.listat, div.listbt, div.listct, 
@@ -1147,6 +1163,7 @@ div.listat1, div.listbt1, div.listct1 {
 	margin: 0px;
 	padding: 5px;
 	float: left;
+	position:relative;
 }
 /* LIST thin columns */
 div.listb, div.listbt, div.listbt1{	
