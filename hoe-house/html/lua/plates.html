@@ -1433,19 +1433,22 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 	</div>
 </div>
 
-#fight_rob_win
+#fight_arson_preview
 
-<div class="cont">
-	<div class="chunk6">
-		<div class="alert2">
-			{html}
-		</div>
-
-	<div class="clear"></div>
+<div class="trade">
+	<div class="trade2">
+			You have a <span style="color:#00ff00;"><b>{fight.display_percent}%</b></span> chance of burning down one of their {victim.houses} <img src="/art/houses.png" /> houses.
+			<form action="{url}" method="POST" enctype="multipart/form-data">
+				<input type="hidden" name="victim" value="{victim.id}" /> 
+				<input type="hidden" name="attack" value="arson" /> 
+				<span style="font-size:16px;"><img src="/art/shoutb.png" /> Shout: <input type="text" size="50" maxlength="100" name="shout" value="" class="field"/></span> <br/>
+				<div class="fight"><button type="submit" class="button">Perform BarnArson!</button></div> (costs {fight.energy} <img src="/art/energyb.png" /> energy and 1 <img src="/art/houses.png" /> house)
+			</form>
+		<div class="clear"></div>
 	</div>
 </div>
 
-#fight_rob_fail
+#fight_result
 
 <div class="cont">
 	<div class="chunk6">

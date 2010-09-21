@@ -67,10 +67,20 @@ function create(srv)
 	p.updated=srv.time
 	
 	p.author="" -- the email of who wrote this comment
-	p.url="" -- the site url which this is a comment on, comments are site wide
-	p.group=0 -- the id of our parent or 0 if this is a master comment on a url, 1 level of threading
-	p.flag="ok" -- a flag value to filter on, eg "ok" for not flagged and "spam" for spam to be ignored
-	p.score=0 -- for a simple comment score/vote system
+	p.url=""    -- the site url (no http or domain) for which this is a comment on, comments are site wide
+	p.group=0   -- the id of our parent or 0 if this is a master comment on a url, -1 if it is just a meta cache
+	p.type="ok" -- a type string to filter on
+				-- ok   - this is a valid comment, display it
+				-- spam - this is pure spam, hidden but not forgotten
+				-- meta - use on fake comments that only contain cached info of other comments
+
+	p.replies=0 -- number of replies to this comment (could be good to sort by)
+
+-- track some simple vote numbers, to be enabled later?
+
+	p.good=0 -- number of good content "votes"
+	p.spam=0 -- number of spam "votes"
+	
 	
 	dat.build_cache(ent) -- this just copies the props across
 	
@@ -96,6 +106,36 @@ function check(srv,ent)
 	local c=ent.cache
 			
 	return ent,ok
+end
+
+
+--------------------------------------------------------------------------------
+--
+-- manifest a base, comment cache, there is only one of these per url
+-- so we can use that as its key
+-- could also pass in ent to have one filled with defaults
+--
+--------------------------------------------------------------------------------
+function manifest(srv,url,ent)
+
+	local fill=false
+	
+	if not ent then
+		ent=get(srv,url)
+	end
+	
+	if not ent then
+		ent=create(srv)
+		fill=true
+	end
+	
+	if fill then
+		ent.key.id=url -- force id which is page name string
+		ent.cache.id=url -- copy here
+		ent.cache.type="meta"
+	end
+	
+	return (check(serv,ent)) -- wrap in () to just return the ent
 end
 
 --------------------------------------------------------------------------------

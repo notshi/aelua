@@ -281,7 +281,8 @@ function create_robbery(H,p1,p2)
 	c.result={}
 	
 	local frand=function(count,min,max,div)
-		return math.floor(math.random(min*count,max*count)/div)
+		return count
+--		return math.floor(math.random(min*count,max*count)/div)
 	end
 
 	if math.random(0,99)<c.percent then -- we win
@@ -317,3 +318,109 @@ function create_robbery(H,p1,p2)
 	return ent
 	
 end
+
+
+
+--------------------------------------------------------------------------------
+--
+-- create an arson, nothing is written to the database it just works out fight data locally
+--
+-- an arson is an attempt to burn down another players house
+--
+--------------------------------------------------------------------------------
+function create_arson(H,p1,p2)
+
+	local ent=create(H)
+	local c=ent.cache
+
+	c.energy=math.ceil(p1.cache.bros/1000) -- costs 1 energy per 1000 bros
+	if c.energy<1  then c.energy=1  end
+	if c.energy>20 then c.energy=20 end -- cap it at about 3 hours worth of energy
+	
+	c.actor1=p1.key.id
+	c.actor2=p2.key.id
+	
+	c.name1=p1.cache.name
+	c.name2=p2.cache.name
+	
+	c.sides={ {player=p1.cache} , {player=p2.cache} } -- the sides involved [1] is attacker and [2] is defender
+	
+	for i=1,#c.sides do local v=c.sides[i]
+		v.result={} -- the change in stats
+		v.bros=math.ceil(v.player.bros/v.player.houses) -- number of bros involved, houses spread out your bros
+		v.sticks=v.bros -- every bro gets a stick
+		if v.bros>v.player.sticks then v.sticks=v.player.sticks end -- unless there are not enough sticks
+		v.power=v.bros+v.sticks -- total fighting power
+	end
+	
+	local att=c.sides[1]
+	local def=c.sides[2]
+	
+	local function winchance(pow1,pow2) -- given two power values return chance of pow1 winning as a percentage
+		local best=90
+		if (pow1<=0) or pow1 <= (pow2*0.5) then return 0 end -- no chance of winning
+		if (pow2<=0) or pow1 >= (pow2*4.0) then return best end -- best chance of winning
+		
+		local p=pow1-(pow2*0.5) -- if the attacker has half the power of the defender, they stand a chance
+		p=p/(pow2*(4.0-0.5)) -- their chance increases until they have about 4x the power of the defender
+		p=math.floor(best*p)
+		
+		if p<1    then p=0    end
+		if p>best then p=best end
+	
+		return p
+	end
+	
+	c.percent=winchance(att.power,def.power) -- this is the real chance of attacker winning (maybe randomised?)
+	
+	if p1.cache.houses<2 or p2.cache.houses<2 then -- both sides need houses
+		c.percent=0
+		att.bros=0
+		def.bros=0
+	end
+	
+	c.display_percent=c.percent -- display this number, in case we wish to lie slightly
+
+	c.result={}
+	
+	local frand=function(count,min,max,div)
+		return count
+--		return math.floor(math.random(min*count,max*count)/div)
+	end
+
+	if math.random(0,99)<c.percent then -- we win
+	
+		c.act="arsonwin"
+		
+		att.result.houses=-1 -- costs 1 house
+		def.result.houses=0 -- did not lose 1 house
+		
+		att.result.sticks=-frand(	att.sticks,		90,100,100)		-- att loses 90-100% of sticks
+		att.result.bros  =-frand(	att.bros,		0,  5,100)		-- att loses 0%->5% of bros
+		
+		local sticks=def.sticks
+		if att.sticks < def.sticks then sticks=att.sticks end		-- less stick loss on a small attack
+		def.result.sticks=-frand(	sticks,			0,100,100)		-- def loses 0%->100% of min sticks
+		def.result.bros  =-frand(	def.bros,		0,  2,100)		-- def loses 0%->2% of bros
+		
+	else --lose
+	
+		c.act="arsonfail"
+		att.result.houses=-1 -- costs 1 house
+		def.result.houses=-1 -- destroys 1 house
+		
+		att.result.sticks=-frand(	att.sticks,		90,100,100)		-- att loses 90%->100% of sticks
+		att.result.bros  =-frand(	att.bros,		0,  5,100)		-- att loses 0%->5% of bros
+		
+		local sticks=def.sticks
+		if att.sticks < def.sticks then sticks=att.sticks end		-- less stick loss on a small attack
+		def.result.sticks=-frand(	sticks,			0,100,100)		-- def loses 0%->100% of min sticks
+		
+		def.result.bros  =0
+	end
+	
+	return ent
+	
+end
+
+

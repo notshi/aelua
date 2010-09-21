@@ -720,16 +720,15 @@ fight_rob_preview=function(d)
 
 end
 
-fight_rob_fail=function(d)
+fight_arson_preview=function(d)
 
-	return replace(get_plate("fight_rob_fail"),d)
+	return replace(get_plate("fight_arson_preview"),d)
 
 end
 
+fight_result=function(d)
 
-fight_rob_win=function(d)
-
-	return replace(get_plate("fight_rob_win"),d)
+	return replace(get_plate("fight_result"),d)
 
 end
 
