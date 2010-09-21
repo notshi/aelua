@@ -416,6 +416,52 @@ end
 
 --------------------------------------------------------------------------------
 --
+-- add a barnarson act, tab should contain:
+--
+-- actor1	= id of player
+-- name1	= name of player
+-- actor2	= id of victim
+-- name2	= name of victim
+-- house1	= number of houses attacker lost
+-- bros1    = number of bros attacker lost
+-- sticks1  = number of sticks attacker lost
+-- house2	= number of houses defender lost
+-- bros2    = number of bros defender lost
+-- sticks2  = number of sticks defender lost
+-- act      = "arsonwin" or "arsonfail" was this a win or fail?
+--
+--------------------------------------------------------------------------------
+function add_arson(H,tab)
+
+	local e=create(H)
+	local c=e.cache
+	
+	c.act=tab.act -- type of act
+	c.type="fight"
+	c.owner=tab.actor1
+	c.private=0
+	c.actor1=tab.actor1
+	c.actor2=tab.actor2
+	
+	for i,v in pairs(tab) do -- just copy tab into data
+		c.data[i]=v
+	end
+	
+	put(H,e)
+	local id=e.key.id
+	
+-- actor2 also gets the same act saved specially for them
+	e.key.id=nil
+	e.cache.id=nil
+	e.cache.dupe=id -- flag as duplicate
+	e.cache.owner=tab.actor2 -- just change the owner and put again
+	put(H,e)
+	
+	return e
+end
+
+--------------------------------------------------------------------------------
+--
 -- Load a list of actions from database
 --
 --------------------------------------------------------------------------------

@@ -288,6 +288,11 @@ end
 function update_add(H,id,by)
 
 	local f=function(H,p)
+		if by.houses and by.houses<0 then
+			if (p.houses+by.houses)<1 then -- must keep one house
+				return false
+			end
+		end
 		if by.energy and by.energy<0 then
 			if p.energy<(-by.energy) then -- not enough energy to perform
 				return false

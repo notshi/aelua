@@ -641,80 +641,93 @@ function serv_round_fight(H)
 	if posts.victim and victim then
 		if tonumber(posts.victim)~=victim.key.id then victim=nil end
 		if victim and player then 
-			if posts.attack == "rob" then -- perform a robery
+		
+			local shout=""
+			if posts.shout then
+				local s=posts.shout or ""
+				if string.len(s) > 100 then s=string.sub(s,1,100) end
+				shout=wet_html.esc(s)
+			end
+					
+			if posts.attack == "arson" then -- perform a robery
+			
+				local fight=fights.create_arson(H,player,victim) -- prepare fight
+				fight.cache.shout=shout -- include shout in fight data, so it can be saved to db
+				
+				-- apply the results, first remove energy from the player
+				
+				if players.update_add(H,player,{
+							energy=-fight.cache.energy,
+							houses=fight.cache.sides[1].result.houses}) then -- edit the energy
+						
+					if players.update_add(H,victim,fight.cache.sides[2].result) then -- things went ok
+
+						if players.update_add(H,player,fight.cache.sides[1].result) then -- things went ok
+	
+							fights.put(H,fight) -- save this fight to db
+						
+							local a=acts.add_rob(H,{
+								actor1  = player.key.id ,
+								name1   = player.cache.name ,
+								actor2  = victim.key.id ,
+								name2   = victim.cache.name ,
+								bros1   = -fight.cache.sides[1].result.bros,
+								sticks1 = -fight.cache.sides[1].result.sticks,
+								houses1 = -fight.cache.sides[1].result.houses,
+								bros2   = -fight.cache.sides[2].result.bros,
+								sticks2 = -fight.cache.sides[2].result.sticks,
+								houses2 = -fight.cache.sides[2].result.houses,
+								act     = fight.cache.act,
+								shout   = shout,
+								})
+
+
+							result=get("fight_result",{html=acts.plate(H,a,"html")})
+							
+							player=players.get(H,player)
+							victim=players.get(H,victim)
+						end
+						
+					end
+					
+				end
+				
+			elseif posts.attack == "rob" then -- perform a robery
 			
 				local fight=fights.create_robbery(H,player,victim) -- prepare fight
+				fight.cache.shout=shout -- include shout in fight data, so it can be saved to db
 				
 				-- apply the results, first remove energy from the player
 				
 				if players.update_add(H,player,{energy=-fight.cache.energy}) then -- edit the energy
 				
-					local shout=""
-					if posts.shout then
-						local s=posts.shout or ""
-						if string.len(s) > 100 then s=string.sub(s,1,100) end
-						shout=wet_html.esc(s)
-					end
-					fight.cache.shout=shout -- include shout in fight data, so it can be saved to db
-								
-					-- adjust victim, only on a win
-					if fight.cache.act=="robwin" then
-					
-						if players.update_add(H,victim,fight.cache.sides[2].result) then -- things went ok
+					if players.update_add(H,victim,fight.cache.sides[2].result) then -- things went ok
 
-							if players.update_add(H,player,fight.cache.sides[1].result) then -- things went ok
-		
-								fights.put(H,fight) -- save this fight to db
-							
-								local a=acts.add_rob(H,{
-									actor1  = player.key.id ,
-									name1   = player.cache.name ,
-									actor2  = victim.key.id ,
-									name2   = victim.cache.name ,
-									bux     = fight.cache.result.bux,
-									bros1   = -fight.cache.sides[1].result.bros,
-									sticks1 = -fight.cache.sides[1].result.sticks,
-									bros2   = -fight.cache.sides[2].result.bros,
-									sticks2 = -fight.cache.sides[2].result.sticks,
-									act     = fight.cache.act,
-									shout   = shout,
-									})
+						if players.update_add(H,player,fight.cache.sides[1].result) then -- things went ok
+	
+							fights.put(H,fight) -- save this fight to db
+						
+							local a=acts.add_rob(H,{
+								actor1  = player.key.id ,
+								name1   = player.cache.name ,
+								actor2  = victim.key.id ,
+								name2   = victim.cache.name ,
+								bux     = fight.cache.result.bux,
+								bros1   = -fight.cache.sides[1].result.bros,
+								sticks1 = -fight.cache.sides[1].result.sticks,
+								bros2   = -fight.cache.sides[2].result.bros,
+								sticks2 = -fight.cache.sides[2].result.sticks,
+								act     = fight.cache.act,
+								shout   = shout,
+								})
 
-								result=get("fight_rob_win",{html=acts.plate(H,a,"html")})
-								
-								player=players.get(H,player)
-								victim=players.get(H,victim)
-							end
+
+							result=get("fight_result",{html=acts.plate(H,a,"html")})
 							
+							player=players.get(H,player)
+							victim=players.get(H,victim)
 						end
 						
-					elseif fight.cache.act=="robfail" then -- a failure only damages the attacker
-					
-						if players.update_add(H,victim,fight.cache.sides[2].result) then -- things went ok
-
-							if players.update_add(H,player,fight.cache.sides[1].result) then -- things went ok
-							
-								fights.put(H,fight) -- save this fight to db
-								
-								local a=acts.add_rob(H,{
-									actor1  = player.key.id ,
-									name1   = player.cache.name ,
-									actor2  = victim.key.id ,
-									name2   = victim.cache.name ,
-									bux     = fight.cache.result.bux,
-									bros1   = -fight.cache.sides[1].result.bros,
-									sticks1 = -fight.cache.sides[1].result.sticks,
-									bros2   = -fight.cache.sides[2].result.bros,
-									sticks2 = -fight.cache.sides[2].result.sticks,
-									act     = fight.cache.act,
-									shout   = shout,
-									})
-										
-								result=get("fight_rob_fail",{html=acts.plate(H,a,"html")})
-								
-								victim=players.get(H,victim)
-							end
-						end
 					end
 				end
 				
@@ -734,11 +747,17 @@ function serv_round_fight(H)
 
 	if player and victim then
 	
-		local fight_rob=fights.create_robbery(H,player,victim)	
-		
-		local tab={ url=url.."/"..victim.key.id , player=player.cache, victim=victim.cache, fight=fight_rob.cache}
+		local tab={ url=url.."/"..victim.key.id , player=player.cache, victim=victim.cache}
 		put("fight_header",tab)
+		
+		local fight=fights.create_robbery(H,player,victim)				
+		tab.fight=fight.cache
 		put("fight_rob_preview",tab)
+		
+		local fight=fights.create_arson(H,player,victim)
+		tab.fight=fight.cache
+		put("fight_arson_preview",tab)
+		
 		put("fight_footer",tab)
 		
 	else

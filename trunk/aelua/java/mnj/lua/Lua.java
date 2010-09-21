@@ -369,9 +369,16 @@ public final class Lua
    */
   public void call(int nargs, int nresults)
   {
-    apiChecknelems(nargs+1);
-    int func = stackSize - (nargs + 1);
-    this.vmCall(func, nresults);
+	try
+	{
+		apiChecknelems(nargs+1);
+		int func = stackSize - (nargs + 1);
+		this.vmCall(func, nresults);
+	}
+	catch(Exception ex) // catch other errors
+	{
+		dThrow(-1,ex.toString()); // give an easier to debug error
+	}
   }
 
   /**
@@ -575,15 +582,8 @@ public final class Lua
     }
     else
     {
-		try
-		{
-			mt = metatable[type(o)];
-			return mt;
-		}
-		catch(java.lang.ArrayIndexOutOfBoundsException ex) // atempt to index something that is non indexable
-		{
-			dThrow(-1); // give an easier to debug error
-		}
+		mt = metatable[type(o)];
+		return mt;
     }
     return mt;
   }
@@ -2340,7 +2340,7 @@ protect:
 
 	for(i=-1;i>-4;i--)
 	{
-		s=s+"\n"+toString(value(i));
+//		s=s+"\n"+toString(value(i));
 	}
 	//	s=s+" **["+civ.size()+"]** ";
 
@@ -2356,10 +2356,11 @@ protect:
   }
   public void dThrow(int status)
   {
-
-	
     throw new LuaError(status,dStackDumpString());
-//    throw new RuntimeException( s );
+  }
+ public void dThrow(int status , String s)
+  {
+    throw new LuaError(status,s+dStackDumpString());
   }
 
 

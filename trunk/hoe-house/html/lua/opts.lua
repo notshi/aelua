@@ -11,6 +11,8 @@ local serialize=wet_string.serialize
 local loadstring=loadstring
 local setfenv=setfenv
 local pcall=pcall
+local pairs=pairs
+local type=type
 
 module("opts")
 
@@ -31,45 +33,74 @@ map={ -- base lookup table
 ["hoe"]			=	{			-- the base module
 						["#default"]	=	"hoe", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 		-- use this flavour when serving
+						["#opts"]		=	{
+												url="/hoe/",
+											},
 					},
 					
 ["admin"]		=	{			-- all admin stuff
-	["#default"]	=	"admin",
-	["console"]		=	{			-- a console module
-						["#default"]	=	"console", 		-- no badlinks, we own everything under here
-						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+						["#default"]	=	"admin",
+						["console"]		=	{			-- a console module
+											["#default"]	=	"console",
+											["#flavour"]	=	"hoe",
+											["#opts"]		=	{
+																	url="/admin/",
+																},
+											},
 					},
-},
 					
 ["dumid"]		=	{			-- a dumid module
 						["#default"]	=	"dumid", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+						["#opts"]		=	{
+												url="/dumid/",
+											},
 					},
 					
 ["help"]		=	{			-- a wiki like module
 						["#default"]	=	"waka", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+						["#opts"]		=	{
+												url="/help/",
+											},
 					},
 					
 ["blog"]		=	{			-- a blog module
 						["#default"]	=	"blog", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+						["#opts"]		=	{
+												url="/blog/",
+											},
 					},
---[[					
+					
 ["note"]		=	{			-- a sitewide comment module
 						["#default"]	=	"note", 		-- no badlinks, we own everything under here
-						["#flavour"]	=	"hoe", 			-- use this flavour when serving
+						["#opts"]		=	{
+												url="/note/",
+											},
 					},
-]]
+
 }
 
 
 mods={}
 
+for i,v in pairs(map) do
+	if type(v)=="table" then
+		local name=v["#default"]
+		if name then
+			local t=mods[name] or {}
+			mods[name]=t
+			for i,v in pairs( v["#opts"] or {} ) do
+				t[i]=v -- copy opts into default for each mod
+			end
+		end
+	end
+end
+
 mods.init={}
 
-mods.console={}
-
+mods.console=mods.console or {}
 mods.console.input=
 [[
 local srv=(...)

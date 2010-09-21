@@ -442,7 +442,7 @@ Read my new blog http://bit.ly/a1b2c3 about the end of the world!
 			ent.cache.group=group
 			ent.cache.pubname=group..name
 			ent.cache.layer=LAYER_DRAFT
-			ent.cache.text=[[#title
+			ent.cache.text=[[#title form=raw trim=ends
 		
 This is the #title of your post and will be auto generated from the #body if it is missing.
 
