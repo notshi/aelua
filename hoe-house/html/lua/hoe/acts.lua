@@ -422,7 +422,7 @@ end
 -- name1	= name of player
 -- actor2	= id of victim
 -- name2	= name of victim
--- house1	= number of houses attacker lost
+-- house1	= number of houses attacker lost (always 0?)
 -- bros1    = number of bros attacker lost
 -- sticks1  = number of sticks attacker lost
 -- house2	= number of houses defender lost

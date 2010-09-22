@@ -666,7 +666,7 @@ function serv_round_fight(H)
 	
 							fights.put(H,fight) -- save this fight to db
 						
-							local a=acts.add_rob(H,{
+							local a=acts.add_arson(H,{
 								actor1  = player.key.id ,
 								name1   = player.cache.name ,
 								actor2  = victim.key.id ,
