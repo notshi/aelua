@@ -1442,7 +1442,7 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 				<input type="hidden" name="victim" value="{victim.id}" /> 
 				<input type="hidden" name="attack" value="arson" /> 
 				<span style="font-size:16px;"><img src="/art/shoutb.png" /> Shout: <input type="text" size="50" maxlength="100" name="shout" value="" class="field"/></span> <br/>
-				<div class="fight"><button type="submit" class="button">Perform BarnArson!</button></div> (costs {fight.energy} <img src="/art/energyb.png" /> energy and 1 <img src="/art/houses.png" /> house)
+				<div class="fight"><button type="submit" class="button">Perform BarnArson!</button></div> (costs {fight.energy} <img src="/art/energyb.png" /> energy )
 			</form>
 		<div class="clear"></div>
 	</div>
@@ -1518,7 +1518,7 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 
 
 #act_robwin_text
-{name1} stole {bux} bux from {name2} shouting :
+{name1} stole {bux} bux from {name2}.
 Upon leaving, they shouted : "{shout}"
 {name1} lost {bros1} bros and {sticks1} sticks during the robbery.
 {name2} lost {bros2} bros and {sticks2} sticks defending themselves.
@@ -1538,6 +1538,33 @@ They were last seen shouting : "{shout}"
 
 #act_robfail_html
 <a href="{url}profile/{actor1}">{name1}</a> failed to steal any <img src="/art/buxb.png" /> bux from <a href="{url}profile/{actor2}">{name2}</a>. <br/>
+They were last seen <img src="/art/shoutb.png" /> shouting : "<span style="color:#ff5555"><b>{shout}</b></span>" <br/>
+<a href="{url}profile/{actor1}">{name1}</a> lost {bros1} <img src="/art/bros.png" /> bros and {sticks1} <img src="/art/sticksb.png" /> sticks during the attempt.<br/>
+<a href="{url}profile/{actor2}">{name2}</a> lost {sticks2} <img src="/art/sticksb.png" /> sticks defending themselves.<br/>
+
+
+
+#act_arsonwin_text
+{name1} burned down {houses2} of {name2} houses:
+Upon leaving, they shouted : "{shout}"
+{name1} lost {bros1} bros and {sticks1} sticks during the robbery.
+{name2} lost {bros2} bros and {sticks2} sticks defending themselves.
+
+#act_arsonwin_html
+<a href="{url}profile/{actor1}">{name1}</a> burned down {houses2} of <a href="{url}profile/{actor2}">{name2}</a>  <img src="/art/houses.png" /> houses. <br/>
+Upon leaving, they <img src="/art/shoutb.png" /> shouted : "<span style="color:#00d400"><b>{shout}</b></span>" <br/>
+<a href="{url}profile/{actor1}">{name1}</a> lost {bros1} <img src="/art/bros.png" /> bros and {sticks1} <img src="/art/sticksb.png" /> sticks during the robbery.<br/>
+<a href="{url}profile/{actor2}">{name2}</a> lost {bros2} <img src="/art/bros.png" /> bros and {sticks2} <img src="/art/sticksb.png" /> sticks defending themselves.<br/>
+
+
+#act_arsonfail_text
+{name1} failed to burndown any of {name2} houses.
+They were last seen shouting : "{shout}"
+{name1} lost {bros1} bros and {sticks1} sticks during the attempt.
+{name2} lost {sticks2} sticks defending themselves.
+
+#act_arsonfail_html
+<a href="{url}profile/{actor1}">{name1}</a> failed to burndown any of <a href="{url}profile/{actor2}">{name2}</a> <img src="/art/houses.png" /> houses. <br/>
 They were last seen <img src="/art/shoutb.png" /> shouting : "<span style="color:#ff5555"><b>{shout}</b></span>" <br/>
 <a href="{url}profile/{actor1}">{name1}</a> lost {bros1} <img src="/art/bros.png" /> bros and {sticks1} <img src="/art/sticksb.png" /> sticks during the attempt.<br/>
 <a href="{url}profile/{actor2}">{name2}</a> lost {sticks2} <img src="/art/sticksb.png" /> sticks defending themselves.<br/>

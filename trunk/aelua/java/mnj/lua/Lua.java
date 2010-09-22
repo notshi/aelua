@@ -375,9 +375,13 @@ public final class Lua
 		int func = stackSize - (nargs + 1);
 		this.vmCall(func, nresults);
 	}
+	catch(LuaError ex) // not this 
+	{
+		throw(ex);
+	}
 	catch(Exception ex) // catch other errors
 	{
-		dThrow(-1,ex.toString()); // give an easier to debug error
+		dThrow(-1, ex.toString()+"\n"+ex.getStackTrace()[0].toString() ); // give an easier to debug error
 	}
   }
 
@@ -2336,20 +2340,21 @@ protect:
   {
 // simple lua stack dump so we have a chance to debug...	
 	int i=0;
-	String s="";
+	String s="\n "+toString(value(-1));
 
-	for(i=-1;i>-4;i--)
+/*
+ * 	for(i=-1;i>-4;i--)
 	{
-//		s=s+"\n"+toString(value(i));
+		s=s+"\n"+toString(value(i));
 	}
-	//	s=s+" **["+civ.size()+"]** ";
-
+	s=s+"\n **["+civ.size()+"]** ";
+*/
 
 	String s2;
 	for(i=0;i<civ.size();i++)
 	{
 		s2=where(i);
-		s=s+"\n"+s2;
+		s=s+"\n "+s2;
 	}
 	
 	return s;
