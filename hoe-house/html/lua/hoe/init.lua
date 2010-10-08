@@ -864,9 +864,9 @@ function serv_round_trade(H)
 				
 					results=results..get("trade_buy_fail_self") -- failed to buy
 					
-				elseif H.player.cache.energy<1 then -- we need the energy to buy
+--				elseif H.player.cache.energy<1 then -- we need the energy to buy
 				
-					results=results..get("trade_buy_fail_energy") -- failed to buy
+--					results=results..get("trade_buy_fail_energy") -- failed to buy
 					
 				else
 				
@@ -887,8 +887,8 @@ function serv_round_trade(H)
 						
 							local f=function(H,p)
 							
-								if p.energy<1 then return false end -- costs 1 energy to trade
-								p.energy=p.energy-1
+--								if p.energy<1 then return false end -- costs 1 energy to trade
+--								p.energy=p.energy-1
 								
 								if p[ tradeb ]<(best.cache.price) then -- must have goods available
 									return false
