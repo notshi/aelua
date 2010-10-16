@@ -940,109 +940,118 @@ function serv_round_trade(H)
 			
 			elseif posts.cmd=="sell" and trade and cost>=trade.min and cost<=trade.max then -- valid?
 			
-				if reverse then
-					if count>=trade.min and count<=(1000*trade.max) then
-						if H.player.cache[ trade[2] ] >= count then -- must have goods available
-						
-							local f=function(H,p)
-								if p[ trade[2] ]<(count) then -- must have goods available
-									return false
-								end
-								if trade[2]=="houses" then -- must always own at least one house...
-									if p[ trade[2] ]<=(count) then
-										return false
-									end
-								end
-								p[ trade[2] ]=p[ trade[2] ]-(count) -- remove goods right now
-								return true
-							end
-			
-							if players.update(H,H.player,f) then -- goods where removed
-							
-								local ent=trades.create(H)
-								ent.cache.player=H.player.cache.id
-								ent.cache.offer=trade[2]
-								ent.cache.seek=trade[1]
-								ent.cache.count=count
-								ent.cache.cost=cost
-								ent.cache.price=price
-								ent.cache.reverse=true
-								
-								trades.check(H,ent)		-- check
-								trades.put(H,ent)		-- create trade in database
-								
-								trades.fix_memcache(H,trades.what_memcache(H,ent)) -- update cache values
-								
-								results=results..get("trade_sell",{trade=ent.cache}) -- we added a trade
-								
-								H.player=players.get(H,H.player) -- get updated self
-								
-								acts.add_tradeoffer(H,{
-									actor1 = H.player.key.id ,
-									name1  = H.player.cache.name ,
-									offer  = ent.cache.offer,
-									seek   = ent.cache.seek,
-									count  = ent.cache.count,
-									cost   = ent.cache.cost,
-									price  = ent.cache.price,
-									reverse= ent.cache.reverse,
-									})
-							end
-						
-						end
-					end				
+				local mytrades=trades.find_mine(H,{player=H.player.cache.id,active=true})
+				
+				if mytrades and ( #mytrades > 10 ) then -- only allowed 10 active trades at a time
+
+					results=results..get("trade_sell_fail_queue")
+				
 				else
-					if count>0 and count<=1000 then
-						if H.player.cache[ trade[1] ] >= count then -- must have goods available
-						
-							local f=function(H,p)
-								if p[ trade[1] ]<(count) then -- must have goods available
-									return false
-								end
-								if trade[1]=="houses" then -- must always own at least one house...
-									if p[ trade[1] ]<=(count) then
+				
+					if reverse then
+						if count>=trade.min and count<=(1000*trade.max) then
+							if H.player.cache[ trade[2] ] >= count then -- must have goods available
+							
+								local f=function(H,p)
+									if p[ trade[2] ]<(count) then -- must have goods available
 										return false
 									end
+									if trade[2]=="houses" then -- must always own at least one house...
+										if p[ trade[2] ]<=(count) then
+											return false
+										end
+									end
+									p[ trade[2] ]=p[ trade[2] ]-(count) -- remove goods right now
+									return true
 								end
-								p[ trade[1] ]=p[ trade[1] ]-(count) -- remove goods right now
-								return true
-							end
-			
-							if players.update(H,H.player,f) then -- goods where removed
+				
+								if players.update(H,H.player,f) then -- goods where removed
+								
+									local ent=trades.create(H)
+									ent.cache.player=H.player.cache.id
+									ent.cache.offer=trade[2]
+									ent.cache.seek=trade[1]
+									ent.cache.count=count
+									ent.cache.cost=cost
+									ent.cache.price=price
+									ent.cache.reverse=true
+									
+									trades.check(H,ent)		-- check
+									trades.put(H,ent)		-- create trade in database
+									
+									trades.fix_memcache(H,trades.what_memcache(H,ent)) -- update cache values
+									
+									results=results..get("trade_sell",{trade=ent.cache}) -- we added a trade
+									
+									H.player=players.get(H,H.player) -- get updated self
+									
+									acts.add_tradeoffer(H,{
+										actor1 = H.player.key.id ,
+										name1  = H.player.cache.name ,
+										offer  = ent.cache.offer,
+										seek   = ent.cache.seek,
+										count  = ent.cache.count,
+										cost   = ent.cache.cost,
+										price  = ent.cache.price,
+										reverse= ent.cache.reverse,
+										})
+								end
 							
-								local ent=trades.create(H)
-								ent.cache.player=H.player.cache.id
-								ent.cache.offer=trade[1]
-								ent.cache.seek=trade[2]
-								ent.cache.count=count
-								ent.cache.cost=cost
-								ent.cache.price=price
-								ent.cache.reverse=false
-								
-								trades.check(H,ent)		-- check								
-								trades.put(H,ent)		-- create trade in database
-								
-								trades.fix_memcache(H,trades.what_memcache(H,ent)) -- update cache values
-								
-								results=results..get("trade_sell",{trade=ent.cache}) -- we added a trade
-								
-								H.player=players.get(H,H.player) -- get updated self
-								
-								acts.add_tradeoffer(H,{
-									actor1 = H.player.key.id ,
-									name1  = H.player.cache.name ,
-									offer  = ent.cache.offer,
-									seek   = ent.cache.seek,
-									count  = ent.cache.count,
-									cost   = ent.cache.cost,
-									price  = ent.cache.price,
-									})
 							end
-						
+						end				
+					else
+						if count>0 and count<=1000 then
+							if H.player.cache[ trade[1] ] >= count then -- must have goods available
+							
+								local f=function(H,p)
+									if p[ trade[1] ]<(count) then -- must have goods available
+										return false
+									end
+									if trade[1]=="houses" then -- must always own at least one house...
+										if p[ trade[1] ]<=(count) then
+											return false
+										end
+									end
+									p[ trade[1] ]=p[ trade[1] ]-(count) -- remove goods right now
+									return true
+								end
+				
+								if players.update(H,H.player,f) then -- goods where removed
+								
+									local ent=trades.create(H)
+									ent.cache.player=H.player.cache.id
+									ent.cache.offer=trade[1]
+									ent.cache.seek=trade[2]
+									ent.cache.count=count
+									ent.cache.cost=cost
+									ent.cache.price=price
+									ent.cache.reverse=false
+									
+									trades.check(H,ent)		-- check								
+									trades.put(H,ent)		-- create trade in database
+									
+									trades.fix_memcache(H,trades.what_memcache(H,ent)) -- update cache values
+									
+									results=results..get("trade_sell",{trade=ent.cache}) -- we added a trade
+									
+									H.player=players.get(H,H.player) -- get updated self
+									
+									acts.add_tradeoffer(H,{
+										actor1 = H.player.key.id ,
+										name1  = H.player.cache.name ,
+										offer  = ent.cache.offer,
+										seek   = ent.cache.seek,
+										count  = ent.cache.count,
+										cost   = ent.cache.cost,
+										price  = ent.cache.price,
+										})
+								end
+							
+							end
 						end
 					end
+
 				end
-			
 			end
 			
 		end

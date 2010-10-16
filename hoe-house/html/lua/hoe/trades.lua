@@ -328,3 +328,38 @@ local reverse=false
 	
 	return best
 end
+
+--------------------------------------------------------------------------------
+--
+-- find the active trades, belonging to a user
+--
+--------------------------------------------------------------------------------
+function find_mine(H,opts,t)
+local reverse=false
+	opts=opts or {} -- stop opts from being nil
+	if not ( opts.player ) then return nil end -- really need these opts
+		
+	t=t or dat -- transactions shouldnt be used anyhow?
+	
+	local q={
+		kind=kind(H),
+		limit=1000, -- there are probably not 1000
+		offset=0,
+			{"filter","round_id","==",H.round.key.id},
+			{"filter","player","==",opts.player},
+		}
+		
+	if opts.active then
+		q[#q+1]={"filter","buyer","==",0} -- available to buy?
+	elseif opts.complete then
+		q[#q+1]={"filter","buyer","!=",0} -- already bought?
+	end
+	
+	local r=t.query(q)
+	
+	for i=1,#r.list do local v=r.list[i]
+		dat.build_cache(v)
+	end
+	
+	return r.list	
+end

@@ -669,6 +669,17 @@ end
 -- trade options
 --
 -----------------------------------------------------------------------------
+trade_sell_fail_queue=function(d)
+
+	return replace(get_plate("trade_sell_fail_queue"),d)
+
+end
+
+-----------------------------------------------------------------------------
+--
+-- trade options
+--
+-----------------------------------------------------------------------------
 trade_buy=function(d)
 
 	return replace(get_plate("trade_buy"),d)
