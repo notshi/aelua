@@ -468,6 +468,7 @@ function serv_round_shop(H)
 			by.bros=tonumber(posts.bros)
 			by.gloves=tonumber(posts.gloves)
 			by.sticks=tonumber(posts.sticks)
+			by.manure=tonumber(posts.manure)
 			for i,v in pairs(by) do
 				v=math.floor(v)
 				if v<0 then v=0 end
@@ -671,16 +672,8 @@ function serv_round_fight(H)
 								name1   = player.cache.name ,
 								actor2  = victim.key.id ,
 								name2   = victim.cache.name ,
-								bros1   = -fight.cache.sides[1].result.bros,
-								sticks1 = -fight.cache.sides[1].result.sticks,
-								houses1 = -fight.cache.sides[1].result.houses,
-								bros2   = -fight.cache.sides[2].result.bros,
-								sticks2 = -fight.cache.sides[2].result.sticks,
-								houses2 = -fight.cache.sides[2].result.houses,
-								act     = fight.cache.act,
 								shout   = shout,
-								})
-
+								},fight)
 
 							result=get("fight_result",{html=acts.plate(H,a,"html")})
 							
@@ -712,15 +705,40 @@ function serv_round_fight(H)
 								name1   = player.cache.name ,
 								actor2  = victim.key.id ,
 								name2   = victim.cache.name ,
-								bux     = fight.cache.result.bux,
-								bros1   = -fight.cache.sides[1].result.bros,
-								sticks1 = -fight.cache.sides[1].result.sticks,
-								bros2   = -fight.cache.sides[2].result.bros,
-								sticks2 = -fight.cache.sides[2].result.sticks,
-								act     = fight.cache.act,
 								shout   = shout,
-								})
+								},fight)
 
+							result=get("fight_result",{html=acts.plate(H,a,"html")})
+							
+							player=players.get(H,player)
+							victim=players.get(H,victim)
+						end
+						
+					end
+				end
+				
+			elseif posts.attack == "party" then -- perform a party
+			
+				local fight=fights.create_party(H,player,victim) -- prepare fight
+				fight.cache.shout=shout -- include shout in fight data, so it can be saved to db
+				
+				-- apply the results, first remove energy from the player
+				
+				if players.update_add(H,player,{energy=-fight.cache.energy}) then -- edit the energy
+				
+					if players.update_add(H,victim,fight.cache.sides[2].result) then -- things went ok
+
+						if players.update_add(H,player,fight.cache.sides[1].result) then -- things went ok
+	
+							fights.put(H,fight) -- save this fight to db
+						
+							local a=acts.add_party(H,{
+								actor1  = player.key.id ,
+								name1   = player.cache.name ,
+								actor2  = victim.key.id ,
+								name2   = victim.cache.name ,
+								shout   = shout,
+								},fight)
 
 							result=get("fight_result",{html=acts.plate(H,a,"html")})
 							
@@ -758,6 +776,10 @@ function serv_round_fight(H)
 		tab.fight=fight.cache
 		put("fight_arson_preview",tab)
 		
+		local fight=fights.create_party(H,player,victim)
+		tab.fight=fight.cache
+		put("fight_party_preview",tab)
+		
 		put("fight_footer",tab)
 		
 	else
@@ -788,7 +810,7 @@ function serv_round_trade(H)
 	-- and the second name is the payment type
 	local valid_trades={
 			{"houses","hoes",min=5,max=50,},
-			{"hoes","bros",min=10,max=100,},
+			{"hoes","bros",min=100,max=1000,},
 			{"bros","bux",min=1000,max=10000,},
 		}
 

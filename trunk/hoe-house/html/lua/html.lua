@@ -737,6 +737,12 @@ fight_arson_preview=function(d)
 
 end
 
+fight_party_preview=function(d)
+
+	return replace(get_plate("fight_party_preview"),d)
+
+end
+
 fight_result=function(d)
 
 	return replace(get_plate("fight_result"),d)

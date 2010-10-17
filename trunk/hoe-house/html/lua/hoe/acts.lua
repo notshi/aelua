@@ -385,8 +385,17 @@ end
 -- act      = "robwin" or "robfail" was this a win or fail?
 --
 --------------------------------------------------------------------------------
-function add_rob(H,tab)
+function add_rob(H,tab,fight)
 
+	if fight then
+		tab.bux     =  fight.cache.result.bux
+		tab.bros1   = -fight.cache.sides[1].result.bros
+		tab.sticks1 = -fight.cache.sides[1].result.sticks
+		tab.bros2   = -fight.cache.sides[2].result.bros
+		tab.sticks2 = -fight.cache.sides[2].result.sticks
+		tab.act     =  fight.cache.act
+	end
+	
 	local e=create(H)
 	local c=e.cache
 	
@@ -431,7 +440,69 @@ end
 -- act      = "arsonwin" or "arsonfail" was this a win or fail?
 --
 --------------------------------------------------------------------------------
-function add_arson(H,tab)
+function add_arson(H,tab,fight)
+
+	if fight then
+		tab.bros1   = -fight.cache.sides[1].result.bros
+		tab.sticks1 = -fight.cache.sides[1].result.sticks
+		tab.houses1 = -fight.cache.sides[1].result.houses
+		tab.bros2   = -fight.cache.sides[2].result.bros
+		tab.sticks2 = -fight.cache.sides[2].result.sticks
+		tab.houses2 = -fight.cache.sides[2].result.houses
+		tab.act     =  fight.cache.act
+	end
+
+	local e=create(H)
+	local c=e.cache
+	
+	c.act=tab.act -- type of act
+	c.type="fight"
+	c.owner=tab.actor1
+	c.private=0
+	c.actor1=tab.actor1
+	c.actor2=tab.actor2
+	
+	for i,v in pairs(tab) do -- just copy tab into data
+		c.data[i]=v
+	end
+	
+	put(H,e)
+	local id=e.key.id
+	
+-- actor2 also gets the same act saved specially for them
+	e.key.id=nil
+	e.cache.id=nil
+	e.cache.dupe=id -- flag as duplicate
+	e.cache.owner=tab.actor2 -- just change the owner and put again
+	put(H,e)
+	
+	return e
+end
+
+
+--------------------------------------------------------------------------------
+--
+-- add a party act, tab should contain:
+--
+-- actor1	= id of player
+-- name1	= name of player
+-- actor2	= id of victim
+-- name2	= name of victim
+-- hoes1	= number of hoes attacker lost (always 0?)
+-- manure1  = number of manure attacker lost
+-- hoes2    = number of hoes defender lost
+-- manure2  = number of manure defender lost
+-- act      = "partywin" or "partyfail" was this a win or fail?
+--
+--------------------------------------------------------------------------------
+function add_party(H,tab,fight)
+
+	if fight then
+		tab.hoes     =  fight.cache.result.hoes
+		tab.manure1 = -fight.cache.sides[1].result.manure
+		tab.manure2 = -fight.cache.sides[2].result.manure
+		tab.act     =  fight.cache.act
+	end
 
 	local e=create(H)
 	local c=e.cache
