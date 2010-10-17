@@ -871,11 +871,11 @@ $("#hoe_player_shop_form").validate({
 		}
 		if(total>0)
 		{
-			s="Excellent choice, my lord. <br /> Buy now for a grand total of only "+comma3(total)+" bux!";
+			s="{phrase} <br /> Buy now for a grand total of only "+comma3(total)+" bux!";
 		}
 		else
 		{
-			s="I sense a soul in search of hoes.";
+			s="I sense a soul in search of hoes...";
 		}
 		$("#hoe_player_shop_form_total").html(s);
 		

@@ -501,13 +501,24 @@ end
 --
 -----------------------------------------------------------------------------
 player_shop_form=function(d)
-
+local phrase={"Excellent choice, my lord.",
+			  "You have good taste, if I may say so.",
+			  "Delightful!",
+			  "This is my final offer. Take it or leave it.",
+			  "Those are all I have. For now.",
+			  "These are very much in demand, it seems.",
+			  "Your purchases please me.",
+			  "A wise choice, madam.",
+			  "It's not like I have a limited supply of these.",
+			  "Would you like these wrapped up?",
+			  "A witch's work is never done. Now, hurry up, I have plenty to do."}
 	d.houses_bux=num_to_thousands(d.cost.houses)
 	d.bros_bux=num_to_thousands(d.cost.bros)
 	d.gloves_bux=num_to_thousands(d.cost.gloves)
 	d.sticks_bux=num_to_thousands(d.cost.sticks)
 	d.manure_bux=num_to_thousands(d.cost.manure)
 	d.random=math.random(1,3)
+	d.phrase=phrase[math.random(1,#phrase)]
 
 	return replace(get_plate("player_shop_form"),d)
 
