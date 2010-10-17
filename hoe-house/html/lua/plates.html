@@ -825,6 +825,9 @@ Click {action} to {action} this game.
 		Buy <i><input type="text" name="sticks" id="hoe_player_work_form_sticks" value="0" style="width:100px;"/></i> <img src="/art/sticksb.png" /> sticks at <img src="/art/buxb.png" /> <i>{sticks_bux}</i> bux each.
 		<div id="hoe_player_shop_form_sticks_error" class="trademsg"></div>
 		<div class="formline1"></div>
+		Buy <i><input type="text" name="manure" id="hoe_player_work_form_manure" value="0" style="width:100px;"/></i> <img src="/art/manure.png" /> manure at <img src="/art/buxb.png" /> <i>{manure_bux}</i> bux each.
+		<div id="hoe_player_shop_form_manure_error" class="trademsg"></div>
+		<div class="formline1"></div>
 
 		<button class="button" type="submit" name="submit" value="Buy!">Buy!</button>
 
@@ -834,12 +837,13 @@ Click {action} to {action} this game.
 $("#hoe_player_shop_form").validate({
 	onkeyup: function(element) { this.element(element);	}, // always validate
 	showErrors: function(errorMap, errorList) {
-		var ns=["houses","bros","gloves","sticks"];
+		var ns=["houses","bros","gloves","sticks","manure"];
 		var cost=[];
 		cost["houses"]=comma3_to_number("{houses_bux}");
 		cost["bros"]  =comma3_to_number("{bros_bux}");
 		cost["gloves"]=comma3_to_number("{gloves_bux}");
 		cost["sticks"]=comma3_to_number("{sticks_bux}");
+		cost["manure"]=comma3_to_number("{manure_bux}");
 		var total=0;
 		for (i in ns)
 		{
@@ -891,6 +895,9 @@ $("#hoe_player_shop_form").validate({
       digits: true,
     },
     sticks: {
+      digits: true,
+    },
+    manure: {
       digits: true,
     }
   }
@@ -1290,7 +1297,7 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 			<div class="playershout"></div>
 		</div>
 		<div class="trade3b">
-		Player <a href="{H.url_base}profile/{best.player}">#{best.player}</a> is offering {best.count} <img src="/art/{best.offer}.png" /> {best.offer} for {best.price} <img src="/art/{best.seek}.png" /> {best.seek}
+		Someone is offering {best.count} <img src="/art/{best.offer}.png" /> {best.offer} for {best.price} <img src="/art/{best.seek}.png" /> {best.seek}
 		<br /> ( {best.cost} <img src="/art/{trade.b}.png" /> {trade.b} each )
 		<button type="submit" class="button">Buy!</button>
 		
@@ -1415,7 +1422,7 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 					<div class="playershout"></div>
 				</div>
 				<div class="trade3b">
-					{victim.name} has {victim.houses} <img src="/art/houses.png" /> houses and {victim.bros} <img src="/art/bros.png" /> bros with a stockpile of {victim.sticks} <img src="/art/sticksb.png" /> sticks.<br/>	
+					{victim.name} has {victim.hoes} <img src="/art/hoes.png" /> hoes in {victim.houses} <img src="/art/houses.png" /> houses with {victim.bros} <img src="/art/bros.png" /> bros and a stockpile of {victim.sticks} <img src="/art/sticksb.png" /> sticks and {victim.manure} <img src="/art/manure.png" /> manure.<br/>	
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -1454,6 +1461,21 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 				<input type="hidden" name="attack" value="arson" /> 
 				<span style="font-size:16px;"><img src="/art/shoutb.png" /> Shout: <input type="text" size="50" maxlength="100" name="shout" value="" class="field"/></span> <br/>
 				<div class="fight"><button type="submit" class="button">Perform BarnArson!</button></div> (costs {fight.energy} <img src="/art/energyb.png" /> energy )
+			</form>
+		<div class="clear"></div>
+	</div>
+</div>
+
+#fight_party_preview
+
+<div class="trade">
+	<div class="trade2">
+			You have a <span style="color:#00ff00;"><b>{fight.display_percent}%</b></span> chance of stealing some of their {victim.hoes} <img src="/art/hoes.png" /> hoes.
+			<form action="{url}" method="POST" enctype="multipart/form-data">
+				<input type="hidden" name="victim" value="{victim.id}" /> 
+				<input type="hidden" name="attack" value="party" /> 
+				<span style="font-size:16px;"><img src="/art/shoutb.png" /> Shout: <input type="text" size="50" maxlength="100" name="shout" value="" class="field"/></span> <br/>
+				<div class="fight"><button type="submit" class="button">Perform Party!</button></div> (costs {fight.energy} <img src="/art/energyb.png" /> energy )
 			</form>
 		<div class="clear"></div>
 	</div>
@@ -1565,7 +1587,6 @@ Upon leaving, they <img src="/art/shoutb.png" /> shouted : "<span style="color:#
 <a href="{url}profile/{actor1}">{name1}</a> lost {bros1} <img src="/art/bros.png" /> bros and {sticks1} <img src="/art/sticksb.png" /> sticks during the arsoning.<br/>
 <a href="{url}profile/{actor2}">{name2}</a> lost {bros2} <img src="/art/bros.png" /> bros and {sticks2} <img src="/art/sticksb.png" /> sticks defending themselves.<br/>
 
-
 #act_arsonfail_text
 {name1} failed to burndown any of {name2} houses.
 {name1} lost {bros1} bros and {sticks1} sticks during the attempt.
@@ -1576,3 +1597,27 @@ Upon leaving, they <img src="/art/shoutb.png" /> shouted : "<span style="color:#
 <a href="{url}profile/{actor1}">{name1}</a> lost {bros1} <img src="/art/bros.png" /> bros and {sticks1} <img src="/art/sticksb.png" /> sticks during the attempt.<br/>
 <a href="{url}profile/{actor2}">{name2}</a> lost {sticks2} <img src="/art/sticksb.png" /> sticks defending themselves.<br/>
 
+
+
+
+#act_partywin_text
+{name1} partied so hard that {hoes} of {name2} hoes never came back.
+During the epic party they chanted : "{shout}"
+{name1} used up {manure1} manure partying.
+{name2} used up {manure2} manure partying.
+
+#act_partywin_html
+<a href="{url}profile/{actor1}">{name1}</a> partied so hard that {hoes} of <a href="{url}profile/{actor2}">{name2}</a> <img src="/art/hoes.png" /> hoes never came back.<br/>
+During the epic party they chanted : "{shout}"<br/>
+<a href="{url}profile/{actor1}">{name1}</a> used up {manure1} <img src="/art/manure.png" /> manure partying.<br/>
+<a href="{url}profile/{actor2}">{name2}</a> used up {manure2} <img src="/art/manure.png" /> manure partying.<br/>
+
+#act_partyfail_text
+{name1} partied hard but not as hard as {name2}.
+{name1} used up {manure1} manure partying.
+{name2} used up {manure2} manure partying.
+
+#act_partyfail_html
+<a href="{url}profile/{actor1}">{name1}</a> partied hard but not as hard as <a href="{url}profile/{actor2}">{name2}</a>.<br/>
+<a href="{url}profile/{actor1}">{name1}</a> used up <img src="/art/manure.png" /> {manure1} manure partying.<br/>
+<a href="{url}profile/{actor2}">{name2}</a> used up <img src="/art/manure.png" /> {manure2} manure partying.<br/>

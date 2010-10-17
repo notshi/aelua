@@ -399,6 +399,11 @@ function create_arson(H,p1,p2)
 		def.result.sticks=-frand(	sticks,			0,100,100)		-- def loses 0%->100% of min sticks
 		def.result.bros  =-frand(	def.bros,		0,  2,100)		-- def loses 0%->2% of bros
 		
+		-- a house burning has a chance of destroying all the victims sticks
+		if math.random(0,99)<23 then
+			def.result.sticks=-def.sticks
+		end
+		
 	else --lose
 	
 		c.act="arsonfail"
@@ -413,6 +418,84 @@ function create_arson(H,p1,p2)
 		def.result.sticks=-frand(	sticks,			0,100,100)		-- def loses 0%->100% of min sticks
 		
 		def.result.bros  =0
+	end
+	
+	return ent
+	
+end
+
+
+
+--------------------------------------------------------------------------------
+--
+-- create a party, nothing is written to the database it just works out fight data locally
+--
+-- a party is an attempt to steal another players hoes
+--
+--------------------------------------------------------------------------------
+function create_party(H,p1,p2)
+
+	local ent=create(H)
+	local c=ent.cache
+
+	c.energy=math.ceil(p1.cache.houses) -- costs 1 energy per house
+	if c.energy<1  then c.energy=1  end
+	if c.energy>20 then c.energy=20 end -- cap it at about 3 hours worth of energy
+	
+	c.actor1=p1.key.id
+	c.actor2=p2.key.id
+	
+	c.name1=p1.cache.name
+	c.name2=p2.cache.name
+	
+	c.sides={ {player=p1.cache} , {player=p2.cache} } -- the sides involved [1] is attacker and [2] is defender
+	local att=c.sides[1]
+	local def=c.sides[2]
+	
+	for i=1,#c.sides do local v=c.sides[i]
+		v.result={} -- the change in stats
+		v.party=math.ceil(v.player.houses*10000/v.player.hoes) -- party base power
+		v.manure=v.player.houses*1000 -- every party needs manure
+		
+		if v.manure>v.player.manure then v.manure=v.player.manure end -- unless there is not enough manure
+		
+		v.power=v.party+v.manure -- total fighting power is manure powered only, hoes are fickle
+		
+	end
+	
+	if att.manure==0 then att.power=0 end -- must use some manure to attack
+	
+	c.percent=winchance(att.power,def.power) -- this is the real chance of attacker winning (maybe randomised?)
+		
+	c.display_percent=c.percent -- display this number, in case we wish to lie slightly
+
+	c.result={}
+	
+	local frand=function(count,min,max,div)
+		return math.floor(math.random(min*count,max*count)/div)
+	end
+
+	if math.random(0,99)<c.percent then -- we win
+	
+		c.act="partywin"
+				
+		att.result.manure=-att.manure -- all manure used is lost
+		def.result.manure=-def.manure -- all manure used is lost
+		
+		c.result.hoes     = frand(	def.player.hoes,	5,15,100)		-- att gains 5%->15% hoes from def		
+		att.result.hoes   =c.result.hoes
+		def.result.hoes   =-c.result.hoes
+		
+	else --lose
+	
+		c.act="partyfail"
+		
+		att.result.manure=-att.manure -- all manure is lost
+		
+		local manure=def.manure -- stop small niggling
+		if att.manure < def.manure then manure=att.manure end		-- less cost on a small attack
+		def.result.manure=-manure
+		
 	end
 	
 	return ent
