@@ -101,7 +101,9 @@ function array.product(a,b,r)
 	local mta=mtype(a)
 	local mtb=mtype(b)
 	if mta=="m4" then
-		if     mtb=="v4" then
+		if     mtb=="v3" then
+			return m4_product_v3(a,b,r)
+		elseif     mtb=="v4" then
 			return m4_product_v4(a,b,r)
 		elseif mtb=="m4" then
 			return m4_product_m4(a,b,r)
@@ -276,7 +278,11 @@ function v3.new(...) return setmetatable({0,0,0},v3):set(...) end
 
 class("v4",v3)
 function v4.new(...) return setmetatable({0,0,0,0},v4):set(...) end
-
+function v4.to_v3(it,r) -- scale [4] to 1 then throw it away so we have a v3 xyz
+	r=r or v3.new()
+	local oow=1/it[4]
+	return r:set( it[1]*oow , it[2]*oow , it[3]*oow )
+end
 
 
 class("q4",v4)
@@ -290,6 +296,15 @@ function m4_product_v4(m4a,v4b,r)
 	r[2]= (m4a[   2]*v4b[1]) + (m4a[ 4+2]*v4b[2]) + (m4a[ 8+2]*v4b[3]) + (m4a[12+2]*v4b[4])
 	r[3]= (m4a[   3]*v4b[1]) + (m4a[ 4+3]*v4b[2]) + (m4a[ 8+3]*v4b[3]) + (m4a[12+3]*v4b[4])
 	r[4]= (m4a[   4]*v4b[1]) + (m4a[ 4+4]*v4b[2]) + (m4a[ 8+4]*v4b[3]) + (m4a[12+4]*v4b[4])
+	return r
+end
+
+function m4_product_v3(m4a,v3b,r)
+	r=r or v3.new()
+	local oow=1/( (m4a[   4]*v3b[1]) + (m4a[ 4+4]*v3b[2]) + (m4a[ 8+4]*v3b[3]) + (m4a[12+4] ) )
+	r[1]= oow * ( (m4a[   1]*v3b[1]) + (m4a[ 4+1]*v3b[2]) + (m4a[ 8+1]*v3b[3]) + (m4a[12+1] ) )
+	r[2]= oow * ( (m4a[   2]*v3b[1]) + (m4a[ 4+2]*v3b[2]) + (m4a[ 8+2]*v3b[3]) + (m4a[12+2] ) )
+	r[3]= oow * ( (m4a[   3]*v3b[1]) + (m4a[ 4+3]*v3b[2]) + (m4a[ 8+3]*v3b[3]) + (m4a[12+3] ) )
 	return r
 end
 
