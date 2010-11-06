@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<project name="Hello" default="build" basedir=".">
+<project name="JsLua" default="build" basedir=".">
   <!-- Arguments to gwtc and devmode targets -->
   <property name="gwt.args" value="" />
 
@@ -46,7 +46,7 @@
       <jvmarg value="-Xmx256M"/>
       <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
       <arg line="${gwt.args}"/>
-      <arg value="wetgenes.jslua.Hello"/>
+      <arg value="wetgenes.jslua.JsLua"/>
     </java>
   </target>
 
@@ -58,10 +58,10 @@
       </classpath>
       <jvmarg value="-Xmx256M"/>
       <arg value="-startupUrl"/>
-      <arg value="Hello.html"/>
+      <arg value="JsLua.html"/>
       <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
       <arg line="${gwt.args}"/>
-      <arg value="wetgenes.jslua.Hello"/>
+      <arg value="wetgenes.jslua.JsLua"/>
     </java>
   </target>
 
@@ -72,7 +72,7 @@
       </classpath>
       <arg value="-XonlyEclipse"/>
       <arg value="-ignore"/>
-      <arg value="wetgenes.jslua.hello.Hello"/>
+      <arg value="wetgenes.jslua.JsLua"/>
     </java>
   </target>
 
@@ -81,7 +81,7 @@
   <target name="build" depends="gwtc" description="Build this project" />
 
   <target name="war" depends="build" description="Create a war file">
-    <zip destfile="Hello.war" basedir="war"/>
+    <zip destfile="JsLua.war" basedir="war"/>
   </target>
 
   <target name="clean" description="Cleans this project">
