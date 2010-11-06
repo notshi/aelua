@@ -1,0 +1,5 @@
+<project name="app" default="war">
+
+<import file="../aelua/build.xml"/>
+
+</project>
