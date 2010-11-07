@@ -9,3 +9,7 @@ dev:
 	ant devmode
 
 
+nojava:
+	ant nojava
+	
+

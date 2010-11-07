@@ -79,6 +79,8 @@
   <target name="hosted" depends="devmode" description="Run development mode (NOTE: the 'hosted' target is deprecated)" />
 
   <target name="build" depends="gwtc" description="Build this project" />
+  
+  <target name="nojava" depends="libs" description="Build this project without rebuilding java" />
 
   <target name="war" depends="build" description="Create a war file">
     <zip destfile="JsLua.war" basedir="war"/>
