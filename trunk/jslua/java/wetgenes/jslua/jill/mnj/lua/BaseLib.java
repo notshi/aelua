@@ -513,7 +513,7 @@ public final class BaseLib extends LuaJavaCallback
     L.checkType(1, Lua.TTABLE);
     L.push(PAIRS_AUX_FUN);                   // return generator,
     LuaTable t = (LuaTable)L.value(1);
-    L.push(new Object[] { t, t.keys() });   // state,
+    L.push(new Object[] { (Object)t, (Object)t.keys() });   // state,
     L.push(Lua.NIL);                            // and initial value.
     return 3;
   }

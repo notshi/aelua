@@ -87,7 +87,7 @@ public class JsLua implements EntryPoint {
 		}
 		catch(Exception e)
 		{
-			r=e.toString();
+			r=e.toString()+" : "+e.getMessage();
 		}
 		
 		if( L.type(-1) == L.TSTRING ) // got a string, we can only return strings
