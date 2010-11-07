@@ -81,6 +81,8 @@ console.log("loading");
 
 		L=window.lua_create();
 		
+console.log(window.test());
+		
 		preload_lua_func();
 	}
 	else
