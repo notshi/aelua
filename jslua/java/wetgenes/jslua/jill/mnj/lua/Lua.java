@@ -369,9 +369,20 @@ public final class Lua
    */
   public void call(int nargs, int nresults)
   {
-    apiChecknelems(nargs+1);
-    int func = stackSize - (nargs + 1);
-    this.vmCall(func, nresults);
+	try
+	{
+		apiChecknelems(nargs+1);
+		int func = stackSize - (nargs + 1);
+		this.vmCall(func, nresults);
+	}
+	catch(LuaError ex) // not this 
+	{
+		throw(ex);
+	}
+	catch(Exception ex) // catch other errors
+	{
+		dThrow(-1, ex.toString()+"\n"+ex.getStackTrace()[0].toString() ); // give an easier to debug error
+	}
   }
 
   /**
@@ -561,7 +572,7 @@ public final class Lua
    */
   public LuaTable getMetatable(Object o)
   {
-    LuaTable mt;
+    LuaTable mt=null;
 
     if (o instanceof LuaTable)
     {
@@ -575,7 +586,8 @@ public final class Lua
     }
     else
     {
-      mt = metatable[type(o)];
+		mt = metatable[type(o)];
+		return mt;
     }
     return mt;
   }
@@ -2326,34 +2338,36 @@ protect:
     stacksetsize(oldtop+1);
   }
 
-  String dStackDumpString()
+  public String dStackDumpString()
   {
 // simple lua stack dump so we have a chance to debug...	
 	int i=0;
-	String s="";
+	String s="\n "+toString(value(-1));
 
-	for(i=-1;i>-4;i--)
+/*
+ * 	for(i=-1;i>-4;i--)
 	{
 		s=s+"\n"+toString(value(i));
 	}
-	//	s=s+" **["+civ.size()+"]** ";
-
+	s=s+"\n **["+civ.size()+"]** ";
+*/
 
 	String s2;
 	for(i=0;i<civ.size();i++)
 	{
 		s2=where(i);
-		s=s+"\n"+s2;
+		s=s+"\n "+s2;
 	}
 	
 	return s;
   }
-  void dThrow(int status)
+  public void dThrow(int status)
   {
-
-	
     throw new LuaError(status,dStackDumpString());
-//    throw new RuntimeException( s );
+  }
+ public void dThrow(int status , String s)
+  {
+    throw new LuaError(status,s+dStackDumpString());
   }
 
 

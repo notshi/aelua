@@ -23,20 +23,21 @@
 <h1>This console is a local Lua state running in your browser as GWT javascript.</h1>
 </div>
 
-<form class="jNice" name="console_form" id="console_form" onsubmit="return console_form_submit();">
+<form class="jNice" name="console_form" id="console_form" action="#" onsubmit="return console_form_submit();">
 <div class="#console_form">
 <div class="#console_form_output" >
 <textarea cols="40" rows="5" name="output" id="console_form_output_text" readonly="true" style="width:950px;height:150px" ></textarea>
 </div>
 <div class="#console_form_input" >
 <textarea cols="40" rows="5" name="input" id="console_form_input_text" style="width:950px;height:150px" >
+_P={}
+print=function(...) for i,v in ipairs{...} do table.insert(_P,tostring(v)) end end
+
 local hello="hello"
 local fnord="world"
-return hello.." "..fnord
--- some random things that break for unknown reasons
--- tostring(10) -- gets "1" , the whole number format stuff seems slightly broken
--- pairs({}) -- bad cast, no idea why
--- probably more, something seems to be going wrong at a fairly low level
+print( hello.." "..fnord )
+
+return table.concat(_P)
 </textarea>
 </div>
 <div class="#console_form_submit" style="clear:both" >

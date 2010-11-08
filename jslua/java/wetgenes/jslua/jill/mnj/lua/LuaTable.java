@@ -207,10 +207,8 @@ public final class LuaTable extends java.util.HashMap
   {
     int totaluse = 0;   // total number of elements
     int ause = 0;       // summation of nums
-    Enumeration e=java.util.Collections.enumeration(keySet());
-    
-//    e=java.util.Collections.enumeration(super.values());
-//    e = (Iterator)super.values();
+    Enumeration e;
+	e=java.util.Collections.enumeration(keySet());
     while (e.hasMoreElements())
     {
       Object o =e. nextElement();
@@ -287,6 +285,7 @@ public final class LuaTable extends java.util.HashMap
 
       resize(nasize[0]);
     }
+// hashMap does not have a rehash
 //    super.rehash();
     inrehash = oldinrehash;
   }
@@ -617,9 +616,9 @@ public final class LuaTable extends java.util.HashMap
 
 final class Enum implements Enumeration
 {
-  LuaTable t;
-  int i;        // = 0
-  Enumeration e;
+  private LuaTable t;
+  private int i;        // = 0
+  private Enumeration e;
 
   Enum(LuaTable t, Enumeration e)
   {
