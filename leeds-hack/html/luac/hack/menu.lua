@@ -14,7 +14,6 @@ local unpack=unpack
 local require=require
 
 
-print("loading hack.menu")
 
 module(...)
 

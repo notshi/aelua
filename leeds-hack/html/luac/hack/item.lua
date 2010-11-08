@@ -15,7 +15,6 @@ local unpack=unpack
 local require=require
 
 
-print("loading hack.item")
 
 module(...)
 local hack_attr=require("hack.attr")

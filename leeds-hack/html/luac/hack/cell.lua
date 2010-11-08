@@ -15,8 +15,6 @@ local unpack=unpack
 local pairs=pairs
 local require=require
 
-print("loading hack.cell")
-
 module(...)
 local hack_attr=require("hack.attr")
 

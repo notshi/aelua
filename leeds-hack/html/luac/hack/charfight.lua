@@ -64,14 +64,9 @@ kinda ish
 
 ]]
 
-local package=package
-local print=print
-print("loading hack.char_fight")
 
 
 module(...)
-print(_M)
-print(package.loaded[(...)])
 
 --
 -- get the amount of damage, done by this char with their currently welded weapon
