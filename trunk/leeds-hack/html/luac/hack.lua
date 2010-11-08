@@ -17,7 +17,6 @@ local require=require
 
 local print=print
 
-print("loading hack")
 module(...)
 local hack=_M or require("hack")
 local hack_level=require("hack.level")
@@ -67,7 +66,6 @@ local i
 	
 	level.set_msg("Welcome to the jungle.")
 	
-	print("setup")
 
 end
 

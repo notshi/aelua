@@ -17,8 +17,6 @@ local require=require
 
 
 
-print("loading hack.char")
-
 module(...)
 local hack_attr=require("hack.attr")
 local hack_fight=require("hack.charfight")

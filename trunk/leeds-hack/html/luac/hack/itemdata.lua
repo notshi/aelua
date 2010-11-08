@@ -18,7 +18,6 @@ local unpack=unpack
 local require=require
 
 
-print("loading hack.item_data")
 
 
 module(...)

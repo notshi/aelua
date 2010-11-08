@@ -17,17 +17,10 @@ local setfenv=setfenv
 local unpack=unpack
 local require=require
 local print=print
+local tostring=tostring
+local exit=exit
 
-for i,v in pairs(package.loaded) do
-	print(i,v)
-end
-
-print("loading hack.char_data "..(...))
-
-module("...")
-print(_M)
-print(package.loaded[(...)])
-package.loaded[(...)]=_M -- I need this WTF?
+module(...)
 local hack_char_data=_M or require("hack.char_data")
 
 function ascii(a) return string.byte(a,1) end

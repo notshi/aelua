@@ -17,14 +17,6 @@ local unpack=unpack
 local require=require
 
 
-local print=print
-
-for i,v in pairs(package.loaded) do
-	print(i,v)
-end
-
-print("loading hack.level")
-
 module(...)
 local hack_map=require("hack.map")
 local hack_room=require("hack.room")
@@ -35,8 +27,7 @@ local hack_attr=require("hack.attr")
 
 local hack_item_data=require("hack.itemdata")
 local hack_char_data=require("hack.chardata")
-print(hack_char_data)
-print( debug.traceback() )
+
 
 function create(t,up)
 

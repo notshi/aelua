@@ -13,7 +13,6 @@ local setfenv=setfenv
 local unpack=unpack
 local require=require
 
-print("loading hack.room")
 
 module(...)
 local hack_attr=require("hack.attr")
