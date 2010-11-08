@@ -115,22 +115,14 @@ public class JsLua implements EntryPoint {
 		
 	}
 	
-// load a string, and set the result into the package.preload of the given name
-    public static int test() {
-		
-		String s=new String("10");
-		int di = s.indexOf('.');
-		return di;
-	}
+
 
 
 // this is a bad interface, it is nothing but hacks for now
 
 	public static native void build_bridge() /*-{
 		
-		$wnd.test = $entry(function() {
-			return @wetgenes.jslua.client.JsLua::test()();
-		});
+
 		$wnd.lua_create = $entry(function() {
 			return @wetgenes.jslua.client.JsLua::lua_create()();
 		});
