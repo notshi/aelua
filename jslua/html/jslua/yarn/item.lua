@@ -17,7 +17,7 @@ local require=require
 
 
 module(...)
-local hack_attr=require("hack.attr")
+local yarn_attr=require("yarn.attr")
 
 
 function create(t,_level)
@@ -33,7 +33,7 @@ setfenv(1,d)
 	
 	time_passed=level.time_passed
 
-	attr=hack_attr.create(t)
+	attr=yarn_attr.create(t)
 	
 	function del()
 		if cell then -- remove link from old cell

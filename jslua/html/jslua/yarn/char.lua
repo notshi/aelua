@@ -18,8 +18,8 @@ local require=require
 
 
 module(...)
-local hack_attr=require("hack.attr")
-local hack_fight=require("hack.charfight")
+local yarn_attr=require("yarn.attr")
+local yarn_fight=require("yarn.charfight")
 
 
 local a_at=string.byte("@",1)
@@ -39,7 +39,7 @@ setfenv(1,d)
 	
 	time_passed=level.time_passed
 
-	attr=hack_attr.create(t)
+	attr=yarn_attr.create(t)
 	
 	function del()
 		if cell then -- remove link from old cell
@@ -70,7 +70,7 @@ setfenv(1,d)
 		local c=level.get_cell(x,y)
 		if c and c.room then -- its a cell we can move into
 			if c.char then -- interact with another char?
-				hack_fight.hit(d,c.char)
+				yarn_fight.hit(d,c.char)
 				return 1					
 			else -- just move
 				set_cell(c)

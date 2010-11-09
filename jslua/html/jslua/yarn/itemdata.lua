@@ -21,7 +21,7 @@ local require=require
 
 
 module(...)
-local hack_item_data=require("hack.itemdata")
+local yarn_item_data=require(...)
 
 function ascii(a) return string.byte(a,1) end
 
@@ -31,7 +31,7 @@ function get(n,f)
 	
 	local it={}
 	
-	local d=hack_item_data[n]
+	local d=yarn_item_data[n]
 	
 	for i,v in pairs(d[1]) do it[i]=v end
 	for i,v in pairs(d[2]) do it[i]=it[i] + math.floor(v*f) end

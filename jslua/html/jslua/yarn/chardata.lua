@@ -21,7 +21,7 @@ local tostring=tostring
 local exit=exit
 
 module(...)
-local hack_char_data=_M or require("hack.char_data")
+local yarn_char_data=require(...)
 
 function ascii(a) return string.byte(a,1) end
 
@@ -31,7 +31,7 @@ function get(n,f)
 	
 	local it={}
 	
-	local d=hack_char_data[n]
+	local d=yarn_char_data[n]
 	
 	for i,v in pairs(d[1]) do it[i]=v end
 	for i,v in pairs(d[2]) do it[i]=it[i] + math.floor(v*f) end

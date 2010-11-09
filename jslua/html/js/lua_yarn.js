@@ -8,18 +8,18 @@ var L; // this will be our lua state
 
 var preload_lua_list=[
 
-	{file:"/luac/hack.lua",name:"hack"},
-	{file:"/luac/hack/attr.lua",name:"hack.attr"},
-	{file:"/luac/hack/cell.lua",name:"hack.cell"},
-	{file:"/luac/hack/chardata.lua",name:"hack.chardata"},
-	{file:"/luac/hack/charfight.lua",name:"hack.charfight"},
-	{file:"/luac/hack/char.lua",name:"hack.char"},
-	{file:"/luac/hack/itemdata.lua",name:"hack.itemdata"},
-	{file:"/luac/hack/item.lua",name:"hack.item"},
-	{file:"/luac/hack/level.lua",name:"hack.level"},
-	{file:"/luac/hack/map.lua",name:"hack.map"},
-	{file:"/luac/hack/menu.lua",name:"hack.menu"},
-	{file:"/luac/hack/room.lua",name:"hack.room"}
+	{file:"/jslua/yarn.lua",			name:"yarn"},
+	{file:"/jslua/yarn/attr.lua",		name:"yarn.attr"},
+	{file:"/jslua/yarn/cell.lua",		name:"yarn.cell"},
+	{file:"/jslua/yarn/chardata.lua",	name:"yarn.chardata"},
+	{file:"/jslua/yarn/charfight.lua",	name:"yarn.charfight"},
+	{file:"/jslua/yarn/char.lua",		name:"yarn.char"},
+	{file:"/jslua/yarn/itemdata.lua",	name:"yarn.itemdata"},
+	{file:"/jslua/yarn/item.lua",		name:"yarn.item"},
+	{file:"/jslua/yarn/level.lua",		name:"yarn.level"},
+	{file:"/jslua/yarn/map.lua",		name:"yarn.map"},
+	{file:"/jslua/yarn/menu.lua",		name:"yarn.menu"},
+	{file:"/jslua/yarn/room.lua",		name:"yarn.room"}
 
 ];
 var preload_lua_idx=0;
@@ -63,12 +63,12 @@ var preload_lua_done=function(){
 
 	var r=window.lua.dostring(L,'\
 \
-	hack=require("hack")\
-	hack.setup()\
-	hack.update()\
-	return hack.draw()\
+	yarn=require("yarn")\
+	yarn.setup()\
+	yarn.update()\
+	return yarn.draw()\
 \
-',"hack");
+',"yarn");
 
 	$("#displayhack").html("<pre class='prehack'>"+r+"</pre>"); //initial display
 
@@ -83,19 +83,19 @@ var preload_lua_done=function(){
 	
 	$(document).keydown(function(event){
 		var key=getkey(event.keyCode);
-		if (key) { var r=window.lua.dostring(L,'hack.keypress("","'+key+'","down")',"keydown"); }
+		if (key) { var r=window.lua.dostring(L,'yarn.keypress("","'+key+'","down")',"keydown"); }
 	});
 	
 	$(document).keyup(function(event){
 		var key=getkey(event.keyCode);
-		if (key) { var r=window.lua.dostring(L,'hack.keypress("","'+key+'","up")',"keyup"); }
+		if (key) { var r=window.lua.dostring(L,'yarn.keypress("","'+key+'","up")',"keyup"); }
 	});
 
 	setInterval(function(){	
 		var r=window.lua.dostring(L,'\
-	local r=hack.update()\
+	local r=yarn.update()\
 	if r>0 then \
-		return hack.draw()\
+		return yarn.draw()\
 	else\
 		return nil\
 	end \
