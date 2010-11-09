@@ -8,18 +8,18 @@ var L; // this will be our lua state
 
 var preload_lua_list=[
 
-	{file:"/luac/yarn.lua",			name:"yarn"},
-	{file:"/luac/yarn/attr.lua",		name:"yarn.attr"},
-	{file:"/luac/yarn/cell.lua",		name:"yarn.cell"},
-	{file:"/luac/yarn/chardata.lua",	name:"yarn.chardata"},
-	{file:"/luac/yarn/charfight.lua",	name:"yarn.charfight"},
-	{file:"/luac/yarn/char.lua",		name:"yarn.char"},
-	{file:"/luac/yarn/itemdata.lua",	name:"yarn.itemdata"},
-	{file:"/luac/yarn/item.lua",		name:"yarn.item"},
-	{file:"/luac/yarn/level.lua",		name:"yarn.level"},
-	{file:"/luac/yarn/map.lua",		name:"yarn.map"},
-	{file:"/luac/yarn/menu.lua",		name:"yarn.menu"},
-	{file:"/luac/yarn/room.lua",		name:"yarn.room"}
+	{file:"luac/yarn.lua",				name:"yarn"},
+	{file:"luac/yarn/attr.lua",		name:"yarn.attr"},
+	{file:"luac/yarn/cell.lua",		name:"yarn.cell"},
+	{file:"luac/yarn/chardata.lua",	name:"yarn.chardata"},
+	{file:"luac/yarn/charfight.lua",	name:"yarn.charfight"},
+	{file:"luac/yarn/char.lua",		name:"yarn.char"},
+	{file:"luac/yarn/itemdata.lua",	name:"yarn.itemdata"},
+	{file:"luac/yarn/item.lua",		name:"yarn.item"},
+	{file:"luac/yarn/level.lua",		name:"yarn.level"},
+	{file:"luac/yarn/map.lua",			name:"yarn.map"},
+	{file:"luac/yarn/menu.lua",		name:"yarn.menu"},
+	{file:"luac/yarn/room.lua",		name:"yarn.room"}
 
 ];
 var preload_lua_idx=0;
@@ -27,7 +27,14 @@ var preload_lua_func;
 
 preload_lua_func=function(data){
 	
+var pct=0;
+
 	var v=preload_lua_list[preload_lua_idx];
+	
+	pct=Math.floor( 100 * ((preload_lua_idx*2)+(data?1:0))/((preload_lua_list.length-1)*2) );
+
+$("#displayhack").html("<pre class='prehack'>\n\nPlease remain calm,\n\tyarn is loading : "+pct+"%\n\nLoading : "+v.name+"</pre>");
+
 	
 	if(data) // we have loaded something
 	{
