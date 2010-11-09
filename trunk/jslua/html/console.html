@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>JsLua</title>
+    
+    <script type="text/javascript" language="javascript" src="js/jquery-1.4.2.js"></script>
+    <script type="text/javascript" language="javascript" src="JsLua/JsLua.nocache.js"></script>
+    <script type="text/javascript" language="javascript" src="js/lua_console.js"></script>
+
+
+  </head>
+  <body bgcolor="white"> 
+
+    <noscript>
+      <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color:white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+        Your web browser must have JavaScript enabled
+        in order for this application to display correctly.
+      </div>
+    </noscript>
+    
+<div>
+<h1>This console is a local Lua state running in your browser as GWT javascript.</h1>
+</div>
+
+<form class="jNice" name="console_form" id="console_form" action="#" onsubmit="return console_form_submit();">
+<div class="#console_form">
+<div class="#console_form_output" >
+<textarea cols="40" rows="5" name="output" id="console_form_output_text" readonly="true" style="width:950px;height:150px" ></textarea>
+</div>
+<div class="#console_form_input" >
+<textarea cols="40" rows="5" name="input" id="console_form_input_text" style="width:950px;height:150px" >
+_P={} -- we print out what is returned
+print=function(...) for i,v in ipairs{...} do _P[#_P+1]=tostring(v) end _P[#_P+1]="\n" end
+
+local hello="hello"
+local fnord="world"
+print( hello.." "..fnord )
+
+return table.concat(_P)
+</textarea>
+</div>
+<div class="#console_form_submit" style="clear:both" >
+<input type="submit" name="submit" value="Execute Lua Code!"/>
+</div>
+</form>
+
+<script type="text/javascript">
+
+function scroll_to_bottom(){
+var $t = $("#console_form_output_text")[0];
+$t.scrollTop=$t.scrollHeight;
+//$t = $("#console_form_input_text")[0];
+//$t.scrollTop=$t.scrollHeight;
+}
+
+function console_form_submit()
+{
+	var fi=$("#console_form_input_text")[0];
+	var fo=$("#console_form_output_text")[0];	
+	
+	var r=window.lua.dostring(L,fi.value,"console");
+	
+	fo.value+="\n"+r;
+	
+	scroll_to_bottom();
+	
+	return false;
+}
+
+
+</script>
+
+    
+  </body>
+</html>

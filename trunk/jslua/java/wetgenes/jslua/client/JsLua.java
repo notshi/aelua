@@ -17,37 +17,7 @@ import mnj.lua.*;
 
 public class JsLua implements EntryPoint {
 
-  public void onModuleLoad() {
-	  
-/*
-    Button b = new Button("Click here bitches", new ClickHandler() {
-      public void onClick(ClickEvent event) {
-		  
- 		Lua L = new Lua();
-		
-		BaseLib.open(L);
-		PackageLib.open(L);
-		StringLib.open(L);
-		TableLib.open(L);
-		MathLib.open(L);
-		OSLib.open(L);
-
-		L.loadString(
-"		test='poop on you'"+
-"		for i=1,10 do"+
-"			test=test..' and you'"+
-"		end"+
-"		","test");
-		L.call(0,0);
-
-        Window.alert( (String) L.rawGet(L.getGlobals(), "test") );
-      }
-    });
-
-    RootPanel.get().add(b);
-*/
-
-    
+  public void onModuleLoad() {    
     build_bridge();
   }
   
@@ -76,9 +46,9 @@ public class JsLua implements EntryPoint {
 	}
 
 // just get/set globals and call for pram passing
-    public static String lua_dostring(Lua L, String s, String n) {
+    public static Object lua_dostring(Lua L, String s, String n) {
 		
-		String r="";
+		Object r=null;
 		
 		try
 		{
@@ -90,9 +60,14 @@ public class JsLua implements EntryPoint {
 			r=e.toString()+" : "+e.getMessage();
 		}
 		
-		if( L.type(-1) == L.TSTRING ) // got a string, we can only return strings
+		if( L.type(-1) == L.TSTRING ) // got a string
 		{
-			r=(String)L.value(-1);
+			r=L.value(-1);
+		}
+		else
+		if( L.type(-1) == L.TNUMBER ) // got a number
+		{
+			r=L.value(-1);
 		}
 		
 		L.pop(1);
@@ -106,7 +81,7 @@ public class JsLua implements EntryPoint {
 		Object o=L.rawGet(L.getGlobals(), "package");
 		o=L.rawGet(o, "preload");
 		
-		L.loadString(s,n); // push on stack
+		L.loadString(s,n); // compile and push onto stack
 		Object f=L.value(-1); // get from stack
 		
 		L.rawSet(o, n,f); // set loaded string in preload table, ready to execute when required
@@ -122,22 +97,27 @@ public class JsLua implements EntryPoint {
 
 	public static native void build_bridge() /*-{
 		
-
-		$wnd.lua_create = $entry(function() {
+		$wnd.lua={};
+		$wnd.lua.create = $entry(function() {
 			return @wetgenes.jslua.client.JsLua::lua_create()();
 		});
-		$wnd.lua_get = $entry(function(L,n) {
+		$wnd.lua.get = $entry(function(L,n) {
 			return @wetgenes.jslua.client.JsLua::lua_get(Lmnj/lua/Lua;Ljava/lang/String;)(L,n);
 		});
-		$wnd.lua_set = $entry(function(L,n,v) {
+		$wnd.lua.set = $entry(function(L,n,v) {
 			@wetgenes.jslua.client.JsLua::lua_set(Lmnj/lua/Lua;Ljava/lang/String;Ljava/lang/String;)(L,n,v);
 		});
-		$wnd.lua_dostring = $entry(function(L,s,n) {
+		$wnd.lua.dostring = $entry(function(L,s,n) {
 			return @wetgenes.jslua.client.JsLua::lua_dostring(Lmnj/lua/Lua;Ljava/lang/String;Ljava/lang/String;)(L,s,n);
 		});
-		$wnd.lua_preloadstring = $entry(function(L,s,n) {
+		$wnd.lua.preloadstring = $entry(function(L,s,n) {
 			@wetgenes.jslua.client.JsLua::lua_preloadstring(Lmnj/lua/Lua;Ljava/lang/String;Ljava/lang/String;)(L,s,n);
 		});
+		if($wnd.lua_onload)
+		{
+			$wnd.lua_onload();
+			$wnd.lua_onload=nil;
+		}
 	}-*/;
 
 }

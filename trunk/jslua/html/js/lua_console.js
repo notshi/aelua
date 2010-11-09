@@ -7,7 +7,7 @@ var L; // this will be our lua state
 // but it will do for now
 
 var preload_lua_list=[
-
+/*
 	{file:"/luac/hack.lua",name:"hack"},
 	{file:"/luac/hack/attr.lua",name:"hack.attr"},
 	{file:"/luac/hack/cell.lua",name:"hack.cell"},
@@ -20,26 +20,26 @@ var preload_lua_list=[
 	{file:"/luac/hack/map.lua",name:"hack.map"},
 	{file:"/luac/hack/menu.lua",name:"hack.menu"},
 	{file:"/luac/hack/room.lua",name:"hack.room"}
-
+*/
 ];
 var preload_lua_idx=0;
 var preload_lua_func;
-var preload_lua_done=false;
 
 preload_lua_func=function(data){
-var v=preload_lua_list[preload_lua_idx];
+	
+	var v=preload_lua_list[preload_lua_idx];
 	
 	if(data) // we have loaded something
 	{
 		
-window.lua_preloadstring(L,data,v.name);
+		window.lua.preloadstring(L,data,v.name);
 
 // console.log(v.name + " : " + v.file);
 
 		preload_lua_idx++;
 	}
 
-	v=preload_lua_list[preload_lua_idx];
+	v=preload_lua_list[preload_lua_idx]; // idx may have changed
 	
 // trigger the next load
 	if(v)
@@ -51,37 +51,29 @@ window.lua_preloadstring(L,data,v.name);
 	}
 	else // done it all
 	{
-		preload_lua_done=true;
-		runstuff();
+		preload_lua_done();
 	}
 }
 
 
 
 
-
-var runstuff=function(){
+// final call, all modules have been preloaded from server
+var preload_lua_done=function(){
 
 
 };
 
-var runcheck;
 
-runcheck=function() {
-	if(window.lua_create) // wait for the java stuff to be ready
-	{
-//console.log("loading");
-
-		L=window.lua_create();
-		
+if(window.lua) // the java stuff is ready?
+{
+	L=window.lua.create();		
+	preload_lua_func();
+}
+else // set a callback to run when it is loaded
+{
+	window.lua_onload=function() {
+		L=window.lua.create();		
 		preload_lua_func();
-	}
-	else
-	{
-//console.log("waiting");
-		window.setTimeout( runcheck , 1000); // try again later
-	}
-};
-
-
-$(runcheck);
+	};
+}

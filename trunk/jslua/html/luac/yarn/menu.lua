@@ -23,12 +23,15 @@ function create(t,up)
 local d={}
 setfenv(1,d)
 
-
+	dirty=0
+	
 	-- set a menu to display
 	function show(t,_curser)
 
 		display=t
 		curser=_curser or 1
+		
+		dirty=1
 	end
 	
 
@@ -36,11 +39,14 @@ setfenv(1,d)
 
 	function hide()
 		display=nil
+		dirty=1
 	end
 
 
 	function keypress(ascii,key,act)
 		if not display then return end
+		
+		dirty=1
 		
 		if act=="down" then
 		
@@ -67,6 +73,15 @@ setfenv(1,d)
 	end
 
 
+	-- display a menu
+	function update()
+	
+		local t=dirty
+		dirty=0
+		
+		return t
+	end
+	
 	-- display a menu
 	function draw()
 
