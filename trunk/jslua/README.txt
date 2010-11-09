@@ -1,7 +1,8 @@
 
 This is an attempt to convert the aelua code to run on googles web toolkit. IE
-to run lua code inside javascript on a browser. This is mostly broken and only
-half working but looking promising as a posibility.
+to run lua code inside javascript on a browser.
+
+This is now working, allegedly.
 
 
 All content is MIT licenesed unless explicitly stated otherwise.

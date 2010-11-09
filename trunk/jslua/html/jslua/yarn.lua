@@ -18,9 +18,9 @@ local require=require
 local print=print
 
 module(...)
-local hack=_M or require("hack")
-local hack_level=require("hack.level")
-local hack_menu=require("hack.menu")
+local yarn=require("yarn")
+local yarn_level=require("yarn.level")
+local yarn_menu=require("yarn.menu")
 
 local a_space=string.byte(" ",1)
 local a_under=string.byte("_",1)
@@ -51,8 +51,8 @@ local i
 		end
 	end
 	
-	level=hack_level.create({xh=40,yh=28},hack)
-	menu=hack_menu.create({},hack)
+	level=yarn_level.create({xh=40,yh=28},yarn)
+	menu=yarn_menu.create({},yarn)
 	
 	for y=0,asc_yh-1 do
 		for x=0,asc_xh-1 do
@@ -96,7 +96,7 @@ end
 
 function update()
 
-	level.update()
+	return level.update() + menu.update()
 	
 end
 
@@ -217,6 +217,7 @@ local t={}
 	end
 	
 	
+	local ret={}
 	for y=0,asc_yh-1 do
 
 		for x=0,asc_xh-1 do
@@ -228,10 +229,13 @@ local t={}
 		
 		local s=string.char(unpack(t))
 		
-print(s)
+		ret[#ret+1]=s
+		ret[#ret+1]="\n"
+--print(s)
 		
 	end
 	
+	return table.concat(ret)
 	
 end
 

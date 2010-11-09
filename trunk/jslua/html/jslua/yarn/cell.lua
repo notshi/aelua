@@ -16,7 +16,7 @@ local pairs=pairs
 local require=require
 
 module(...)
-local hack_attr=require("hack.attr")
+local yarn_attr=require("yarn.attr")
 
 
 local a_space=string.byte(" ",1)
@@ -42,7 +42,7 @@ setfenv(1,d)
 	yp=t.yp or 0
 	id=t.id or 0
 	
-	attr=hack_attr.create(t)
+	attr=yarn_attr.create(t)
 	
 	items={}
 

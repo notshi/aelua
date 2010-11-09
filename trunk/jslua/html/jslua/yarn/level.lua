@@ -18,15 +18,15 @@ local require=require
 
 
 module(...)
-local hack_map=require("hack.map")
-local hack_room=require("hack.room")
-local hack_cell=require("hack.cell")
-local hack_item=require("hack.item")
-local hack_char=require("hack.char")
-local hack_attr=require("hack.attr")
+local yarn_map=require("yarn.map")
+local yarn_room=require("yarn.room")
+local yarn_cell=require("yarn.cell")
+local yarn_item=require("yarn.item")
+local yarn_char=require("yarn.char")
+local yarn_attr=require("yarn.attr")
 
-local hack_item_data=require("hack.itemdata")
-local hack_char_data=require("hack.chardata")
+local yarn_item_data=require("yarn.itemdata")
+local yarn_char_data=require("yarn.chardata")
 
 
 function create(t,up)
@@ -51,7 +51,7 @@ setfenv(1,d)
 	for y=0,yh-1 do
 		for x=0,xh-1 do
 			local i=x+y*xh
-			cells[i]=hack_cell.create({ level=d, xp=x, yp=y, id=i })
+			cells[i]=yarn_cell.create({ level=d, xp=x, yp=y, id=i })
 		end
 	end
 
@@ -80,7 +80,7 @@ setfenv(1,d)
 	end
 	
 	function new_item(n)
-		local it=hack_item.create( hack_item_data.get(n),d)
+		local it=yarn_item.create( yarn_item_data.get(n),d)
 		items[it]=true
 		return it
 	end
@@ -90,7 +90,7 @@ setfenv(1,d)
 	end
 	
 	function new_char(n)
-		local it=hack_char.create( hack_char_data.get(n),d)
+		local it=yarn_char.create( yarn_char_data.get(n),d)
 		chars[it]=true
 		return it
 	end
@@ -130,11 +130,11 @@ setfenv(1,d)
 		return rand_cell(rand_room(t))
 	end
 	
-	map=hack_map.create(d) -- create an empty map, this is juat a room layout
+	map=yarn_map.create(d) -- create an empty map, this is juat a room layout
 
 -- now turn that generated map into real rooms we can put stuff in
 	for i,v in ipairs(map.rooms) do
-		rooms[i]=hack_room.create({ level=d, xp=v.x, yp=v.y, xh=v.xh, yh=v.yh, })
+		rooms[i]=yarn_room.create({ level=d, xp=v.x, yp=v.y, xh=v.xh, yh=v.yh, })
 	end
 
 -- find link door locations	

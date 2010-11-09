@@ -15,7 +15,7 @@ local require=require
 
 
 module(...)
-local hack_attr=require("hack.attr")
+local yarn_attr=require("yarn.attr")
 
 
 function create(t)
@@ -30,7 +30,7 @@ setfenv(1,d)
 	yh=t.yh or 0
 	doors={} -- a cell->room table of links to bordering rooms
 	
-	attr=hack_attr.create(t)
+	attr=yarn_attr.create(t)
 	
 -- point to this room from the cells we cover, only one room pointer per cell
 
