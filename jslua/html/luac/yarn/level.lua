@@ -236,7 +236,7 @@ setfenv(1,d)
 	function update()
 		key_check()
 		
-		if time_update==0 then return end
+		if time_update==0 then return 0 end
 --print(time_passed)
 
 -- regen health?
@@ -260,9 +260,10 @@ setfenv(1,d)
 			end
 		end
 
-		
+		local t=time_update
 		time_passed=time_passed+time_update
 		time_update=0
+		return t
 	end
 	
 	display_msg=nil
