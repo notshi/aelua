@@ -177,7 +177,7 @@ function word_wrap(s,w)
 	return t
 end
 
-function draw()
+function draw(charwidth)
 
 local i=0
 local t={}
@@ -223,8 +223,18 @@ local t={}
 		for x=0,asc_xh-1 do
 		
 			i=1+x+y*asc_xh
-			t[x+1]=asc[i]%256
+--			t[x+1]=asc[i]%256
+
+			if charwidth==2 then
 			
+				t[x*2+1]=asc[i]%256
+				t[x*2+2]=32
+			
+			else
+			
+				t[x+1]=asc[i]%256
+			
+			end
 		end
 		
 		local s=string.char(unpack(t))

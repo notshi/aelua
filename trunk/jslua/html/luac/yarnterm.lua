@@ -18,7 +18,7 @@ local aesc=string.char(27) .. '['
 
 yarn.setup()
 yarn.update()
-print( aesc.."0;0H"..yarn.draw() )
+print( aesc.."2J"..aesc.."0;0H"..yarn.draw(2) )
 
 local exit=false
 while not exit do
@@ -32,7 +32,7 @@ while not exit do
 	yarn.keypress(key_str,key,"down")
 	yarn.keypress(key_str,key,"up")
 	yarn.update()
-	print( aesc.."0;0H"..yarn.draw() )
+	print( aesc.."0;0H"..yarn.draw(2) )
 
 end
 
