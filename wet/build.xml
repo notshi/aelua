@@ -60,6 +60,10 @@
       <fileset dir="${appengine.sdk}/lib/user"> <include name="**/*.jar"/> </fileset>
       <fileset dir="../aelua/class">            <include name="**/*.jar"/> </fileset>
     </copy>
+    
+    <copy todir="${war.dir}/jslua" includeEmptyDirs="false" >
+      <fileset dir="../jslua/war">          <exclude name="**/.svn/**"/> </fileset>
+    </copy>
 
 	<for param="file"> 
 		<path> 
