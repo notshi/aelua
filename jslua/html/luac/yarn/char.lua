@@ -57,8 +57,10 @@ setfenv(1,d)
 		cell.char=d
 		
 		if cell_fx.room_visible then -- this char makes the room visible (ie its the player)
-			if not cell.room.attr.get.visible() then -- if room is not visible
-				cell.room.set_visible(true)
+			for i,v in cell.neighboursplus() do -- apply to neighbours and self
+				if v.room and ( not v.room.attr.get.visible() ) then -- if room is not visible
+					v.room.set_visible(true)
+				end
 			end
 		end
 		

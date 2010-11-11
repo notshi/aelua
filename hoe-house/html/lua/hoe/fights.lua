@@ -401,7 +401,7 @@ function create_arson(H,p1,p2)
 		
 		-- a house burning has a chance of destroying all the victims sticks
 		if math.random(0,99)<23 then
-			def.result.sticks=-def.sticks
+			def.result.sticks=-def.player.sticks
 		end
 		
 	else --lose
@@ -454,7 +454,7 @@ function create_party(H,p1,p2)
 	
 	for i=1,#c.sides do local v=c.sides[i]
 		v.result={} -- the change in stats
-		v.party=math.ceil(v.player.houses*10000/v.player.hoes) -- party base power
+		v.party=math.ceil(v.player.houses*10000*v.player.houses/v.player.hoes) -- 10 hoes a house is worth 1000*houses
 		v.manure=v.player.houses*1000 -- every party needs manure
 		
 		if v.manure>v.player.manure then v.manure=v.player.manure end -- unless there is not enough manure
