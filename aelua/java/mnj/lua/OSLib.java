@@ -153,14 +153,16 @@ public final class OSLib extends LuaJavaCallback
 
     if (s.equals("*t"))
     {
+		int hour_add=c.get(Calendar.AM_PM)==Calendar.PM ? 12 : 0 ; // fix the hour
+
       L.push(L.createTable(0, 8));      // 8 = number of fields
       setfield(L, "sec", c.get(Calendar.SECOND));
       setfield(L, "min", c.get(Calendar.MINUTE));
-      setfield(L, "hour", c.get(Calendar.HOUR));
+      setfield(L, "hour", c.get(Calendar.HOUR)+hour_add);
       setfield(L, "day", c.get(Calendar.DAY_OF_MONTH));
-      setfield(L, "month", canonicalmonth(c.get(Calendar.MONTH)));
+      setfield(L, "month", canonicalmonth(c.get(Calendar.MONTH))+1);
       setfield(L, "year", c.get(Calendar.YEAR));
-      setfield(L, "wday", canonicalweekday(c.get(Calendar.DAY_OF_WEEK)));
+      setfield(L, "wday", canonicalweekday(c.get(Calendar.DAY_OF_WEEK))+1);
       // yday is not supported because CLDC 1.1 does not provide it.
       // setfield(L, "yday", c.get("???"));
       if (tz.useDaylightTime())
