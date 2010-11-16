@@ -72,6 +72,7 @@ local put=make_put(srv)
 local get=make_get(srv)
 	
 	local url=srv.url_base
+	if url:sub(-1)=="/" then url=url:sub(1,-2) end -- trim any trailing /
 	
 	local posts={} -- remove any gunk from the posts input
 	-- check if this post probably came from this page before allowing post params
@@ -83,11 +84,24 @@ local get=make_get(srv)
 	if posts.submit then posts.submit=trim(posts.submit) end
 	
 
-	if posts.text then
-	end
-		srv.set_mimetype("text/html; charset=UTF-8")
-		put("header",{title="notes "})
-		
-		put("footer")
+
+
+	
+	srv.set_mimetype("text/html; charset=UTF-8")
+	put("header",{title="notes "})
+	
+	put("home_bar",{})
+	put("user_bar",{H={user=user,sess=sess}})
+
+
+	comments.do_post(srv,{url="/note",posts=posts,get=get,put=put,sess=sess,user=user})
+	
+--[[
+	local t=users.email_to_avatar_url("15071645@id.twitter.com")
+	local t=users.email_to_avatar_url("kriss2@xixs.com")
+	put('<img src="{src}">',{src=t})
+]]
+	
+	put("footer")
 end
 

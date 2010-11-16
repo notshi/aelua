@@ -128,7 +128,7 @@ header=function(d)
 	d.jquery_validate_js="http://ajax.microsoft.com/ajax/jQuery.Validate/1.6/jQuery.Validate.min.js"
 	
 	if d.srv.url_slash[3]=="host.local:8080" then -- a local shop only servs local people
-		d.jquery_js="/js/jquery-1.4.2.js"
+		d.jquery_js="/js/jquery.js"
 		d.jquery_ui_js="/js/jquery-ui-1.8.2.custom.min.js"
 		d.swfobject_js="/js/swfobject.js"
 		d.jquery_validate_js="/js/jquery.validate.js"

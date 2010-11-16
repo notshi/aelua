@@ -160,13 +160,18 @@ opts=opts or {}
 
 	local list={}
 	
-	local ret=dat.query({
+	local q={
 		kind=kind(H),
 		limit=opts.limit or 10,
 		offset=0,
-			{"filter","state","==",opts.state or "active"},
-			{"sort","updated","DESC"},
-		})
+		}
+	q[#q+1]={"filter","state","==",opts.state or "active"}
+	if opts.timestep then
+		q[#q+1]={"filter","timestep","==",opts.timestep or 600}
+	end
+	q[#q+1]={"sort","updated","DESC"}
+		
+	local ret=dat.query(q)
 		
 	for i=1,#ret.list do local v=ret.list[i]
 		dat.build_cache(v)
@@ -181,10 +186,13 @@ end
 --
 --------------------------------------------------------------------------------
 function get_active(H)
-	return (list(H,{limit=1})[1])
+	return (list(H,{state="active",timestep=600,limit=1})[1])
 end
 function get_last(H)
-	return (list(H,{state="over",limit=1})[1])
+	return (list(H,{state="over",timestep=600,limit=1})[1])
+end
+function get_speed(H)
+	return (list(H,{state="over",timestep=1,limit=1})[1])
 end
 
 --------------------------------------------------------------------------------
