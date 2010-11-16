@@ -135,14 +135,16 @@ a:hover {
 	text-align: center;
 }
 
+
+
 .wetnote_comment_div , .wetnote_reply_div , .wetnote_comment_hide_div {
 	position:relative;
 	clear:both;
 }
 
 .wetnote_comment_form_div{
-	clear:both;
 	margin-bottom:40px;
+	clear:both;
 }
 
 .wetnote_reply_div , .wetnote_comment_form_div{
@@ -164,8 +166,8 @@ a:hover {
 	background-color:#fee;
 	color:#f00;
 	padding-bottom: 14px;
-	float:left;
 	width:500px;
+	margin-left:100px;
 }
 .wetnote_comment_head a , .wetnote_reply_head a {
 	color:#f00;
@@ -176,7 +178,7 @@ a:hover {
 }
 
 .wetnote_comment_form{
-	width:600;
+	width:640;
 	margin-bottom:40px;
 }
 
@@ -192,7 +194,7 @@ a:hover {
 	display:inline-block;
 }
 
-.wetnote_comment_text {
+.wetnote_comment_form_text {
 	width:500px;
 	height:120px;
 }
