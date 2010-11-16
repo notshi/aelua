@@ -131,6 +131,8 @@ local put=make_put(srv)
 		local k,q = oauth.build(vars,{post="GET",url=baseurl,api_secret=opts_twitter.secret})
 		
 		local got=fetch.get(baseurl.."?"..q) -- get from internets		
+log(type(got.body))
+log(tostring(got.headers))
 		local gots=oauth.decode(got.body)
 		
 		if gots.oauth_token then

@@ -6,6 +6,8 @@ local cache=require("wetgenes.aelua.cache")
 
 local log=require("wetgenes.aelua.log").log -- grab the func from the package
 
+local fetch=require("wetgenes.aelua.fetch")
+local sys=require("wetgenes.aelua.sys")
 
 
 local core=require("wetgenes.aelua.users.core")
@@ -15,6 +17,7 @@ local string=string
 local math=math
 
 local tostring=tostring
+local type=type
 
 local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
@@ -284,10 +287,11 @@ function get_viewer_session(srv)
 	
 end
 
+
 -----------------------------------------------------------------------------
 --
 -- convert an email into a profile link, a 16x16 icon linked to a profile
--- returns nil if we cant
+-- returns nil if we cant, return url in second argument
 --
 -----------------------------------------------------------------------------
 function email_to_profile_link(email)
@@ -311,5 +315,45 @@ function email_to_profile_link(email)
 		profile="<a href="..url.."><img src=\"/art/icon_twat.png\" /></a>"
 	end
 
-	return profile
+	return profile,url
+end
+
+-----------------------------------------------------------------------------
+--
+-- convert an email into an avatar image url, 100x100 loaded via /thumbcache/100/100
+-- so we cache it on site, pass in w,h for alternative sized avatar
+--
+-- this function may hit external sites and take some time to run
+-- so cache it if you need it dont call this every page render
+--
+-----------------------------------------------------------------------------
+function email_to_avatar_url(email,w,h)
+	w=w or 100
+	h=h or 100
+	local url
+
+	local ending="@id.wetgenes.com"
+	local endlen=string.len(ending)
+
+	if string.sub(email,-endlen)==ending then
+		url="/thumbcache/"..w.."/"..h.."/www.wetgenes.com/icon/"..string.sub(email,1,-(endlen+1))
+	end
+
+	local ending="@id.twitter.com"
+	local endlen=string.len(ending)
+
+	if string.sub(email,-endlen)==ending then
+		local turl="http://www.twitter.com/users/"..string.sub(email,1,-(endlen+1))..".json"
+		local got=fetch.get(turl) -- get twitter infos from internets
+		if type(got.body)=="string" then
+			local tab=json.decode(got.body)
+			if tab.profile_image_url then
+				url="/thumbcache/"..w.."/"..h.."/"..tab.profile_image_url:sub(8) -- skip "http://"
+			end
+		end
+	end
+	
+	url=url or "/thumbcache/"..w.."/"..h.."/www.gravatar.com/avatar/"..sys.md5(email):lower().."?s=200&d=monsterid&r=x"
+	
+	return url -- return nil if no image found
 end

@@ -112,11 +112,13 @@ public class Fetch
 				
 				if(headerName.compareToIgnoreCase("Content-Type")==0)
 				{
+					if(headerValue.length()>=4)
 					if(headerValue.substring(0,4).compareToIgnoreCase("text")==0) // text mimetype get converted to strings
 					{
 						bodytype="UTF-8"; // always utf8 because fuck you :)
 					}
-					if(headerValue.compareToIgnoreCase("application/json")==0) // json is a string
+					if(headerValue.length()>=11)
+					if(headerValue.substring(0,11).compareToIgnoreCase("application")==0) // json is a string
 					{
 						bodytype="UTF-8"; // always utf8 because fuck you :)
 					}

@@ -2052,7 +2052,7 @@ protect:
    */
   public String typeNameOfIndex(int idx)
   {
-    return TYPENAME[type(idx)];
+    return typeName(type(idx));
   }
 
   /**

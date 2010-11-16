@@ -135,3 +135,64 @@ a:hover {
 	text-align: center;
 }
 
+.wetnote_comment_div , .wetnote_reply_div , .wetnote_comment_hide_div {
+	position:relative;
+	clear:both;
+}
+
+.wetnote_comment_form_div{
+	clear:both;
+	margin-bottom:40px;
+}
+
+.wetnote_reply_div , .wetnote_comment_form_div{
+	margin-left:40px;
+}
+
+.wetnote_comment_icon , .wetnote_reply_icon{
+ 	float:left;
+ 	width:100px;
+ 	height:100px;
+}
+
+.wetnote_comment_text , .wetnote_reply_text{
+	width:600px;
+}
+
+.wetnote_comment_head , .wetnote_reply_head {
+	opacity:0;
+	background-color:#fee;
+	color:#f00;
+	padding-bottom: 14px;
+	float:left;
+	width:500px;
+}
+.wetnote_comment_head a , .wetnote_reply_head a {
+	color:#f00;
+}
+
+.wetnote_comment_head:hover , .wetnote_reply_head:hover{
+	opacity:1;
+}
+
+.wetnote_comment_form{
+	width:600;
+	margin-bottom:40px;
+}
+
+.wetnote_comment_side {
+	
+	width:100px;
+	display:inline-block;
+}
+
+.wetnote_comment_main {
+
+	width:500px;
+	display:inline-block;
+}
+
+.wetnote_comment_text {
+	width:500px;
+	height:120px;
+}

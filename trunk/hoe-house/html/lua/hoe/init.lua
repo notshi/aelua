@@ -1208,6 +1208,12 @@ function serv_api(H)
 			jret.last=feats.get_top_players(H,round.key.id)
 			jret.result="OK"
 		end
+		
+		local round=rounds.get_speed(H) -- get speed round
+		if round then
+			jret.speed=feats.get_top_players(H,round.key.id)
+			jret.result="OK"
+		end
 	end
 	
 	H.srv.set_mimetype("text/plain; charset=UTF-8")
@@ -1242,6 +1248,8 @@ function serv_cron(H)
 	H.srv.put("Performing cron "..H.srv.time.."\n")
 	
 	
+	local numof_fastrounds=0
+	
 	local list=rounds.list(H)
 	
 	for i,v in ipairs(list) do	
@@ -1263,16 +1271,40 @@ function serv_cron(H)
 			end
 		end
 		
+		if v.cache.timestep < 600 then -- a fast round is any tick less than 10 minutes
+			numof_fastrounds=numof_fastrounds+1
+		end
+		
 	end
 	
+	local d=os.date("*t")
+		
 	if #list==0 then -- when all rounds are over, create a new default active round
 	
 		H.srv.put("there are no active rounds\n")
-					
-		local r=rounds.create(H)
-		rounds.put(H,r)
-		H.srv.put("created new round "..r.key.id.."\n")
+
+		if d.hour==0 and d.min<30 then -- start a new one only within the first halfhour of the day
 		
+			local r=rounds.create(H)
+			rounds.put(H,r)
+			H.srv.put("created new round "..r.key.id.."\n")
+			
+		end
+	end
+	
+	if numof_fastrounds==0 then -- check if we should create a new fastround
+
+		H.srv.put("there are no active fast rounds\n")
+		
+		H.srv.put( "STARS ARE ALIGNED TO ".. d.wday .. " : ".. d.hour .." : ".. d.min .."\n" )
+	
+		if d.wday==1 and d.hour==0 and d.min<30 then -- start a new one only within the first halfhour of sunday
+			local r=rounds.create(H)
+			r.cache.timestep = 1 -- super fast game
+			r.cache.endtime=H.srv.time+(r.cache.timestep*4032) -- same number of ticks as default game
+			rounds.put(H,r)
+			H.srv.put("created new speed round "..r.key.id.."\n")
+		end
 	end
 
 end

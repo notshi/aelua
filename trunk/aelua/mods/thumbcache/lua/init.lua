@@ -46,7 +46,10 @@ module("thumbcache")
 function serv(srv)
 
 	local cachename="thumbcache&"..srv.url
-	
+	if srv.query and #srv.query>0 then
+		cachename=cachename.."?"..srv.query
+	end
+
 	local data
 	local image
 	
@@ -82,7 +85,9 @@ function serv(srv)
 					end
 				end
 				local url="http://"..table.concat(t,"/") -- build the remote request string
-			
+				if srv.query and #srv.query>0 then
+					url=url.."?"..srv.query
+				end
 				data=fetch.get(url).body -- get from internets
 			
 				local width=tonumber(s1 or "") or 100
