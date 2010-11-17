@@ -117,14 +117,16 @@ end
 -- most data is kept in its ent.cache.cache table
 --
 --------------------------------------------------------------------------------
-function manifest(srv,url)
+function manifest(srv,url,t)
 
 	local ent
 	
 	local fill=false
 	
 	if not ent then
-		ent=get(srv,url)
+		ent=create(srv)
+		ent.key.id=url
+		ent=get(srv,ent,t) -- prevent manifest recursion by passing in ent
 	end
 	
 	if not ent then
@@ -176,8 +178,11 @@ end
 --------------------------------------------------------------------------------
 function get(srv,id,t)
 
-	local ent=id
+	if type(id)=="string" then -- auto manifest by url
+		return manifest(srv,id,t)
+	end
 	
+	local ent=id
 	if type(ent)~="table" then -- get by id
 		ent=create(srv)
 		ent.key.id=id
@@ -303,11 +308,12 @@ end
 function do_post(srv,tab)
 local function dput(s) put("<div>"..tostring(s).."</div>") end
 
-	local meta=manifest(srv,tab.url)
+	local meta
 	
 	local user=(tab.user and tab.user.cache) or {}
 	
 	if tab.posts then
+	
 		if tab.posts.wetnote_comment_submit then -- add this comment
 		
 			local id=math.floor(tonumber(tab.posts.wetnote_comment_id))
@@ -322,14 +328,46 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			
 			put(srv,e)
 			
+			if id~=0 then -- this is a comment so apply to master
+			
+				local rs=list(srv,{sortdate="ASC",url=tab.url,group=id}) -- get all replys
+				local replys={}
+				for i,v in ipairs(rs) do -- and build reply cache
+					replys[i]=v.cache
+				end
+				
+-- the reply cache may lose one if multiple people reply at the same time
+-- an older cache may get saved, very unlikley but possible
+
+				update(srv,id,function(srv,e)
+					e.cache.replys=replys -- save new reply cache
+					return true
+				end)
+
+			end
+
+-- build meta cache			
+			local cs=list(srv,{sortdate="DESC",url=tab.url,group=0}) -- get all comments
+			local comments={}
+			for i,v in ipairs(cs) do -- and build comment cache
+				comments[i]=v.cache
+			end
+
+-- the comment cache may lose one if multiple people reply at the same time
+-- an older cache may get saved, very unlikley but possible
+-- tab.url is a string so this manifests if it does not exist
+
+			meta=update(srv,tab.url,function(srv,e)
+				e.cache.comments=comments -- save new comment cache
+				return true
+			end)
+
 		end
 		
---		for i,v in pairs(tab.posts) do
---			tab.put("<div>"..i.."="..v.."</div>")
---		end
-
 	end
 
+	
+-- reply form
 	function get_reply_form(num)
 		local plink,purl=users.email_to_profile_link(user.email or "")
 		return tab.get([[
@@ -358,17 +396,11 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		icon=users.email_to_avatar_url(user.email or ""),
 		})
 	end
-	tab.put(get_reply_form(0))
-
--- get all top level comments
-	local cs=list(srv,{sortdate="DESC",url=tab.url,group=0})
 	
---	tab.put([[<div>{count} comments</div>]],{count=#cs})
-
-	for i,v in ipairs(cs) do
-		local c=v.cache
+-- display comment
+	function get_comment(c)
 		local plink,purl=users.email_to_profile_link(c.cache.user.email)
-		tab.put([[
+		return tab.get([[
 <div class="wetnote_comment_div" >
 <div class="wetnote_comment_text" >
 <div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
@@ -378,25 +410,45 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 </div>
 </div>
 ]],{
-	text=c.text,
-	author=c.cache.user.email,
-	name=c.cache.user.name,
-	plink=plink,
-	purl=purl or "http://google.com/search?q="..c.cache.user.name,
-	time=os.date("%Y-%m-%d %H:%M:%S",c.created),
-	id=c.id,
-	icon=users.email_to_avatar_url(c.cache.user.email),
-	})
+		text=c.text,
+		author=c.cache.user.email,
+		name=c.cache.user.name,
+		plink=plink,
+		purl=purl or "http://google.com/search?q="..c.cache.user.name,
+		time=os.date("%Y-%m-%d %H:%M:%S",c.created),
+		id=c.id,
+		icon=users.email_to_avatar_url(c.cache.user.email),
+		})
+	end
+	
+-- the meta will contain the cache of everything, we may already have it due to updates	
+	if not meta then
+		meta=manifest(srv,tab.url)
+	end
 
-		local rs=list(srv,{sortdate="ASC",url=tab.url,group=c.id})
---		tab.put([[<div>{count} replys</div>]],{count=#rs})
+	tab.put(get_reply_form(0))
 
+-- get all top level comments
+--	local cs=list(srv,{sortdate="DESC",url=tab.url,group=0})
+	local cs=meta.cache.comments or {}
+	
+	for i,c in ipairs(cs) do
+	
+--		local c=v.cache
+		tab.put(get_comment(c)) -- main comment
+
+		tab.put([[
+<div class="wetnote_reply_div">
+]])
+
+		local rs=c.replys or {} -- list(srv,{sortdate="ASC",url=tab.url,group=c.id}) -- replys
+		
 		local hide=#rs-5
 		if hide<0 then hide=0 end -- nothing to hide
 		local hide_state="show"
 		
-		for i,v in ipairs(rs) do
-			local c=v.cache
+		for i,c in ipairs(rs) do
+--			local c=v.cache
 			if i<=hide then -- hide this one
 				if hide_state=="show" then
 					hide_state="hide"
@@ -415,30 +467,16 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 					tab.put([[</div></div>]])
 				end
 			end
-			local plink,purl=users.email_to_profile_link(c.cache.user.email)
-			tab.put([[
-<div class="wetnote_reply_div" >
-<div class="wetnote_reply_text" >
-<div class="wetnote_reply_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
-<div class="wetnote_reply_head" > #{id} posted by <a href="{purl}">{name}</a> on {time} </div>
-{text}
-<div class="wetnote_reply_tail" ></div>
-</div>
-</div>
-]],{
-	text=c.text,
-	author=c.cache.user.email,
-	name=c.cache.user.name,
-	plink=plink,
-	purl=purl or "http://google.com/search?q="..c.cache.user.name,
-	time=os.date("%Y-%m-%d %H:%M:%S",c.created),
-	id=c.id,
-	icon=users.email_to_avatar_url(c.cache.user.email),
-	})
+			
+			tab.put(get_comment(c))
+			
 		end
 		
 		tab.put(get_reply_form(c.id))
 
+		tab.put([[
+</div>
+]])
 	end
 	
 
