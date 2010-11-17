@@ -217,7 +217,8 @@ public final class OSLib extends LuaJavaCallback
             b.append(format(c.get(Calendar.DAY_OF_MONTH), 2));
             break;
           case 'H':
-            b.append(format(c.get(Calendar.HOUR), 2));
+			int hour_add=c.get(Calendar.AM_PM)==Calendar.PM ? 12 : 0 ; // fix the hour
+            b.append(format(c.get(Calendar.HOUR)+hour_add, 2));
             break;
           case 'I':
             {

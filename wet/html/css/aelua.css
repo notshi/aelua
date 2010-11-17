@@ -137,7 +137,7 @@ a:hover {
 
 
 
-.wetnote_comment_div , .wetnote_reply_div , .wetnote_comment_hide_div {
+.wetnote_comment_div , .wetnote_comment_hide_div {
 	position:relative;
 	clear:both;
 }
@@ -147,21 +147,21 @@ a:hover {
 	clear:both;
 }
 
-.wetnote_reply_div , .wetnote_comment_form_div{
+.wetnote_reply_div{
 	margin-left:40px;
 }
 
-.wetnote_comment_icon , .wetnote_reply_icon{
+.wetnote_comment_icon {
  	float:left;
  	width:100px;
  	height:100px;
 }
 
-.wetnote_comment_text , .wetnote_reply_text{
+.wetnote_comment_text {
 	width:600px;
 }
 
-.wetnote_comment_head , .wetnote_reply_head {
+.wetnote_comment_head {
 	opacity:0;
 	background-color:#fee;
 	color:#f00;
@@ -169,11 +169,11 @@ a:hover {
 	width:500px;
 	margin-left:100px;
 }
-.wetnote_comment_head a , .wetnote_reply_head a {
+.wetnote_comment_head a {
 	color:#f00;
 }
 
-.wetnote_comment_head:hover , .wetnote_reply_head:hover{
+.wetnote_comment_head:hover {
 	opacity:1;
 }
 
