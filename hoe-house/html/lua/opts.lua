@@ -56,6 +56,13 @@ map={ -- base lookup table
 												url="/dumid/",
 											},
 					},
+
+["thumbcache"]		=	{			-- cache some images
+						["#default"]	=	"thumbcache", 		-- no badlinks, we own everything under here
+						["#opts"]		=	{
+												url="/thumbcache/",
+											},
+					},
 					
 ["help"]		=	{			-- a wiki like module
 						["#default"]	=	"waka", 		-- no badlinks, we own everything under here

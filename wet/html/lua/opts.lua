@@ -22,7 +22,7 @@ users.admin={ -- users with admin rights for this app
 	["krissd@gmail.com"]=true,
 }
 
-local app_name="wet"
+local app_name=nil -- "wet" 
 
 map={ -- base lookup table 
 
