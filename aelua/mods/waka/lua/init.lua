@@ -178,10 +178,19 @@ local ext
 	for i,v in ipairs(chunks) do -- do basic process of all of the page chunks into their prefered form 
 		local s=v.text
 		if v.opts.trim=="ends" then s=trim(s) end -- trim?
+
 		if v.opts.form=="raw" or v.opts.form=="html" then -- predefined, use exactly as is, html
+
 			s=s
+
+		elseif v.opts.form=="nohtml" then -- normal but escaped html chars
+
+			s=wet_waka.waka_to_html(s,{base_url=baseurl,escape_html=true}) 
+
 		else -- default to basic waka format, html allowed
+
 			s=wet_waka.waka_to_html(s,{base_url=baseurl,escape_html=false}) 
+
 		end
 		form[v.name]=s
 	end
