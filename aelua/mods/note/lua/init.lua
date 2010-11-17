@@ -94,7 +94,7 @@ local get=make_get(srv)
 	put("user_bar",{H={user=user,sess=sess}})
 
 
-	comments.do_post(srv,{url="/note",posts=posts,get=get,put=put,sess=sess,user=user})
+--	comments.build(srv,{url="/note",posts=posts,get=get,put=put,sess=sess,user=user})
 	
 --[[
 	local t=users.email_to_avatar_url("15071645@id.twitter.com")

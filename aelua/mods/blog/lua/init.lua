@@ -27,6 +27,7 @@ local wet_waka=require("wetgenes.waka")
 local html=require("blog.html")
 local pages=require("blog.pages")
 
+local comments=require("note.comments")
 
 
 local math=math
@@ -265,6 +266,14 @@ local get,put=make_get_put(srv)
 		end
 	end
 
+	local posts={} -- remove any gunk from the posts input
+	-- check if this post probably came from this page before allowing post params
+	if srv.method=="POST" and srv.headers.Referer and string.sub(srv.headers.Referer,1,string.len(srv.url))==srv.url then
+		for i,v in pairs(srv.posts) do
+			posts[i]=v
+--			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
+		end
+	end
 	
 	if page=="" then -- a list
 		
@@ -320,12 +329,17 @@ local get,put=make_get_put(srv)
 		end
 		if ent and ent.cache.layer==LAYER_PUBLISHED then -- must be published
 		
+			local url= srv.url_base:sub(1,-2) .. ent.cache.pubname
+			log(url)
 			srv.set_mimetype("text/html; charset=UTF-8")
 			put("header",{title="blog : "..ent.cache.pubname})
 			put("blog_admin_links",{it=ent.cache,user=user})
 			local chunks=bubble(srv,ent) -- this gets parent entities
 			local text=get(macro_replace(chunks.plate or "{body}",chunks))			
 			put("blog_post_single",{it=ent.cache,chunks=chunks,text=text})
+			
+			comments.build(srv,{url=url,posts=posts,get=get,put=put,sess=sess,user=user})
+
 			put("footer")
 			
 		end
