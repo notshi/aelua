@@ -1,5 +1,6 @@
 
 local wet_html=require("wetgenes.html")
+local url_esc=wet_html.url_esc
 
 local sys=require("wetgenes.aelua.sys")
 
@@ -13,6 +14,8 @@ local fetch=require("wetgenes.aelua.fetch")
 local img=require("wetgenes.aelua.img")
 
 local log=require("wetgenes.aelua.log").log -- grab the func from the package
+
+local wet_waka=require("wetgenes.waka")
 
 local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
@@ -74,7 +77,7 @@ function create(srv)
 				-- spam - this is pure spam, hidden but not forgotten
 				-- meta - use on fake comments that only contain cached info of other comments
 
-	p.replies=0 -- number of replies to this comment (could be good to sort by)
+	p.count=0   -- number of replies to this comment (could be good to sort by)
 
 -- track some simple vote numbers, to be enabled later?
 
@@ -305,22 +308,32 @@ end
 -- also set tab.url to the url
 --
 --------------------------------------------------------------------------------
-function do_post(srv,tab)
+function build(srv,tab)
 local function dput(s) put("<div>"..tostring(s).."</div>") end
 
 	local meta
 	
-	local user=(tab.user and tab.user.cache) or {}
+	local user=(tab.user and tab.user.cache)
 	
 	if tab.posts then
 	
-		if tab.posts.wetnote_comment_submit then -- add this comment
+		if user and tab.posts.wetnote_comment_submit then -- add this comment
+		
+			if #tab.posts.wetnote_comment_text > 4096 then
+				tab.put([[
+				<div>
+				Sorry but your comment was too long (>4096 chars) to be accepted.
+				</div>
+				]])
+				return
+			end
 		
 			local id=math.floor(tonumber(tab.posts.wetnote_comment_id))
 			local e=create(srv)
 			local c=e.cache
 			
 			c.cache.user=tab.user.cache
+			c.avatar=users.email_to_avatar_url(user.email or "") -- this can be expensive so we cache it
 			c.author=tab.user.cache.email
 			c.url=tab.url
 			c.group=id
@@ -330,17 +343,18 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			
 			if id~=0 then -- this is a comment so apply to master
 			
-				local rs=list(srv,{sortdate="ASC",url=tab.url,group=id}) -- get all replys
-				local replys={}
+				local rs=list(srv,{sortdate="ASC",url=tab.url,group=id}) -- get all replies
+				local replies={}
 				for i,v in ipairs(rs) do -- and build reply cache
-					replys[i]=v.cache
+					replies[i]=v.cache
 				end
 				
 -- the reply cache may lose one if multiple people reply at the same time
 -- an older cache may get saved, very unlikley but possible
 
 				update(srv,id,function(srv,e)
-					e.cache.replys=replys -- save new reply cache
+					e.cache.replies=replies -- save new reply cache
+					e.cache.count=#replies -- a number to sort by
 					return true
 				end)
 
@@ -359,6 +373,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 
 			meta=update(srv,tab.url,function(srv,e)
 				e.cache.comments=comments -- save new comment cache
+				e.cache.count=#comments -- a number to sort by
 				return true
 			end)
 
@@ -369,6 +384,14 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	
 -- reply form
 	function get_reply_form(num)
+		if not user then -- must login to reply
+			return tab.get([[
+<div class="wetnote_comment_form_div">
+<a href="{url}">You must login to comment.<br/> Click here to login with twitter/gmail/etc...</a>
+</div>]],{
+			url="/dumid/login/?continue="..url_esc(srv.url),
+		})
+		end
 		local plink,purl=users.email_to_profile_link(user.email or "")
 		return tab.get([[
 <div class="wetnote_comment_form_div">
@@ -410,14 +433,14 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 </div>
 </div>
 ]],{
-		text=c.text,
+		text=wet_waka.waka_to_html(c.text,{base_url=tab.url,escape_html=true}),
 		author=c.cache.user.email,
 		name=c.cache.user.name,
 		plink=plink,
 		purl=purl or "http://google.com/search?q="..c.cache.user.name,
 		time=os.date("%Y-%m-%d %H:%M:%S",c.created),
 		id=c.id,
-		icon=users.email_to_avatar_url(c.cache.user.email),
+		icon=c.cache.avatar or users.email_to_avatar_url(c.cache.user.email),
 		})
 	end
 	
@@ -441,7 +464,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 <div class="wetnote_reply_div">
 ]])
 
-		local rs=c.replys or {} -- list(srv,{sortdate="ASC",url=tab.url,group=c.id}) -- replys
+		local rs=c.replies or {} -- list(srv,{sortdate="ASC",url=tab.url,group=c.id}) -- replies
 		
 		local hide=#rs-5
 		if hide<0 then hide=0 end -- nothing to hide

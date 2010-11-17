@@ -28,6 +28,7 @@ local html=require("waka.html")
 local pages=require("waka.pages")
 local edits=require("waka.edits")
 
+local comments=require("note.comments")
 
 
 local math=math
@@ -179,15 +180,15 @@ local ext
 		local s=v.text
 		if v.opts.trim=="ends" then s=trim(s) end -- trim?
 
-		if v.opts.form=="raw" or v.opts.form=="html" then -- predefined, use exactly as is, html
+		if v.opts.form=="raw" then -- predefined, use exactly as is, html
 
 			s=s
 
-		elseif v.opts.form=="nohtml" then -- normal but escaped html chars
+		elseif v.opts.form=="nohtml" then -- normal but all html is escaped
 
 			s=wet_waka.waka_to_html(s,{base_url=baseurl,escape_html=true}) 
 
-		else -- default to basic waka format, html allowed
+		else -- "html" default to basic waka format, html allowed
 
 			s=wet_waka.waka_to_html(s,{base_url=baseurl,escape_html=false}) 
 
@@ -223,6 +224,8 @@ local ext
 		{body}
 		]],form))
 		
+		comments.build(srv,{url=url,posts=posts,get=get,put=put,sess=sess,user=user})
+
 		put("footer")
 	end
 end
