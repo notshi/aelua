@@ -425,12 +425,10 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		local plink,purl=users.email_to_profile_link(c.cache.user.email)
 		return tab.get([[
 <div class="wetnote_comment_div" >
-<div class="wetnote_comment_text" >
 <div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
 <div class="wetnote_comment_head" > #{id} posted by <a href="{purl}">{name}</a> on {time} </div>
-{text}
+<div class="wetnote_comment_text" >{text}</div>
 <div class="wetnote_comment_tail" ></div>
-</div>
 </div>
 ]],{
 		text=wet_waka.waka_to_html(c.text,{base_url=tab.url,escape_html=true}),
