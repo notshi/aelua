@@ -1841,3 +1841,65 @@ div.foot{
 .foot a:active		{color: #ffcc00; text-decoration: none;}
 
 
+
+.wetnote_comment_div , .wetnote_comment_hide_div {
+	position:relative;
+	clear:both;
+}
+
+.wetnote_comment_form_div{
+	margin-bottom:40px;
+	clear:both;
+}
+
+.wetnote_reply_div{
+	margin-left:40px;
+}
+
+.wetnote_comment_icon {
+ 	float:left;
+ 	width:100px;
+ 	height:100px;
+}
+
+.wetnote_comment_text {
+	width:600px;
+}
+
+.wetnote_comment_head {
+	opacity:0;
+	background-color:#fee;
+	color:#f00;
+	padding-bottom: 14px;
+	width:500px;
+	margin-left:100px;
+}
+.wetnote_comment_head a {
+	color:#f00;
+}
+
+.wetnote_comment_head:hover {
+	opacity:1;
+}
+
+.wetnote_comment_form{
+	width:640;
+	margin-bottom:40px;
+}
+
+.wetnote_comment_side {
+	
+	width:100px;
+	display:inline-block;
+}
+
+.wetnote_comment_main {
+
+	width:500px;
+	display:inline-block;
+}
+
+.wetnote_comment_form_text {
+	width:500px;
+	height:120px;
+}
