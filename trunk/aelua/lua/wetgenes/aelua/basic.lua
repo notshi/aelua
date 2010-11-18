@@ -15,6 +15,8 @@ local require=require
 
 module("wetgenes.aelua.basic")
 
+local log=require("wetgenes.aelua.log").log -- grab the func from the package
+
 -----------------------------------------------------------------------------
 --
 -- an error response
@@ -61,8 +63,8 @@ function serv(srv)
 	srv.domain=srv.url_slash[3]
 	if srv.domain then srv.domain=str_split(":",srv.domain)[1] end -- lose the port part
 	
-	srv.url_base=table.concat({srv.url_slash[1],srv.url_slash[2],srv.url_slash[3]},"/").."/"
-	
+	srv.url_domain=table.concat({srv.url_slash[1],srv.url_slash[2],srv.url_slash[3]},"/")
+	srv.url_local="/"
 	local loop=true
 	
 	while loop do
@@ -101,7 +103,7 @@ function serv(srv)
 			srv.url_slash_idx=srv.url_slash_idx+1 -- move the slash index along one
 			srv.flavour=lookup[ "#flavour" ] -- get flavour of this table
 		
-			srv.url_base=srv.url_base..slash.."/"
+			srv.url_local=srv.url_local..slash.."/"
 			srv.slash=slash -- the last slash table we looked up
 			
 		elseif type(cmd)=="string" then -- a string so require that module and use its serv func
@@ -115,6 +117,8 @@ function serv(srv)
 	end
 	
 	if not f then f=serv_fail end -- default
+
+	srv.url_base=srv.url_domain..srv.url_local
 	
 	f(srv) -- handle this base url
 	
