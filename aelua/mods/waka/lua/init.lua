@@ -119,6 +119,7 @@ local ext
 	end
 	local pagename="/"..table.concat(aa,"/")
 	local url=srv.url_base..table.concat(aa,"/")
+	local url_local=srv.url_local..table.concat(aa,"/")
 	if ext then url=url.."."..ext end -- this is a page extension
 	
 	if srv.url~=url then -- force a redirect to the perfect page name with or without a trailing slash
@@ -224,7 +225,7 @@ local ext
 		{body}
 		]],form))
 		
-		comments.build(srv,{url=url,posts=posts,get=get,put=put,sess=sess,user=user})
+		comments.build(srv,{url=url_local,posts=posts,get=get,put=put,sess=sess,user=user})
 
 		put("footer")
 	end

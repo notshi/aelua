@@ -100,6 +100,17 @@ function serv(srv)
 				if height>1024 then height=1024 end
 
 				image=img.get(data) -- convert to image
+
+				image=img.resize(image,width,height) -- resize image
+--[[
+				image=img.composite({
+					format="JPEG",
+					width=width,
+					height=height,
+					color=0xffffff,
+					{image,0,0,1,"TOP_LEFT"},
+				}) -- and force it to a JPEG with a white background
+]]
 				image=img.resize(image,width,height,"JPEG") -- resize image and force it to a JPEG
 			
 				cache.put(cachename,image.data,60*60)

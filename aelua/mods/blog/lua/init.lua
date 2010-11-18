@@ -329,8 +329,7 @@ local get,put=make_get_put(srv)
 		end
 		if ent and ent.cache.layer==LAYER_PUBLISHED then -- must be published
 		
-			local url= srv.url_base:sub(1,-2) .. ent.cache.pubname
-			log(url)
+			local url= srv.url_local:sub(1,-2) .. ent.cache.pubname
 			srv.set_mimetype("text/html; charset=UTF-8")
 			put("header",{title="blog : "..ent.cache.pubname})
 			put("blog_admin_links",{it=ent.cache,user=user})
