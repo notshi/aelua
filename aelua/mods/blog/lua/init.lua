@@ -154,8 +154,10 @@ function bubble(srv,ent,overload)
 	for i,v in ipairs(chunks) do -- do basic process of all of the page chunks into their prefered form 
 		local s=v.text
 		if v.opts.trim=="ends" then s=trim(s) end -- trim?
-		if v.opts.form=="raw" or v.opts.form=="html" then -- predefined, use exactly as is, html
+		if v.opts.form=="raw" then -- predefined, use exactly as is
 			s=s
+		elseif v.opts.form=="nohtml" then -- default to basic waka format, html is not allowed
+			s=wet_waka.waka_to_html(s,{base_url="",escape_html=true}) 
 		else -- default to basic waka format, html allowed
 			s=wet_waka.waka_to_html(s,{base_url="",escape_html=false}) 
 		end
@@ -304,6 +306,9 @@ local get,put=make_get_put(srv)
 		else
 			srv.set_mimetype("text/html; charset=UTF-8")
 			put("header",{title="blog : "..group..page})
+			local H={sess=sess,user=user}
+			put("home_bar",{H=H})
+			put("user_bar",{H=H})
 			put("blog_admin_links",{user=user})
 		
 			local list=pages.list(srv,{group=group,limit=10,layer=LAYER_PUBLISHED,sort="pubdate"})
@@ -311,9 +316,13 @@ local get,put=make_get_put(srv)
 			for i,v in ipairs(list) do
 			
 				local chunks=bubble(srv,v) -- this gets parent entities
-				local text=get(macro_replace(chunks.plate or "{body}",chunks))
+
+				chunks.link=srv.url_local:sub(1,-2) .. v.cache.pubname
+				chunks.pubdate=(os.date("%Y-%m-%d %H:%M:%S",v.cache.pubdate))
+				chunks.it=v.cache
+				local text=get(macro_replace(chunks.plate_wrap or chunks.plate or "{body}",chunks))
 				
-				put("blog_post_wrapper",{it=v.cache,chunks=chunks,text=text})
+				put(text)
 			end
 			
 			put("footer")
@@ -329,15 +338,22 @@ local get,put=make_get_put(srv)
 		end
 		if ent and ent.cache.layer==LAYER_PUBLISHED then -- must be published
 		
-			local url= srv.url_local:sub(1,-2) .. ent.cache.pubname
 			srv.set_mimetype("text/html; charset=UTF-8")
 			put("header",{title="blog : "..ent.cache.pubname})
+			local H={sess=sess,user=user}
+			put("home_bar",{H=H})
+			put("user_bar",{H=H})
 			put("blog_admin_links",{it=ent.cache,user=user})
 			local chunks=bubble(srv,ent) -- this gets parent entities
-			local text=get(macro_replace(chunks.plate or "{body}",chunks))			
-			put("blog_post_single",{it=ent.cache,chunks=chunks,text=text})
+
+			chunks.link=srv.url_local:sub(1,-2) .. ent.cache.pubname
+			chunks.pubdate=(os.date("%Y-%m-%d %H:%M:%S",d.it.pubdate))
+			chunks.it=ent.cache
+			local text=get(macro_replace(chunks.plate_page or chunks.plate or "{body}",chunks))
+
+			put(text)
 			
-			comments.build(srv,{url=url,posts=posts,get=get,put=put,sess=sess,user=user})
+			comments.build(srv,{url=chunks.link,posts=posts,get=get,put=put,sess=sess,user=user})
 
 			put("footer")
 			
@@ -366,6 +382,9 @@ local output_que={} -- delayed page content
 	if not ( user and user.cache and user.cache.admin ) then -- not admin, no access
 		srv.set_mimetype("text/html; charset=UTF-8")
 		put("header",{title="blog : admin"})
+		local H={sess=sess,user=user}
+		put("home_bar",{H=H})
+		put("user_bar",{H=H})
 		put("footer")
 		return
 	end
@@ -456,14 +475,12 @@ Read my new blog http://bit.ly/a1b2c3 about the end of the world!
 			ent.cache.pubname=group..name
 			ent.cache.layer=LAYER_DRAFT
 			ent.cache.text=[[#title form=raw trim=ends
-		
-This is the #title of your post and will be auto generated from the #body if it is missing.
+
+The #title of your post.
 
 #body
 
 This is the #body of your post and can contain any html you wish.
-
-For simple blogging you can just replace all of this text with your html blog post and not use any #chunks.
 
 ]]
 			if name=="$newpage" then -- create it now so we can give it an id
@@ -515,6 +532,9 @@ For simple blogging you can just replace all of this text with your html blog po
 	
 	srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{title="blog : admin"})
+	local H={sess=sess,user=user}
+	put("home_bar",{H=H})
+	put("user_bar",{H=H})
 	put("blog_admin_links",{user=user})
 	
 	for i,v in ipairs(output_que) do
