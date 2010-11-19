@@ -353,7 +353,7 @@ function email_to_avatar_url(email,w,h)
 		end
 	end
 	
-	url=url or "/thumbcache/"..w.."/"..h.."/www.gravatar.com/avatar/"..sys.md5(email):lower().."?s=200&d=monsterid&r=x"
+	url=url or "/thumbcache/"..w.."/"..h.."/www.gravatar.com/avatar/"..sys.md5(email):lower().."?s=200&d=identicon&r=x"
 	
 	return url -- return nil if no image found
 end
