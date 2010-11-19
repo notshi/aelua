@@ -324,7 +324,7 @@ end
 -- so we cache it on site, pass in w,h for alternative sized avatar
 --
 -- this function may hit external sites and take some time to run
--- so cache it if you need it dont call this every page render
+-- so cache it if you need it do not call this multiple times every page render
 --
 -----------------------------------------------------------------------------
 function email_to_avatar_url(email,w,h)
