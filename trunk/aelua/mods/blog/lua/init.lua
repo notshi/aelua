@@ -347,7 +347,7 @@ local get,put=make_get_put(srv)
 			local chunks=bubble(srv,ent) -- this gets parent entities
 
 			chunks.link=srv.url_local:sub(1,-2) .. ent.cache.pubname
-			chunks.pubdate=(os.date("%Y-%m-%d %H:%M:%S",d.it.pubdate))
+			chunks.pubdate=(os.date("%Y-%m-%d %H:%M:%S",ent.cache.pubdate))
 			chunks.it=ent.cache
 			local text=get(macro_replace(chunks.plate_page or chunks.plate or "{body}",chunks))
 
