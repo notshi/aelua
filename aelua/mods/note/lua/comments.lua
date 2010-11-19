@@ -397,13 +397,9 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 <div class="wetnote_comment_form_div">
 <a href="#" onclick="$(this).hide(400);$('#wetnote_comment_form_{id}').show(400);return false;" style="{actioncss}">Click here to reply.</a>
 <form class="wetnote_comment_form" name="wetnote_comment_form" id="wetnote_comment_form_{id}" action="" method="post" enctype="multipart/form-data" style="{formcss}">
-	<div class="wetnote_comment_side">
-		<div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
-	</div>
-	<div class="wetnote_comment_main">
-		<textarea class="wetnote_comment_form_text" name="wetnote_comment_text"></textarea>
-		<input name="wetnote_comment_id" type="hidden" value="{id}"></input>
-	</div>
+	<div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
+	<textarea class="wetnote_comment_form_text" name="wetnote_comment_text"></textarea>
+	<input name="wetnote_comment_id" type="hidden" value="{id}"></input>
 	<input class="wetnote_comment_post" name="wetnote_comment_submit" type="submit" value="Click here to express your important opinion."></input>
 </form>
 </div>
@@ -447,7 +443,9 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		meta=manifest(srv,tab.url)
 	end
 
+	tab.put([[<div class="wetnote_comment_form_head"></div>]])
 	tab.put(get_reply_form(0))
+	tab.put([[<div class="wetnote_comment_form_tail"></div>]])
 
 -- get all top level comments
 --	local cs=list(srv,{sortdate="DESC",url=tab.url,group=0})
