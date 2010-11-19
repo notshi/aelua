@@ -1847,9 +1847,37 @@ div.foot{
 	clear:both;
 }
 
+/* Click here to show hidden */
+.wetnote_comment_hide_div {
+	font-family: Lucida Sans Unicode, sans-serif;
+	color: #999;
+	font-size: 16px;
+}
+.wetnote_comment_hide_div a {
+	color:#999;
+}
+
+.wetnote_comment_div {
+	background-color: #fff;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 4px 4px;
+	margin: 10px 0 10px 0;
+	min-height: 100px;
+	width: 640px;
+}
+
+/* Click here to reply */
 .wetnote_comment_form_div{
-	margin-bottom:40px;
+	margin-bottom: 40px;
 	clear:both;
+	
+	font-family: Lucida Sans Unicode, sans-serif;
+	color: #999;
+	font-size: 16px;
+}
+.wetnote_comment_form_div a {
+	color:#999;
 }
 
 .wetnote_reply_div{
@@ -1857,25 +1885,35 @@ div.foot{
 }
 
 .wetnote_comment_icon {
- 	float:left;
  	width:100px;
  	height:100px;
+ 	position: absolute;
 }
 
 .wetnote_comment_text {
-	width:600px;
+	width:480px;
+	margin-left: 120px;
+	padding-bottom: 20px;
+	overflow: hidden;
+	
+	font-family: Lucida Sans Unicode, sans-serif;
+	color: #000;
+	font-size: 16px;
 }
 
 .wetnote_comment_head {
 	opacity:0;
-	background-color:#fee;
-	color:#f00;
-	padding-bottom: 14px;
-	width:500px;
-	margin-left:100px;
+	padding-top: 5px;
+	padding-bottom: 10px;
+	width:520px;
+	margin-left:120px;
+	
+	font-family: Lucida Sans Unicode, sans-serif;
+	color: #666;
+	font-size: 12px;
 }
 .wetnote_comment_head a {
-	color:#f00;
+	color:#000;
 }
 
 .wetnote_comment_head:hover {
@@ -1884,22 +1922,41 @@ div.foot{
 
 .wetnote_comment_form{
 	width:640;
-	margin-bottom:40px;
 }
 
-.wetnote_comment_side {
-	
-	width:100px;
-	display:inline-block;
+.wetnote_comment_form_head{
+	width:640;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #ddd;
 }
 
-.wetnote_comment_main {
-
-	width:500px;
-	display:inline-block;
+.wetnote_comment_form_tail{
+	margin-bottom: 20px;
 }
 
 .wetnote_comment_form_text {
+	border: 1px solid #000;
+	margin-left: 100px;
 	width:500px;
 	height:120px;
+}
+
+.wetnote_comment_post {
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 4px 4px;
+	background-color: #DCDCDC;
+	margin-left: 100px;
+	width:502px;
+	height:30px;
+	border-bottom: 1px solid #999;
+	border-right: 1px solid #999;
+	border-top: 1px solid #fff;
+	border-left: 1px solid #fff;
+}
+.wetnote_comment_post:hover {
+	background-color: #E1E1E1;
+}
+.wetnote_comment_post:active {
+	background-color: #DCDCDC;
 }
