@@ -237,9 +237,9 @@ local escape_html=opts.escape_html or false
 			
 			if c1 == "/" then -- a very simple link relative to where we are
 			
-				local chars="[%w/%-%+_#]+"
+				local chars="[%w/%-%+_#%.:]+"
 				
-				if token:sub(1,3)=="///" then chars="[%w/%-%+_#%.:]+" end -- allow common domain chars
+--				if token:sub(1,3)=="///" then chars="[%w/%-%+_#%.:]+" end -- allow common domain chars
 			
 				local s=token:sub(2) -- skip this first char
 				
@@ -248,7 +248,7 @@ local escape_html=opts.escape_html or false
 					local s1=s:sub(f1,f2)
 					local ss=split_words(s1,"/")
 					local tail=ss[#ss] 
-					link(s1,tail)
+					link(s1,tail or s1)
 					if f2<s:len() then -- some left over string
 						text(s:sub(f2+1))
 					end
