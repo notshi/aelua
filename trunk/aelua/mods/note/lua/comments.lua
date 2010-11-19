@@ -399,12 +399,12 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 <form class="wetnote_comment_form" name="wetnote_comment_form" id="wetnote_comment_form_{id}" action="" method="post" enctype="multipart/form-data" style="{formcss}">
 	<div class="wetnote_comment_side">
 		<div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
-		<input class="wetnote_comment_post" name="wetnote_comment_submit" type="submit" value="comment"></input>
 	</div>
 	<div class="wetnote_comment_main">
 		<textarea class="wetnote_comment_form_text" name="wetnote_comment_text"></textarea>
 		<input name="wetnote_comment_id" type="hidden" value="{id}"></input>
 	</div>
+	<input class="wetnote_comment_post" name="wetnote_comment_submit" type="submit" value="Click here to express your important opinion."></input>
 </form>
 </div>
 ]],{
