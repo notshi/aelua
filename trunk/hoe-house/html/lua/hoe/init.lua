@@ -281,7 +281,7 @@ local put=H.put
 	page.next=page.size
 	page.prev=0
 	
-	if H.srv.gets.show then
+	if H.srv.gets.off then
 		page.show=math.floor( tonumber(H.srv.gets.off) or 0)
 	end
 	if page.show<0 then page.show=0 end	-- no negative offsets going in
