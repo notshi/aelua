@@ -395,12 +395,12 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		local plink,purl=users.email_to_profile_link(user.email or "")
 		return tab.get([[
 <div class="wetnote_comment_form_div">
-<a href="#" onclick="$(this).hide(400);$('#wetnote_comment_form_{id}').show(400);return false;" style="{actioncss}">Reply.</a>
+<a href="#" onclick="$(this).hide(400);$('#wetnote_comment_form_{id}').show(400);return false;" style="{actioncss}">Reply</a>
 <form class="wetnote_comment_form" name="wetnote_comment_form" id="wetnote_comment_form_{id}" action="" method="post" enctype="multipart/form-data" style="{formcss}">
 	<div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
 	<textarea class="wetnote_comment_form_text" name="wetnote_comment_text"></textarea>
 	<input name="wetnote_comment_id" type="hidden" value="{id}"></input>
-	<input class="wetnote_comment_post" name="wetnote_comment_submit" type="submit" value="Express your important opinion."></input>
+	<input class="wetnote_comment_post" name="wetnote_comment_submit" type="submit" value="Express your important opinion"></input>
 </form>
 </div>
 ]],{
@@ -473,7 +473,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 					hide_state="hide"
 					tab.put([[
 <div class="wetnote_comment_hide_div">
-<a href="#" onclick="$(this).hide(400);$('#wetnote_comment_hide_{id}').show(400);return false;">Show {hide} hidden comments.</a>
+<a href="#" onclick="$(this).hide(400);$('#wetnote_comment_hide_{id}').show(400);return false;">Show {hide} hidden comments</a>
 <div id="wetnote_comment_hide_{id}" style="display:none">
 ]],{
 	id=c.id,
