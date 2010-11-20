@@ -18,6 +18,7 @@ local math=math
 
 local tostring=tostring
 local type=type
+local ipairs=ipairs
 
 local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
@@ -299,21 +300,30 @@ function email_to_profile_link(email)
 	local profile
 	local url
 
-	local ending="@id.wetgenes.com"
-	local endlen=string.len(ending)
-
-	if string.sub(email,-endlen)==ending then
-		url="http://like.wetgenes.com/-/profile/$"..string.sub(email,1,-(endlen+1))
-		profile="<a href="..url.."><img src=\"/art/icon_wet.png\" /></a>"
+	local endings={"@id.wetgenes.com"}
+	for i,v in ipairs(endings) do
+		if string.sub(email,-#v)==v then
+			url="http://like.wetgenes.com/-/profile/$"..string.sub(email,1,-(#v+1))
+			profile="<a href="..url.."><img src=\"/art/icon_wet.png\" /></a>"
+		end
 	end
 
-	local ending="@id.twitter.com"
-	local endlen=string.len(ending)
-
-	if string.sub(email,-endlen)==ending then
-		url="/js/dumid/twatbounce.html?id="..string.sub(email,1,-(endlen+1))
-		profile="<a href="..url.."><img src=\"/art/icon_twat.png\" /></a>"
+	local endings={"@id.twitter.com"}
+	for i,v in ipairs(endings) do
+		if string.sub(email,-#v)==v then
+			url="/js/dumid/twatbounce.html?id="..string.sub(email,1,-(#v+1))
+			profile="<a href="..url.."><img src=\"/art/icon_twat.png\" /></a>"
+		end
 	end
+--[[
+	local endings={"@gmail.com","@googlemail.com"}
+	for i,v in ipairs(endings) do
+		if string.sub(email,-#v)==v then
+			url="http://www.google.com/profiles/"..string.sub(email,1,-(#v+1))
+			profile="<a href="..url.."><img src=\"/art/icon_goog.png\" /></a>"
+		end
+	end
+]]
 
 	return profile,url
 end
@@ -332,27 +342,39 @@ function email_to_avatar_url(email,w,h)
 	h=h or 100
 	local url
 
-	local ending="@id.wetgenes.com"
-	local endlen=string.len(ending)
 
-	if string.sub(email,-endlen)==ending then
-		url="/thumbcache/"..w.."/"..h.."/www.wetgenes.com/icon/"..string.sub(email,1,-(endlen+1))
-	end
-
-	local ending="@id.twitter.com"
-	local endlen=string.len(ending)
-
-	if string.sub(email,-endlen)==ending then
-		local turl="http://www.twitter.com/users/"..string.sub(email,1,-(endlen+1))..".json"
-		local got=fetch.get(turl) -- get twitter infos from internets
-		if type(got.body)=="string" then
-			local tab=json.decode(got.body)
-			if tab.profile_image_url then
-				url="/thumbcache/"..w.."/"..h.."/"..tab.profile_image_url:sub(8) -- skip "http://"
-			end
+	local endings={"@id.wetgenes.com"}
+	for i,v in ipairs(endings) do
+		if string.sub(email,-#v)==v then
+			url="/thumbcache/"..w.."/"..h.."/www.wetgenes.com/icon/"..string.sub(email,1,-(#v+1))
 		end
 	end
-	
+
+	local endings={"@id.twitter.com"}
+	for i,v in ipairs(endings) do
+		if string.sub(email,-#v)==v then
+
+			local turl="http://www.twitter.com/users/"..string.sub(email,1,-(#v+1))..".json"
+			local got=fetch.get(turl) -- get twitter infos from internets
+			if type(got.body)=="string" then
+				local tab=json.decode(got.body)
+				if tab.profile_image_url then
+					url="/thumbcache/"..w.."/"..h.."/"..tab.profile_image_url:sub(8) -- skip "http://"
+				end
+			end
+
+		end
+	end
+
+--[[
+	local endings={"@gmail.com","@googlemail.com"}
+	for i,v in ipairs(endings) do
+		if string.sub(email,-#v)==v then
+			url="http://www.google.com/profiles/"..string.sub(email,1,-(#v+1))
+		end
+	end
+]]
+
 	url=url or "/thumbcache/"..w.."/"..h.."/www.gravatar.com/avatar/"..sys.md5(email):lower().."?s=200&d=identicon&r=x"
 	
 	return url -- return nil if no image found
