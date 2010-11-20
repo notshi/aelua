@@ -311,7 +311,11 @@ local get,put=make_get_put(srv)
 		
 		else
 			local list=pages.list(srv,{group=group,limit=10,layer=LAYER_PUBLISHED,sort="pubdate"})
-			local css=list and list[1] and list[1].css
+			local chunks
+			if list[1] then
+				chunks=bubble(srv,list[1]) -- this gets parent entities
+			end
+			local css=chunks and chunks.css
 			srv.set_mimetype("text/html; charset=UTF-8")
 			put("header",{title="blog : "..group..page,css=css})
 			local H={sess=sess,user=user}
