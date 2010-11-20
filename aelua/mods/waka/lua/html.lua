@@ -36,23 +36,13 @@ end
 -----------------------------------------------------------------------------
 waka_bar=function(d)
 
-	local user=d.srv.user
-	local hash=d.srv.sess and d.srv.sess.key and d.srv.sess.key.id
-	if user then
-	
-		d.name="<span title=\""..user.cache.email.."\" >"..(user.cache.name or "?").."</span>"
-	
-		d.hello="Hello, "..d.name.."."
-		
-		d.action="<a href=\"/dumid/logout/"..hash.."/?continue="..url_esc(d.srv.url).."\">Logout?</a>"
-	else
-		d.hello="Hello, Anon."
-		d.action="<a href=\"/dumid/login/?continue="..url_esc(d.srv.url).."\">Login?</a>"
-	
-	end
-	
+
+	local s1=home_bar(d)
+	local s2=user_bar(d)
+
+
 	d.admin=""
-	if user and user.cache and user.cache.admin then -- admin
+	if d.srv and d.srv.user and d.srv.user.cache and d.srv.user.cache.admin then -- admin
 		d.admin=replace([[
 	<div style="float:right">
 		<form action="" method="POST" enctype="multipart/form-data">
@@ -62,18 +52,7 @@ waka_bar=function(d)
 ]],d)
 	end
 	
-	return replace([[
-<div style="display:relative">
-<div style="float:left">
-{crumbs}
-</div>
-<div style="float:right">
-{hello} {action}
-</div>
-{admin}
-<div style="clear:both"></div>
-</div>
-]],d)
+	return replace(s1..s2..d.admin)
 
 end
 

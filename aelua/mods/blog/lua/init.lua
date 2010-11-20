@@ -195,11 +195,17 @@ local get,put=make_get_put(srv)
 	for i,v in ipairs(list) do
 	
 		local chunks=bubble(srv,v,over) -- this gets parent entities
-		local text=get(macro_replace(chunks.plate or "{body}",chunks))
+
+-- bad hardcoded, need to fix
+		chunks.link="/blog" .. v.cache.pubname
+		chunks.pubdate=(os.date("%Y-%m-%d %H:%M:%S",v.cache.pubdate))
+		chunks.it=v.cache
+
+		local text=get(macro_replace(chunks.plate_wrap or chunks.plate or "{body}",chunks))
 		
 		if chunks.css then css=chunks.css end -- need to pass out some css too
 		
-		t[#t+1]=get("blog_post_wrapper",{it=v.cache,chunks=chunks,text=text})
+		t[#t+1]=text
 	end
 	
 	return table.concat(t),css

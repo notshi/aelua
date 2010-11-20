@@ -73,7 +73,7 @@ blog_admin_links=function(d)
 	end
 	return replace([[
 	<div>
-		<a href="{srv.url_base}" class="button" > Home </a> 
+		<a href="{srv.url_base}" class="button" > View Blog </a> 
 		<a href="{srv.url_base}/admin/pages" class="button" > List </a> 
 		<a href="{srv.url_base}/admin/edit/$newpage" class="button" > New Post </a>
 		{edit_post}

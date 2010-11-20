@@ -217,19 +217,17 @@ end
 -----------------------------------------------------------------------------
 user_bar=function(d)
 
-	local user=d.H and d.H.user
-	local hash=d.H and d.H.sess and d.H.sess.key and d.H.sess.key.id
+	local user=d.srv and d.srv.user
+	local hash=d.srv and d.srv.sess and d.srv.sess.key and d.srv.sess.key.id
 	if user then
 	
 		d.name="<span title=\""..user.cache.email.."\" >"..(user.cache.name or "?").."</span>"
 	
 		d.hello="Hello, "..d.name.."."
 		
---		d.action="<div class=\"log3\"><div class=\"logit\"><a href=\""..users.logout_url(d.srv.url).."\">Logout?</a></div></div>"
 		d.action="<div class=\"log3\"><div class=\"logit\"><a href=\"/dumid/logout/"..hash.."/?continue="..url_esc(d.srv.url).."\">Logout?</a></div></div>"
 	else
 		d.hello="Hello, Anon."
---		d.action="<div class=\"log2\"><div class=\"logit\"><a href=\""..users.login_url(d.srv.url).."\">Login?</a></div></div>"
 		d.action="<div class=\"log2\"><div class=\"logit\"><a href=\"/dumid/login/?continue="..url_esc(d.srv.url).."\">Login?</a></div></div>"
 	
 	end
