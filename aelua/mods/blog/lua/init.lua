@@ -310,14 +310,15 @@ local get,put=make_get_put(srv)
 			
 		
 		else
+			local list=pages.list(srv,{group=group,limit=10,layer=LAYER_PUBLISHED,sort="pubdate"})
+			local css=list and list[1] and list[1].css
 			srv.set_mimetype("text/html; charset=UTF-8")
-			put("header",{title="blog : "..group..page})
+			put("header",{title="blog : "..group..page,css=css})
 			local H={sess=sess,user=user}
 			put("home_bar",{H=H})
 			put("user_bar",{H=H})
 			put("blog_admin_links",{user=user})
 		
-			local list=pages.list(srv,{group=group,limit=10,layer=LAYER_PUBLISHED,sort="pubdate"})
 			
 			for i,v in ipairs(list) do
 			
@@ -344,18 +345,18 @@ local get,put=make_get_put(srv)
 		end
 		if ent and ent.cache.layer==LAYER_PUBLISHED then -- must be published
 		
-			srv.set_mimetype("text/html; charset=UTF-8")
-			put("header",{title="blog : "..ent.cache.pubname})
-			local H={sess=sess,user=user}
-			put("home_bar",{H=H})
-			put("user_bar",{H=H})
-			put("blog_admin_links",{it=ent.cache,user=user})
 			local chunks=bubble(srv,ent) -- this gets parent entities
-
 			chunks.link=srv.url_local:sub(1,-2) .. ent.cache.pubname
 			chunks.pubdate=(os.date("%Y-%m-%d %H:%M:%S",ent.cache.pubdate))
 			chunks.it=ent.cache
 			local text=get(macro_replace(chunks.plate_page or chunks.plate or "{body}",chunks))
+
+			srv.set_mimetype("text/html; charset=UTF-8")
+			put("header",{title="blog : "..ent.cache.pubname,css=chunks.css})
+			local H={sess=sess,user=user}
+			put("home_bar",{H=H})
+			put("user_bar",{H=H})
+			put("blog_admin_links",{it=ent.cache,user=user})
 
 			put(text)
 			
@@ -384,6 +385,8 @@ local output_que={} -- delayed page content
 	local function que(a,b) -- que
 		output_que[#output_que+1]=get(a,b)
 	end
+
+	local css=css
 	
 	if not ( user and user.cache and user.cache.admin ) then -- not admin, no access
 		srv.set_mimetype("text/html; charset=UTF-8")
@@ -528,6 +531,7 @@ This is the #body of your post and can contain any html you wish.
 		
 		local chunks=bubble(srv,ent) -- this gets parent entities
 		que(macro_replace(chunks.plate or "{body}",chunks))
+		css=chunks.css
 
 	
 	else -- default
@@ -537,7 +541,7 @@ This is the #body of your post and can contain any html you wish.
 	end
 	
 	srv.set_mimetype("text/html; charset=UTF-8")
-	put("header",{title="blog : admin"})
+	put("header",{title="blog : admin",css=css})
 	local H={sess=sess,user=user}
 	put("home_bar",{H=H})
 	put("user_bar",{H=H})
