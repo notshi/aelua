@@ -1,5 +1,5 @@
 
-A wiki and blog like module. Where page content can be created and edited online
+A wiki like module. Where page content can be created and edited online
 with a full recorded history.
 
 Unlike a wiki live edits are not allowed except by trusted parties instead
