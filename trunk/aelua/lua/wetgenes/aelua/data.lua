@@ -14,6 +14,8 @@ local core=require("wetgenes.aelua.data.core")
 
 module("wetgenes.aelua.data")
 
+count=0
+
 
 local kind_props={}	-- default global props mapped to kinds
 
@@ -53,8 +55,11 @@ end
 
 function query(q)
 
-	return core.query(nil,q)
+	count=count+1
 
+	local r=core.query(nil,q)
+
+	return r
 end
 
 -----------------------------------------------------------------------------
