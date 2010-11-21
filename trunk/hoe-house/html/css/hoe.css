@@ -978,6 +978,8 @@ div.pro1d1 {
 	height: 80px;
 	color: #374548;
 	padding: 10px 10px 0px 10px;
+	
+	overflow: hidden;
 }
 /*PROFILE INFO Form Input container */
 div.pro1d input {
