@@ -1893,7 +1893,7 @@ div.foot{
 }
 
 .wetnote_comment_text {
-	width:480px;
+	width:460px;
 	margin-left: 120px;
 	padding-bottom: 20px;
 	overflow: hidden;
@@ -1907,7 +1907,7 @@ div.foot{
 	opacity:0;
 	padding-top: 5px;
 	padding-bottom: 10px;
-	width:520px;
+	width:460px;
 	margin-left:120px;
 	
 	font-family: Lucida Sans Unicode, sans-serif;
@@ -1962,4 +1962,26 @@ div.foot{
 }
 .wetnote_comment_post:active {
 	background-color: #DCDCDC;
+}
+
+.wetnote_main{
+	display:table;
+}
+.wetnote_main2{
+	display:table-row;
+}
+.wetnote_comments{
+	display:table-cell;
+	width:640px;
+}
+.wetnote_ticker{
+	width:320px;
+	display:table-cell;
+	font-family: Lucida Sans Unicode, sans-serif;
+	color: #666;
+	font-size: 12px;
+}
+.wetnote_tick{
+	margin:10px 20px 10px 20px;
+	text-align:center;
 }

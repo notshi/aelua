@@ -6,6 +6,7 @@ local sys=require("wetgenes.aelua.sys")
 
 local json=require("json")
 local dat=require("wetgenes.aelua.data")
+local cache=require("wetgenes.aelua.cache")
 
 local users=require("wetgenes.aelua.users")
 
@@ -19,6 +20,7 @@ local wet_waka=require("wetgenes.waka")
 
 local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
+local replace  =wet_string.replace
 local serialize=wet_string.serialize
 
 
@@ -287,6 +289,10 @@ function list(srv,opts,t)
 	if opts.sortdate then
 		q[#q+1]={"sort","updated", opts.sortdate }
 	end
+	if opts.csortdate then
+		q[#q+1]={"sort","created", opts.csortdate }
+	end
+	
 	local r=t.query(q)
 
 	for i=1,#r.list do local v=r.list[i]
@@ -319,9 +325,11 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	
 		if user and tab.posts.wetnote_comment_submit then -- add this comment
 		
+			local posted
+		
 			if #tab.posts.wetnote_comment_text > 4096 then
 				tab.put([[
-				<div>
+				<div class="wetnote_error">
 				Sorry but your comment was too long (>4096 chars) to be accepted.
 				</div>
 				]])
@@ -340,6 +348,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			c.text=tab.posts.wetnote_comment_text
 			
 			put(srv,e)
+			posted=e
 			
 			if id~=0 then -- this is a comment so apply to master
 			
@@ -376,6 +385,15 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				e.cache.count=#comments -- a number to sort by
 				return true
 			end)
+
+			if posted and posted.cache then -- redirect to our new post
+				if id==0 then
+					sys.redirect(srv,tab.url.."#wetnote"..posted.cache.id)
+				else
+					sys.redirect(srv,tab.url.."#wetnote"..id)
+				end
+				return
+			end
 
 		end
 		
@@ -420,7 +438,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	function get_comment(c)
 		local plink,purl=users.email_to_profile_link(c.cache.user.email)
 		return tab.get([[
-<div class="wetnote_comment_div" >
+<div class="wetnote_comment_div" id="wetnote{id}" >
 <div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
 <div class="wetnote_comment_head" > #{id} posted by <a href="{purl}">{name}</a> on {time} </div>
 <div class="wetnote_comment_text" >{text}</div>
@@ -443,6 +461,11 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		meta=manifest(srv,tab.url)
 	end
 
+	tab.put([[<div class="wetnote_main">]])
+	tab.put([[<div class="wetnote_main2">]])
+	
+	tab.put([[<div class="wetnote_comments">]])
+	
 	tab.put([[<div class="wetnote_comment_form_head"></div>]])
 	tab.put(get_reply_form(0))
 	tab.put([[<div class="wetnote_comment_form_tail"></div>]])
@@ -497,9 +520,117 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 </div>
 ]])
 	end
+
+	tab.put([[</div>]])
 	
+	local r=get_recent(srv,50)
+	
+	tab.put([[
+<div class="wetnote_ticker">{text}</div>
+]],	{
+		text=recent_to_html(srv,r),
+	})
+	
+	tab.put([[</div>]])
+	tab.put([[</div>]])
 
 end
 
+
+--------------------------------------------------------------------------------
+--
+-- get num recent comments, cached so this is very fuzzy
+--
+--------------------------------------------------------------------------------
+function get_recent(srv,num)
+
+	-- a unique keyname for this query
+	local cachekey="kind="..kind(H).."&find=recent&limit="..num
+	
+	local r=cache.get(cachekey) -- do we already know the answer?
+
+	if r then -- we cached the answer
+		return json.decode(r) -- turn back into data
+	end
+
+	local recent=list(srv,{limit=num,type="ok",csortdate="DESC"})
+
+	cache.put(cachekey,json.encode(recent),2*60) -- save this for cache 2 minutes
+	
+	return recent
+end
+
+
+
+-----------------------------------------------------------------------------
+--
+-- turn a number of seconds into a rough duration
+--
+-----------------------------------------------------------------------------
+local function rough_english_duration(t)
+	t=math.floor(t)
+	if t>=2*365*24*60*60 then
+		return math.floor(t/(365*24*60*60)).." years"
+	elseif t>=2*30*24*60*60 then
+		return math.floor(t/(30*24*60*60)).." months" -- approximate months
+	elseif t>=2*7*24*60*60 then
+		return math.floor(t/(7*24*60*60)).." weeks"
+	elseif t>=2*24*60*60 then
+		return math.floor(t/(24*60*60)).." days"
+	elseif t>=2*60*60 then
+		return math.floor(t/(60*60)).." hours"
+	elseif t>=2*60 then
+		return math.floor(t/(60)).." minutes"
+	elseif t>=2 then
+		return t.." seconds"
+	elseif t==1 then
+		return "1 second"
+	else
+		return "0 seconds"
+	end
+end
+
+--------------------------------------------------------------------------------
+--
+-- recent to html
+--
+--------------------------------------------------------------------------------
+function recent_to_html(srv,tab)
+
+	local t={}
+	local put=function(str,tab)
+		t[#t+1]=replace(str,tab)
+	end
+
+	for i,v in ipairs(tab) do
+		local c=v.cache
+		
+		local link=c.url.."#wetnote"
+		if c.group==0 then
+			link=link..c.id -- link to main comment
+		else
+			link=link..c.group -- link to what we are commenting on
+		end
+		if link:sub(1,1)=="/" then link=srv.url_domain..link end -- and make it absolute
+		
+		local plink,purl=users.email_to_profile_link(c.cache.user.email)
+
+		put([[
+<div class="wetnote_tick">
+{time} ago <a href="{purl}">{name}</a> commented on <a href="{link}">{url}</a>
+</div>
+]],{
+		name=c.cache.user.name,
+		time=rough_english_duration(os.time()-c.created),
+		url=c.url,
+		link=link,
+		purl=purl or "http://google.com/search?q="..c.cache.user.name,
+	})
+		
+	end
+
+	
+	return table.concat(t)
+end
 
 
