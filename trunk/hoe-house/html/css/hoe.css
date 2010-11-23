@@ -65,17 +65,16 @@ body{
 	background-image:url('/art/header.png');
 	background-repeat:repeat-x;
 }
-a:focus		{color: #444; text-decoration: none;}
-a:link		{color: #444; text-decoration: none;}
-a:visited	{color: #444; text-decoration: none;}
-a:hover		{color: #444; text-decoration: underline;}
-a:active	{color: #444; text-decoration: none;}
+a:focus		{color: #444; text-decoration: none; font-weight: normal;}
+a:link		{color: #444; text-decoration: none; font-weight: normal;}
+a:visited	{color: #444; text-decoration: none; font-weight: normal;}
+a:hover		{color: #444; text-decoration: underline; font-weight: normal;}
+a:active	{color: #444; text-decoration: none; font-weight: normal;}
 
 /* Main Container */
 div.maincont{
 	width: 960px;
 	margin: 0 auto;
-	padding-bottom: 40px;
 }
 /* Container for contents */
 div.cont{
@@ -517,39 +516,15 @@ div.chunk3line {
 }
 
 /* Icon navigation container*/
-#menu_hover {
-	position: absolute;
-	overflow: hidden;
-	height: 60px;
-	width: 67px;
-}
-div.chunk4, div.chunk4a{
-	background-color: #ECEAEA;
-	-moz-border-radius: 8px;
-	-webkit-border-radius: 8px;
-	border-radius: 8px 8px;
-	border-bottom:1px solid #ccc;
-	border-left:1px solid #ccc;
-	border-right:1px solid #ccc;
-	margin: 0px;
-	width: 55px;
-	height: 54px;
-	padding: 0px 5px 5px 5px;
-	-moz-box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, white 0px 20px 20px -10px inset;
-    -webkit-box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, white 0px 20px 20px -10px inset;
-    box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, white 0px 20px 20px -10px inset;
-}
-div.chunk4 {
-	border-top-left-radius: 0px;
-	border-top-right-radius: 0px;
-}
-div.chunk4a {
-	background-color: #ECEAEA;
-	border-top:1px solid #ccc;
-	margin-top: 1px;
-	width: 348px;
+div.chunk4{
+/*	background-color: #ECEAEA;*/
+	margin: 0px auto;
+	width: 420px;
 	height: 48px;
+	clear: both;
+	padding: 0px 5px 5px 5px;
 }
+
 /* HUD container */
 div.chunk5{
 	background-color: #e3e3e3;
@@ -561,7 +536,7 @@ div.chunk5{
 	border-left:1px solid #ccc;
 	border-right:1px solid #ccc;
 	margin: 0px;
-	width: 880px;
+	width: 948px;
 	padding: 5px;
 	float: right;
 	-moz-box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, #fff 0px 20px 20px -10px inset;
@@ -1600,12 +1575,9 @@ div.act:active{
 }
 
 /* TOP LEFT NAVIGATION ICONS */
-div.actp, div.actpa {
+div.actp {
 	width: 50px;
 	margin: 5px 10px 0px 10px;
-}
-div.actpa {
-	margin: 7px 10px 3px 10px;
 }
 
 /* HUD icons */
@@ -1615,7 +1587,7 @@ div.hud{
 	-webkit-border-radius: 8px;
 	border-radius: 8px;
 	border: 2px solid #ccc;
-	width: 875px;
+	width: 943px;
 	margin: 0px;
 	float:left;
 }
@@ -1655,7 +1627,7 @@ div.hudline{
 }
 /* smaller HUD icons */
 div.hud2{
-	width: 80px;
+	width: 89px;
 	height: 45px;
 	margin: 0px;
 	float:left;
