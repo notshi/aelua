@@ -5,6 +5,7 @@ local sys=require("wetgenes.aelua.sys")
 
 local json=require("json")
 local dat=require("wetgenes.aelua.data")
+local cache=require("wetgenes.aelua.cache")
 
 local users=require("wetgenes.aelua.users")
 
