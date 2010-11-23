@@ -19,6 +19,7 @@ body{
 	color: #000;	
 	background-color: transparent;
 	
+	word-wrap:break-word;
 }
 
 
@@ -43,16 +44,14 @@ a {
 	outline:none;
 	margin:0px;
 	padding:0px;
+	color: #000;
+	font-weight: bold;
 }
 
 a:link {
-	font-weight: bold;
-	color: #000;
 	text-decoration: none;
 }
 a:visited {
-	font-weight: bold;
-	color: #000;
 	text-decoration: none;
 }
 a:active {
@@ -258,9 +257,13 @@ a:hover {
 	width:320px;
 	display:table-cell;
 	font-family: Lucida Sans Unicode, sans-serif;
-	color: #666;
+	color: #aaa;
 	font-size: 12px;
 }
+.wetnote_tick a {
+	color: #888;
+}
+
 .wetnote_tick{
 	margin:10px 20px 10px 20px;
 	text-align:center;

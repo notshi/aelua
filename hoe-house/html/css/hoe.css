@@ -65,11 +65,12 @@ body{
 	background-image:url('/art/header.png');
 	background-repeat:repeat-x;
 }
-a:focus		{color: #444; text-decoration: none; font-weight: normal;}
-a:link		{color: #444; text-decoration: none; font-weight: normal;}
-a:visited	{color: #444; text-decoration: none; font-weight: normal;}
-a:hover		{color: #444; text-decoration: underline; font-weight: normal;}
-a:active	{color: #444; text-decoration: none; font-weight: normal;}
+a { color: #444; font-weight: normal; }
+a:focus		{ text-decoration: none;}
+a:link		{ text-decoration: none;}
+a:visited	{ text-decoration: none;}
+a:hover		{ text-decoration: underline;}
+a:active	{ text-decoration: none;}
 
 /* Main Container */
 div.maincont{
@@ -1738,7 +1739,7 @@ div.help{
 	font-variant: small-caps;
 	text-align: center;
 	padding: 2px 5px 6px 5px;
-	width: 30px;
+	width: 35px;
 	float:left;
 }
 .help a:focus		{color: #fff; text-decoration: none;}

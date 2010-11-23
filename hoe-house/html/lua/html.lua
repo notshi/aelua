@@ -108,16 +108,16 @@ header=function(d)
 --		d.extra=d.extra.."<link rel=\"stylesheet\" type=\"text/css\" href=\""..d.css.."\">"
 	end
 	
-	d.jquery_js="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
+	d.jquery_js="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"
 	d.jquery_ui_js="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"
 	d.swfobject_js="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"
 	d.jquery_validate_js="http://ajax.microsoft.com/ajax/jQuery.Validate/1.6/jQuery.Validate.min.js"
 	
 	if d.srv.url_slash[3]=="host.local:8080" then -- a local shop only servs local people
-		d.jquery_js="/js/jquery-1.4.2.js"
-		d.jquery_ui_js="/js/jquery-ui-1.8.2.custom.min.js"
-		d.swfobject_js="/js/swfobject.js"
-		d.jquery_validate_js="/js/jquery.validate.js"
+		d.jquery_js="/js/base/jquery-1.4.3.js"
+		d.jquery_ui_js="/js/base/jquery-ui-1.8.2.custom.min.js"
+		d.swfobject_js="/js/base/swfobject.js"
+		d.jquery_validate_js="/js/base/jquery.validate.js"
 	end
 	
 	if not d.title then

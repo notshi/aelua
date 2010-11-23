@@ -364,7 +364,7 @@ local get,put=make_get_put(srv)
 
 			put(text)
 			
-			comments.build(srv,{url=chunks.link,posts=posts,get=get,put=put,sess=sess,user=user})
+			comments.build(srv,{title=chunks.title,url=chunks.link,posts=posts,get=get,put=put,sess=sess,user=user})
 
 			put("footer")
 			

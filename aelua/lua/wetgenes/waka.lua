@@ -246,6 +246,10 @@ local escape_html=opts.escape_html or false
 				local f1,f2=s:find(chars)
 				if f1 then -- must find a word
 					local s1=s:sub(f1,f2)
+					if s1:sub(-1)=="." then -- trim trailing dot
+						f2=f2-1
+						s1=s:sub(f1,f2)
+					end
 					local ss=split_words(s1,"/")
 					local tail=ss[#ss] 
 					link(s1,tail or s1)
