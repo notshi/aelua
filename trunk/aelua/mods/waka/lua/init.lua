@@ -225,7 +225,7 @@ local ext
 		{body}
 		]],form))
 		
-		comments.build(srv,{url=url_local,posts=posts,get=get,put=put,sess=sess,user=user})
+		comments.build(srv,{title=form.title or pagename,url=url_local,posts=posts,get=get,put=put,sess=sess,user=user})
 
 		put("footer")
 	end

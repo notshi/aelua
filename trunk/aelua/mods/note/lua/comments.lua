@@ -17,6 +17,7 @@ local img=require("wetgenes.aelua.img")
 local log=require("wetgenes.aelua.log").log -- grab the func from the package
 
 local wet_waka=require("wetgenes.waka")
+local wet_html=require("wetgenes.html")
 
 local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
@@ -317,6 +318,9 @@ end
 function build(srv,tab)
 local function dput(s) put("<div>"..tostring(s).."</div>") end
 
+	local ret={}
+	ret.count=0
+	
 	local meta
 	
 	local user=(tab.user and tab.user.cache)
@@ -340,12 +344,30 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			local e=create(srv)
 			local c=e.cache
 			
+			local title=tab.title-- the title of the page we are commenting upon,can be null
+			if title then
+				if #title>32 then -- left most 32 chars
+					title=title:sub(1,29).."..."
+				end
+			else
+				title=tab.url
+				if title then
+					if #title>32 then -- right most 32 chars
+						title="..."..title:sub(-29)
+					end
+				end
+			end
+			if title then -- url escape it
+				if #title < 3 then title="this" end
+				title=wet_html.esc(title)
+			end
 			c.cache.user=tab.user.cache
 			c.avatar=users.email_to_avatar_url(user.email or "") -- this can be expensive so we cache it
 			c.author=tab.user.cache.email
 			c.url=tab.url
 			c.group=id
 			c.text=tab.posts.wetnote_comment_text
+			c.title=title
 			
 			put(srv,e)
 			posted=e
@@ -387,6 +409,9 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			end)
 
 			if posted and posted.cache then -- redirect to our new post
+			
+				cache.del("kind="..kind(H).."&find=recent&limit="..(50)) -- reset normal recent cache
+
 				if id==0 then
 					sys.redirect(srv,tab.url.."#wetnote"..posted.cache.id)
 				else
@@ -405,9 +430,13 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		if not user then -- must login to reply
 			return tab.get([[
 <div class="wetnote_comment_form_div">
-<a href="{url}">You must login to comment.<br/> Click here to login with twitter/gmail/etc...</a>
+<a href="#" onclick="$(this).hide(400);$('#wetnote_comment_form_{id}').show(400);return false;" style="{actioncss}">Reply</a>
+<div id="wetnote_comment_form_{id}" style="{formcss}"> <a href="{url}">You must login to comment.<br/> Click here to login with twitter/gmail/etc...</a>
+</div>
 </div>]],{
 			url="/dumid/login/?continue="..url_esc(srv.url),
+			actioncss=(num==0) and "display:none" or "display:block",
+			formcss=(num==0) and "display:block" or "display:none",
 		})
 		end
 		local plink,purl=users.email_to_profile_link(user.email or "")
@@ -436,6 +465,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	
 -- display comment
 	function get_comment(c)
+		ret.count=ret.count+1
 		local plink,purl=users.email_to_profile_link(c.cache.user.email)
 		return tab.get([[
 <div class="wetnote_comment_div" id="wetnote{id}" >
@@ -534,6 +564,15 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	tab.put([[</div>]])
 	tab.put([[</div>]])
 
+	tab.put([[
+<script language="javascript" type="text/javascript">
+	$(function(){
+		$(".wetnote_comment_text a").autoembedlink({width:460,height:345});
+	});
+</script>	
+	]])
+
+	return ret
 end
 
 
@@ -555,7 +594,7 @@ function get_recent(srv,num)
 
 	local recent=list(srv,{limit=num,type="ok",csortdate="DESC"})
 
-	cache.put(cachekey,json.encode(recent),2*60) -- save this for cache 2 minutes
+	cache.put(cachekey,json.encode(recent),2*60) -- save this in cache for 2 minutes
 	
 	return recent
 end
@@ -617,12 +656,12 @@ function recent_to_html(srv,tab)
 
 		put([[
 <div class="wetnote_tick">
-{time} ago <a href="{purl}">{name}</a> commented on <a href="{link}">{url}</a>
+{time} ago <a href="{purl}">{name}</a> commented on <br/> <a href="{link}">{title}</a>
 </div>
 ]],{
 		name=c.cache.user.name,
 		time=rough_english_duration(os.time()-c.created),
-		url=c.url,
+		title=c.title or c.url,
 		link=link,
 		purl=purl or "http://google.com/search?q="..c.cache.user.name,
 	})
