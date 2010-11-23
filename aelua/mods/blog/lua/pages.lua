@@ -5,6 +5,7 @@ local sys=require("wetgenes.aelua.sys")
 
 local json=require("json")
 local dat=require("wetgenes.aelua.data")
+local cache=require("wetgenes.aelua.cache")
 
 local users=require("wetgenes.aelua.users")
 
@@ -100,6 +101,8 @@ function create(srv)
 	local c=ent.cache
 	
 	c.text="" -- this string is the main text of the data, it contains waka chunks
+	
+	c.comment_count=0 -- number of comments
 
 	return check(srv,ent)
 end
