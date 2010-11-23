@@ -159,28 +159,13 @@
 
 #player_bar
 
-<script type="text/javascript">
-
-$(document).ready(function() {
-$("#menu_hover").hover(function(){
-		$("#menu_hover").stop(true,true).animate({height:120,width:360});
-	},function(){
-		$("#menu_hover").stop(true,true).animate({height:60,width:67});
-	});
-});
-
-</script>
-
-<div class="cont">
-	<div id="menu_hover">
+<div class="cont" style="background-color: #ECEAEA;">
 	<div class="chunk4">
 		<div class="act">
-			<div class="actpa">
+			<div class="actp">
 				<a href="{H.url_base}"><img src="/art/menu.png" width="30" height="30" /></a>
 			</div>
 		</div>
-	</div>
-	<div class="chunk4a">
 		<div class="act">
 			<div class="actp">
 				<a href="{H.url_base}work"><img src="/art/work.png" width="30" height="30" /></a>
