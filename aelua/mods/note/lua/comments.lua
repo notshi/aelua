@@ -437,6 +437,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			url="/dumid/login/?continue="..url_esc(srv.url),
 			actioncss=(num==0) and "display:none" or "display:block",
 			formcss=(num==0) and "display:block" or "display:none",
+			id=num,
 		})
 		end
 		local plink,purl=users.email_to_profile_link(user.email or "")

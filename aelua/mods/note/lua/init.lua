@@ -101,6 +101,13 @@ local get=make_get(srv)
 	local t=users.email_to_avatar_url("kriss2@xixs.com")
 	put('<img src="{src}">',{src=t})
 ]]
+
+	put([[
+<div class="wetnote_ticker">{text}</div>
+]],	{
+		text=comments.recent_to_html(srv, comments.get_recent(srv,50) ),
+	})
+
 	
 	put("footer")
 end

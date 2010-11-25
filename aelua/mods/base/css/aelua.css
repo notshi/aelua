@@ -44,8 +44,11 @@ a {
 	outline:none;
 	margin:0px;
 	padding:0px;
-	color: #000;
-	font-weight: bold;
+	color: #666;
+}
+
+:focus {
+	outline:none;
 }
 
 a:link {
@@ -250,10 +253,13 @@ a:hover {
 	display:table-row;
 }
 .wetnote_comments{
+	vertical-align: top;
 	display:table-cell;
 	width:640px;
 }
 .wetnote_ticker{
+	vertical-align: top;
+	padding-top:50px;
 	width:320px;
 	display:table-cell;
 	font-family: Lucida Sans Unicode, sans-serif;

@@ -367,7 +367,7 @@ local get,put=make_get_put(srv)
 			local ret=comments.build(srv,{title=chunks.title,url=chunks.link,posts=posts,get=get,put=put,sess=sess,user=user})
 			
 			if ret and ret.count then
-				if ret.count~=ent.cache.comment_count then -- need to update number of comments
+				if ret.count~=ent.cache.comment_count then -- need to update cached number of comments
 					pages.update(srv,ent,function(srv,e) e.cache.comment_count=ret.count return true end)
 				end
 			end
