@@ -61,8 +61,14 @@
       <fileset dir="../aelua/class">            <include name="**/*.jar"/> </fileset>
     </copy>
     
-    <copy todir="${war.dir}/jslua" includeEmptyDirs="false" >
-      <fileset dir="../jslua/war">          <exclude name="**/.svn/**"/> </fileset>
+    <copy todir="${war.dir}/JsLua" includeEmptyDirs="false" >
+      <fileset dir="../jslua/war/JsLua">          <exclude name="**/.svn/**"/> </fileset>
+    </copy>
+    <copy todir="${war.dir}/luac" includeEmptyDirs="false" >
+      <fileset dir="../jslua/html/luac">          <exclude name="**/.svn/**"/> </fileset>
+    </copy>
+    <copy todir="${war.dir}/js" includeEmptyDirs="false" >
+      <fileset dir="../jslua/html/js">          <exclude name="**/.svn/**"/> </fileset>
     </copy>
 
 	<for param="file"> 
