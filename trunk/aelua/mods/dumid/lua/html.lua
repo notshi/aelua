@@ -64,23 +64,6 @@ dumid_footer=function(d)
 		</div>
 	</div>
 </div>
-<br/>
-<div class="popupwet">
-	<div class="head">Hello, shi :)</div> 
-	<div class="from">hoe-house.appspot.com</div> 
-	<div class="wants">wants to know your</div> 
-	<div class="data">name</div> 
-	<div class="buttons"> 
-		<a class="allow" href="http://hoe-house.appspot.com/dumid/callback/wetgenes/?continue=http://hoe-house.appspot.com/&confirm=35f27efc5473cf81b75dc3392a58c9d0" target="_parent">Confirm</a> 
-		<a class="deny" href="http://hoe-house.appspot.com/dumid/callback/wetgenes/?continue=http://hoe-house.appspot.com/&deny=0" target="_parent">Deny</a> 
-	</div>
-	<div class="footer">
-		<div class="foot">
-			This is a <a href="http://dum-id.appspot.com/">dumid</a> login system.
-		</div>
-	</div>
-</div>
-
 
 </body>
 </html>

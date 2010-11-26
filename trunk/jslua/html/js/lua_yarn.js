@@ -4,7 +4,7 @@ var L; // this will be our lua state
 // lua has no fileaccess for module loading
 // so instead all modulefiles must be preloaded and shoved into package.preload
 // a little bit harsh for requesting lots of small files
-// but it will do for now, obviously this can all be wrapped up into one bundle
+// but it will do for now, obviously this coul be all wrapped up into one bundle
 // as a simple optimisation
 
 var preload_lua_list=[

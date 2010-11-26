@@ -99,8 +99,8 @@ public class Img
 		L.setField(t,"image",img);
 		L.setField(t,"data",img.getImageData());
 		L.setField(t,"format",img.getFormat().name());
-		L.setField(t,"height",img.getHeight());
-		L.setField(t,"width",img.getWidth());
+		L.setField(t,"height",(double)img.getHeight());
+		L.setField(t,"width",(double)img.getWidth());
 	}
 	public Image get_tab_img(Lua L,LuaTable t)
 	{
@@ -146,6 +146,11 @@ public class Img
 		if(format=="JPEG")
 		{
 			img=imgs.applyTransform(t1,img,ImagesService.OutputEncoding.JPEG);
+		}
+		else
+		if(format=="PNG")
+		{
+			img=imgs.applyTransform(t1,img,ImagesService.OutputEncoding.PNG);
 		}
 		else
 		{
@@ -214,6 +219,11 @@ public class Img
 		if(format=="JPEG")
 		{
 			img=imgs.composite(t1,width,height,color,ImagesService.OutputEncoding.JPEG);
+		}
+		else
+		if(format=="PNG")
+		{
+			img=imgs.composite(t1,width,height,color,ImagesService.OutputEncoding.PNG);
 		}
 		else
 		{

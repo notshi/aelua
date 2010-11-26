@@ -255,6 +255,7 @@ user_bar=function(d)
 
 	local user=d.srv and d.srv.user
 	local hash=d.srv and d.srv.sess and d.srv.sess.key and d.srv.sess.key.id
+	
 	if user then
 	
 		d.name="<span title=\""..user.cache.email.."\" >"..(user.cache.name or "?").."</span>"
@@ -262,12 +263,23 @@ user_bar=function(d)
 		d.hello="Hello, "..d.name.."."
 		
 		d.action="<a href=\"/dumid/logout/"..hash.."/?continue="..url_esc(d.srv.url).."\">Logout?</a>"
+		d.js=""
 	else
 		d.hello="Hello, Anon."
 		d.action="<a href=\"/dumid/login/?continue="..url_esc(d.srv.url).."\">Login?</a>"
+--		d.action="<a href=\"#\" onclick=\"return dumid_show_login_popup();\">Login?</a>"
 	
 	end
 	
+--[[
+<script language="javascript" type="text/javascript">
+function dumid_show_login_popup()
+{
+$("body").prepend("<iframe style='position:absolute;left:50%;top:50%;margin-left:-200px;margin-top:-150px;width:400px;height:300px' src='/dumid/login/?continue=..url_esc(d.srv.url)..'></iframe>");
+return false;		
+}
+</script>
+]]
 	local p=get_plate("user_bar",[[
 <div class="aelua_user_bar">
 {hello} {action}
