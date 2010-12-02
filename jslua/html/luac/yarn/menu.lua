@@ -14,6 +14,7 @@ local unpack=unpack
 local require=require
 
 
+local strings=require("yarn.strings")
 
 module(...)
 
@@ -97,6 +98,24 @@ setfenv(1,d)
 		
 	end
 
+	-- build a requester
+	function build_request(t)
+	
+-- t[1] the main body of text, t[2++] are your options and are displayed on lines below this text
+-- every single line is wrapped and an id is set for each line so you can work out what has
+-- been selected
+		
+		local lines={}
+		for id=1,#t do
+			if id==2 then -- divider
+				lines[#lines+1]={s="",id=id}
+			end
+			local ls=strings.smart_wrap(t[id],32)
+			for i=1,#ls do lines[#lines+1]={s=ls[i],id=id} end
+		end
+		
+		return lines
+	end
 
 	return d
 	
