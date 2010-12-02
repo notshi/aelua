@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
   <cron>
-    <url>/hoe/cron</url>
-    <description>trigger some hoe house action</description>
+    <url>/cron</url>
+    <description>keep alive</description>
     <schedule>every 1 minutes</schedule>
   </cron>
 </cronentries>

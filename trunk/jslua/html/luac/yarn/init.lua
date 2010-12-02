@@ -21,6 +21,7 @@ module(...)
 local yarn=require("yarn")
 local yarn_level=require("yarn.level")
 local yarn_menu=require("yarn.menu")
+local strings=require("yarn.strings")
 
 local a_space=string.byte(" ",1)
 local a_under=string.byte("_",1)
@@ -132,51 +133,6 @@ function asc_draw_box(x,y,xh,yh)
 end
 
 
--- wrap a string to a given width
-function word_wrap(s,w)
-
-	s=s or ""
-	local t={}
-
-	while s~="" do
-	
-		if not s or s=="" then break end -- end of input
-		
-		local r
-		
-		if #s<=w or s:byte(w+1)==32 then -- perfect split
-		
-			r=s:sub(1,w)
-			s=s:sub(w+2)
-			
-		else
-		
-			local split_at=1
-			
-			for i=w,1,-1 do
-				if s:byte(i)==32 then -- found last space on this line
-					split_at=i
-					break
-				end
-			end
-			
-			if split_at==1 then -- no space no split
-				r=s:sub(1,w)
-				s=s:sub(w+1)
-			else
-				r=s:sub(1,split_at-1)
-				s=s:sub(split_at+1)
-			end
-			
-		end
-		
-		table.insert(t,r) -- building a table of lines each one of w or less length
-		
-	end
-	
-	return t
-end
-
 function draw(charwidth)
 
 local i=0
@@ -203,7 +159,7 @@ local t={}
 	end
 
 
-	local wrap=word_wrap(level.get_msg(),40)
+	local wrap=strings.smart_wrap(level.get_msg(),40)
 	
 	menu.draw()
 	

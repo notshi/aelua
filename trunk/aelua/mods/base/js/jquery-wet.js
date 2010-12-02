@@ -113,7 +113,7 @@ $.fn.autoembedlink=function(opts)
 		
 		case "image":
 		
-			$(this).before("<a href=\""+link+"\"><img src=\""+link+"\" width=\""+opts.width+"\" /></a><br />");
+			$(this).before("<a href=\""+link+"\"><img src=\""+link+"\" style=\"max-width:"+opts.width+"px;display:block;\" /></a>");
 			
 		break;
 		

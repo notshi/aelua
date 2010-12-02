@@ -25,6 +25,8 @@ local yarn_item=require("yarn.item")
 local yarn_char=require("yarn.char")
 local yarn_attr=require("yarn.attr")
 
+local yarn_prefab=require("yarn.prefab")
+
 local yarn_item_data=require("yarn.itemdata")
 local yarn_char_data=require("yarn.chardata")
 
@@ -130,11 +132,17 @@ setfenv(1,d)
 		return rand_cell(rand_room(t))
 	end
 	
-	map=yarn_map.create(d) -- create an empty map, this is juat a room layout
-
+	do
+		local opts=yarn_prefab.map_opts("home")
+		opts.xh=d.xh
+		opts.yh=d.yh
+		map=yarn_map.create(opts) -- create an empty map, this is only a room layout
+	end
+	
 -- now turn that generated map into real rooms we can put stuff in
 	for i,v in ipairs(map.rooms) do
 		rooms[i]=yarn_room.create({ level=d, xp=v.x, yp=v.y, xh=v.xh, yh=v.yh, })
+		rooms[i].opts=v.opts
 	end
 
 -- find link door locations	
@@ -144,6 +152,16 @@ setfenv(1,d)
 	
 	for i,v in ipairs(rooms) do
 		v.post_create()
+	end
+	
+	for i,v in ipairs(rooms) do
+		if v.opts then -- special?
+--[[
+			local c=rand_cell(v)
+			local p=new_char( "ant" )
+			p.set_cell( c )
+]]
+		end
 	end
 	
 	player=new_char( "player" )
@@ -182,12 +200,18 @@ setfenv(1,d)
 	function key_do(key)
 	
 		if key=="space" then
-			up.menu.show({
-				{ s="item 1", },
-				{ s="item 2", },
-				{ s="item 3", },
-				{ s="item 4", },
-			},2)
+			
+			up.menu.show(up.menu.build_request({
+[[Welcome to YARN, where an @ is you.
+
+ Press the cursor keys to move up/down/left/right.
+ 
+ Space bar is the action/menu button.
+ 
+ The menu is context sensitive so if you are standing near anything interesting you will be given options to interact with it.
+ 
+ ]],[[Press SPACE to exit.]]}))
+ 
 		end
 		
 		key_repeat_count=0 -- always zero the repeat counter

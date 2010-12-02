@@ -99,6 +99,8 @@ local ext
 				ext="html"
 			elseif ap[#ap]=="data" then -- just this pages raw page data as text
 				ext="data"
+			elseif ap[#ap]=="frame" then -- special version of this page intended to be embeded in an iframe
+				ext="frame"
 			end
 			if ext then
 				ap[#ap]=nil
@@ -202,6 +204,14 @@ local ext
 	
 		srv.set_mimetype("text/css; charset=UTF-8")
 		srv.put(form.css or "")
+		
+	elseif ext=="frame" then -- special iframe render mode
+	
+		srv.set_mimetype("text/html; charset=UTF-8")
+		put(macro_replace(form.frame or [[
+		<h1>{title}</h1>
+		{body}
+		]],form))
 		
 	elseif ext=="data" then -- raw chunk data
 	
