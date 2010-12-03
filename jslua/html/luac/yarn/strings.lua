@@ -94,7 +94,6 @@ end
 --
 -----------------------------------------------------------------------------
 function smart_wrap(s,w)
-
 	local ls=split_whitespace(s)
 	local t={}
 	
@@ -111,7 +110,7 @@ function smart_wrap(s,w)
 	
 		if v:find("%s") then -- just white space
 		
-			for i,v in v:gfind("\n") do -- keep newlines
+			for i,v in string.gfind(v,"\n") do -- keep newlines
 				newline()
 			end
 		

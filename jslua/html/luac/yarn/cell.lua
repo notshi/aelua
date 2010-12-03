@@ -45,7 +45,13 @@ setfenv(1,d)
 	attr=yarn_attr.create(t)
 	
 	items={}
+	
+	name="wall"
 
+	function set(_name)
+		name=_name
+	end
+	
 	function neighbours()
 		local n_x_look={  0 , -1 , 1 , 0 }
 		local n_y_look={ -1 ,  0 , 0 , 1 }
@@ -97,6 +103,12 @@ setfenv(1,d)
 				end
 			end
 ]]
+			if name=="wall" then
+				return a_hash
+			else
+				return a_dot
+ 			end
+			
 			if room then return a_dot end
 		end
 		

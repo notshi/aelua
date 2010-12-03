@@ -154,8 +154,26 @@ setfenv(1,d)
 		v.post_create()
 	end
 	
-	for i,v in ipairs(rooms) do
-		if v.opts then -- special?
+	for i,r in ipairs(rooms) do
+		if r.opts then -- special?
+			local cs=r.opts.cells
+			for y=1,#cs do
+				local v=cs[y]
+				for x=1,#v do
+					local n=v[x]
+					
+					if n=="space" then
+					else
+						local c=get_cell(r.xp+x-1,r.yp+y-1)
+						if r.opts.callback then
+							r.opts.callback({call="cell",cell=c,name=n,level=d,room=r})
+						end
+					end
+				end
+			end
+			if r.opts.callback then
+				r.opts.callback({call="room",level=d,room=r})
+			end
 --[[
 			local c=rand_cell(v)
 			local p=new_char( "ant" )

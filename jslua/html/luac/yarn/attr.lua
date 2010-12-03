@@ -42,7 +42,7 @@ setfenv(1,d)
 	function set.visible(v) visible=v end
 	
 	function get.visible() return visible end
-	function get.visible() return true end -- debug
+--	function get.visible() return true end -- debug
 
 	return d
 	

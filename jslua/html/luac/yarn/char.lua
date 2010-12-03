@@ -70,7 +70,7 @@ setfenv(1,d)
 		local x=cell.xp+vx
 		local y=cell.yp+vy
 		local c=level.get_cell(x,y)
-		if c and c.room then -- its a cell we can move into
+		if c and c.name=="floor" then -- its a cell we can move into
 			if c.char then -- interact with another char?
 				yarn_fight.hit(d,c.char)
 				return 1					
