@@ -10,7 +10,6 @@ var L; // this will be our lua state
 var preload_lua_list=[
 
 	{file:"/luac/yarn/init.lua",			name:"yarn"},
-	{file:"/luac/yarn/strings.lua",			name:"yarn.strings"},
 	{file:"/luac/yarn/attr.lua",			name:"yarn.attr"},
 	{file:"/luac/yarn/cell.lua",			name:"yarn.cell"},
 	{file:"/luac/yarn/chardata.lua",		name:"yarn.chardata"},
@@ -22,7 +21,8 @@ var preload_lua_list=[
 	{file:"/luac/yarn/map.lua",				name:"yarn.map"},
 	{file:"/luac/yarn/menu.lua",			name:"yarn.menu"},
 	{file:"/luac/yarn/room.lua",			name:"yarn.room"},
-	{file:"/luac/yarn/prefab.lua",			name:"yarn.prefab"}
+	{file:"/luac/yarn/prefab.lua",			name:"yarn.prefab"},
+	{file:"/luac/yarn/strings.lua",			name:"yarn.strings"}
 
 ];
 var preload_lua_idx=0;

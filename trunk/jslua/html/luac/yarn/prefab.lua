@@ -14,7 +14,7 @@ local setfenv=setfenv
 local unpack=unpack
 local require=require
 
-
+local print=print
 
 module(...)
 
@@ -90,12 +90,13 @@ strings.home_mainroom=[[
 ]]        
 
 strings.home_entrance=[[
-# # # # # # # #
-# # = = = = # #
-# = . . > . = #
-# = . . . . = #
-# # = = = = # #
-# # # # # # # #
+# # # # # # # # #
+# # . . . . . # #
+# . . # # # . . #
+# . . . > # . . #
+# . . # # # . . #
+# # . . . . . # #
+# # # # # # # # #
 ]]
 
 function string_to_room(s,key)
@@ -134,7 +135,6 @@ function string_to_room(s,key)
 			t[#t+1]=key[ab] or "space"
 		end
 	end
-	
 	return r
 end
 
@@ -156,13 +156,26 @@ function map_opts(name)
 
 	local opts={}
 	opts.rooms={} -- required rooms for this map
+
+	local function callback(d) -- default callback when building maps
+		if d.call=="cell" then
+			if d.name=="wall" then
+				d.cell.set("wall")
+			end
+		end
+	end
 	
-	local function add_room(r) opts.rooms[#opts.rooms+1]=r	end
+	local function add_room(r)
+		opts.rooms[#opts.rooms+1]=r
+		r.callback=callback
+		return r
+	end
 	
 	if name=="home" then
-		add_room(get_room("home_entrance"))
-		add_room(get_room("home_bedroom"))
-		add_room(get_room("home_mainroom"))
+		local r
+		r=add_room(get_room("home_entrance"))
+		r=add_room(get_room("home_bedroom"))
+		r=add_room(get_room("home_mainroom"))
 	end
 	
 	return opts

@@ -101,6 +101,7 @@ public final class StringLib extends LuaJavaCallback
       case FORMAT:
         return format(L);
       case GMATCH:
+      case GFIND:
         return gmatch(L);
       case GSUB:
         return gsub(L);
