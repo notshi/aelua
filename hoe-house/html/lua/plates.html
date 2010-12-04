@@ -161,6 +161,8 @@
 	<div class="clear"></div>
 </div>
 
+{H.alerts}
+
 #player_bar
 
 <div class="cont" style="background-color: #ECEAEA;">
@@ -1611,3 +1613,65 @@ During the epic party they <img src="/art/shoutb.png" /> chanted : "<span style=
 <a href="{url}profile/{actor1}">{name1}</a> partied hard but not as hard as <a href="{url}profile/{actor2}">{name2}</a>.<br/>
 <a href="{url}profile/{actor1}">{name1}</a> used up <img src="/art/manure.png" /> {manure1} manure partying.<br/>
 <a href="{url}profile/{actor2}">{name2}</a> used up <img src="/art/manure.png" /> {manure2} manure partying.<br/>
+
+
+#alert_head_html
+
+<script type="text/javascript">
+
+// nam would be something like "#spantime" and t would be time in secs to start with
+function show_hoe_alert_countdown(nam,t)
+{
+	var txt=function(n)
+	{
+		var s;
+		
+		if(n>60*60*10)
+		{
+			s=Math.ceil(t/(60*60))+" hours";
+		}
+		else
+		if(n>60*10)
+		{
+			s=Math.ceil(t/(60))+" minutes";
+		}
+		else
+		{
+			s=n+" seconds";
+		}
+	
+		return s;
+	}
+
+	$(nam).text(txt(t)); // set when called
+			
+	var tid=setInterval( function() { // tick tock
+	
+		t--;
+		if(t>0)
+		{
+			$(nam).text(txt(t));
+		}
+		else
+		{
+			$(nam).text(txt(t));
+			clearInterval(tid);
+		}
+	},1000);
+	
+}
+
+</script>
+
+<div class="hoe_alert_list">
+
+#alert_foot_html
+</div>
+
+#alert_speedround_soon_html
+<div class="hoe_alert_div">
+<a href="/">A new speed round is starting in <span id="{countdown_name}"></span>.</a>
+</div>
+<script type="text/javascript">
+$(function(){show_hoe_alert_countdown("#{countdown_name}",{countdown_time});});
+</script>
