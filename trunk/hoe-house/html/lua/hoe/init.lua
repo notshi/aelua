@@ -24,6 +24,7 @@ local trades=require("hoe.trades")
 local fights=require("hoe.fights")
 local acts=require("hoe.acts")
 local feats=require("hoe.feats")
+local alerts=require("hoe.alerts")
 
 
 local blog=require("blog")
@@ -104,6 +105,8 @@ function serv(srv)
 	elseif H.slash=="cron" then
 		return serv_cron(H)
 	end
+	
+	H.alerts=alerts.alerts_to_html(H,alerts.get_alerts(H)) or "" -- display some alerts?
 	
 	local put=H.put
 	local roundid=tonumber(H.slash or 0) or 0
@@ -1298,9 +1301,10 @@ function serv_cron(H)
 		
 		H.srv.put( "STARS ARE ALIGNED TO ".. d.wday .. " : ".. d.hour .." : ".. d.min .."\n" )
 	
-		if d.wday==1 and d.hour==0 and d.min<30 then -- start a new one only within the first halfhour of sunday
+		if d.wday==7 and d.hour==22 and d.min<30 then -- start a new one only within the first halfhour of X
 			local r=rounds.create(H)
 			r.cache.timestep = 1 -- super fast game
+			r.cache.max_energy = 999 -- super energy store
 			r.cache.endtime=H.srv.time+(r.cache.timestep*4032) -- same number of ticks as default game
 			rounds.put(H,r)
 			H.srv.put("created new speed round "..r.key.id.."\n")

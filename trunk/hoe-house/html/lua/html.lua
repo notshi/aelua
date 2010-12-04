@@ -21,29 +21,15 @@ local require=require
 
 module("html")
 
+local base_html=require("base.html")
+
 -----------------------------------------------------------------------------
 --
 -- load and parse plates.html
 --
 -----------------------------------------------------------------------------
-plates={}
 
-do
-	local text=sys.bytes_to_string(sys.file_read("lua/plates.html"))
-	local chunks=waka.text_to_chunks(text)
-	
-	for i=1,#chunks do local v=chunks[i] -- copy into plates lookup
-		plates[v.name]=v.text
-	end
-end
-function get_plate(name)
-	return ( plates[name] or name )
-end
-local get_plate_orig=get_plate
-
-local function get_plate(name) -- some simple debug
-	return "\n<!-- #"..name.." -->\n\n"..get_plate_orig(name)
-end
+base_html.import(_M)
 
 -----------------------------------------------------------------------------
 --
