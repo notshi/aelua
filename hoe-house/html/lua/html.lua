@@ -209,6 +209,8 @@ end
 -----------------------------------------------------------------------------
 user_bar=function(d)
 
+	d.H.alerts=d.H.alerts or ""
+
 	local user=d.srv and d.srv.user
 	local hash=d.srv and d.srv.sess and d.srv.sess.key and d.srv.sess.key.id
 	if user then
