@@ -361,7 +361,8 @@ div.illfight3, div.illchoose, div.illchoose1  {
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
 	margin: 0 auto;
-	width: 964px;
+	width: 960px;
+	/*width: 964px;*/
 	height: 80px;
 }
 div.illlist1 {
@@ -412,6 +413,10 @@ div.illchoose, div.illchoose1 {
 }
 div.illchoose1 {
 	background-color: #555;
+}
+div.illchoose {
+	margin-top: 0px;
+	width: 956px;
 }
 
 
@@ -545,8 +550,7 @@ div.chunk5{
     box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, #fff 0px 20px 20px -10px inset;
 }
 /* ALERT container ie. Please login, click to join. */
-div.chunk6, div.chunk6a, div.chunk6b, div.chunk6c, div.chunk6d, 
-div.hoe_alert_list{
+div.chunk6, div.chunk6a, div.chunk6b, div.chunk6c, div.chunk6d{
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
@@ -580,10 +584,13 @@ div.chunk6c{
 }
 
 div.hoe_alert_list{
-	background-color: #FF8383;
-	background-image:url('/art/not.png');
-	background-repeat:repeat-x;
-	border:1px dotted #FF8383;
+	background-color: #ECEAEA;
+/*	background-image:url('/art/not.png');
+	background-repeat:repeat-y;
+	border:1px dotted #ccc; */
+	width: 950px;
+	margin:0 auto;
+	padding: 20px 5px;
 }
 /* notifications using .alert */
 div.hoe_alert_div{
@@ -661,7 +668,7 @@ div.chunk7a {
 /* Form chunks, chunk8a: LIST/PROFILE outercontainer, chunk8b: LIST/PROFILE innercontainer */
 div.chunk8, div.chunk8a, div.chunk8b, div.chunk8c {
 	margin: 0px auto;
-	width: 960px;
+	/*width: 960px;*/
 }
 .chunk8b a:focus	{color: #fff; text-decoration: none;}
 .chunk8b a:link		{color: #fff; text-decoration: none;}
@@ -1007,7 +1014,7 @@ div.pro2, div.pro2a, div.pro2a1, div.pro2b {
 	-webkit-border-radius: 8px;
 	border-radius: 8px;
 	border: 2px solid #ccc;
-	width: 489px;
+/*	width: 489px;*/
 	margin: auto;
 	margin: 10px 10px 20px 7px;
 }
@@ -1019,7 +1026,8 @@ div.pro2 {
 	border-top-right-radius: 0px;
 	border-bottom-right-radius: 0px;
 	margin: 0 auto;
-	width: 509px;
+	width: 500px;
+	/*width: 509px;*/
 	float: right;
 }
 /*PROFILE ITEMS Name #ID inner container */
@@ -1033,7 +1041,7 @@ div.pro2a1 {
 /*PROFILE ITEMS inner container */
 div.pro2b, div.pro2tit {
 	border: 0px;
-	width: 489px;
+	/*width: 489px;*/
 	margin: 0 auto;
 }
 /*INVENTORY container */
@@ -1078,12 +1086,14 @@ div.pro2id {
 }
 /*PROFILE ITEMS big col container */
 div.pro2d, div.pro2d1, div.pro2d2 {
-	width: 243px;
+	width: 239px;
+	/*width: 243px;*/
 	text-align: center
 }
 /*PROFILE ITEMS small col container */
 div.pro2e, div.pro2e1, div.pro2e2 {
-	width: 161px;
+	width: 159px;
+	/*width: 161px;*/
 	text-align: center
 }
 /*PROFILE ITEMS col container with border */
@@ -1167,13 +1177,13 @@ div.listct, div.listct1 {
 	border: 0px;
 	border-top: 1px dotted #fff;
 	border-bottom: 1px dotted #fff;
-	width: 163px;
+	/*width: 163px;*/
 }
 /* SHOUT COLUMN with no borders & special, left aligned text */
 div.listc{	
 	border: 0px;
 	border-bottom: 1px solid #374548;
-	width: 163px;
+	/*width: 163px;*/
 	
 	font-family: Lucida Sans Unicode, sans-serif;
 	line-height: 1.2em;
