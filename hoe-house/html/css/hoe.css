@@ -545,7 +545,8 @@ div.chunk5{
     box-shadow: rgba(255, 255, 255, 0.398438) 0px 1px, #fff 0px 20px 20px -10px inset;
 }
 /* ALERT container ie. Please login, click to join. */
-div.chunk6, div.chunk6a, div.chunk6b, div.chunk6c, div.chunk6d{
+div.chunk6, div.chunk6a, div.chunk6b, div.chunk6c, div.chunk6d, 
+div.hoe_alert_list{
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
@@ -578,8 +579,28 @@ div.chunk6c{
 	margin-top: 40px;
 }
 
+div.hoe_alert_list{
+	background-color: #FF8383;
+	background-image:url('/art/not.png');
+	background-repeat:repeat-x;
+	border:1px dotted #FF8383;
+}
+/* notifications using .alert */
+div.hoe_alert_div{
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	background-color: #fff;
+	border:0;
+	margin: 0 auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	width: 900px;
+	padding: 5px;
+}
+
 /* ALERT fonts RED */
-div.alert{
+div.alert, div.hoe_alert_div{
 	font-family: Georgia, serif;
 	color: #374548;
 	font-size: 18px;
@@ -590,6 +611,13 @@ div.alert{
 .alert a:visited	{color: #ff5555; font-weight: bold; text-decoration: none;}
 .alert a:hover		{color: #ff5555; font-weight: bold; text-decoration: underline;}
 .alert a:active		{color: #ff5555; font-weight: bold; text-decoration: none;}
+
+.hoe_alert_div a:focus		{color: #ff5555; font-weight: bold; text-decoration: none;}
+.hoe_alert_div a:link		{color: #ff5555; font-weight: bold; text-decoration: none;}
+.hoe_alert_div a:visited	{color: #ff5555; font-weight: bold; text-decoration: none;}
+.hoe_alert_div a:hover		{color: #ff5555; font-weight: bold; text-decoration: underline;}
+.hoe_alert_div a:active		{color: #ff5555; font-weight: bold; text-decoration: none;}
+
 /* ALERT fonts GREEN */
 div.alert1{
 	font-family: Georgia, serif;
