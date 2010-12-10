@@ -105,9 +105,7 @@ function serv(srv)
 	elseif H.slash=="cron" then
 		return serv_cron(H)
 	end
-	
-	H.alerts=alerts.alerts_to_html(H,alerts.get_alerts(H)) or "" -- display some alerts?
-	
+		
 	local put=H.put
 	local roundid=tonumber(H.slash or 0) or 0
 	if roundid>0 then -- load a default round from given id
@@ -123,6 +121,8 @@ function serv(srv)
 
 		return serv_round(H)
 	end
+	
+	H.alerts=alerts.alerts_to_html(H,alerts.get_alerts(H)) or "" -- display some alerts? (no round)
 	
 	local blog_html,blog_css=blog.recent_posts(srv,5,"/frontpage")
 
@@ -217,8 +217,8 @@ local put=H.put
 		end
 	end
 	
+	H.alerts=alerts.alerts_to_html(H,alerts.get_alerts(H)) or "" -- display some alerts? (we have a round)
 	
-
 -- functions for each special command	
 	local cmds={
 		list=	serv_round_list,

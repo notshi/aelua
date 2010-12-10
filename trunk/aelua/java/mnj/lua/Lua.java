@@ -2249,6 +2249,7 @@ protect:
       ar.setWhat("Java");
     }
     else
+    if (cl instanceof LuaFunction)
     {
       Proto p = ((LuaFunction)cl).proto();
       ar.setSource(p.source());
@@ -2256,6 +2257,13 @@ protect:
       ar.setLastlinedefined(p.lastlinedefined());
       ar.setWhat(ar.linedefined() == 0 ? "main" : "Lua");
     }
+    else
+    {
+      ar.setSource("unknown function");
+      ar.setLinedefined(0);
+      ar.setLastlinedefined(0);
+      ar.setWhat("unknown function");
+	}
   }
 
   /** Equivalent to macro isLua _and_ f_isLua from lstate.h. */

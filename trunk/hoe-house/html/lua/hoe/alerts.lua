@@ -61,6 +61,16 @@ function alerts_to_html(H,as)
 			a.countdown_time=math.floor(a.tstart-os.time())
 			put("alert_speedround_soon_html",a)
 			
+		elseif a.form=="round_ending" then
+		
+			a.countdown_name="alert_"..i
+			a.countdown_time=math.floor(a.tend-os.time())
+			put("alert_round_ending_html",a)
+			
+		elseif a.form=="round_over" then
+		
+			put("alert_round_over_html",a)
+			
 		end
 		
 	end
@@ -71,7 +81,7 @@ function alerts_to_html(H,as)
 end
 
 --
--- get all global alerts, these can be cached and selectively displayed for each user
+-- get all global alerts, these can be cached and selectively displayed for each user?
 --
 function get_alerts(H)
 
@@ -79,6 +89,7 @@ function get_alerts(H)
 	function as_add(a) if a then as[#as+1]=a end end
 
 	as_add(check_speedround(H))
+	as_add(check_thisround(H))
 
 	return as
 end
@@ -99,6 +110,36 @@ function check_speedround(H)
 		a.tstart=tday+(22*60*60) -- the time the game should start
 		a.tlen=4032 -- the length of the game
 		a.tend=a.tstart+a.tlen -- the time the game should end
+		return a
+	end
+
+	return nil
+end
+
+
+
+-- some info about the round we are currently viewing
+function check_thisround(H)
+
+	if not H.round then return nil end -- no round
+	
+	local r=H.round.cache
+	
+	if r.state~="active" then -- game over
+		local a={}
+		a.form="round_over"
+		a.round=r.id
+		a.tend=r.endtime
+		return a
+	end
+
+	local t=os.time()
+	
+	if r.endtime-t < (24*60*60) then -- game ending soon
+		local a={}
+		a.form="round_ending"
+		a.round=r.id
+		a.tend=r.endtime
 		return a
 	end
 

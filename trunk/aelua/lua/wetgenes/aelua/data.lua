@@ -14,7 +14,11 @@ local core=require("wetgenes.aelua.data.core")
 
 module("wetgenes.aelua.data")
 
-count=0
+
+function countzero()
+	count=0
+end
+countzero()
 
 
 local kind_props={}	-- default global props mapped to kinds
