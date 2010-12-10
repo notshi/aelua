@@ -1674,3 +1674,16 @@ function show_hoe_alert_countdown(nam,t)
 <script type="text/javascript">
 $(function(){show_hoe_alert_countdown("#{countdown_name}",{countdown_time});});
 </script>
+
+#alert_round_ending_html
+<div class="hoe_alert_div">
+This round will end in <span id="{countdown_name}"></span>.
+</div>
+<script type="text/javascript">
+$(function(){show_hoe_alert_countdown("#{countdown_name}",{countdown_time});});
+</script>
+
+#alert_round_over_html
+<div class="hoe_alert_div">
+This round is over and actions are no longer possible.
+</div>

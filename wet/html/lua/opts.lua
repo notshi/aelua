@@ -17,7 +17,7 @@ local type=type
 module("opts")
 
 users={}
-users.admin={ -- users with admin rights for this app
+users.admin={ -- users with hard and unremovable admin rights for this app
 	["notshi@gmail.com"]=true,
 	["krissd@gmail.com"]=true,
 }
@@ -30,25 +30,6 @@ map={ -- base lookup table
 ["#flavour"]	=	app_name, 
 ["#index"]		=	"wiki", 
 										
-["admin"]		=	{			-- all admin stuff
-						["#default"]	=	"admin",
-						["console"]		=	{			-- a console module
-											["#default"]	=	"console",
-											["#flavour"]	=	app_name,
-											["#opts"]		=	{
-																	url="/admin/",
-																},
-											},
-					},
-					
-["dumid"]		=	{			-- a dumid module
-						["#default"]	=	"dumid", 		-- no badlinks, we own everything under here
-						["#flavour"]	=	app_name, 			-- use this flavour when serving
-						["#opts"]		=	{
-												url="/dumid/",
-											},
-					},
-					
 ["wiki"]		=	{			-- a wiki like module
 						["#default"]	=	"waka", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	app_name, 			-- use this flavour when serving
@@ -64,7 +45,34 @@ map={ -- base lookup table
 												url="/blog/",
 											},
 					},
+
+
+["admin"]		=	{			-- all admin stuff
+						["#default"]	=	"admin",
+						["console"]		=	{			-- a console module
+											["#default"]	=	"console",
+											["#flavour"]	=	app_name,
+											["#opts"]		=	{
+																	url="/admin/console/",
+																},
+											},
+					},
 					
+["dumid"]		=	{			-- a dumid module
+						["#default"]	=	"dumid", 		-- no badlinks, we own everything under here
+						["#opts"]		=	{
+												url="/dumid/",
+											},
+					},
+					
+					
+["data"]		=	{			-- a data module
+						["#default"]	=	"data", 		-- no badlinks, we own everything under here
+						["#opts"]		=	{
+												url="/data/",
+											},
+					},
+
 ["note"]		=	{			-- a sitewide comment module
 						["#default"]	=	"note", 		-- no badlinks, we own everything under here
 						["#opts"]		=	{
