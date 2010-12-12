@@ -41,18 +41,30 @@ data_upload_form=function(d)
 
 	return replace([[
 <form name="post" id="post" action="" method="post" enctype="multipart/form-data">
-	<table style="float:right">
-	<tr><td> group   </td><td> <input type="text" name="group"   size="20" value="{it.group}"  /> </td></tr>
-	<tr><td> pubname </td><td> <input type="text" name="pubname" size="20" value="{it.pubname}"/> </td></tr>
-	<tr><td> layer   </td><td> <input type="text" name="layer"   size="20" value="{it.layer}"  /> </td></tr>
-	</table>
-	<textarea name="text" cols="120" rows="24" class="field" >{it.text}</textarea>
-	<br/>
-	<input type="submit" name="submit" value="Save" class="button" />
-	<input type="submit" name="submit" value="Preview" class="button" />
-	<input type="submit" name="submit" value="{publish}" class="button" />
-	<br/>	
+
+	id : <input type="text" name="dataid"   size="40" value="0"  /> <br />
+	filename : <input type="text" name="filename"   size="40" value=""  /> <br />
+	mimetype : <input type="text" name="mimetype"   size="40" value=""  /> <br />
+	upload : <input type="file" name="filedata" size="40" />  <br />
+	<input type="submit" name="submit" value="Upload" class="button" /> <br />
+
 </form>
+]],d)
+
+end
+
+
+-----------------------------------------------------------------------------
+--
+-- data info
+--
+-----------------------------------------------------------------------------
+data_list_item=function(d)
+
+	return replace([[
+<div>
+<a href="/data//edit{it.cache.pubname}" >edit</a> <a href="/data{it.cache.pubname}"> <img src="/data{it.cache.pubname}" style="max-width:100px;max-height:100px" />{it.cache.pubname}</a>
+</div>
 ]],d)
 
 end
