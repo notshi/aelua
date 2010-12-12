@@ -86,28 +86,32 @@ function create(srv)
 	p.created=srv.time
 	p.updated=srv.time
 
+				-- /data should be added as a prefix to all pubname or group urls used here
+
 	p.group="/" -- master group of this data, "/" by default, this is the directory part of the pubname
 	
-	p.author="" -- email of last editor of this data, owner
+	p.owner="" -- email of the owner of this data
 		
 	p.pubname="" -- the published name of this page if published, or "" if not published yet
 	p.pubdate=srv.time  -- the date published (unixtime)
-	p.usedate=srv.time  -- the date last used (unixtime)
+	p.usedate=srv.time  -- the date last used (unixtime) updated when embedded somewhere by owner
 
 	p.layer=0 -- we use layer 0 as live and published, other layers for special or hidden pages
 
 	p.mimetype="application/x" -- serv this data as
 	
-	p.datakey="" -- first data key, possibly linked list from this one
+	p.filekey=0 -- first data file key, possibly a linked list from this one
+	p.size=0 -- the size of this file
 	
 	dat.build_cache(ent) -- this just copies the props across
 	
 -- these are json only vars
 	local c=ent.cache
 	
-	c.datakeys={} -- the keys for the actual data, possibly more than one
-	
 	c.comment_count=0 -- number of comments?
+	
+	c.width=0 -- size of image?
+	c.height=0
 
 	return check(srv,ent)
 end
@@ -197,7 +201,7 @@ function update(srv,id,f)
 		if e then
 			what_memcache(srv,e,mc) -- the original values
 			if e.props.created~=srv.time then -- not a newly created entity
-				if e.cache.updated>=srv.time then t.rollback() return false end -- stop any updates that time travel
+--				if e.cache.updated>=srv.time then t.rollback() return false end -- stop any updates that time travel?
 			end
 			e.cache.updated=srv.time -- the function can change this change if it wishes
 			if not f(srv,e) then t.rollback() return false end -- hard fail
@@ -269,11 +273,19 @@ function list(srv,opts,t)
 		q[#q+1]={"filter","group","==",opts.group}
 	end
 	
+	if opts.owner then
+		q[#q+1]={"filter","owner","==",opts.owner}
+	end
+
 	if     opts.sort=="pubdate" then q[#q+1]={"sort","pubdate","DESC"} -- newest published
 	elseif opts.sort=="updated" then q[#q+1]={"sort","updated","DESC"} -- newest updated
 	elseif opts.sort=="usedate" then q[#q+1]={"sort","usedate","DESC"} -- newest used
 	end
-		
+	
+	if opts.bestlayer then
+		q[#q+1]={"sort","layer","ASC"} -- on multiple layers, pick the lowest one
+	end
+	
 	local r=t.query(q)
 		
 	for i=1,#r.list do local v=r.list[i]

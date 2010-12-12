@@ -86,11 +86,13 @@ function create(srv)
 	p.created=srv.time
 	p.updated=srv.time
 
-	p.metakey="" -- the meta data associated with this file
+	p.metakey=0 -- the meta data id associated with this file
 	
-	p.nextkey="" -- the next file key if we are split over a few entries
+	p.nextkey=0 -- if not 0 then the next file key if we are split over a few entries
+	p.prevkey=0 -- if not 0 then the previous file key if we are split over a few entries
 
 	p.data="" -- the actual data, max length of ( 1000 * 1000 ) 1meg decimal
+	p.size=0 -- the size of the data in this chunk
 	
 	dat.build_cache(ent) -- this just copies the props across
 	

@@ -76,9 +76,9 @@ function create(srv)
 	p.url=""    -- the site url for which this is a comment on, site comments relative to root begin with "/"
 	p.group=0   -- the id of our parent or 0 if this is a master comment on a url, -1 if it is a meta cache
 	p.type="ok" -- a type string to filter on
-				-- ok   - this is a valid comment, display it
-				-- spam - this is pure spam, hidden but not forgotten
-				-- meta - use on fake comments that only contain cached info of other comments
+				-- ok    - this is a valid comment, display it
+				-- spam  - this is pure spam, hidden but not forgotten
+				-- meta  - use on fake comments that only contain cached info of other comments
 
 	p.count=0   -- number of replies to this comment (could be good to sort by)
 
@@ -87,7 +87,8 @@ function create(srv)
 	p.good=0 -- number of good content "votes"
 	p.spam=0 -- number of spam "votes"
 	
-	p.media=0 -- an associated media id link, 0 if no media
+	p.media=0 -- an associated data.meta id link, 0 if no media,
+				-- so each post can have eg an image associated with it ala 4chan
 	
 	dat.build_cache(ent) -- this just copies the props across
 	
