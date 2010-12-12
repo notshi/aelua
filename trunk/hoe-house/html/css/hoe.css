@@ -286,7 +286,7 @@ div.illhoe3, div.illwork1, div.illwork2, div.illwork3, div.illleave1,
 div.illleave2, div.illleave3, div.illlist1, div.illlist2, div.illlist3,
 div.illshop1, div.illtrade1, div.illpro1, div.illpro1, div.illfight1, 
 div.illfight2, div.illfight3, div.illchoose,  div.illchoose1,
-div.illbrobux, div.illhoebro {
+div.illbrobux, div.illhoebro, div.wookiback {
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
@@ -353,10 +353,12 @@ div.illhoebro {
 	background-image:url('/art/illhoebro.png');
 	height: 70px;
 }
+
 div.illlist1, div.illlist2, div.illlist3,
 div.illshop1, div.illtrade1, div.illpro1, 
 div.illpro2, div.illfight1, div.illfight2, 
-div.illfight3, div.illchoose, div.illchoose1  {
+div.illfight3, div.illchoose, div.illchoose1,
+div.wookiback  {
 	border: 0;
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
@@ -418,7 +420,10 @@ div.illchoose {
 	margin-top: 0px;
 	width: 956px;
 }
-
+div.wookiback {
+	background-image:url('/art/wookiback.png');
+	height: 160px;
+}
 
 /* div big bold fonts */
 div.chunk, div.intro, div.intro1 {
@@ -525,7 +530,7 @@ div.chunk3line {
 div.chunk4{
 /*	background-color: #ECEAEA;*/
 	margin: 0px auto;
-	width: 420px;
+	width: 500px;
 	height: 48px;
 	clear: both;
 	padding: 0px 5px 5px 5px;
@@ -766,7 +771,8 @@ div.shopwitch {
 	width: 120px;
 	height: 100%;
 }
-div.shopwitch1, div.shopwitch2, div.shopwitch3 {
+div.shopwitch1, div.shopwitch2, div.shopwitch3,
+div.wooki1 {
 	background-repeat:no-repeat;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -784,6 +790,9 @@ div.shopwitch2 {
 }
 div.shopwitch3 {
 	background-image:url('/art/shopwitch3.png');
+}
+div.wooki1 {
+	background-image:url('/art/wooki1.png');
 }
 
 /* TRADE container */
