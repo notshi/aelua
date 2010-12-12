@@ -209,6 +209,7 @@ end
 -----------------------------------------------------------------------------
 user_bar=function(d)
 
+	d.H=d.H or {}
 	d.H.alerts=d.H.alerts or ""
 
 	local user=d.srv and d.srv.user
