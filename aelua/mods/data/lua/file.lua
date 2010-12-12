@@ -47,7 +47,7 @@ local loadstring=loadstring
 local opts_mods_data={}
 if opts and opts.mods and opts.mods.data then opts_mods_data=opts.mods.data end
 
-module("data.meta")
+module("data.file")
 
 --------------------------------------------------------------------------------
 --
@@ -56,8 +56,8 @@ module("data.meta")
 --
 --------------------------------------------------------------------------------
 function kind(srv)
-	if not srv.flavour or srv.flavour=="data" then return "data.meta" end
-	return srv.flavour..".data.meta"
+	if not srv.flavour or srv.flavour=="data" then return "data.file" end
+	return srv.flavour..".data.file"
 end
 
 --------------------------------------------------------------------------------
@@ -65,8 +65,8 @@ end
 -- what key name should we use to cache an entity?
 --
 --------------------------------------------------------------------------------
-function cache_key(pubname)
-	return "type=ent&data.meta="..pubname
+function cache_key(id)
+	return "type=ent&data.file="..id
 end
 
 --------------------------------------------------------------------------------
@@ -86,28 +86,16 @@ function create(srv)
 	p.created=srv.time
 	p.updated=srv.time
 
-	p.group="/" -- master group of this data, "/" by default, this is the directory part of the pubname
+	p.metakey="" -- the meta data associated with this file
 	
-	p.author="" -- email of last editor of this data, owner
-		
-	p.pubname="" -- the published name of this page if published, or "" if not published yet
-	p.pubdate=srv.time  -- the date published (unixtime)
-	p.usedate=srv.time  -- the date last used (unixtime)
+	p.nextkey="" -- the next file key if we are split over a few entries
 
-	p.layer=0 -- we use layer 0 as live and published, other layers for special or hidden pages
-
-	p.mimetype="application/x" -- serv this data as
-	
-	p.datakey="" -- first data key, possibly linked list from this one
+	p.data="" -- the actual data, max length of ( 1000 * 1000 ) 1meg decimal
 	
 	dat.build_cache(ent) -- this just copies the props across
 	
 -- these are json only vars
 	local c=ent.cache
-	
-	c.datakeys={} -- the keys for the actual data, possibly more than one
-	
-	c.comment_count=0 -- number of comments?
 
 	return check(srv,ent)
 end
@@ -226,7 +214,7 @@ function what_memcache(srv,ent,mc)
 	local mc=mc or {} -- can supply your own result table for merges	
 	local c=ent.cache
 	
-	mc[ cache_key(c.pubname) ] = true
+	mc[ cache_key(c.id) ] = true
 	
 	return mc
 end
@@ -240,92 +228,23 @@ end
 function fix_memcache(srv,mc)
 	for n,b in pairs(mc) do
 		cache.del(n)
-		srv.cache[n]=nil
+--		srv.cache[n]=nil
 	end
 end
-
-
---------------------------------------------------------------------------------
---
--- list pages
---
---------------------------------------------------------------------------------
-function list(srv,opts,t)
-	opts=opts or {} -- stop opts from being nil
-	
-	t=t or dat -- use transaction?
-	
-	local q={
-		kind=kind(srv),
-		limit=opts.limit or 100,
-		offset=opts.offset or 0,
-	}
-	
-	if opts.layer then
-		q[#q+1]={"filter","layer","==",opts.layer}
-	end
-	
-	if opts.group then
-		q[#q+1]={"filter","group","==",opts.group}
-	end
-	
-	if     opts.sort=="pubdate" then q[#q+1]={"sort","pubdate","DESC"} -- newest published
-	elseif opts.sort=="updated" then q[#q+1]={"sort","updated","DESC"} -- newest updated
-	elseif opts.sort=="usedate" then q[#q+1]={"sort","usedate","DESC"} -- newest used
-	end
-		
-	local r=t.query(q)
-		
-	for i=1,#r.list do local v=r.list[i]
-		dat.build_cache(v)
-	end
-
-	return r.list
-end
-
---------------------------------------------------------------------------------
---
--- find a data by its published name
---
---------------------------------------------------------------------------------
-function find_by_pubname(srv,pubname,t)
-
-	t=t or dat -- use transaction?
-	
-	local q={
-		kind=kind(srv),
-		limit=1,
-		offset=0,
-		{"filter","pubname","==",pubname},
-		{"sort","layer","ASC"}, -- on multiple layers, pick the lowest one
-	}
-	local r=t.query(q)
-	
-	if r.list[1] then
-		dat.build_cache(r.list[1])
-		check(srv,r.list[1])
-		return r.list[1]
-	end
-
-	return nil
-end
-
-
 
 --------------------------------------------------------------------------------
 --
 -- like find but with as much cache as we can use so ( no transactions available )
 --
 --------------------------------------------------------------------------------
-function cache_find_by_pubname(srv,pubname)
+function cache_get(srv,id)
 
-	local key=cache_key(pubname)
+--	local key=cache_key(pubname)	
+--	if srv.cache[key] then return srv.cache[key] end
 	
-	if srv.cache[key] then return srv.cache[key] end
+	ent=get(srv,id)
 	
-	ent=find_by_pubname(srv,pubname)
-	
-	srv.cache[key]=ent
+--	srv.cache[key]=ent
 	
 	return ent
 end
