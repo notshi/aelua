@@ -42,12 +42,12 @@ local loadstring=loadstring
 
 
 --
--- Which can be overeiden in the global table opts
+-- Which can be overidden in the global table opts
 --
-local opts_mods_waka={}
-if opts and opts.mods and opts.mods.waka then opts_mods_waka=opts.mods.waka end
+local opts_mods_data={}
+if opts and opts.mods and opts.mods.data then opts_mods_data=opts.mods.data end
 
-module("blog.pages")
+module("data.meta")
 
 --------------------------------------------------------------------------------
 --
@@ -56,8 +56,8 @@ module("blog.pages")
 --
 --------------------------------------------------------------------------------
 function kind(srv)
-	if not srv.flavour or srv.flavour=="blog" then return "blog.pages" end
-	return srv.flavour..".blog.pages"
+	if not srv.flavour or srv.flavour=="data" then return "data.meta" end
+	return srv.flavour..".data.meta"
 end
 
 --------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ end
 --
 --------------------------------------------------------------------------------
 function cache_key(pubname)
-	return "type=ent&blog="..pubname
+	return "type=ent&data="..pubname
 end
 
 --------------------------------------------------------------------------------
@@ -86,23 +86,28 @@ function create(srv)
 	p.created=srv.time
 	p.updated=srv.time
 
-	p.group="/" -- master group of this post, "/" by default, this is the directory part of the pubname
+	p.group="/" -- master group of this data, "/" by default, this is the directory part of the pubname
 	
-	p.author="" -- email of last editor of this post
-	
+	p.author="" -- email of last editor of this data, owner
+		
 	p.pubname="" -- the published name of this page if published, or "" if not published yet
 	p.pubdate=srv.time  -- the date published (unixtime)
+	p.usedate=srv.time  -- the date last used (unixtime)
 
 	p.layer=0 -- we use layer 0 as live and published, other layers for special or hidden pages
+
+	p.mimetype="application/x" -- serv this data as
+	
+	p.datakey="" -- first data key, possibly linked list from this one
 	
 	dat.build_cache(ent) -- this just copies the props across
 	
 -- these are json only vars
 	local c=ent.cache
 	
-	c.text="" -- this string is the main text of the data, it contains waka chunks
+	c.datakeys={} -- the keys for the actual data, possibly more than one
 	
-	c.comment_count=0 -- number of comments
+	c.comment_count=0 -- number of comments?
 
 	return check(srv,ent)
 end
@@ -266,6 +271,7 @@ function list(srv,opts,t)
 	
 	if     opts.sort=="pubdate" then q[#q+1]={"sort","pubdate","DESC"} -- newest published
 	elseif opts.sort=="updated" then q[#q+1]={"sort","updated","DESC"} -- newest updated
+	elseif opts.sort=="usedate" then q[#q+1]={"sort","usedate","DESC"} -- newest used
 	end
 		
 	local r=t.query(q)
@@ -279,7 +285,7 @@ end
 
 --------------------------------------------------------------------------------
 --
--- find a page by its published name
+-- find a data by its published name
 --
 --------------------------------------------------------------------------------
 function find_by_pubname(srv,pubname,t)
