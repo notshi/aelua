@@ -150,19 +150,7 @@ function bubble(srv,ent,overload)
 		wet_waka.chunks_merge(chunks,oc) -- replace given chunks with new chunks
 	end
 
-	local form={}
-	for i,v in ipairs(chunks) do -- do basic process of all of the page chunks into their prefered form 
-		local s=v.text
-		if v.opts.trim=="ends" then s=trim(s) end -- trim?
-		if v.opts.form=="raw" then -- predefined, use exactly as is
-			s=s
-		elseif v.opts.form=="nohtml" then -- default to basic waka format, html is not allowed
-			s=wet_waka.waka_to_html(s,{base_url="",escape_html=true}) 
-		else -- default to basic waka format, html allowed
-			s=wet_waka.waka_to_html(s,{base_url="",escape_html=false}) 
-		end
-		form[v.name]=s
-	end
+	local form=wet_waka.form_chunks(srv,chunks) -- build processed strings
 	
 	form.body=form.body or "" -- must have a body
 	

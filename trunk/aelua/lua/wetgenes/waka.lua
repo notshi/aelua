@@ -17,6 +17,11 @@ local string=string
 local type=type
 local tostring=tostring
 
+local require=require
+local loadstring=loadstring
+local setfenv=setfenv
+local pcall=pcall
+
 -- my string functions
 local str=require("wetgenes.string")
 
@@ -280,3 +285,48 @@ local escape_html=opts.escape_html or false
 	return table.concat(r)
 end
 
+-----------------------------------------------------------------------------
+--
+-- turn some chunks into their prefered form, escape, trim and expand
+--
+-----------------------------------------------------------------------------
+function form_chunks(srv,chunks,baseurl)
+
+	local form={}
+	for i,v in ipairs(chunks) do -- do basic process of all of the page chunks into their prefered form 
+		local s=v.text
+		if v.opts.trim=="ends" then s=str.trim(s) end -- trim?
+
+		if v.opts.form=="raw" then -- predefined, use exactly as is, html
+
+			s=s
+
+		elseif v.opts.form=="nohtml" then -- normal but all html is escaped
+
+			s=waka_to_html(s,{base_url=baseurl,escape_html=true}) 
+
+		elseif v.opts.form=="import" then -- very special import, treat as chunk of lua import opts
+		
+			local e={}
+			local f,err=loadstring(s)
+			if f then
+				setfenv(f, e)
+				pcall(f)
+			else
+				s=err
+			end
+			
+			if e.import=="blog" then
+				local blog=require("blog")
+				s=blog.recent_posts(srv,e.count or 5)
+			end
+		
+		else -- "html" default to basic waka format, html allowed
+
+			s=waka_to_html(s,{base_url=baseurl,escape_html=false}) 
+
+		end
+		form[v.name]=s
+	end
+	return form
+end
