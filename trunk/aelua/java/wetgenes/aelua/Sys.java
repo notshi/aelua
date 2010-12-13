@@ -76,6 +76,7 @@ public class Sys
 		reg_md5(L,lib);
 		reg_sha1(L,lib);
 		reg_hmac_sha1(L,lib);
+		reg_bytes_split(L,lib);
 		
 		return 0;
 	}
@@ -422,4 +423,58 @@ public class Sys
 		}
    		catch(Exception e) { return 0; }
 	}
+
+
+//
+// split a (large) bytearray into smaller chunks
+//
+	public void reg_bytes_split(Lua L,Object lib)
+	{ 
+		final Sys _base=this;
+		L.rawSet(lib, "bytes_split", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.bytes_split(L); } });
+	}
+	public int bytes_split(Lua L)
+	{
+		Object o=L.value(1);
+		
+		byte[] bytes = (byte[])o; // the object is bytes
+		
+		int n=(int)L.checkNumber(2);
+		int c=0;
+		
+		// split the byte array into a table of byte arrays to work with
+
+		LuaTable t=L.createTable(0,0);
+		L.push(t);
+		
+		byte[] bs;
+		
+		int i=1;
+		while( bytes.length > c)
+		{
+			LuaTable tt=L.createTable(0,0);
+			L.rawSetI(t,i++,tt);
+			
+			if( bytes.length <= c+n ) // all of remaining chunk
+			{
+				bs=new byte[ bytes.length-c ];
+			}
+			else // another full chunk
+			{
+				bs=new byte[ n ];
+			}
+			
+			System.arraycopy(bytes, c, bs, 0, bs.length);
+
+			L.rawSet(tt,"size",bs.length);
+			L.rawSet(tt,"data",bs);
+	   
+			c+=n;
+		}
+		
+		return 1;
+
+	}
+
+
 }

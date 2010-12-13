@@ -75,6 +75,7 @@ local put=make_put(srv)
 	
 	if posts.text then -- change
 		ae_opts.put_dat("lua",posts.text)
+		srv.reloadcache() -- force lua reload on next request
 	end
 
 	

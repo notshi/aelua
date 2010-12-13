@@ -22,17 +22,21 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 
+
+import wetgenes.aelua.Servlet;
+
 public class Srv
 {
 
 	HttpServletRequest req;
 	HttpServletResponse resp;
+	wetgenes.aelua.Servlet slet;
 
-	public Srv(HttpServletRequest _req, HttpServletResponse _resp )
+	public Srv(HttpServletRequest _req, HttpServletResponse _resp , wetgenes.aelua.Servlet _slet)
 	{
 		req=_req;
 		resp=_resp;
-		
+		slet= _slet;
 	}
 
 	public int push_lib(Lua L)
@@ -48,6 +52,7 @@ public class Srv
 		reg_set_mimetype(L,lib);
 		reg_set_cookie(L,lib);
 		reg_redirect(L,lib);
+		reg_reloadcache(L,lib);
 		
 		L.rawSet(lib, "cache", L.createTable(0,0) ); // empty cache table for user handled key->data 
 		
@@ -301,6 +306,20 @@ public class Srv
 		return 1;
 	}
 	
+	
+//
+// Set a header response
+//
+	public void reg_reloadcache(Lua L,Object lib)
+	{ 
+		final Srv _base=this;
+		L.rawSet(lib, "reloadcache", new LuaJavaCallback(){ Srv base=_base; public int luaFunction(Lua L){ return base.reloadcache(L); } });
+	}
+	public int reloadcache(Lua L)
+	{
+		slet.reloadcache();
+		return 0;
+	}
 	
 }
 
