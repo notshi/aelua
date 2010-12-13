@@ -95,14 +95,23 @@ local get,put=make_get_put(srv)
 		
 			local ef=file.get(srv,em.cache.filekey)
 			
-			if ef then
+			srv.set_mimetype(em.cache.mimetype)
 			
-				srv.set_mimetype(em.cache.mimetype)
-				srv.put(ef.cache.data)
+			while true do
+			
+				if ef then
 				
-				return			
+					srv.put(ef.cache.data)
+					
+					if ef.cache.nextkey==0 then return end -- last chunk
+					
+					ef=file.get(srv,ef.cache.nextkey) -- read next part
+					
+				else
+					return -- error
+				end
 			end
-		
+			
 		end
 		
 	end
@@ -145,14 +154,10 @@ local get,put=make_get_put(srv)
 				if posts.filedata then -- got a file to create
 		
 					local em=meta.create(srv)
-					local ef=file.create(srv)
 					local emc=em.cache
-					local efc=ef.cache
-					
-					efc.data=posts.filedata.data
-					efc.size=posts.filedata.size
 					emc.size=posts.filedata.size
 					emc.owner=user.cache.email
+					
 					if posts.mimetype and posts.mimetype=="" then
 					
 						local l3=posts.filedata.name:sub(-3):lower()
@@ -195,11 +200,48 @@ local get,put=make_get_put(srv)
 					meta.put(srv,em)  -- write once to get an id for the meta
 					emc=em.cache
 					
-					efc.metakey=emc.id -- the new id					
-					file.put(srv,ef) -- save the data
-					efc=ef.cache
+					local dd=sys.bytes_split(posts.filedata.data,1000*1000) -- need smaller 1meg chunks
 					
-					emc.filekey=efc.id -- the new id
+					for i,v in ipairs(dd) do
+					
+						v.ef=file.create(srv)
+						local efc=v.ef.cache
+						
+--						efc.data=v.data
+						efc.size=v.size
+						
+						efc.metakey=emc.id -- the meta id				
+						file.put(srv,v.ef) -- save this data, to get an id
+						efc=v.ef.cache
+						
+						if i==1 then
+							emc.filekey=efc.id -- remember the id, of the first chunk only
+						end
+						
+					end
+					
+-- write the real data this time and save the next/prev keys
+
+					for i,v in ipairs(dd) do
+					
+						local efc=v.ef.cache
+						
+						efc.data=v.data
+						
+						if dd[i-1] then
+							if dd[i-1].ef then
+								efc.prevkey=dd[i-1].ef.cache.id
+							end
+						end
+
+						if dd[i+1] then
+							efc.nextkey=dd[i+1].ef.cache.id
+						end
+						
+						file.put(srv,v.ef) -- save the data, for real
+					end
+					
+					
 					if posts.filename and posts.filename=="" then
 						emc.pubname="/"..emc.id .."/".. posts.filedata.name -- default url
 					else

@@ -85,7 +85,7 @@ static boolean[] running=new boolean[16]; // this will get stuck on true if we h
 			}
 			
 			L.push( L.rawGet(L.getGlobals(), "serv") );
-			Srv srv=new Srv(req,resp); // our response srv, should not be global, created per request
+			Srv srv=new Srv(req,resp,this); // our response srv, should not be global, created per request
 			srv.push_lib(L);
 			L.call(1,0);
 		
@@ -127,5 +127,16 @@ static boolean[] running=new boolean[16]; // this will get stuck on true if we h
 			throws IOException {
 	
 		serv(req,resp);
+	}
+	
+// clear all lua cache so we load it all again
+	public void reloadcache()
+	{
+		for(int i=0;i<16;i++)
+		{
+			Lbase[i]=null;
+			runcount[i]=0;
+			running[i]=false;
+		}
 	}
 }
