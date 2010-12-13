@@ -311,16 +311,26 @@ local get,put=make_get_put(srv)
 			put("user_bar",{H=H})
 			put("blog_admin_links",{user=user})
 		
-			
+			local chunks
+			local done_head
 			for i,v in ipairs(list) do
 			
-				local chunks=bubble(srv,v) -- this gets parent entities
+				chunks=bubble(srv,v) -- this gets parent entities
+				if not done_head then
+					local text=get(macro_replace(chunks.plate_head or "",chunks))
+					put(text)
+					done_head=true
+				end
 
 				chunks.link=srv.url_local:sub(1,-2) .. v.cache.pubname
 				chunks.pubdate=(os.date("%Y-%m-%d %H:%M:%S",v.cache.pubdate))
 				chunks.it=v.cache
 				local text=get(macro_replace(chunks.plate_wrap or chunks.plate or "{body}",chunks))
 				
+				put(text)
+			end
+			if chunks then
+				local text=get(macro_replace(chunks.plate_foot or "",chunks))
 				put(text)
 			end
 			
