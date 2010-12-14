@@ -7,6 +7,11 @@ indexes:
   - name: pubdate
     direction: desc
 
+- kind: blog.pages
+  properties:
+  - name: layer
+  - name: pubdate
+    direction: desc
     
 - kind: blog.pages
   properties:

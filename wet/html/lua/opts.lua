@@ -34,7 +34,7 @@ map={ -- base lookup table
 						["#default"]	=	"waka", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	app_name, 			-- use this flavour when serving
 						["#opts"]		=	{
-												url="/wiki/",
+												url="/wiki",
 											},
 					},
 					
@@ -42,7 +42,7 @@ map={ -- base lookup table
 						["#default"]	=	"blog", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	app_name, 			-- use this flavour when serving
 						["#opts"]		=	{
-												url="/blog/",
+												url="/blog",
 											},
 					},
 
@@ -61,7 +61,7 @@ map={ -- base lookup table
 ["dumid"]		=	{			-- a dumid module
 						["#default"]	=	"dumid", 		-- no badlinks, we own everything under here
 						["#opts"]		=	{
-												url="/dumid/",
+												url="/dumid",
 											},
 					},
 					
@@ -69,28 +69,35 @@ map={ -- base lookup table
 ["data"]		=	{			-- a data module
 						["#default"]	=	"data", 		-- no badlinks, we own everything under here
 						["#opts"]		=	{
-												url="/data/",
+												url="/data",
 											},
 					},
 
 ["note"]		=	{			-- a sitewide comment module
 						["#default"]	=	"note", 		-- no badlinks, we own everything under here
 						["#opts"]		=	{
-												url="/note/",
+												url="/note",
+											},
+					},
+
+["chan"]		=	{			-- an imageboard module
+						["#default"]	=	"chan", 		-- no badlinks, we own everything under here
+						["#opts"]		=	{
+												url="/chan",
 											},
 					},
 
 ["dice"]		=	{			-- roll some dice
 						["#default"]	=	"dice", 		-- no badlinks, we own everything under here
 						["#opts"]		=	{
-												url="/dice/",
+												url="/dice",
 											},
 					},
 
 ["thumbcache"]		=	{			-- cache some images
 						["#default"]	=	"thumbcache", 		-- no badlinks, we own everything under here
 						["#opts"]		=	{
-												url="/thumbcache/",
+												url="/thumbcache",
 											},
 					},
 
