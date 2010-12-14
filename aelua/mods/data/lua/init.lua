@@ -273,3 +273,34 @@ local get,put=make_get_put(srv)
 	
 end
 
+
+
+-----------------------------------------------------------------------------
+--
+-- upload a file to the database (ie a file upload) returns data id,entity,url etc
+-- so it can now be displayed if it was a successful upload
+--
+-- incoming requirements are
+--
+-- data = the data of the file
+-- size = the size of the file
+-- name = the name of the file
+-- owner = file owner, defaults to user.cache.email
+--
+-- optional parts are
+--
+-- dataid = numerical datakey, pass in 0 or nil to create a new one, otherwise we update the given
+-- mimetype = mimetype to use when serving, we try to guess this from the name if not supplied
+--
+-- return values are
+--
+-- ent = the meta entity which we created / updated
+-- dataid = the numerical datakey
+-- url = the url we can access this file at, relative to this server base so begins with "/"
+--
+-----------------------------------------------------------------------------
+function upload(srv,dat)
+
+
+	return dat
+end

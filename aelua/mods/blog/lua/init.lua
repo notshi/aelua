@@ -307,8 +307,7 @@ local get,put=make_get_put(srv)
 			srv.set_mimetype("text/html; charset=UTF-8")
 			put("header",{title="blog : "..group..page,css=css})
 			local H={sess=sess,user=user}
-			put("home_bar",{H=H})
-			put("user_bar",{H=H})
+			put("aelua_bar",{H=H})
 			put("blog_admin_links",{user=user})
 		
 			local chunks

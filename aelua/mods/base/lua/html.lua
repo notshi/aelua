@@ -221,7 +221,15 @@ about=function(d)
 
 end
 
-		
+-----------------------------------------------------------------------------
+--
+-- both bars simply joined
+--
+-----------------------------------------------------------------------------
+aelua_bar=function(d)
+	return home_bar(d)..user_bar(d)
+end
+	
 -----------------------------------------------------------------------------
 --
 -- a home / tabs / next page area
@@ -238,6 +246,7 @@ home_bar=function(d)
 	d.crumbs=s or "<a href=\"/\">Home</a>"
 		
 	local p=get_plate("home_bar",[[
+<div class="aelua_bar">
 <div class="aelua_home_bar">
 {crumbs}
 </div>
@@ -287,6 +296,7 @@ return false;
 </div>
 
 <div class="aelua_clear"> </div>
+</div>
 
 ]])
 	return replace(p,d)
@@ -361,6 +371,7 @@ function import(tab)
 						"header",
 						"footer",
 						"about",
+						"aelua_bar",
 						"home_bar",
 						"user_bar",
 						"missing_content",

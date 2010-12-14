@@ -13,6 +13,7 @@ local iplog=require("wetgenes.aelua.iplog")
 local table=table
 local type=type
 local require=require
+local ipairs=ipairs
 
 module("wetgenes.aelua.basic")
 
@@ -81,6 +82,13 @@ cache.countzero()
 		
 			if slash=="" then -- use a default index 
 				slash=lookup[ "#index" ] or ""
+				if slash~="" then
+					local ss=str_split("/",slash)
+					for i,v in ipairs(ss) do
+						srv.url_slash[ srv.url_slash_idx + i-1]=v
+					end
+					slash=srv.url_slash[ srv.url_slash_idx ]
+				end
 			end
 		
 			cmd=lookup[ slash ] -- lookup the cmd from its flavour
