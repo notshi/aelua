@@ -80,7 +80,8 @@ function create(srv)
 				-- spam  - this is pure spam, hidden but not forgotten
 				-- meta  - use on fake comments that only contain cached info of other comments
 
-	p.count=0   -- number of replies to this comment (could be good to sort by)
+	p.count=0       -- number of replies to this comment (could be good to sort by)
+	p.pagecount=0   -- number of pagecomments to this comment (this comment is treated as its own page)
 
 -- track some simple vote numbers, to be enabled later?
 
@@ -304,6 +305,37 @@ function list(srv,opts,t)
 	return r.list
 end
 
+--------------------------------------------------------------------------------
+--
+-- update and return the meta cache
+--
+--------------------------------------------------------------------------------
+function update_meta_cache(srv,url)
+
+	local count=0
+
+-- build meta cache			
+	local cs=list(srv,{sortdate="DESC",url=url,group=0}) -- get all comments
+	local comments={}
+	for i,v in ipairs(cs) do -- and build comment cache
+		comments[i]=v.cache
+		count=count+1+v.cache.count
+	end
+
+
+-- the comment cache may lose one if multiple people reply at the same time
+-- an older cache may get saved, very unlikley but possible
+-- url is a string so this manifests if it does not exist
+
+	local meta=update(srv,url,function(srv,e)
+	
+		e.cache.comments=comments -- save new comment cache
+		e.cache.count=count -- a number to sort by
+		
+		return true
+	end)
+	return meta
+end
 
 --------------------------------------------------------------------------------
 --
@@ -320,6 +352,7 @@ function build(srv,tab)
 local function dput(s) put("<div>"..tostring(s).."</div>") end
 
 	local ret={}
+	tab.ret=ret
 	ret.count=0
 	
 	local meta
@@ -372,6 +405,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			
 			put(srv,e)
 			posted=e
+			tab.modified=true -- flag that caller should update cache
 			
 			if id~=0 then -- this is a comment so apply to master
 			
@@ -392,22 +426,8 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 
 			end
 
--- build meta cache			
-			local cs=list(srv,{sortdate="DESC",url=tab.url,group=0}) -- get all comments
-			local comments={}
-			for i,v in ipairs(cs) do -- and build comment cache
-				comments[i]=v.cache
-			end
-
--- the comment cache may lose one if multiple people reply at the same time
--- an older cache may get saved, very unlikley but possible
--- tab.url is a string so this manifests if it does not exist
-
-			meta=update(srv,tab.url,function(srv,e)
-				e.cache.comments=comments -- save new comment cache
-				e.cache.count=#comments -- a number to sort by
-				return true
-			end)
+			meta=update_meta_cache(srv,tab.url)
+			ret.count=meta.cache.count
 
 			if posted and posted.cache then -- redirect to our new post
 			
@@ -418,6 +438,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				else
 					sys.redirect(srv,tab.url.."#wetnote"..id)
 				end
+				
 				return
 			end
 
@@ -425,6 +446,16 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		
 	end
 
+	
+-- reply page link
+	function get_reply_page(num)
+		return tab.get([[
+<div class="wetnote_comment_form_div">
+<a href="{url}">Reply</a>
+</div>]],{
+			url=tab.url.."/"..num
+		})
+	end
 	
 -- reply form
 	function get_reply_form(num)
@@ -506,62 +537,105 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 --	local cs=list(srv,{sortdate="DESC",url=tab.url,group=0})
 	local cs=meta.cache.comments or {}
 	
-	for i,c in ipairs(cs) do
+	if tab.toponly then -- just display a top comment field
 	
---		local c=v.cache
-		tab.put(get_comment(c)) -- main comment
-
-		tab.put([[
+		for i,c in ipairs(cs) do
+--			if i>=5 then break end -- 5 only?
+			tab.put(get_comment(c)) -- main comment
+			tab.put([[
 <div class="wetnote_reply_div">
 ]])
 
-		local rs=c.replies or {} -- list(srv,{sortdate="ASC",url=tab.url,group=c.id}) -- replies
-		
-		local hide=#rs-5
-		if hide<0 then hide=0 end -- nothing to hide
-		local hide_state="show"
-		
-		for i,c in ipairs(rs) do
---			local c=v.cache
-			if i<=hide then -- hide this one
-				if hide_state=="show" then
-					hide_state="hide"
+log(" pagecount of " .. tostring(c.pagecount) )
+
+			if c.pagecount > 1 then
 					tab.put([[
+<div><a href="{url}">View all {pagecount} comments.</a></div>
+]],{
+	pagecount=c.pagecount,
+	url=tab.url.."/"..c.id,
+	})
+			end
+
+			local rs=c.pagecomments or {} -- list(srv,{sortdate="ASC",url=tab.url,group=c.id}) -- replies
+
+			for i=#rs,1,-1  do -- put last 5 cached comments on page if we have them
+				local c=rs[i]
+				tab.put(get_comment(c))
+			end
+			
+			tab.put(get_reply_page(c.id))
+
+			tab.put([[
+</div>
+]])
+		end
+	
+	else
+		
+		for i,c in ipairs(cs) do
+	
+
+	--		local c=v.cache
+			tab.put(get_comment(c)) -- main comment
+					
+			tab.put([[
+<div class="wetnote_reply_div">
+]])
+
+			local rs=c.replies or {} -- list(srv,{sortdate="ASC",url=tab.url,group=c.id}) -- replies
+			
+			local hide=#rs-5
+			if hide<0 then hide=0 end -- nothing to hide
+			local hide_state="show"
+			
+			for i,c in ipairs(rs) do				
+	--			local c=v.cache
+				if i<=hide then -- hide this one
+					if hide_state=="show" then
+						hide_state="hide"
+						tab.put([[
 <div class="wetnote_comment_hide_div">
 <a href="#" onclick="$(this).hide(400);$('#wetnote_comment_hide_{id}').show(400);return false;">Show {hide} hidden comments</a>
 <div id="wetnote_comment_hide_{id}" style="display:none">
 ]],{
-	id=c.id,
-	hide=hide,
-	})
+		id=c.id,
+		hide=hide,
+		})
+					end
+				else
+					if hide_state=="hide" then
+						hide_state="show"
+						tab.put([[</div></div>]])
+					end
 				end
-			else
-				if hide_state=="hide" then
-					hide_state="show"
-					tab.put([[</div></div>]])
-				end
+				
+				tab.put(get_comment(c))
+				
 			end
 			
-			tab.put(get_comment(c))
-			
-		end
-		
-		tab.put(get_reply_form(c.id))
+			tab.put(get_reply_form(c.id))
 
-		tab.put([[
+			tab.put([[
 </div>
 ]])
+		end
 	end
-
+	
 	tab.put([[</div>]])
 	
-	local r=get_recent(srv,50)
 	
-	tab.put([[
-<div class="wetnote_ticker">{text}</div>
-]],	{
-		text=recent_to_html(srv,r),
-	})
+	if tab.toponly then
+		r={}
+	else
+		local r=get_recent(srv,50)
+		tab.put([[
+	<div class="wetnote_ticker">{text}</div>
+	]],	{
+			text=recent_to_html(srv,r),
+		})
+	end
+	
 	
 	tab.put([[</div>]])
 	tab.put([[</div>]])
