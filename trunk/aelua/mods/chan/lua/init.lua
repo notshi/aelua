@@ -109,7 +109,12 @@ local get=make_get(srv)
 				put("user_bar",{H={user=user,sess=sess}})
 
 
-				local tab={url=baseurl.."/"..num,posts=posts,get=get,put=put,sess=sess,user=user}
+				local tab={url=baseurl.."/"..num,posts=posts,get=get,put=put,sess=sess,user=user,image="allow"}
+				
+				
+				put( comments.build_get_comment(srv,tab,ent.cache) )
+
+				put( [[<div><a href="{url}">return to posts</a></div>]],{url=baseurl} )
 				
 				comments.build(srv,tab)
 				
@@ -160,7 +165,7 @@ local get=make_get(srv)
 	put("home_bar",{})
 	put("user_bar",{H={user=user,sess=sess}})
 
-	comments.build(srv,{url=baseurl,posts=posts,get=get,put=put,sess=sess,user=user,toponly=true})
+	comments.build(srv,{url=baseurl,posts=posts,get=get,put=put,sess=sess,user=user,toponly=true,image="force"})
 	
 	put("footer")
 end

@@ -337,6 +337,34 @@ function update_meta_cache(srv,url)
 	return meta
 end
 
+
+-- display comment code
+function build_get_comment(srv,tab,c)
+
+	if tab.ret and tab.ret.count then -- counter hax
+		tab.ret.count=tab.ret.count+1
+	end
+	
+	local plink,purl=users.email_to_profile_link(c.cache.user.email)
+	return tab.get([[
+<div class="wetnote_comment_div" id="wetnote{id}" >
+<div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
+<div class="wetnote_comment_head" > #{id} posted by <a href="{purl}">{name}</a> on {time} </div>
+<div class="wetnote_comment_text" >{text}</div>
+<div class="wetnote_comment_tail" ></div>
+</div>
+]],{
+	text=wet_waka.waka_to_html(c.text,{base_url=tab.url,escape_html=true}),
+	author=c.cache.user.email,
+	name=c.cache.user.name,
+	plink=plink,
+	purl=purl or "http://google.com/search?q="..c.cache.user.name,
+	time=os.date("%Y-%m-%d %H:%M:%S",c.created),
+	id=c.id,
+	icon=c.cache.avatar or users.email_to_avatar_url(c.cache.user.email),
+	})
+end
+
 --------------------------------------------------------------------------------
 --
 -- post data to this comment url if we have any
@@ -369,6 +397,15 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				tab.put([[
 				<div class="wetnote_error">
 				Sorry but your comment was too long (>4096 chars) to be accepted.
+				</div>
+				]])
+				return
+			end
+			
+			if #tab.posts.wetnote_comment_text <=3 then
+				tab.put([[
+				<div class="wetnote_error">
+				Sorry but your comment was too short (>3 chars) to be accepted.
 				</div>
 				]])
 				return
@@ -472,6 +509,10 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			id=num,
 		})
 		end
+		local upload=""
+		if tab.image then
+			upload=[[<div><input type="file" name="filedata" style="margin-left:110px;width:500px;" /></div>]]
+		end
 		local plink,purl=users.email_to_profile_link(user.email or "")
 		return tab.get([[
 <div class="wetnote_comment_form_div">
@@ -480,6 +521,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	<div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
 	<textarea class="wetnote_comment_form_text" name="wetnote_comment_text"></textarea>
 	<input name="wetnote_comment_id" type="hidden" value="{id}"></input>
+	{upload}
 	<input class="wetnote_comment_post" name="wetnote_comment_submit" type="submit" value="Express your important opinion"></input>
 </form>
 </div>
@@ -493,32 +535,10 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		time=os.date("%Y-%m-%d %H:%M:%S"),
 		id=num,
 		icon=users.email_to_avatar_url(user.email or ""),
+		upload=upload,
 		})
 	end
-	
--- display comment
-	function get_comment(c)
-		ret.count=ret.count+1
-		local plink,purl=users.email_to_profile_link(c.cache.user.email)
-		return tab.get([[
-<div class="wetnote_comment_div" id="wetnote{id}" >
-<div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
-<div class="wetnote_comment_head" > #{id} posted by <a href="{purl}">{name}</a> on {time} </div>
-<div class="wetnote_comment_text" >{text}</div>
-<div class="wetnote_comment_tail" ></div>
-</div>
-]],{
-		text=wet_waka.waka_to_html(c.text,{base_url=tab.url,escape_html=true}),
-		author=c.cache.user.email,
-		name=c.cache.user.name,
-		plink=plink,
-		purl=purl or "http://google.com/search?q="..c.cache.user.name,
-		time=os.date("%Y-%m-%d %H:%M:%S",c.created),
-		id=c.id,
-		icon=c.cache.avatar or users.email_to_avatar_url(c.cache.user.email),
-		})
-	end
-	
+		
 -- the meta will contain the cache of everything, we may already have it due to updates	
 	if not meta then
 		meta=manifest(srv,tab.url)
@@ -541,16 +561,16 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	
 		for i,c in ipairs(cs) do
 --			if i>=5 then break end -- 5 only?
-			tab.put(get_comment(c)) -- main comment
+			tab.put(build_get_comment(srv,tab,c)) -- main comment
 			tab.put([[
 <div class="wetnote_reply_div">
 ]])
 
-log(" pagecount of " .. tostring(c.pagecount) )
+--log(" pagecount of " .. tostring(c.pagecount) )
 
 			if c.pagecount > 1 then
 					tab.put([[
-<div><a href="{url}">View all {pagecount} comments.</a></div>
+<div><a href="{url}">View {pagecount} comments.</a></div>
 ]],{
 	pagecount=c.pagecount,
 	url=tab.url.."/"..c.id,
@@ -559,9 +579,11 @@ log(" pagecount of " .. tostring(c.pagecount) )
 
 			local rs=c.pagecomments or {} -- list(srv,{sortdate="ASC",url=tab.url,group=c.id}) -- replies
 
-			for i=#rs,1,-1  do -- put last 5 cached comments on page if we have them
+			for i=3,1,-1  do -- put last 5? cached comments on page if we have them
 				local c=rs[i]
-				tab.put(get_comment(c))
+				if c then
+					tab.put(build_get_comment(srv,tab,c))
+				end
 			end
 			
 			tab.put(get_reply_page(c.id))
@@ -577,7 +599,7 @@ log(" pagecount of " .. tostring(c.pagecount) )
 	
 
 	--		local c=v.cache
-			tab.put(get_comment(c)) -- main comment
+			tab.put(build_get_comment(srv,tab,c)) -- main comment
 					
 			tab.put([[
 <div class="wetnote_reply_div">
@@ -610,7 +632,7 @@ log(" pagecount of " .. tostring(c.pagecount) )
 					end
 				end
 				
-				tab.put(get_comment(c))
+				tab.put(build_get_comment(srv,tab,c))
 				
 			end
 			

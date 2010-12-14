@@ -37,8 +37,7 @@ end
 waka_bar=function(d)
 
 
-	local s1=home_bar(d)
-	local s2=user_bar(d)
+	local s1=aelua_bar(d)
 
 
 	d.admin=""
@@ -52,7 +51,7 @@ waka_bar=function(d)
 ]],d)
 	end
 	
-	return replace(s1..s2..d.admin)
+	return (s1..d.admin)
 
 end
 

@@ -28,7 +28,7 @@ map={ -- base lookup table
 
 ["#default"]	=	serv_fail, -- bad link if we do not understand
 ["#flavour"]	=	app_name, 
-["#index"]		=	"wiki", 
+["#index"]		=	"wiki/welcome", 
 										
 ["wiki"]		=	{			-- a wiki like module
 						["#default"]	=	"waka", 		-- no badlinks, we own everything under here
