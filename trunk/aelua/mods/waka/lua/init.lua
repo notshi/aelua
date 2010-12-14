@@ -78,6 +78,7 @@ local put=make_put(srv)
 local get=make_get(srv)
 
 local display_edit
+local display_edit_only=false
 local ext
 
 	local aa={}
@@ -140,7 +141,8 @@ local ext
 	
 	local page=pages.manifest(srv,pagename)
 
-	if posts.text or posts.submit then
+
+	if posts.text or posts.submit or (srv.vars.cmd and srv.vars.cmd=="edit") then
 	
 		if posts.text then -- replace the page with what was in the form?
 			page.cache.text=posts.text
@@ -159,6 +161,7 @@ local ext
 				end
 			else
 				display_edit=get("waka_edit_form",{text=page.cache.text}) -- still editing
+				if (srv.vars.cmd and srv.vars.cmd=="edit") then display_edit_only=true end
 			end
 		end
 	end
@@ -181,6 +184,14 @@ local ext
 	
 	local form=wet_waka.form_chunks(srv,chunks) -- build processed strings
 
+	local pageopts={
+		flame="on",
+	}
+	if chunks.opts then
+		for n,s in pairs(chunks.opts.opts) do
+			pageopts[n]=s
+		end
+	end
 
 	if ext=="css" then -- css only
 	
@@ -212,13 +223,19 @@ local ext
 		
 		if display_edit then srv.put(display_edit) end
 		
-		put(macro_replace(form.plate or [[
-		<h1>{title}</h1>
-		{body}
-		]],form))
+		if not display_edit_only then
 		
-		comments.build(srv,{title=form.title or pagename,url=url_local,posts=posts,get=get,put=put,sess=sess,user=user})
-
+			put(macro_replace(form.plate or [[
+			<h1>{title}</h1>
+			{body}
+			]],form))
+			
+			if pageopts.flame=="on" then -- add comments to this page
+				comments.build(srv,{title=form.title or pagename,url=url_local,posts=posts,get=get,put=put,sess=sess,user=user})
+			end
+			
+		end
+		
 		put("footer")
 	end
 end
