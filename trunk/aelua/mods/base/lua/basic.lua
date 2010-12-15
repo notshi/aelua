@@ -15,7 +15,7 @@ local type=type
 local require=require
 local ipairs=ipairs
 
-module("wetgenes.aelua.basic")
+module("base.basic")
 
 local log=require("wetgenes.aelua.log").log -- grab the func from the package
 
