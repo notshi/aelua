@@ -88,6 +88,8 @@ end
 header=function(d)
 	d.extra=""
 	
+	d.bar=_M.aelua_bar(d)
+	
 	if d.css then --embed some css
 		d.extra=d.extra.."<style type=\"text/css\">"..d.css.."</style>"
 		
@@ -171,26 +173,6 @@ about=function(d)
 
 end
 
-		
------------------------------------------------------------------------------
---
--- a home / tabs / next page area
---
------------------------------------------------------------------------------
-home_bar=function(d)
-
-	local crumbs=d.srv.crumbs
-	local s
-	for i=1,#crumbs do local v=crumbs[i]
-		if not s then s="" else s=s.." / " end
-		s=s.."<a href=\""..v.url.."\">"..v.link.."</a>"
-	end
-	d.crumbs=s or "<a href=\"/\">Home</a>"
-		
-	return replace(get_plate("home_bar"),d)
-
-end
-
 -----------------------------------------------------------------------------
 --
 -- a home / tabs / next page area
@@ -199,35 +181,6 @@ end
 hoe_menu_items=function(d)
 		
 	return replace(get_plate("hoe_menu_items"),d)
-
-end
-		
------------------------------------------------------------------------------
---
--- a hello / login / logout area
---
------------------------------------------------------------------------------
-user_bar=function(d)
-
-	d.H=d.H or {}
-	d.H.alerts=d.H.alerts or ""
-
-	local user=d.srv and d.srv.user
-	local hash=d.srv and d.srv.sess and d.srv.sess.key and d.srv.sess.key.id
-	if user then
-	
-		d.name="<span title=\""..user.cache.email.."\" >"..(user.cache.name or "?").."</span>"
-	
-		d.hello="Hello, "..d.name.."."
-		
-		d.action="<div class=\"log3\"><div class=\"logit\"><a href=\"/dumid/logout/"..hash.."/?continue="..url_esc(d.srv.url).."\">Logout?</a></div></div>"
-	else
-		d.hello="Hello, Anon."
-		d.action="<div class=\"log2\"><div class=\"logit\"><a href=\"/dumid/login/?continue="..url_esc(d.srv.url).."\">Login?</a></div></div>"
-	
-	end
-	
-	return replace(get_plate("user_bar"),d)
 
 end
 

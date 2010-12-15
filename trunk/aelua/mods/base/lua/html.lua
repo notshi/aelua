@@ -20,6 +20,10 @@ local ipairs=ipairs
 local tostring=tostring
 local require=require
 
+local opts_html={}
+if opts and opts.html then opts_html=opts.html end
+opts_html.bar=opts_html.bar or "head"
+
 module("base.html")
 
 
@@ -79,6 +83,11 @@ end
 -----------------------------------------------------------------------------
 header=function(d)
 
+	d.bar=""
+	if opts_html.bar=="head" then
+		d.bar=get_html("aelua_bar",d)
+	end
+	
 	d.extra=(d.srv and d.srv.extra or "") .. ( d.extra or "" )
 	
 	for _,v in ipairs{d.srv or {},d} do
@@ -148,8 +157,8 @@ header=function(d)
 
  </head>
 <body>
-
 <div class="aelua_body">
+{bar}
 ]])
 	
 	return replace(p,d)
@@ -165,6 +174,11 @@ footer=function(d)
 	local cache=require("wetgenes.aelua.cache")
 	local data=require("wetgenes.aelua.data")
 
+	d.bar=""
+	if opts_html.bar=="foot" then
+		d.bar=get_html("aelua_bar",d)
+	end
+	
 	if not d.time then
 		d.time=math.ceil((os.clock()-d.srv.clock)*1000)/1000
 	end
@@ -191,6 +205,7 @@ footer=function(d)
 <div class="aelua_footer">
 {about}
 {report}
+{bar}
 </div>
 </body>
 </html>
@@ -263,6 +278,8 @@ end
 -----------------------------------------------------------------------------
 user_bar=function(d)
 
+	d.adminbar=d.adminbar or ""
+
 	local user=d.srv and d.srv.user
 	local hash=d.srv and d.srv.sess and d.srv.sess.key and d.srv.sess.key.id
 	
@@ -297,7 +314,7 @@ return false;
 
 <div class="aelua_clear"> </div>
 </div>
-
+{adminbar}
 ]])
 	return replace(p,d)
 
@@ -339,6 +356,9 @@ function import(tab)
 		tab.plates[v.name]=v.text
 	end
 	
+	function get_html(n,d)
+		return ( tab[n](d) )
+	end
 	function get_plate(name,alt)
 		return ( tab.plates[name] or alt or name )
 	end

@@ -128,8 +128,6 @@ function serv(srv)
 
 	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{css=blog_css})
-	put("home_bar",{})
-	put("user_bar",{})
 	
 -- ask which round
 
@@ -236,8 +234,6 @@ local put=H.put
 
 	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
-	put("home_bar",{})
-	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	if H.cmd_request=="join" then
@@ -274,8 +270,6 @@ local put=H.put
 
 	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
-	put("home_bar",{})
-	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	local page={} -- this sort of dumb paging should be fine for now? bad for appengine though
@@ -412,8 +406,6 @@ local put=H.put
 
 	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
-	put("home_bar",{})
-	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	if result then
@@ -504,8 +496,6 @@ function serv_round_shop(H)
 	
 	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
-	put("home_bar",{})
-	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	if result then
@@ -582,8 +572,6 @@ function serv_round_profile(H)
 
 	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
-	put("home_bar",{})
-	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	local a
@@ -758,8 +746,6 @@ function serv_round_fight(H)
 	
 	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
-	put("home_bar",{})
-	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	if result then
@@ -1086,8 +1072,6 @@ function serv_round_trade(H)
 	
 	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
-	put("home_bar",{})
-	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	put(results)
@@ -1166,8 +1150,6 @@ function serv_round_acts(H)
 	
 	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{})
-	put("home_bar",{})
-	put("user_bar",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	local a=acts.list(H,{ dupe=0 , private=0 , limit=20 , offset=0 })

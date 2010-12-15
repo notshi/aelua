@@ -73,9 +73,7 @@ local sess,user=users.get_viewer_session(srv)
 
 
 	srv.set_mimetype("text/html")
-	put("header",{})
-	put("home_bar",{})
-	put("user_bar",{user=user})
+	put("header",{user=user})
 	
 	put("console_form",{output=srv.posts.output or "",input=srv.posts.input or opts_mods_console.input or ""})
 	
