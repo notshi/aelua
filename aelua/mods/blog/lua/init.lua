@@ -142,7 +142,7 @@ function bubble(srv,ent,overload)
 	end
 	
 -- start with the base wiki page, its kind of the main site everything
-	p=wakapages.get(srv,"/")
+	p=wakapages.cache_get(srv,"/")
 	ps[#ps+1]=p
 	
 
