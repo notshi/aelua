@@ -63,6 +63,15 @@ end
 
 --------------------------------------------------------------------------------
 --
+-- what key name should we use to cache an entity?
+--
+--------------------------------------------------------------------------------
+function cache_key(id)
+	return "type=ent&waka="..id
+end
+
+--------------------------------------------------------------------------------
+--
 -- Create a new local entity filled with initial data
 --
 --------------------------------------------------------------------------------
@@ -350,4 +359,24 @@ function list(srv,opts,t)
 	end
 
 	return r.list
+end
+
+
+
+--------------------------------------------------------------------------------
+--
+-- like get but with as much cache as we can use so ( no transactions available )
+--
+--------------------------------------------------------------------------------
+function cache_get(srv,id)
+
+	local key=cache_key(id)
+	
+	if srv.cache[key] then return srv.cache[key] end
+	
+	ent=get(srv,id)
+	
+	srv.cache[key]=ent
+	
+	return ent
 end
