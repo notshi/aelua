@@ -26,6 +26,7 @@ local wet_waka=require("wetgenes.waka")
 -- require all the module sub parts
 local html=require("blog.html")
 local pages=require("blog.pages")
+local wakapages=require("waka.pages")
 
 local comments=require("note.comments")
 
@@ -139,6 +140,11 @@ function bubble(srv,ent,overload)
 			p=nil
 		end
 	end
+	
+-- start with the base wiki page, its kind of the main site everything
+	p=wakapages.get(srv,"/")
+	ps[#ps+1]=p
+	
 
 	for i=#ps,1,-1 do local v=ps[i]
 		v.chunks = wet_waka.text_to_chunks(v.cache.text) -- build this page only
@@ -189,7 +195,7 @@ local get,put=make_get_put(srv)
 		chunks.pubdate=(os.date("%Y-%m-%d %H:%M:%S",v.cache.pubdate))
 		chunks.it=v.cache
 
-		local text=get(macro_replace(chunks.plate_wrap or chunks.plate or "{body}",chunks))
+		local text=get(macro_replace(chunks.plate_wrap or chunks.plate_post or "{body}",chunks))
 		
 		if chunks.css then css=chunks.css end -- need to pass out some css too
 		
@@ -290,7 +296,7 @@ local get,put=make_get_put(srv)
 			for i,v in ipairs(list) do
 			
 				local chunks=bubble(srv,v) -- this gets parent entities
-				local text=get(macro_replace(chunks.plate or "{body}",chunks))
+				local text=get(macro_replace(chunks.plate_post or "{body}",chunks))
 				
 				put("blog_atom_item",{it=v.cache,chunks=chunks,text=text})
 			end
@@ -311,26 +317,22 @@ local get,put=make_get_put(srv)
 			put("blog_admin_links",{user=user})
 		
 			local chunks
-			local done_head
+			local ss={}
 			for i,v in ipairs(list) do
 			
 				chunks=bubble(srv,v) -- this gets parent entities
-				if not done_head then
-					local text=get(macro_replace(chunks.plate_head or "",chunks))
-					put(text)
-					done_head=true
-				end
-
+				
 				chunks.link=srv.url_local:sub(1,-2) .. v.cache.pubname
 				chunks.pubdate=(os.date("%Y-%m-%d %H:%M:%S",v.cache.pubdate))
 				chunks.it=v.cache
 				local text=get(macro_replace(chunks.plate_wrap or chunks.plate or "{body}",chunks))
-				
-				put(text)
+				ss[#ss+1]=text
 			end
+			
 			if chunks then
-				local text=get(macro_replace(chunks.plate_foot or "",chunks))
-				put(text)
+				chunks.title=""
+				chunks.body=table.concat(ss)
+				put(macro_replace(chunks.plate or "{body}",chunks))
 			end
 			
 			put("footer")
@@ -350,7 +352,7 @@ local get,put=make_get_put(srv)
 			chunks.link=srv.url_local:sub(1,-2) .. ent.cache.pubname
 			chunks.pubdate=(os.date("%Y-%m-%d %H:%M:%S",ent.cache.pubdate))
 			chunks.it=ent.cache
-			local text=get(macro_replace(chunks.plate_page or chunks.plate or "{body}",chunks))
+			local text=get(macro_replace(chunks.plate_page or chunks.plate_post or "{body}",chunks))
 
 			srv.set_mimetype("text/html; charset=UTF-8")
 			put("header",{title="blog : "..ent.cache.pubname,css=chunks.css})
@@ -359,7 +361,9 @@ local get,put=make_get_put(srv)
 			put("user_bar",{H=H})
 			put("blog_admin_links",{it=ent.cache,user=user})
 
-			put(text)
+			chunks.title=""
+			chunks.body=text
+			put(macro_replace(chunks.plate or "{body}",chunks))
 			
 			local ret=comments.build(srv,{title=chunks.title,url=chunks.link,posts=posts,get=get,put=put,sess=sess,user=user})
 			
