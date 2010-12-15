@@ -121,10 +121,9 @@ local get,put=make_get_put(srv)
 -- upload / list for admin
 
 	srv.set_mimetype("text/html; charset=UTF-8")
-	put("header",{title="data : "})
-	local H={sess=sess,user=user}
-	put("home_bar",{H=H})
-	put("user_bar",{H=H})
+	put("header",{title="data : ",
+		H={sess=sess,user=user},
+		})
 	
 --	put(tostring(user and user.cache),{H=H})
 	if user and user.cache and user.cache.admin then -- admin

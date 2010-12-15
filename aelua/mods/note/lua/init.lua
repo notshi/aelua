@@ -88,10 +88,7 @@ local get=make_get(srv)
 
 	
 	srv.set_mimetype("text/html; charset=UTF-8")
-	put("header",{title="notes "})
-	
-	put("home_bar",{})
-	put("user_bar",{H={user=user,sess=sess}})
+	put("header",{title="notes ",H={user=user,sess=sess})
 
 
 --	comments.build(srv,{url="/note",posts=posts,get=get,put=put,sess=sess,user=user})

@@ -37,9 +37,6 @@ end
 waka_bar=function(d)
 
 
-	local s1=aelua_bar(d)
-
-
 	d.admin=""
 	if d.srv and d.srv.user and d.srv.user.cache and d.srv.user.cache.admin then -- admin
 		d.admin=replace([[
@@ -51,7 +48,7 @@ waka_bar=function(d)
 ]],d)
 	end
 	
-	return (s1..d.admin)
+	return (d.admin)
 
 end
 

@@ -54,7 +54,7 @@ end
 
 	srv.set_mimetype("text/html")
 	put("header",{})
-	put("home_bar",{})
+--	put("home_bar",{})
 --	put("user_bar",{})
 	
 	

@@ -311,10 +311,9 @@ local get,put=make_get_put(srv)
 			end
 			local css=chunks and chunks.css
 			srv.set_mimetype("text/html; charset=UTF-8")
-			put("header",{title="blog : "..group..page,css=css})
-			local H={sess=sess,user=user}
-			put("aelua_bar",{H=H})
-			put("blog_admin_links",{user=user})
+			put("header",{title="blog : "..group..page,css=css,
+				H={sess=sess,user=user},
+				adminbar=get("blog_admin_links",{user=user})})
 		
 			local chunks
 			local ss={}
@@ -355,11 +354,11 @@ local get,put=make_get_put(srv)
 			local text=get(macro_replace(chunks.plate_page or chunks.plate_post or "{body}",chunks))
 
 			srv.set_mimetype("text/html; charset=UTF-8")
-			put("header",{title="blog : "..ent.cache.pubname,css=chunks.css})
-			local H={sess=sess,user=user}
-			put("home_bar",{H=H})
-			put("user_bar",{H=H})
-			put("blog_admin_links",{it=ent.cache,user=user})
+			put("header",{title="blog : "..ent.cache.pubname,
+				css=chunks.css,
+				H={sess=sess,user=user},
+				adminbar=get("blog_admin_links",{it=ent.cache,user=user}),
+				})
 
 			chunks.title=""
 			chunks.body=text
@@ -401,10 +400,10 @@ local output_que={} -- delayed page content
 	
 	if not ( user and user.cache and user.cache.admin ) then -- not admin, no access
 		srv.set_mimetype("text/html; charset=UTF-8")
-		put("header",{title="blog : admin"})
-		local H={sess=sess,user=user}
-		put("home_bar",{H=H})
-		put("user_bar",{H=H})
+		put("header",{title="blog : admin",
+			H={sess=sess,user=user},
+			})
+
 		put("footer")
 		return
 	end
