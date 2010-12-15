@@ -1,4 +1,4 @@
-local basic=require("wetgenes.aelua.basic")
+local basic=require("base.basic")
 
 -- shove this basic functions into the global name space
 -- they will work with the opts to serv this app as needed
