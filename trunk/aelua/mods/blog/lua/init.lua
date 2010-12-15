@@ -156,7 +156,7 @@ function bubble(srv,ent,overload)
 		wet_waka.chunks_merge(chunks,oc) -- replace given chunks with new chunks
 	end
 
-	local form=wet_waka.form_chunks(srv,chunks) -- build processed strings
+	local form=wet_waka.form_chunks(srv,chunks,{noblog=true}) -- build processed strings
 	
 	form.body=form.body or "" -- must have a body
 	

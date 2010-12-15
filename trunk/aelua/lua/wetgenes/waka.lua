@@ -290,7 +290,9 @@ end
 -- turn some chunks into their prefered form, escape, trim and expand
 --
 -----------------------------------------------------------------------------
-function form_chunks(srv,chunks,baseurl)
+function form_chunks(srv,chunks,opts)
+
+	opts=opts or {}
 
 	local form={}
 	for i,v in ipairs(chunks) do -- do basic process of all of the page chunks into their prefered form 
@@ -303,7 +305,7 @@ function form_chunks(srv,chunks,baseurl)
 
 		elseif v.opts.form=="nohtml" then -- normal but all html is escaped
 
-			s=waka_to_html(s,{base_url=baseurl,escape_html=true}) 
+			s=waka_to_html(s,{base_url=opts.baseurl,escape_html=true}) 
 
 		elseif v.opts.form=="import" then -- very special import, treat as chunk of lua import opts
 		
@@ -317,13 +319,15 @@ function form_chunks(srv,chunks,baseurl)
 			end
 			
 			if e.import=="blog" then
-				local blog=require("blog")
-				s=blog.recent_posts(srv,e.count or 5)
+				if not opts.noblog then -- prevent recursions
+					local blog=require("blog")
+					s=blog.recent_posts(srv,e.count or 5)
+				end
 			end
 		
 		else -- "html" default to basic waka format, html allowed
 
-			s=waka_to_html(s,{base_url=baseurl,escape_html=false}) 
+			s=waka_to_html(s,{base_url=opts.baseurl,escape_html=false}) 
 
 		end
 		form[v.name]=s
