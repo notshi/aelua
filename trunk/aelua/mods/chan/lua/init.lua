@@ -90,6 +90,10 @@ local get=make_get(srv)
 		end
 	end
 	if posts.submit then posts.submit=trim(posts.submit) end
+	for n,v in pairs(srv.uploads) do
+		posts[n]=v
+	end
+	
 
 		
 	local num=math.floor( tonumber( srv.url_slash[srv.url_slash_idx+0] or 0 ) or 0 )
