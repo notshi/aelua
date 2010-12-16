@@ -28,7 +28,6 @@ local html=require("data.html")
 local meta=require("data.meta")
 local file=require("data.file")
 
-local comments=require("note.comments")
 
 
 local math=math
@@ -43,6 +42,7 @@ local tonumber=tonumber
 local type=type
 local pcall=pcall
 local loadstring=loadstring
+local require=require
 
 -- our options
 local opts_mods_blog={} or ( opts and opts.mods and opts.mods.blog )
@@ -53,6 +53,7 @@ local LAYER_DRAFT     = 1
 local LAYER_SHADOW    = 2
 
 module("data")
+local comments=require("note.comments")
 
 -----------------------------------------------------------------------------
 --
@@ -157,6 +158,7 @@ local get,put=make_get_put(srv)
 			dat.data=posts.filedata and posts.filedata.data
 			dat.size=posts.filedata and posts.filedata.size
 			dat.name=posts.filedata and posts.filedata.name
+			dat.owner=user.cache.email
 			
 			if posts.mimetype and posts.mimetype~="" then dat.mimetype=posts.mimetype end
 			if posts.filename and posts.filename~="" then dat.name=posts.filename end
@@ -217,7 +219,6 @@ local emc
 	
 		em=meta.create(srv)
 		emc=em.cache
-		dat.id=emc.id -- new id
 	
 	else -- editing an old file
 	
@@ -275,9 +276,12 @@ local emc
 		else
 			emc.mimetype=dat.mimetype
 		end
-						
-		meta.put(srv,em)  -- write once to get an id for the meta
-		emc=em.cache
+					
+		if not emc.id or emc.id==0 then
+			meta.put(srv,em)  -- write once to get an id for the meta
+			emc=em.cache
+			dat.id=emc.id -- new id
+		end
 		
 		local dd=sys.bytes_split(dat.data,1000*1000) -- need smaller 1meg chunks
 		

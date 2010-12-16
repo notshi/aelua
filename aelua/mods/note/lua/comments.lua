@@ -38,12 +38,13 @@ local tonumber=tonumber
 local type=type
 local pcall=pcall
 local loadstring=loadstring
-
+local require=require
 
 -- opts
 local opts_mods_note=(opts and opts.mods and opts.mods.note) or {}
 
 module("note.comments")
+local wetdata=require("data")
 
 --------------------------------------------------------------------------------
 --
@@ -345,15 +346,21 @@ function build_get_comment(srv,tab,c)
 		tab.ret.count=tab.ret.count+1
 	end
 	
+	local media=""
+	if c.media~=0 then
+		media=[[<a href="/data/]]..c.media..[["><img src="/thumbcache/460/345/]]..srv.domainport..[[/data/]]..c.media..[[" class="wetnote_comment_img" /></a>]]
+	end
+	
 	local plink,purl=users.email_to_profile_link(c.cache.user.email)
 	return tab.get([[
 <div class="wetnote_comment_div" id="wetnote{id}" >
 <div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
 <div class="wetnote_comment_head" > #{id} posted by <a href="{purl}">{name}</a> on {time} </div>
-<div class="wetnote_comment_text" >{text}</div>
+<div class="wetnote_comment_text" >{media}{text}</div>
 <div class="wetnote_comment_tail" ></div>
 </div>
 ]],{
+	media=media,
 	text=wet_waka.waka_to_html(c.text,{base_url=tab.url,escape_html=true}),
 	author=c.cache.user.email,
 	name=c.cache.user.name,
@@ -410,6 +417,36 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				]])
 				return
 			end
+			
+			if tab.posts.filedata and tab.posts.filedata.size>0 then
+			
+				if tab.posts.filedata.size>=1000000 then
+					tab.put([[
+					<div class="wetnote_error">
+					Sorry but your upload must not be bigger than 1000000 bytes in size.
+					</div>
+					]])
+					return			
+				end
+				
+				local image=img.get(tab.posts.filedata.data) -- convert to image
+				
+				if not image then
+					tab.put([[
+					<div class="wetnote_error">
+					Sorry but your upload must be a valid image.
+					</div>
+					]])
+					return
+				else
+					if image.width>1024 or image.height>1024 then -- resize, keep aspect
+						image=img.resize(image,1024,1024,"JPEG") -- resize image
+						tab.posts.filedata.data=image.data
+						tab.posts.filedata.size=image.size
+						tab.posts.filedata.name=tab.posts.filedata.name..".jpg" -- make sure its a jpg
+					end
+				end
+			end
 		
 			local id=math.floor(tonumber(tab.posts.wetnote_comment_id))
 			local e=create(srv)
@@ -439,6 +476,19 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			c.group=id
 			c.text=tab.posts.wetnote_comment_text
 			c.title=title
+			if tab.posts.filedata and tab.posts.filedata.size>0 then -- got a file
+				local dat={}
+				dat.id=0
+				
+				dat.data=tab.posts.filedata and tab.posts.filedata.data
+				dat.size=tab.posts.filedata and tab.posts.filedata.size
+				dat.name=tab.posts.filedata and tab.posts.filedata.name
+				dat.owner=user.email
+				
+				wetdata.upload(srv,dat)
+
+				c.media=dat.id -- remember id
+			end
 			
 			put(srv,e)
 			posted=e
@@ -471,9 +521,9 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				cache.del("kind="..kind(H).."&find=recent&limit="..(50)) -- reset normal recent cache
 
 				if id==0 then
-					sys.redirect(srv,tab.url.."#wetnote"..posted.cache.id)
+					sys.redirect(srv,tab.url)--.."#wetnote"..posted.cache.id)
 				else
-					sys.redirect(srv,tab.url.."#wetnote"..id)
+					sys.redirect(srv,tab.url)--.."#wetnote"..id)
 				end
 				
 				return

@@ -246,6 +246,12 @@ a:hover {
 	background-color: #DCDCDC;
 }
 
+.wetnote_comment_img {
+	max-width:460px;
+	max-height:345px;
+	display:block;
+}
+
 .wetnote_main{
 	display:table;
 }
