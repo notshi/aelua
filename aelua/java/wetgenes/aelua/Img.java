@@ -192,8 +192,8 @@ public class Img
 		String format=(String)L.getField(tab,"format");
 		width=((Double)L.getField(tab,"width")).intValue();
 		height=((Double)L.getField(tab,"height")).intValue();
-		color=((Double)L.getField(tab,"color")).intValue();
-		
+		color=((Double)L.getField(tab,"color")).longValue();
+	
 		LinkedList t1 = new LinkedList();
 		
 		i=0;

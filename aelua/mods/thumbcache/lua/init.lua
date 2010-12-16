@@ -58,7 +58,7 @@ function serv(srv)
 	
 		data=cache.get(cachename)
 		
-		if data=="*" then -- another thread is fetching the image we should wait for them
+		if type(data)=="string" and data=="*" then -- another thread is fetching the image we should wait for them
 --			log("sleeping")
 		
 			sys.sleep(1)
@@ -66,8 +66,9 @@ function serv(srv)
 		elseif data then -- we got an image
 --			log("cache")
 		
-			srv.set_mimetype( "image/jpeg" )
-			srv.put(data)
+			srv.set_mimetype( data.mimetype )
+			srv.set_header("Cache-Control","public") -- allow caching of page
+			srv.put(data.data)
 			return
 			
 		elseif not data then -- we will go get it
@@ -103,7 +104,7 @@ function serv(srv)
 
 				if (image.width~=width) or (image.height~=height) then -- resize
 				
-					image=img.resize(image,width,height,"PNG") -- resize image, lossless
+					image=img.resize(image,width,height,"JPEG") -- resize image
 					
 				end
 
@@ -111,18 +112,26 @@ function serv(srv)
 --[[
 				image=img.composite({
 					format="JPEG",
-					width=width,
-					height=height,
-					color=4294967295,
+					width=image.width,
+					height=image.height,
+					color=0,
 					{image,0,0,1,"TOP_LEFT"},
 				}) -- and force it to a JPEG with a white background
-
---				image=img.resize(image,width,height,"JPEG") -- resize image and force it to a JPEG
 ]]
+--				image=img.resize(image,width,height,"JPEG") -- resize image and force it to a JPEG
+
 			
-				cache.put(cachename,image.data,60*60)
+				cache.put(cachename,{
+					data=image.data ,
+					size=image.size ,
+					width=image.width ,
+					height=image.height ,
+					format=image.format ,
+					mimetype="image/"..string.lower(image.format),
+					},60*60)
 			
 				srv.set_mimetype( "image/"..string.lower(image.format) )
+				srv.set_header("Cache-Control","public") -- allow caching of page
 				srv.put(image.data)
 			
 				return

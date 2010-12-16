@@ -97,6 +97,8 @@ local get,put=make_get_put(srv)
 			
 			srv.set_mimetype(em.cache.mimetype)
 			
+			srv.set_header("Cache-Control","public") -- allow caching of page
+			
 			while true do
 			
 				if ef then
@@ -146,112 +148,21 @@ local get,put=make_get_put(srv)
 	
 --		put(tostring(posts).."<br/>",{H=H})
 		
-		local pubname
 		
 		if posts.submit=="Upload" then
-			if posts.dataid==0 then -- a new file
-				if posts.filedata then -- got a file to create
 		
-					local em=meta.create(srv)
-					local emc=em.cache
-					emc.size=posts.filedata.size
-					emc.owner=user.cache.email
-					
-					if posts.mimetype and posts.mimetype=="" then
-					
-						local l3=posts.filedata.name:sub(-3):lower()
-						local l4=posts.filedata.name:sub(-4):lower()
-						
-						if l3=="jpg" or l4=="jpeg" then
-						
-							emc.mimetype="image/jpeg"
-							
-						elseif l3=="png" then
-						
-							emc.mimetype="image/png"
-							
-						elseif l3=="gif" then
-						
-							emc.mimetype="image/gif"
-							
-						elseif l3=="txt" then
-						
-							emc.mimetype="text/plain"
-							
-						elseif l3=="css" then
-						
-							emc.mimetype="text/css"
-							
-						elseif l3=="htm" or l4=="html" then
-						
-							emc.mimetype="text/html"
-							
-						else
-						
-							emc.mimetype="application/octet-stream"
-							
-						end
-						
-					else
-						emc.mimetype=posts.mimetype
-					end
-									
-					meta.put(srv,em)  -- write once to get an id for the meta
-					emc=em.cache
-					
-					local dd=sys.bytes_split(posts.filedata.data,1000*1000) -- need smaller 1meg chunks
-					
-					for i,v in ipairs(dd) do
-					
-						v.ef=file.create(srv)
-						local efc=v.ef.cache
-						
---						efc.data=v.data
-						efc.size=v.size
-						
-						efc.metakey=emc.id -- the meta id				
-						file.put(srv,v.ef) -- save this data, to get an id
-						efc=v.ef.cache
-						
-						if i==1 then
-							emc.filekey=efc.id -- remember the id, of the first chunk only
-						end
-						
-					end
-					
--- write the real data this time and save the next/prev keys
-
-					for i,v in ipairs(dd) do
-					
-						local efc=v.ef.cache
-						
-						efc.data=v.data
-						
-						if dd[i-1] then
-							if dd[i-1].ef then
-								efc.prevkey=dd[i-1].ef.cache.id
-							end
-						end
-
-						if dd[i+1] then
-							efc.nextkey=dd[i+1].ef.cache.id
-						end
-						
-						file.put(srv,v.ef) -- save the data, for real
-					end
-					
-					
-					if posts.filename and posts.filename=="" then
-						emc.pubname="/"..emc.id .."/".. posts.filedata.name -- default url
-					else
-						emc.pubname=posts.filename
-					end
-					meta.put(srv,em)  -- save the meta
-					emc=em.cache
-					
-					pubname=emc.pubname
-				end
-			end
+			local dat={}
+			dat.id=posts.dataid
+			
+			dat.data=posts.filedata and posts.filedata.data
+			dat.size=posts.filedata and posts.filedata.size
+			dat.name=posts.filedata and posts.filedata.name
+			
+			if posts.mimetype and posts.mimetype~="" then dat.mimetype=posts.mimetype end
+			if posts.filename and posts.filename~="" then dat.name=posts.filename end
+			
+			upload(srv,dat)
+			
 		end
 		
 --		put("<img src=\"/data{pubname}\" />",{H=H,pubname=pubname})
@@ -273,7 +184,6 @@ local get,put=make_get_put(srv)
 end
 
 
-
 -----------------------------------------------------------------------------
 --
 -- upload a file to the database (ie a file upload) returns data id,entity,url etc
@@ -288,18 +198,139 @@ end
 --
 -- optional parts are
 --
--- dataid = numerical datakey, pass in 0 or nil to create a new one, otherwise we update the given
+-- id = numerical datakey, pass in 0 or nil to create a new one, otherwise we update the given
 -- mimetype = mimetype to use when serving, we try to guess this from the name if not supplied
 --
 -- return values are
 --
 -- ent = the meta entity which we created / updated
--- dataid = the numerical datakey
+-- id = the numerical datakey
 -- url = the url we can access this file at, relative to this server base so begins with "/"
 --
 -----------------------------------------------------------------------------
 function upload(srv,dat)
 
+local em
+local emc
+
+	if ( not dat.id ) or dat.id==0 then -- a new file
+	
+		em=meta.create(srv)
+		emc=em.cache
+		dat.id=emc.id -- new id
+	
+	else -- editing an old file
+	
+		em=meta.get(srv,dat.id)
+		if not em then return end -- failed to get an entity to update
+		
+		emc=em.cache
+
+	end
+	
+	dat.ent=em
+			
+	if dat.data then -- got a file to create
+
+		file.delete(srv,emc.filekey) -- remove any old file data
+		
+		emc.size=dat.size
+		emc.owner=dat.owner
+		
+		if (not dat.mimetype) or (dat.mimetype=="") then
+		
+			local l3=dat.name:sub(-3):lower()
+			local l4=dat.name:sub(-4):lower()
+			
+			if l3=="jpg" or l4=="jpeg" then
+			
+				emc.mimetype="image/jpeg"
+				
+			elseif l3=="png" then
+			
+				emc.mimetype="image/png"
+				
+			elseif l3=="gif" then
+			
+				emc.mimetype="image/gif"
+				
+			elseif l3=="txt" then
+			
+				emc.mimetype="text/plain"
+				
+			elseif l3=="css" then
+			
+				emc.mimetype="text/css"
+				
+			elseif l3=="htm" or l4=="html" then
+			
+				emc.mimetype="text/html"
+				
+			else
+			
+				emc.mimetype="application/octet-stream"
+				
+			end
+			
+		else
+			emc.mimetype=dat.mimetype
+		end
+						
+		meta.put(srv,em)  -- write once to get an id for the meta
+		emc=em.cache
+		
+		local dd=sys.bytes_split(dat.data,1000*1000) -- need smaller 1meg chunks
+		
+		for i,v in ipairs(dd) do
+		
+			v.ef=file.create(srv)
+			local efc=v.ef.cache
+			
+			efc.size=v.size
+			
+			efc.metakey=emc.id -- the meta id				
+			file.put(srv,v.ef) -- save this data, to get an id
+			efc=v.ef.cache
+			
+			if i==1 then
+				emc.filekey=efc.id -- remember the id, of the first chunk only
+			end
+			
+		end
+		
+-- write the real data this time and save the next/prev keys
+
+		for i,v in ipairs(dd) do
+		
+			local efc=v.ef.cache
+			
+			efc.data=v.data
+			
+			if dd[i-1] then
+				if dd[i-1].ef then
+					efc.prevkey=dd[i-1].ef.cache.id
+				end
+			end
+
+			if dd[i+1] then
+				efc.nextkey=dd[i+1].ef.cache.id
+			end
+			
+			file.put(srv,v.ef) -- save the data, for real
+		end
+	end
+			
+	if dat.pubname then
+		emc.pubname=dat.pubname
+	else
+		emc.pubname="/"..emc.id .."/".. dat.name -- default url
+	end
+	meta.put(srv,em)  -- save the meta
+	emc=em.cache
+	
+-- output data
+
+	dat.url="/data/"..emc.pubname -- where to reference this file
 
 	return dat
 end
