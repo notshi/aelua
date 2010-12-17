@@ -280,3 +280,36 @@ a:hover {
 	margin:10px 20px 10px 20px;
 	text-align:center;
 }
+
+
+.profile_layout{
+	width:960px;
+}
+
+.profile_layout_head{
+	width:960px;
+}
+
+
+.profile_layout_body{
+	width:960px;
+}
+
+
+.profile_layout_wide{
+	width:640px;
+	float:right;
+}
+
+
+.profile_layout_side{
+	width:320px;
+	float:left;
+}
+
+
+.profile_layout_foot{
+	clear:both;
+	width:640px;
+}
+

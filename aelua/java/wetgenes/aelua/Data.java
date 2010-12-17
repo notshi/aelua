@@ -206,20 +206,6 @@ public class Data
 		
 		if(!L.isNil(id))
 		{
-			if(L.isNumber(id))
-			{
-				if(!L.isNil(parent))
-				{
-					if(!L.isString(parent)) { L.error("key parent must be a string"); }
-					p=KeyFactory.stringToKey((String)(parent));
-					k=KeyFactory.createKey( p , ((String)(kind)) , ((Double)(id)).intValue() );
-				}
-				else // no parent
-				{
-					k=KeyFactory.createKey( ((String)(kind)) , ((Double)(id)).intValue() );
-				}
-			}
-			else
 			if(L.isString(id))
 			{
 				if(!L.isNil(parent))
@@ -231,6 +217,20 @@ public class Data
 				else // no parent
 				{
 					k=KeyFactory.createKey( ((String)(kind)) , ((String)(id)) );
+				}
+			}
+			else
+			if(L.isNumber(id)) // may claim strings is a number, check after string
+			{
+				if(!L.isNil(parent))
+				{
+					if(!L.isString(parent)) { L.error("key parent must be a string"); }
+					p=KeyFactory.stringToKey((String)(parent));
+					k=KeyFactory.createKey( p , ((String)(kind)) , ((Double)(id)).intValue() );
+				}
+				else // no parent
+				{
+					k=KeyFactory.createKey( ((String)(kind)) , ((Double)(id)).intValue() );
 				}
 			}
 			else { L.error("key id must be a string or number : "+L.type(id) ); }

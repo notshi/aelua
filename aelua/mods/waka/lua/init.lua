@@ -196,6 +196,7 @@ local ext
 	if ext=="css" then -- css only
 	
 		srv.set_mimetype("text/css; charset=UTF-8")
+		srv.set_header("Cache-Control","public") -- allow caching of css page
 		srv.put(form.css or "")
 		
 	elseif ext=="frame" then -- special iframe render mode
