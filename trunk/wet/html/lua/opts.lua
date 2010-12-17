@@ -108,6 +108,13 @@ map={ -- base lookup table
 											},
 					},
 
+["profile"]		=	{			-- a profile module
+						["#default"]	=	"profile", 		-- no badlinks, we own everything under here
+						["#opts"]		=	{
+												url="/profile",
+											},
+					},
+
 ["dice"]		=	{			-- roll some dice
 						["#default"]	=	"dice", 		-- no badlinks, we own everything under here
 						["#opts"]		=	{
