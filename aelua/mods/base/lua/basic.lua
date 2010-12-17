@@ -125,6 +125,8 @@ cache.countzero()
 			f=m.serv -- get function to call
 			
 		end
+		
+		srv.opts=lookup[ "#opts" ] or {}
 			
 	end
 	
