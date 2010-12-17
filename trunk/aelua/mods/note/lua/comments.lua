@@ -348,7 +348,7 @@ function build_get_comment(srv,tab,c)
 	
 	local media=""
 	if c.media~=0 then
-		media=[[<a href="/data/]]..c.media..[["><img src="/thumbcache/460/345/]]..srv.domainport..[[/data/]]..c.media..[[" class="wetnote_comment_img" /></a>]]
+		media=[[<a href="/data/]]..c.media..[["><img src="/thumbcache/460/345/data/]]..c.media..[[" class="wetnote_comment_img" /></a>]]
 	end
 	
 	local plink,purl=users.email_to_profile_link(c.cache.user.email)
@@ -408,16 +408,16 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				]])
 				return
 			end
-			
+--[[			
 			if #tab.posts.wetnote_comment_text <=3 then
-				tab.put([[
+				tab.put([-[
 				<div class="wetnote_error">
 				Sorry but your comment was too short (>3 chars) to be accepted.
 				</div>
-				]])
+				]-])
 				return
 			end
-			
+]]			
 			if tab.posts.filedata and tab.posts.filedata.size>0 then
 			
 				if tab.posts.filedata.size>=1000000 then
@@ -521,9 +521,9 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				cache.del("kind="..kind(H).."&find=recent&limit="..(50)) -- reset normal recent cache
 
 				if id==0 then
-					sys.redirect(srv,tab.url)--.."#wetnote"..posted.cache.id)
+					sys.redirect(srv,tab.url.."?wetnote="..posted.cache.id.."#wetnote"..posted.cache.id)
 				else
-					sys.redirect(srv,tab.url)--.."#wetnote"..id)
+					sys.redirect(srv,tab.url.."?wetnote="..id.."#wetnote"..id)
 				end
 				
 				return
@@ -610,7 +610,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	if tab.toponly then -- just display a top comment field
 	
 		for i,c in ipairs(cs) do
---			if i>=5 then break end -- 5 only?
+--			if i>=1 then break end -- 5 only?
 			tab.put(build_get_comment(srv,tab,c)) -- main comment
 			tab.put([[
 <div class="wetnote_reply_div">
@@ -629,7 +629,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 
 			local rs=c.pagecomments or {} -- list(srv,{sortdate="ASC",url=tab.url,group=c.id}) -- replies
 
-			for i=3,1,-1  do -- put last 5? cached comments on page if we have them
+			for i=1,1,-1  do -- put last 5? 1? cached comments on page if we have them
 				local c=rs[i]
 				if c then
 					tab.put(build_get_comment(srv,tab,c))

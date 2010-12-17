@@ -33,6 +33,7 @@ local ipairs=ipairs
 local tostring=tostring
 local tonumber=tonumber
 local type=type
+local require=require
 
 module("thumbcache")
 
@@ -74,7 +75,7 @@ function serv(srv)
 		elseif not data then -- we will go get it
 --			log("web")
 		
-			if cache.put(cachename,"*",60,"ADD_ONLY_IF_NOT_PRESENT") then -- get a 60sec lock
+			if cache.put(cachename,"*",10,"ADD_ONLY_IF_NOT_PRESENT") then -- get a 10sec lock
 
 				local s1=srv.url_slash[ srv.url_slash_idx ]
 				local s2=srv.url_slash[ srv.url_slash_idx+1 ]
@@ -85,28 +86,39 @@ function serv(srv)
 						t[#t+1]=v
 					end
 				end
-				local url="http://"..table.concat(t,"/") -- build the remote request string
-				if srv.query and #srv.query>0 then
-					url=url.."?"..srv.query
-				end
-				data=fetch.get(url).body -- get from internets
-			
-				local width=tonumber(s1 or "") or 100
-				local height=tonumber(s2 or "") or 100
-
-				if width<1 then width=1 end
-				if width>1024 then width=1024 end
-
-				if height<1 then height=1 end
-				if height>1024 then height=1024 end
-
-				image=img.get(data) -- convert to image
-
-				if (image.width~=width) or (image.height~=height) then -- resize
 				
-					image=img.resize(image,width,height,"JPEG") -- resize image
+				if t[1]=="data" then -- grab local data
+					data=require("data").read(srv,t[2]) -- grab our data
+					if data then data=data.data end -- check
+				else -- grab from internets
+				
+					local url="http://"..table.concat(t,"/") -- build the remote request string
+					if srv.query and #srv.query>0 then
+						url=url.."?"..srv.query
+					end
+					data=fetch.get(url) -- get from internets
+					if data then data=data.body end -- check
 					
 				end
+				
+				if data then
+				
+					local width=tonumber(s1 or "") or 100
+					local height=tonumber(s2 or "") or 100
+
+					if width<1 then width=1 end
+					if width>1024 then width=1024 end
+
+					if height<1 then height=1 end
+					if height>1024 then height=1024 end
+
+					image=img.get(data) -- convert to image
+
+					if (image.width~=width) or (image.height~=height) then -- resize
+					
+						image=img.resize(image,width,height,"JPEG") -- resize image
+						
+					end
 
 
 --[[
@@ -121,20 +133,21 @@ function serv(srv)
 --				image=img.resize(image,width,height,"JPEG") -- resize image and force it to a JPEG
 
 			
-				cache.put(cachename,{
-					data=image.data ,
-					size=image.size ,
-					width=image.width ,
-					height=image.height ,
-					format=image.format ,
-					mimetype="image/"..string.lower(image.format),
-					},60*60)
-			
-				srv.set_mimetype( "image/"..string.lower(image.format) )
-				srv.set_header("Cache-Control","public") -- allow caching of page
-				srv.put(image.data)
-			
-				return
+					cache.put(cachename,{
+						data=image.data ,
+						size=image.size ,
+						width=image.width ,
+						height=image.height ,
+						format=image.format ,
+						mimetype="image/"..string.lower(image.format),
+						},60*60)
+				
+					srv.set_mimetype( "image/"..string.lower(image.format) )
+					srv.set_header("Cache-Control","public") -- allow caching of page
+					srv.put(image.data)
+				
+					return
+				end
 			end
 		end
 	end

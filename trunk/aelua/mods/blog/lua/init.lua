@@ -551,11 +551,9 @@ This is the #body of your post and can contain any html you wish.
 	end
 	
 	srv.set_mimetype("text/html; charset=UTF-8")
-	put("header",{title="blog : admin",css=css})
-	local H={sess=sess,user=user}
-	put("home_bar",{H=H})
-	put("user_bar",{H=H})
-	put("blog_admin_links",{user=user})
+	put("header",{title="blog : admin",css=css,
+		H={sess=sess,user=user},
+		adminbar=get("blog_admin_links",{user=user})})
 	
 	for i,v in ipairs(output_que) do
 		put(v)

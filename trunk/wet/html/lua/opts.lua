@@ -12,6 +12,7 @@ local loadstring=loadstring
 local setfenv=setfenv
 local pcall=pcall
 local pairs=pairs
+local ipairs=ipairs
 local type=type
 
 module("opts")
@@ -22,7 +23,19 @@ users.admin={ -- users with hard and unremovable admin rights for this app
 	["krissd@gmail.com"]=true,
 }
 
-local app_name=nil -- "wet" 
+local app_name=nil -- best not to use an appname, unless we run multiple apps on one site 
+
+
+forums={
+	{
+		id="spam",
+		title="General off topic posts.",
+	},
+}
+for i,v in ipairs(forums) do -- create id lookups as well
+	forums[v.id]=v
+end
+
 
 map={ -- base lookup table 
 
@@ -84,6 +97,14 @@ map={ -- base lookup table
 						["#default"]	=	"chan", 		-- no badlinks, we own everything under here
 						["#opts"]		=	{
 												url="/chan",
+											},
+					},
+
+["forum"]		=	{			-- a forum module
+						["#default"]	=	"forum", 		-- no badlinks, we own everything under here
+						["#opts"]		=	{
+												url="/forum",
+												forums=forums,
 											},
 					},
 

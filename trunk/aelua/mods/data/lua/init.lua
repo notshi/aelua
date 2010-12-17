@@ -185,6 +185,69 @@ local get,put=make_get_put(srv)
 	
 end
 
+-----------------------------------------------------------------------------
+--
+-- upload a file to the database (ie a file upload) returns data id,entity,url etc
+-- so it can now be displayed if it was a successful upload
+--
+-- incoming requirements are
+--
+-- data = the data of the file
+-- size = the size of the file
+-- name = the name of the file
+-- owner = file owner, defaults to user.cache.email
+--
+-- optional parts are
+--
+-- id = numerical datakey, pass in 0 or nil to create a new one, otherwise we update the given
+-- mimetype = mimetype to use when serving, we try to guess this from the name if not supplied
+--
+-- return values are
+--
+-- ent = the meta entity which we created / updated
+-- id = the numerical datakey
+-- url = the url we can access this file at, relative to this server base so begins with "/"
+--
+-----------------------------------------------------------------------------
+function read(srv,id)
+
+	local num=tonumber(id)
+
+	local em=meta.get(srv,num)
+	
+	if em then -- got a data file to serv
+	
+		local ef=file.get(srv,em.cache.filekey)
+		
+		srv.set_mimetype(em.cache.mimetype)
+		
+		srv.set_header("Cache-Control","public") -- allow caching of page
+		
+		local c=em.cache
+		
+		c.data={}
+		
+		while true do
+		
+			if ef then
+			
+				c.data[#c.data+1]=ef.cache.data
+				
+				if ef.cache.nextkey==0 then
+					c.data=c.data[1] -- concat chunks TODO just grab first chunk for now since two chunks will be too big and break the image handler anyhow :)
+					return c
+				end -- last chunk
+				
+				ef=file.get(srv,ef.cache.nextkey) -- read next part
+				
+			else
+				return -- error
+			end
+		end
+		
+	end
+
+end
 
 -----------------------------------------------------------------------------
 --
