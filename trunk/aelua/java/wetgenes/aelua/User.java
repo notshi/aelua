@@ -17,13 +17,10 @@ public class User
 {
 
 	UserService us;
-	com.google.appengine.api.users.User u;
 
 	public User()
 	{
 		us = UserServiceFactory.getUserService();
-		
-		u=us.getCurrentUser();
 	}
 
 //
@@ -67,24 +64,8 @@ public class User
 	{
 		reg_login_url(L,lib);
 		reg_logout_url(L,lib);
-		
-		
-		if(u!=null)
-		{
-			LuaTable usr=L.createTable(0,0);
-			L.rawSet(lib,"user",usr); // we have a user
-			
-			L.rawSet(usr,"admin",us.isUserAdmin()); // do we have an admin?	
-		
-			if(u.getAuthDomain()!=null)			{ L.rawSet(usr,"domain",u.getAuthDomain()); }
-			if(u.getEmail()!=null)				{ L.rawSet(usr,"email",u.getEmail()); }
-			if(u.getNickname()!=null)			{ L.rawSet(usr,"name",u.getNickname()); }
-			
-//			if(u.getUserId()!=null)				{ L.rawSet(usr,"id",u.getUserId()); }
-//			if(u.getFederatedIdentity()!=null)	{ L.rawSet(usr,"fid",u.getFederatedIdentity()); }
-		}
-		
-		
+		reg_get_google_user(L,lib);		
+
 		return 0;
 	}
 
@@ -119,6 +100,44 @@ public class User
 		L.push(us.createLogoutURL(s1));
 		return 1;
 	}
+
+
+//
+// The cache broke google login, duh, need this function
+//
+	void reg_get_google_user(Lua L,Object lib)
+	{ 
+		final User _base=this;
+		L.setField(lib, "get_google_user", new LuaJavaCallback(){ User base=_base; public int luaFunction(Lua L){ return base.get_google_user(L); } });
+	}
+	int get_google_user(Lua L)
+	{
+		com.google.appengine.api.users.User u;
+		u=us.getCurrentUser();
+		if(u!=null)
+		{
+			LuaTable usr=L.createTable(0,0);
+//			L.rawSet(lib,"user",usr); // we have a user
+			
+			L.rawSet(usr,"admin",us.isUserAdmin()); // do we have an admin?	
+		
+			if(u.getAuthDomain()!=null)			{ L.rawSet(usr,"domain",u.getAuthDomain()); }
+			if(u.getEmail()!=null)				{ L.rawSet(usr,"email",u.getEmail()); }
+			if(u.getNickname()!=null)			{ L.rawSet(usr,"name",u.getNickname()); }
+			
+//			if(u.getUserId()!=null)				{ L.rawSet(usr,"id",u.getUserId()); }
+//			if(u.getFederatedIdentity()!=null)	{ L.rawSet(usr,"fid",u.getFederatedIdentity()); }
+
+			L.push(usr);
+			return 1;
+		}
+
+		return 0;
+	}
+
+
+
+
 	
 }
 

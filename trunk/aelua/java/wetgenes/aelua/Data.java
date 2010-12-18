@@ -206,7 +206,7 @@ public class Data
 		
 		if(!L.isNil(id))
 		{
-			if(L.isString(id))
+			if(L.type(id)==L.TSTRING) // really a string
 			{
 				if(!L.isNil(parent))
 				{

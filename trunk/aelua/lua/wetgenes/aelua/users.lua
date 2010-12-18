@@ -41,6 +41,170 @@ function logout_url(a)
 
 end
 
+function get_google_user()
+
+	return core.get_google_user()
+
+end
+
+
+
+--------------------------------------------------------------------------------
+--
+--------------------------------------------------------------------------------
+function kind(srv)
+	return "user.data"
+end
+
+
+--------------------------------------------------------------------------------
+--
+-- Create a new local entity filled with initial data
+--
+--------------------------------------------------------------------------------
+function create(srv)
+
+	local ent={}
+	
+	ent.key={kind=kind(srv)} -- we will not know the key id until after we save
+	ent.props={}
+	
+	local p=ent.props
+	
+	p.created=srv.time
+	p.updated=srv.time
+
+	p.flavour=""
+	p.email=""
+	p.name=""
+		
+	dat.build_cache(ent) -- this just copies the props across
+	
+-- these are json only vars
+	local c=ent.cache
+
+	return check(srv,ent)
+end
+
+
+--------------------------------------------------------------------------------
+--
+-- check that entity has initial data and set any missing defaults
+-- the second return value is false if this is not a valid entity
+--
+--------------------------------------------------------------------------------
+function check(srv,ent)
+
+	local ok=true
+
+	local c=ent.cache
+	
+		
+	return ent,ok
+end
+
+-----------------------------------------------------------------------------
+--
+-- convert the cache values to props then
+-- put a previously got user ent within the given transaction t
+-- pass in dat instead of a transaction if you do not need one
+--
+-----------------------------------------------------------------------------
+function put(srv,ent,t)
+
+	t=t or dat -- use transaction?
+
+	local _,ok=check(srv,ent) -- check that this is valid to put
+	if not ok then return nil end
+
+	dat.build_props(ent)
+	local ks=t.put(ent)
+	
+	if ks then
+		ent.key=dat.keyinfo( ks ) -- update key with new id
+		dat.build_cache(ent)
+	end
+
+	return ks -- return the keystring which is an absolute name
+end
+
+
+-----------------------------------------------------------------------------
+--
+-- get a user ent by email within the given transaction t
+-- you may edit the cache values after this get in preperation for a put
+--
+-- an email (always all lowercase) is a user@domain string identifier
+-- sometimes this may not be a real email but just indicate a unique account
+-- for instance 1234567@id.facebook.com 
+-- email is just used as a convienient term for such strings
+-- it harkens to the day when facebook will finally forfill the prophecy
+-- of every application evolving to the point where it can send and recieve email
+-- I notice that myspace already has...
+--
+-----------------------------------------------------------------------------
+function get(srv,id,t)
+
+	local ent=id
+	
+	if type(ent)~="table" then -- get by id
+		ent=create(srv)
+		ent.key.id=id
+	end
+	
+	t=t or dat -- use transaction?
+	
+	if not t.get(ent) then return nil end	
+	dat.build_cache(ent)
+	
+	return check(srv,ent)
+end
+
+
+
+
+
+-----------------------------------------------------------------------------
+--
+-- Make a local user data, ready to be put
+--
+-----------------------------------------------------------------------------
+function manifest(srv,email,name,flavour)
+
+	email=string.lower(email)
+
+	local user=create(srv)
+	user.key.id=email -- email is the forcedkey value for this entity
+
+	user.cache.flavour=flavour -- provider hint, we can mostly work this out from the email if missing
+	
+	user.cache.email=email -- repeat the key
+	
+	if not name or name=="" or name==email then
+	
+		user.cache.name=str_split("@",email)[1] -- build a name from email
+		user.cache.name=string.sub(user.cache.name,1,32)
+		
+	else
+	
+		user.cache.name=name -- use given name
+		
+	end
+
+	
+	return user
+end
+
+
+
+
+
+
+
+
+
+
+
 -----------------------------------------------------------------------------
 --
 -- Make a local session data, ready to be put or updated
@@ -69,7 +233,7 @@ end
 --
 --
 -----------------------------------------------------------------------------
-function get_sess(hash,tt)
+function get_sess(srv,hash,tt)
 	local cachekey="user=sess&"..hash
 	
 	if not tt then -- not a transaction so try memcache first
@@ -78,7 +242,7 @@ function get_sess(hash,tt)
 			local d=json.decode(data) -- turn into table
 			local sess=new_sess(hash,d.user) -- build a body
 			sess.cache=d -- and replace the cache
-			d.user=get_user(d.user.key.id) -- refresh user
+			d.user=get(srv,d.user.key.id) -- refresh user
 			return sess
 		end
 	end
@@ -92,7 +256,7 @@ function get_sess(hash,tt)
 	
 	dat.build_cache(sess) -- most data is kept in json
 	
-	sess.cache.user=get_user(sess.cache.user.key.id,tt) -- refresh user
+	sess.cache.user=get(srv,sess.cache.user.key.id,tt) -- refresh user
 	
 	if not tt then -- not a transaction so write it to memcache as well
 		cache.put(cachekey,json.encode(sess.cache),60*60)
@@ -139,85 +303,7 @@ function del_sess(email)
 	end
 
 end
------------------------------------------------------------------------------
---
--- Make a local user data, ready to be put
---
------------------------------------------------------------------------------
-function new_user(email,name,flavour)
 
-	local user={key={kind="user.data",id=string.lower(email)}} -- email is the key value for this entity
-	user.props={}
-	
-	user.props.flavour=flavour -- provider hint, we can mostly work this out from the email if missing
-	
-	user.props.email=string.lower(email) -- make sure the email is all lowercase
-	
-	if not name or name=="" or name==email then
-	
-		user.props.name=str_split("@",email)[1] -- build a name from email
-		user.props.name=string.sub(user.props.name,1,32)
-		
-	else
-	
-		user.props.name=name -- use given name
-		
-	end
-	
-	user.props.created=os.time() -- created stamp
-	user.props.updated=user.props.created -- update stamp
-	
-	
-	dat.build_cache(user) -- create the default cache
-	
-	return user
-end
-
------------------------------------------------------------------------------
---
--- get a user ent by email within the given transaction t
--- you may edit the cache values after this get in preperation for a put
---
--- an email (always all lowercase) is a user@domain string identifier
--- sometimes this may not be a real email but just indicate a unique account
--- for instance 1234567@id.facebook.com 
--- email is just used as a convienient term for such strings
--- it harkens to the day when facebook will finally forfill the prophecy
--- of every application evolving to the point where it can send and recieve email
--- I notice that myspace already has...
---
------------------------------------------------------------------------------
-function get_user(email,t)
-	t=t or dat
-	if t.fail then return nil end
-	
-	local user={key={kind="user.data",id=string.lower(email)}} -- email is key value for this empty entity
-	
-	if not t.get(user) then return nil end -- failed to get
-	
-	dat.build_cache(user) -- most data is kept in json
-	
-	return user
-end
------------------------------------------------------------------------------
---
--- convert the cache values to props then
--- put a previously got user ent within the given transaction t
--- pass in dat instead of a transaction if you do not need one
---
--- after a succesful commit do a got_user_data(ent) to update the current user
--- 
------------------------------------------------------------------------------
-function put_user(user,t)
-	t=t or dat
-	if t.fail then return nil end
-	
-	dat.build_props(user) -- most data is kept in json
-	
-	user.props.updated=os.time() -- update stamp
-	
-	return t.put(user)
-end
 
 -----------------------------------------------------------------------------
 --
@@ -272,7 +358,7 @@ function get_viewer_session(srv)
 	
 	if srv.cookies.wet_session then -- we have a cookie session to check
 	
-		sess=get_sess(srv.cookies.wet_session) -- load session
+		sess=get_sess(srv,srv.cookies.wet_session) -- load session
 		
 		if sess then -- need to validate
 			if sess.cache.ip ~= srv.ip then -- ip must match, this makes stealing sessions a local affair.
@@ -297,13 +383,13 @@ end
 -----------------------------------------------------------------------------
 function email_to_profile_link(email)
 
-	local profile
-	local url
+	local url="/profile/"..email
+	local profile="<a href="..url.."><img src=\"/art/icon_goog.png\" /></a>"
 
 	local endings={"@id.wetgenes.com"}
 	for i,v in ipairs(endings) do
 		if string.sub(email,-#v)==v then
-			url="http://like.wetgenes.com/-/profile/$"..string.sub(email,1,-(#v+1))
+--			url="http://like.wetgenes.com/-/profile/$"..string.sub(email,1,-(#v+1))
 			profile="<a href="..url.."><img src=\"/art/icon_wet.png\" /></a>"
 		end
 	end
@@ -311,7 +397,7 @@ function email_to_profile_link(email)
 	local endings={"@id.twitter.com"}
 	for i,v in ipairs(endings) do
 		if string.sub(email,-#v)==v then
-			url="/js/dumid/twatbounce.html?id="..string.sub(email,1,-(#v+1))
+--			url="/js/dumid/twatbounce.html?id="..string.sub(email,1,-(#v+1))
 			profile="<a href="..url.."><img src=\"/art/icon_twat.png\" /></a>"
 		end
 	end

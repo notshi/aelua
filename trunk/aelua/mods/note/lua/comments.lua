@@ -510,6 +510,13 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 					e.cache.count=#replies -- a number to sort by
 					return true
 				end)
+				
+			else -- this is a master comment
+			
+				if tab.save_post=="status" then -- we want to save this as user posted status
+					tab.user.cache.comment_status=c.text
+					users.put(srv,tab.user) -- probably safe?
+				end
 
 			end
 
@@ -563,6 +570,12 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		if tab.image then
 			upload=[[<div><input type="file" name="filedata" style="margin-left:110px;width:500px;" /></div>]]
 		end
+		local post_text="Express your important opinion"
+		if num==0 then
+			if tab.post_text then post_text=tab.post_text end
+		else
+			if tab.reply_text then reply_text=tab.reply_text end
+		end
 		local plink,purl=users.email_to_profile_link(user.email or "")
 		return tab.get([[
 <div class="wetnote_comment_form_div">
@@ -572,7 +585,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	<textarea class="wetnote_comment_form_text" name="wetnote_comment_text"></textarea>
 	<input name="wetnote_comment_id" type="hidden" value="{id}"></input>
 	{upload}
-	<input class="wetnote_comment_post" name="wetnote_comment_submit" type="submit" value="Express your important opinion"></input>
+	<input class="wetnote_comment_post" name="wetnote_comment_submit" type="submit" value="{post_text}"></input>
 </form>
 </div>
 ]],{
@@ -586,6 +599,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		id=num,
 		icon=users.email_to_avatar_url(user.email or ""),
 		upload=upload,
+		post_text=post_text,
 		})
 	end
 		
