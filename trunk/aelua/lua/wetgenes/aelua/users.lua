@@ -389,7 +389,7 @@ function email_to_profile_link(email)
 	local endings={"@id.wetgenes.com"}
 	for i,v in ipairs(endings) do
 		if string.sub(email,-#v)==v then
---			url="http://like.wetgenes.com/-/profile/$"..string.sub(email,1,-(#v+1))
+			url="http://like.wetgenes.com/-/profile/$"..string.sub(email,1,-(#v+1))
 			profile="<a href="..url.."><img src=\"/art/icon_wet.png\" /></a>"
 		end
 	end
@@ -397,7 +397,7 @@ function email_to_profile_link(email)
 	local endings={"@id.twitter.com"}
 	for i,v in ipairs(endings) do
 		if string.sub(email,-#v)==v then
---			url="/js/dumid/twatbounce.html?id="..string.sub(email,1,-(#v+1))
+			url="/js/dumid/twatbounce.html?id="..string.sub(email,1,-(#v+1))
 			profile="<a href="..url.."><img src=\"/art/icon_twat.png\" /></a>"
 		end
 	end
