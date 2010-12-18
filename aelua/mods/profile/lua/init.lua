@@ -96,7 +96,7 @@ local get=make_get(srv)
 	if name then name=name:lower() end -- force to lower
 	
 	if name then -- need to check the name is valid
-		local pusr=users.get_user(name) -- get user from email or nickname
+		local pusr=users.get(srv,name) -- get user from email or nickname
 		if pusr then -- gots a user to display profile of
 			baseurl=baseurl.."/"..name
 			
@@ -119,7 +119,18 @@ local get=make_get(srv)
 
 			put("profile_layout",content)
 
-			comments.build(srv,{url=baseurl,posts=posts,get=get,put=put,sess=sess,user=user,post="admin",admin="me"})
+			comments.build(srv,{
+				url=baseurl,
+				posts=posts,
+				get=get,
+				put=put,
+				sess=sess,
+				user=user,
+				post_lock="admin",
+				admin=pusr.cache.email,
+				save_post="status",
+				post_text="change your status",
+				})
 			
 			put("footer")
 			
@@ -162,13 +173,34 @@ end
 -----------------------------------------------------------------------------
 function makechunk_name(content,chunk)
 	local user=content.user
+--log(tostring(user))
 	local d={}
 	d.content=content
 	d.chunk=chunk
 	d.name=user.name
+	d.status=user.comment_status or "NO COMMENT"
+	
+	local plink,purl=users.email_to_profile_link(user.email)
+	d.status = replace([[
+<div class="wetnote_comment_div" id="wetnote{id}" >
+<div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
+<div class="wetnote_comment_head" > status of <a href="{purl}">{name}</a> </div>
+<div class="wetnote_comment_text" style="font-size:200%">{text}</div>
+<div class="wetnote_comment_tail" ></div>
+</div>
+]],{
+	text=wet_waka.waka_to_html(d.status,{base_url="/",escape_html=true}),
+	author=user.email,
+	name=user.name,
+	plink=plink,
+	purl=purl,
+	icon=user.avatar_url or users.email_to_avatar_url(user.email),
+	})
+	
+		
 	local p=[[
 <div class="profile_name">
-Hello my name is <b>{name}</b>.
+{status}
 </div>
 ]]
 	return replace(p,d)

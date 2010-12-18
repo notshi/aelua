@@ -169,7 +169,7 @@ local put=make_put(srv)
 	local flavour
 	local admin=false
 	local authentication={} -- store any values we wish to cache here
-	
+
 	if data=="wetgenes" then
 	
 		if srv.gets.confirm then
@@ -194,8 +194,7 @@ local put=make_put(srv)
 		end
 			
 	elseif data=="google" then
-	
-		local guser=users.core.user -- google handles its own login
+		local guser=users.get_google_user() -- google handles its own login
 		if guser then -- google login OK
 			email=guser.email
 			name=guser.name
@@ -249,12 +248,12 @@ local put=make_put(srv)
 			
 			local t=dat.begin()
 			
-			user=users.get_user(email,t) -- try and read a current user
+			user=users.get(srv,email,t) -- try and read a current user
 			
 			if not user then -- didnt get, so make and put a new user?
 			
-				user=users.new_user(email,name,flavour) -- name can be nil, it will just be created from the email
-				if not users.put_user(user,t) then user=nil end
+				user=users.manifest(srv,email,name,flavour) -- name can be nil, it will just be created from the email
+				if not users.put(srv,user,t) then user=nil end
 			end
 			
 			if user then
@@ -266,7 +265,7 @@ local put=make_put(srv)
 			end
 
 			user.cache.admin=admin
-			if not users.put_user(user,t) then user=nil end -- always write
+			if not users.put(srv,user,t) then user=nil end -- always write
 			
 			if user then -- things are looking good try a commit
 				if t.commit() then break end -- success
@@ -293,7 +292,7 @@ local put=make_put(srv)
 		srv.set_cookie{name="wet_session",value=hash,domain=srv.domain,path="/",live=os.time()+(60*60*24*28)}
 	end
 
-	return srv.redirect(continue)
+	return srv.redirect( continue )
 --[[
 	srv.set_mimetype("text/html; charset=UTF-8")
 	put("dumid_header",{})	
@@ -323,6 +322,6 @@ local put=make_put(srv)
 		end
 	end
 	
-	srv.redirect(continue)
+	srv.redirect( users.logout_url(continue) )
 	
 end
