@@ -144,7 +144,7 @@ header=function(d)
 <link rel="shortcut icon" href="/favicon.ico" />
 
 <link rel="stylesheet" type="text/css" href="/css/base/aelua.css" /> 
-<link rel="stylesheet" type="text/css" href="/wiki/.css" /> 
+<link rel="stylesheet" type="text/css" href="/.css" /> 
 
 <script type="text/javascript" src="{jquery_js}"></script>
 <script type="text/javascript" src="{jquery_ui_js}"></script>
