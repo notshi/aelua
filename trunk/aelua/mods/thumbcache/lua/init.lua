@@ -114,7 +114,7 @@ function serv(srv)
 
 					image=img.get(data) -- convert to image
 
-					if (image.width~=width) or (image.height~=height) then -- resize
+					if (image.width>width) or (image.height>height) then -- resize smaller only
 					
 						image=img.resize(image,width,height,"JPEG") -- resize image
 						

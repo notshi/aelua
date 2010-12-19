@@ -171,14 +171,7 @@ end
 -----------------------------------------------------------------------------
 function manifest(srv,email,name,flavour)
 
-	email=string.lower(email)
-
 	local user=create(srv)
-	user.key.id=email -- email is the forcedkey value for this entity
-
-	user.cache.flavour=flavour -- provider hint, we can mostly work this out from the email if missing
-	
-	user.cache.email=email -- repeat the key
 	
 	if not name or name=="" or name==email then
 	
@@ -191,6 +184,15 @@ function manifest(srv,email,name,flavour)
 		
 	end
 
+	email=string.lower(email)
+
+	user.key.id=email -- email is the forcedkey value for this entity
+	user.cache.id=email -- email is the forcedkey value for this entity
+
+	user.cache.flavour=flavour -- provider hint, we can mostly work this out from the email if missing
+	
+	user.cache.email=email -- repeat the key
+	
 	
 	return user
 end

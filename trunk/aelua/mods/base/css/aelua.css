@@ -1,10 +1,12 @@
 html{
 	overflow-y: scroll;
 	height:100%;
-	background-image: url(/art/base/back.960.png) ;
+/*
+ 	background-image: url(/art/base/back.960.png) ;
 	background-position: 50% 0;
 	background-repeat: repeat-y;
 	background-color: #e6e6e6;
+*/
 }
 
 body{

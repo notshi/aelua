@@ -248,7 +248,7 @@ local put=make_put(srv)
 			
 			local t=dat.begin()
 			
-			user=users.get(srv,email,t) -- try and read a current user
+			user=users.get(srv,email:lower(),t) -- try and read a current user
 			
 			if not user then -- didnt get, so make and put a new user?
 			
