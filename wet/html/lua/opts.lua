@@ -39,16 +39,16 @@ end
 
 map={ -- base lookup table 
 
-["#default"]	=	serv_fail, -- bad link if we do not understand
-["#flavour"]	=	app_name, 
-["#index"]		=	"wiki/welcome", 
+["#index"]		=	"welcome", 
+
+["#default"]	=	"waka", 		-- no badlinks, we own everything starts as a wikipage
+["#flavour"]	=	app_name, 			-- use this flavour when serving
+["#opts"]		=	{
+						url="/",
+					},
 										
-["wiki"]		=	{			-- a wiki like module
-						["#default"]	=	"waka", 		-- no badlinks, we own everything under here
-						["#flavour"]	=	app_name, 			-- use this flavour when serving
-						["#opts"]		=	{
-												url="/wiki",
-											},
+["wiki"]		=	{			-- redirect
+						["#redirect"]	=	"/", 		-- remap this url and below
 					},
 					
 ["blog"]		=	{			-- a blog module

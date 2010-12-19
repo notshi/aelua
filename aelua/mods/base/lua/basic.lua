@@ -70,17 +70,32 @@ cache.countzero()
 	
 	srv.url_domain=table.concat({srv.url_slash[1],srv.url_slash[2],srv.url_slash[3]},"/")
 	srv.url_local="/"
+	srv.slash="/"
 	local loop=true
 	
-	while loop do
+	function build_tail(frm)
+			local tail=""
+			for i=frm , #srv.url_slash do
+				if i~=frm then
+					tail=tail.."/"
+				end
+				tail=tail..srv.url_slash[i]
+			end
+			if srv.query then
+				tail=tail.."?"..srv.query
+			end
+			return tail
+	end
 	
+	while loop do
+			
 		loop=false -- end loop unless we change our mind later
 		
 		local slash=srv.url_slash[ srv.url_slash_idx ]
 		
 		if slash then
 		
-			if slash=="" then -- use a default index 
+			if slash=="" and not srv.query then -- use a default index if all blank
 				slash=lookup[ "#index" ] or ""
 				if slash~="" then
 					local ss=str_split("/",slash)
@@ -128,6 +143,10 @@ cache.countzero()
 		
 		srv.opts=lookup[ "#opts" ] or {}
 			
+		if lookup[ "#redirect" ] then -- redirect only
+			srv.redirect( lookup[ "#redirect" ] .. build_tail( srv.url_slash_idx ) )
+			return
+		end
 	end
 	
 	if not f then f=serv_fail end -- default
