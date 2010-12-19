@@ -189,6 +189,7 @@ function manifest(srv,id,t)
 		ent.key.id=id -- force id which is page name string
 		ent.cache.id=id -- copy here
 		ent.cache.text="#title\n# trim=ends\n"..string.gsub(id,"/"," ").."\n#body\n".."MISSING CONTENT\n"
+		ent.key.notsaved=true -- flag as not saved yet
 	end
 	
 	return check(srv,ent)
