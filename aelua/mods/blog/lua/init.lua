@@ -324,7 +324,7 @@ local get,put=make_get_put(srv)
 				chunks.link=srv.url_local:sub(1,-2) .. v.cache.pubname
 				chunks.pubdate=(os.date("%Y-%m-%d %H:%M:%S",v.cache.pubdate))
 				chunks.it=v.cache
-				local text=get(macro_replace(chunks.plate_wrap or chunks.plate or "{body}",chunks))
+				local text=get(macro_replace(chunks.plate_wrap or "{body}",chunks))
 				ss[#ss+1]=text
 			end
 			
