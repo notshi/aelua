@@ -191,6 +191,8 @@ end
 -----------------------------------------------------------------------------
 player_bar=function(d)
 
+	d.maxenergy=300
+
 	if d.player then
 			
 		d.score=num_to_thousands(d.player.score)

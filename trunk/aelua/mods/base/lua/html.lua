@@ -279,6 +279,7 @@ end
 user_bar=function(d)
 
 	d.adminbar=d.adminbar or ""
+	d.alerts_html=d.alerts_html or (d.srv and d.srv.alerts_html) or ""
 
 	local user=d.srv and d.srv.user
 	local hash=d.srv and d.srv.sess and d.srv.sess.key and d.srv.sess.key.id

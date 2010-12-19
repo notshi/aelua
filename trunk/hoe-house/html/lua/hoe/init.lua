@@ -64,6 +64,7 @@ local sess,user=users.get_viewer_session(srv)
 	H.sess=sess
 	H.srv=srv
 	H.slash=srv.url_slash[ srv.url_slash_idx ]
+	srv.H=H
 		
 	H.get=function(a,b) -- get some html
 		b=b or {}
@@ -82,6 +83,8 @@ local sess,user=users.get_viewer_session(srv)
 	H.arg=function(i) return srv.url_slash[ srv.url_slash_idx + i ]	end -- get an arg from the url
 	
 	H.page_admin=( users.core.user and users.core.user.admin) or (H.user and H.user.cache and H.user.cache.admin) -- page admin flag
+	
+	srv.alerts_html=""
 	
 	return H
 
@@ -215,7 +218,7 @@ local put=H.put
 		end
 	end
 	
-	H.alerts=alerts.alerts_to_html(H,alerts.get_alerts(H)) or "" -- display some alerts? (we have a round)
+	H.srv.alerts_html=alerts.alerts_to_html(H,alerts.get_alerts(H)) or "" -- display some alerts? (we have a round)
 	
 -- functions for each special command	
 	local cmds={
