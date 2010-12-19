@@ -193,6 +193,12 @@ local ext
 		end
 	end
 
+-- disable comments if page is not saved to the database IE a MISSING PAGE	
+	if ps[1].key.notsaved then
+		pageopts.flame="off"
+	end
+
+
 	if ext=="css" then -- css only
 	
 		srv.set_mimetype("text/css; charset=UTF-8")
