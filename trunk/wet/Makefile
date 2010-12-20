@@ -13,3 +13,6 @@ serv: bake
 upload: bake
 	../appengine-java-sdk/bin/appcfg.sh update war
 
+rollback: bake
+	../appengine-java-sdk/bin/appcfg.sh rollback war
+
