@@ -125,8 +125,8 @@ public class User
 			if(u.getEmail()!=null)				{ L.rawSet(usr,"email",u.getEmail()); }
 			if(u.getNickname()!=null)			{ L.rawSet(usr,"name",u.getNickname()); }
 			
-//			if(u.getUserId()!=null)				{ L.rawSet(usr,"id",u.getUserId()); }
-//			if(u.getFederatedIdentity()!=null)	{ L.rawSet(usr,"fid",u.getFederatedIdentity()); }
+			if(u.getUserId()!=null)				{ L.rawSet(usr,"gid",u.getUserId()); }
+			if(u.getFederatedIdentity()!=null)	{ L.rawSet(usr,"fid",u.getFederatedIdentity()); }
 
 			L.push(usr);
 			return 1;

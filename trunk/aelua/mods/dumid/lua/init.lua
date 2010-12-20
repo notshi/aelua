@@ -169,7 +169,8 @@ local put=make_put(srv)
 	local flavour
 	local admin=false
 	local authentication={} -- store any values we wish to cache here
-
+	local info={}
+	
 	if data=="wetgenes" then
 	
 		if srv.gets.confirm then
@@ -196,10 +197,11 @@ local put=make_put(srv)
 	elseif data=="google" then
 		local guser=users.get_google_user() -- google handles its own login
 		if guser then -- google login OK
-			email=guser.email
+			email=guser.gid .. "@id.google.com" -- hide real email slightly
 			name=guser.name
 			admin=guser.admin
 			flavour="google"
+			info={ gid=guser.gid , fid=guser.fid , email=guser.email }
 		end
 		
 	elseif data=="twitter" then
@@ -265,6 +267,7 @@ local put=make_put(srv)
 			end
 
 			user.cache.admin=admin
+			user.cache.info=info -- extra info
 			if not users.put(srv,user,t) then user=nil end -- always write
 			
 			if user then -- things are looking good try a commit
@@ -321,7 +324,9 @@ local put=make_put(srv)
 			users.del_sess(user.cache.email) -- kill all sessions
 		end
 	end
-	
-	srv.redirect( users.logout_url(continue) )
+
+-- this logs you out of your gmail account, everywhere, which is anoying...
+--	srv.redirect( users.logout_url(continue) )
+	srv.redirect( continue )
 	
 end

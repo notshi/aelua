@@ -40,8 +40,7 @@ end
 map={ -- base lookup table 
 
 ["#index"]		=	"welcome", 
-
-["#default"]	=	"waka", 		-- no badlinks, we own everything starts as a wikipage
+["#default"]	=	"waka", 		-- no badlinks, everything defaults to a wikipage
 ["#flavour"]	=	app_name, 			-- use this flavour when serving
 ["#opts"]		=	{
 						url="/",
