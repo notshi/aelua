@@ -34,17 +34,20 @@ map={ -- base lookup table
 						["#default"]	=	"hoe", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 		-- use this flavour when serving
 						["#opts"]		=	{
-												url="/hoe/",
+												url="/hoe",
 											},
 					},
 					
 ["admin"]		=	{			-- all admin stuff
 						["#default"]	=	"admin",
+						["#opts"]		=	{
+												url="/admin",
+											},
 						["console"]		=	{			-- a console module
 											["#default"]	=	"console",
 											["#flavour"]	=	"hoe",
 											["#opts"]		=	{
-																	url="/admin/",
+																	url="/admin/console",
 																},
 											},
 					},
@@ -53,14 +56,14 @@ map={ -- base lookup table
 						["#default"]	=	"dumid", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
 						["#opts"]		=	{
-												url="/dumid/",
+												url="/dumid",
 											},
 					},
 
 ["thumbcache"]		=	{			-- cache some images
 						["#default"]	=	"thumbcache", 		-- no badlinks, we own everything under here
 						["#opts"]		=	{
-												url="/thumbcache/",
+												url="/thumbcache",
 											},
 					},
 					
@@ -68,7 +71,7 @@ map={ -- base lookup table
 						["#default"]	=	"waka", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
 						["#opts"]		=	{
-												url="/help/",
+												url="/help",
 											},
 					},
 					
@@ -76,17 +79,23 @@ map={ -- base lookup table
 						["#default"]	=	"blog", 		-- no badlinks, we own everything under here
 						["#flavour"]	=	"hoe", 			-- use this flavour when serving
 						["#opts"]		=	{
-												url="/blog/",
+												url="/blog",
 											},
 					},
 					
 ["note"]		=	{			-- a sitewide comment module
 						["#default"]	=	"note", 		-- no badlinks, we own everything under here
 						["#opts"]		=	{
-												url="/note/",
+												url="/note",
 											},
 					},
 
+["profile"]		=	{			-- a sitewide comment module
+						["#default"]	=	"profile", 		-- no badlinks, we own everything under here
+						["#opts"]		=	{
+												url="/profile",
+											},
+					},
 }
 
 

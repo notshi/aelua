@@ -613,10 +613,23 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	
 	tab.put([[<div class="wetnote_comments">]])
 	
-	tab.put([[<div class="wetnote_comment_form_head"></div>]])
-	tab.put(get_reply_form(0))
-	tab.put([[<div class="wetnote_comment_form_tail"></div>]])
-
+	local show_post=true
+	if tab.post_lock=="admin" then
+		show_post=false
+		if tab.admin then -- who has admin
+			if user and user.email==tab.admin then
+				show_post=true
+			end
+		end
+	end
+	
+	if show_post then
+		tab.put([[<div class="wetnote_comment_form_head"></div>]])
+		tab.put(get_reply_form(0))
+		tab.put([[<div class="wetnote_comment_form_tail"></div>]])
+	end
+	
+	
 -- get all top level comments
 --	local cs=list(srv,{sortdate="DESC",url=tab.url,group=0})
 	local cs=meta.cache.comments or {}

@@ -329,7 +329,7 @@ local get,put=make_get_put(srv)
 			end
 			
 			if chunks then
-				chunks.title=""
+--				chunks.title=""
 				chunks.body=table.concat(ss)
 				put(macro_replace(chunks.plate or "{body}",chunks))
 			end
@@ -360,7 +360,7 @@ local get,put=make_get_put(srv)
 				adminbar=get("blog_admin_links",{it=ent.cache,user=user}),
 				})
 
-			chunks.title=""
+--			chunks.title=""
 			chunks.body=text
 			put(macro_replace(chunks.plate or "{body}",chunks))
 			
