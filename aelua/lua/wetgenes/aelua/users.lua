@@ -48,6 +48,12 @@ function get_google_user()
 end
 
 
+-- id and email has got a little bit confused
+-- not only are they used interchangeably but
+-- Its also ended up being a numberid@domain.com type string rather than an email
+-- if we have an actual email it will be included in cache.info.email and
+-- is not searchable, ho hum :)
+
 
 --------------------------------------------------------------------------------
 --
@@ -131,16 +137,19 @@ end
 
 -----------------------------------------------------------------------------
 --
--- get a user ent by email within the given transaction t
+-- get a user ent by id within the given transaction t
 -- you may edit the cache values after this get in preperation for a put
 --
--- an email (always all lowercase) is a user@domain string identifier
+-- an id (always all lowercase) is a user@domain string email identifier
 -- sometimes this may not be a real email but just indicate a unique account
 -- for instance 1234567@id.facebook.com 
 -- email is just used as a convienient term for such strings
 -- it harkens to the day when facebook will finally forfill the prophecy
 -- of every application evolving to the point where it can send and recieve email
 -- I notice that myspace already has...
+--
+-- technically we may have a real email as well as an id email, hence the email
+-- as well as the id
 --
 -----------------------------------------------------------------------------
 function get(srv,id,t)
@@ -391,7 +400,7 @@ function email_to_profile_link(email)
 	local endings={"@id.wetgenes.com"}
 	for i,v in ipairs(endings) do
 		if string.sub(email,-#v)==v then
-			url="http://like.wetgenes.com/-/profile/$"..string.sub(email,1,-(#v+1))
+--			url="http://like.wetgenes.com/-/profile/$"..string.sub(email,1,-(#v+1))
 			profile="<a href="..url.."><img src=\"/art/icon_wet.png\" /></a>"
 		end
 	end
@@ -399,7 +408,7 @@ function email_to_profile_link(email)
 	local endings={"@id.twitter.com"}
 	for i,v in ipairs(endings) do
 		if string.sub(email,-#v)==v then
-			url="/js/dumid/twatbounce.html?id="..string.sub(email,1,-(#v+1))
+--			url="/js/dumid/twatbounce.html?id="..string.sub(email,1,-(#v+1))
 			profile="<a href="..url.."><img src=\"/art/icon_twat.png\" /></a>"
 		end
 	end

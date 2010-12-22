@@ -100,17 +100,45 @@ local get=make_get(srv)
 		if pusr then -- gots a user to display profile of
 			baseurl=baseurl.."/"..name
 			
-			local content={}
+			local content={head={},foot={},wide={},side={}}
 			local list={ -- default stuff to display
 					{
 						form="name",
-						display="head",
+						show="head",
 					},
 				}
 			content.list=list
 			content.user=pusr.cache
+			local t={form="site",show="head"}
+			t.email=pusr.cache.email
+			t.url=""
+			t.site=""
+			t.siteid=0
 			
-			for i,v in ipairs(list) do -- get all chunks
+			local endings={"@id.wetgenes.com"}
+			for i,v in ipairs(endings) do
+				if string.sub(t.email,-#v)==v then
+					t.siteid=tonumber(string.sub(t.email,1,-(#v+1)))
+					t.url="http://like.wetgenes.com/-/profile/$"..t.siteid
+					t.site="wetgenes"
+					list[#list+1]=t
+					break
+				end
+			end
+
+			local endings={"@id.twitter.com"}
+			for i,v in ipairs(endings) do
+				if string.sub(t.email,-#v)==v then
+					t.siteid=tonumber(string.sub(t.email,1,-(#v+1)))
+					t.url="/js/dumid/twatbounce.html?id="..t.siteid
+					t.site="twitter"
+					list[#list+1]=t
+					break
+				end
+			end
+	
+	
+				for i,v in ipairs(list) do -- get all chunks
 				makechunk(content,v)
 			end
 
@@ -130,6 +158,7 @@ local get=make_get(srv)
 				admin=pusr.cache.email,
 				save_post="status",
 				post_text="change your status",
+				title=pusr.cache.name.." profile",
 				})
 			
 			put("footer")
@@ -159,9 +188,9 @@ function makechunk(content,chunk)
 	local f=_M[ "makechunk_"..form ]
 	if f then
 		local r=f(content,chunk)
-		local t=content[ chunk.display ] or {}
+		local t=content[ chunk.show ] or {}
 		t[#t+1]=r
-		content[ chunk.display ]=t
+		content[ chunk.show ]=t
 	end
 end
 
@@ -201,6 +230,74 @@ function makechunk_name(content,chunk)
 	local p=[[
 <div class="profile_name">
 {status}
+</div>
+]]
+	return replace(p,d)
+end
+
+
+-----------------------------------------------------------------------------
+--
+-- the name of the person
+--
+-----------------------------------------------------------------------------
+function makechunk_site(content,chunk)
+	local user=content.user
+--log(tostring(user))
+	local d={}
+	d.content=content
+	d.chunk=chunk
+	d.name=user.name
+	
+	if chunk.site=="wetgenes" then
+	
+		chunk.site='<img src="http://like.wetgenes.com/-/badge/'..user.name..'/640/50/.png" />'
+		
+	elseif chunk.site=="twitter" then
+
+		chunk.site=replace([[
+<script src="http://widgets.twimg.com/j/2/widget.js"></script>
+<script>
+new TWTR.Widget({
+  version: 2,
+  type: 'profile',
+  rpp: 4,
+  interval: 6000,
+  width: 640,
+  height: 200,
+  theme: {
+    shell: {
+      background: '#333333',
+      color: '#ffffff'
+    },
+    tweets: {
+      background: '#000000',
+      color: '#ffffff',
+      links: '#4aed05'
+    }
+  },
+  features: {
+    scrollbar: false,
+    loop: false,
+    live: false,
+    hashtags: true,
+    timestamp: true,
+    avatars: false,
+    behavior: 'all'
+  }
+}).render().setUser('{name}').start();
+</script>
+]],d)
+
+	else
+	
+		chunk.site=replace([[<a href="{chunk.url}">{chunk.site}</a>]],d)
+	
+	end
+	
+	local p=[[
+<div class="profile_site">
+{chunk.site}
 </div>
 ]]
 	return replace(p,d)
