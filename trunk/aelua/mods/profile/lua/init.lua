@@ -251,7 +251,7 @@ function makechunk_site(content,chunk)
 	
 	if chunk.site=="wetgenes" then
 	
-		chunk.site='<img src="http://like.wetgenes.com/-/badge/'..user.name..'/640/50/.png" />'
+		chunk.site=replace([[<a href="{chunk.url}"><img src="http://like.wetgenes.com/-/badge/{name}/640/50/.png" /></a>]],d)
 		
 	elseif chunk.site=="twitter" then
 
