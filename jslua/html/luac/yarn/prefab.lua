@@ -36,6 +36,11 @@ keys.base={
 	["> "]="stairs_down",
 }
 
+keys.bedroom={
+	["=1"]="cryo_bed",
+	["=2"]="cryo_door",
+}
+
 strings={}
 
 strings.bigroom=[[
@@ -71,10 +76,11 @@ strings.bigroom=[[
 
 strings.home_bedroom=[[
 # # # # # # # #
-# . . . . = = #
-# . . @ . = = #
-# . . . . = = #
-# . . . . = = #
+# . . . . . . #
+# . # # # # . #
+# . # =1@ =2. #
+# . # # # # . #
+# . . . . . . #
 # # # # # # # #
 ]]
 
@@ -159,8 +165,19 @@ function map_opts(name)
 
 	local function callback(d) -- default callback when building maps
 		if d.call=="cell" then
+		
+			d.level.cellfind[d.name]=d.cell -- last generated cell of this type
+			
+			local l=d.level.celllist[d.name] or {} -- all gnerated cells of this type
+			l[#l+1]=d.cell
+			d.level.celllist[d.name]=l
+			
 			if d.name=="wall" then
 				d.cell.set("wall")
+			elseif d.name=="stairs_up" then
+				d.level.new_char( "stairs_up" ).set_cell( d.cell)
+			elseif d.name=="stairs_down" then
+				d.level.new_char( "stairs_down" ).set_cell( d.cell)
 			end
 		end
 	end

@@ -4,6 +4,7 @@
 local _G=_G
 
 local table=table
+local pairs=pairs
 local ipairs=ipairs
 local string=string
 local math=math
@@ -38,6 +39,11 @@ setfenv(1,d)
 	def_add=t.def_add
 	def_mul=t.def_mul
 
+-- an array of can flags so tests such as "if can.walk do this" reads as engrish
+	can={}
+	for i,v in pairs(t.can or {}) do -- copy can flags (which may be strings or true)
+		can[i]=v
+	end
 	
 	function set.visible(v) visible=v end
 	

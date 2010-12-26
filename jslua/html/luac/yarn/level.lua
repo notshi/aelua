@@ -26,9 +26,7 @@ local yarn_char=require("yarn.char")
 local yarn_attr=require("yarn.attr")
 
 local yarn_prefab=require("yarn.prefab")
-
-local yarn_item_data=require("yarn.itemdata")
-local yarn_char_data=require("yarn.chardata")
+local yarn_attrdata=require("yarn.attrdata")
 
 
 function create(t,up)
@@ -47,6 +45,9 @@ setfenv(1,d)
 	items={}
 	chars={}
 	attrs={}
+	
+	cellfind={}
+	celllist={}
 
 -- create blank cells
 
@@ -82,7 +83,7 @@ setfenv(1,d)
 	end
 	
 	function new_item(n)
-		local it=yarn_item.create( yarn_item_data.get(n),d)
+		local it=yarn_item.create( yarn_attrdata.get(n),d)
 		items[it]=true
 		return it
 	end
@@ -92,7 +93,7 @@ setfenv(1,d)
 	end
 	
 	function new_char(n)
-		local it=yarn_char.create( yarn_char_data.get(n),d)
+		local it=yarn_char.create( yarn_attrdata.get(n),d)
 		chars[it]=true
 		return it
 	end
@@ -162,7 +163,7 @@ setfenv(1,d)
 				for x=1,#v do
 					local n=v[x]
 					
-					if n=="space" then
+					if n=="space" then -- do nothing
 					else
 						local c=get_cell(r.xp+x-1,r.yp+y-1)
 						if r.opts.callback then
@@ -183,7 +184,7 @@ setfenv(1,d)
 	end
 	
 	player=new_char( "player" )
-	player.set_cell( rand_room_cell({}) )
+	player.set_cell( cellfind["player_spawn"] or rand_room_cell({}) )
 	
 	for i=1,10 do
 		c=rand_room_cell({})
