@@ -21,7 +21,7 @@ local tostring=tostring
 local exit=exit
 
 module(...)
-local yarn_char_data=require(...)
+local attrdata=require(...)
 
 function ascii(a) return string.byte(a,1) end
 
@@ -53,10 +53,30 @@ player={{
 	def_add=0,
 	def_mul=1,
 	
-	cell_fx=
+	can=
 	{
-		room_visible=true,
-	}
+		fight=true,
+		make_room_visible=true,
+	},
+	
+},{
+}}
+
+stairs_up={{
+	class="stairs",
+	update="none",
+	asc=ascii(">"),
+	desc="some stairs up",
+	
+},{
+}}
+
+stairs_down={{
+	class="stairs",
+	update="none",
+	asc=ascii("<"),
+	desc="some stairs down",
+	
 },{
 }}
 
@@ -72,6 +92,12 @@ ant={{
 	dam_max=2,
 	def_add=0,
 	def_mul=1,
+	
+	can=
+	{
+		fight=true,
+		roam="random",
+	},
 	
 },{
 	score=2,
@@ -96,6 +122,12 @@ blob={{
 	def_add=0,
 	def_mul=0.75,
 	
+	can=
+	{
+		fight=true,
+		roam="random",
+	},
+	
 },{
 	score=10,
 	hp=10,
@@ -103,6 +135,27 @@ blob={{
 	dam_max=2,
 	def_add=-1,
 	def_mul=0,
+}}
+
+
+
+ant_corpse={{
+	class="corpse",
+	flavour="ant",
+	asc=ascii("%"),
+	weight=1,
+	desc="a corpse of an ant",
+},{
+}}
+
+
+blob_corpse={{
+	class="corpse",
+	flavour="blob",
+	asc=ascii("%"),
+	weight=1,
+	desc="a corpse of a blob",
+},{
 }}
 
 

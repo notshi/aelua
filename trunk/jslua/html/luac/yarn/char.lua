@@ -1,6 +1,7 @@
 
--- a monter or player or any other character, really just a slightly more active item
--- these are items that need to update as time passes
+-- a monster or player or any other character, really just a slightly more active item
+-- these are items that need to update as time passes or items where only 1 may exist
+-- in a cell at once. So it could just be a wardrobe.
 
 local _G=_G
 
@@ -26,16 +27,15 @@ local a_at=string.byte("@",1)
 local a_a=string.byte("a",1)
 
 
-function create(t,_level)
+function create(_t,_level)
 
 	
 local d={}
 setfenv(1,d)
 
+	t=_t
 	level=_level or t.level
 	class=t.class
-	
-	cell_fx=t.cell_fx or {}
 	
 	time_passed=level.time_passed
 
@@ -56,7 +56,7 @@ setfenv(1,d)
 		cell=c
 		cell.char=d
 		
-		if cell_fx.room_visible then -- this char makes the room visible (ie its the player)
+		if attr.can.make_room_visible then -- this char makes the room visible (ie its the player)
 			for i,v in cell.neighboursplus() do -- apply to neighbours and self
 				if v.room and ( not v.room.attr.get.visible() ) then -- if room is not visible
 					v.room.set_visible(true)
@@ -72,8 +72,10 @@ setfenv(1,d)
 		local c=level.get_cell(x,y)
 		if c and c.name=="floor" then -- its a cell we can move into
 			if c.char then -- interact with another char?
-				yarn_fight.hit(d,c.char)
-				return 1					
+				if c.char.attr.can.fight then
+					yarn_fight.hit(d,c.char)
+					return 1
+				end
 			else -- just move
 				set_cell(c)
 				return 1 -- time taken to move
@@ -99,17 +101,19 @@ setfenv(1,d)
 
 	function update()
 	
-		if class=="player" then return end
+		if attr.can.roam=="random" then
 		
-		if 	time_passed<level.time_passed then
-	
-			local vs={ {1,0} , {-1,0} , {0,1} , {0,-1} }
+			if 	time_passed<level.time_passed then
+		
+				local vs={ {1,0} , {-1,0} , {0,1} , {0,-1} }
+				
+				vs=vs[level.rand(1,4)]
+				
+				move(vs[1],vs[2])
+				
+				time_passed=time_passed+1
+			end
 			
-			vs=vs[level.rand(1,4)]
-			
-			move(vs[1],vs[2])
-			
-			time_passed=time_passed+1
 		end
 	end
 	

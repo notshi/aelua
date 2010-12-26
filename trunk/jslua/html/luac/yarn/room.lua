@@ -30,6 +30,9 @@ setfenv(1,d)
 	yh=t.yh or 0
 	doors={} -- a cell->room table of links to bordering rooms
 	
+--	cellfind={} -- find cells in his room only?
+--	celllist={}
+	
 	attr=yarn_attr.create(t)
 	
 -- point to this room from the cells we cover, only one room pointer per cell
