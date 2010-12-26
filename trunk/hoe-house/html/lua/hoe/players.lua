@@ -195,7 +195,7 @@ function join(H,user)
 		
 		if put(H,p,tp) then -- new player put ok
 		
-			local u=users.get_user(user.cache.email,tu) -- get user
+			local u=users.get(srv,user.cache.id,tu) -- get user
 			
 			if u then
 				local ud=u.cache[H.user_data_name] or {} -- userdata for this round
@@ -214,7 +214,7 @@ function join(H,user)
 				
 				ud.player_id=p.key.id -- link the user to this player id for this round
 				
-				if users.put_user(u,tu) then -- user put ok?
+				if users.put(srv,u,tu) then -- user put ok?
 				
 					if tu.commit() then -- commit the pointer first, pointers can be updated later
 						if tp.commit() then -- failure means tu was commited but tp was not
