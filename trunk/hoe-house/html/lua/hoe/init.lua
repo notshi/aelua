@@ -28,6 +28,7 @@ local alerts=require("hoe.alerts")
 
 
 local blog=require("blog")
+local comments=require("note.comments")
 
 local os=os
 local math=math
@@ -254,6 +255,34 @@ local put=H.put
 			put("profile_act",{act=v.cache,html=s})
 		end
 	end
+	
+	
+
+-- each round gets comments on its main page
+
+	local srv=H.srv
+	local url=H.srv.url_base
+	if url:sub(-1)=="/" then url=url:sub(1,-2) end -- trim any trailing /
+	local posts={} -- remove any gunk from the posts input
+	-- check if this post probably came from this page before allowing post params
+	if srv.method=="POST" and srv.headers.Referer and string.sub(srv.headers.Referer,1,string.len(url))==url then
+		for i,v in pairs(srv.posts) do
+			posts[i]=v
+		end
+	end
+	if posts.submit then posts.submit=trim(posts.submit) end
+
+	comments.build(H.srv,{
+		url="/hoe/"..H.round.key.id,
+		title="round "..H.round.key.id,
+		posts=posts,
+		get=H.get,
+		put=H.put,
+		sess=H.sess,
+		user=H.user,
+		})
+
+
 
 	put("footer",footer_data)
 	
