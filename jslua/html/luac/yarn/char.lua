@@ -88,7 +88,7 @@ setfenv(1,d)
 		local p=level.new_item( class.."_corpse" )
 		p.set_cell( cell )
 
-		level.del_char(d)
+		level.del_item(d)
 	end
 	
 	function asc()

@@ -19,6 +19,7 @@ local print=print
 module(...)
 
 local yarn_strings=require("yarn.strings")
+local yarn_attrdata=require("yarn.attrdata")
 
 
 
@@ -36,7 +37,7 @@ keys.base={
 	["> "]="stairs_down",
 }
 
-keys.bedroom={
+keys.home_bedroom={
 	["=1"]="cryo_bed",
 	["=2"]="cryo_door",
 }
@@ -75,13 +76,13 @@ strings.bigroom=[[
 ]]
 
 strings.home_bedroom=[[
-# # # # # # # #
-# . . . . . . #
-# . # # # # . #
-# . # =1@ =2. #
-# . # # # # . #
-# . . . . . . #
-# # # # # # # #
+# # # # # # # # # #
+# . . . . . . . . #
+# . # # # # # # . #
+# . # =1. @ . =2. #
+# . # # # # # # . #
+# . . . . . . . . #
+# # # # # # # # # #
 ]]
 
 strings.home_mainroom=[[
@@ -106,6 +107,8 @@ strings.home_entrance=[[
 ]]
 
 function string_to_room(s,key)
+
+	if not key then key=keys.base end
 
 	local r={}
 
@@ -138,7 +141,7 @@ function string_to_room(s,key)
 		r.cells[ #r.cells+1 ]=t
 		for i=1+2,#l-2,2 do -- skip left/right chars
 			local ab=l:sub(i,i+1)
-			t[#t+1]=key[ab] or "space"
+			t[#t+1]=key[ab] or keys.base[ab] or "space"
 		end
 	end
 	return r
@@ -150,7 +153,7 @@ function get_room(name)
 	local r
 
 	if strings[name] then	
-		r=string_to_room( strings[name] , keys.base )
+		r=string_to_room( strings[name] , keys[name] )
 	end
 
 	return r
@@ -172,12 +175,17 @@ function map_opts(name)
 			l[#l+1]=d.cell
 			d.level.celllist[d.name]=l
 			
+			local at
 			if d.name=="wall" then
 				d.cell.set("wall")
-			elseif d.name=="stairs_up" then
-				d.level.new_char( "stairs_up" ).set_cell( d.cell)
-			elseif d.name=="stairs_down" then
-				d.level.new_char( "stairs_down" ).set_cell( d.cell)
+			else
+				at=yarn_attrdata.get(d.name)
+			end
+			if at then
+				local it=d.level.new_item( at )
+				if it then
+					it.set_cell( d.cell)
+				end
 			end
 		end
 	end

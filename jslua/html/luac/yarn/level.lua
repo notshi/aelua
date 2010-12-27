@@ -15,6 +15,7 @@ local os=os
 local setfenv=setfenv
 local unpack=unpack
 local require=require
+local type=type
 
 
 module(...)
@@ -82,22 +83,26 @@ setfenv(1,d)
 		end, cells, 0
 	end
 	
-	function new_item(n)
-		local it=yarn_item.create( yarn_attrdata.get(n),d)
-		items[it]=true
+	function new_item(n,l)
+		local at
+		if type(n)=="string" then
+			at=yarn_attrdata.get(n,l)
+		else
+			at=n
+			n=at.name
+		end
+		local it
+		if at.cell=="char" then -- slightly bigger item
+			it=yarn_char.create( at ,d)
+			chars[it]=true -- special table for chars
+		else -- item by default
+			it=yarn_item.create( at ,d)
+		end
+		items[it]=true -- everything lives in items
 		return it
 	end
 	function del_item(it)
-		item[it]=nil
-		it.del()
-	end
-	
-	function new_char(n)
-		local it=yarn_char.create( yarn_attrdata.get(n),d)
-		chars[it]=true
-		return it
-	end
-	function del_char(it)
+		items[it]=nil
 		chars[it]=nil
 		it.del()
 	end
@@ -175,21 +180,16 @@ setfenv(1,d)
 			if r.opts.callback then
 				r.opts.callback({call="room",level=d,room=r})
 			end
---[[
-			local c=rand_cell(v)
-			local p=new_char( "ant" )
-			p.set_cell( c )
-]]
 		end
 	end
 	
-	player=new_char( "player" )
+	player=new_item( "player" )
 	player.set_cell( cellfind["player_spawn"] or rand_room_cell({}) )
 	
 	for i=1,10 do
 		c=rand_room_cell({})
 		if not c.char then
-			local p=new_char( "ant" )
+			local p=new_item( "ant" )
 			p.set_cell( c )
 		end
 	end
@@ -197,7 +197,7 @@ setfenv(1,d)
 	for i=1,5 do
 		c=rand_room_cell({})
 		if not c.char then
-			local p=new_char( "blob" )
+			local p=new_item( "blob" )
 			p.set_cell( c )
 		end
 	end

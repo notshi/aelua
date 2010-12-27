@@ -27,20 +27,27 @@ function ascii(a) return string.byte(a,1) end
 
 function get(n,f)
 
+	if not dd[n] then return nil end -- no data
+
 	f=f or 0
 	
 	local it={}
 	
-	local d=yarn_char_data[n]
+	local d=dd[n] -- get base
 	
-	for i,v in pairs(d[1]) do it[i]=v end
-	for i,v in pairs(d[2]) do it[i]=it[i] + math.floor(v*f) end
+	for i,v in pairs(d) do it[i]=v end -- copy 1 deep only
+	for i,v in pairs(d.level or {} ) do it[i]=(it[i] or 0)+ math.floor(v*f) end
+	it.level=nil
 	
 	return it
 
 end
 
-player={{
+dd={
+
+{
+	name="player",
+	cell="char",
 	class="player",
 	asc=ascii("@"),
 	desc="a human",
@@ -59,28 +66,48 @@ player={{
 		make_room_visible=true,
 	},
 	
-},{
-}}
+},
 
-stairs_up={{
+{
+	name="stairs_up",
+	cell="char",
 	class="stairs",
-	update="none",
 	asc=ascii(">"),
 	desc="some stairs up",
 	
-},{
-}}
+},
 
-stairs_down={{
+{
+	name="stairs_down",
+	cell="char",
 	class="stairs",
-	update="none",
 	asc=ascii("<"),
 	desc="some stairs down",
 	
-},{
-}}
+},
 
-ant={{
+{
+	name="cryo_bed",
+	cell="char",
+	class="story",
+	asc=ascii("="),
+	desc="a cryo generic capsule",
+	
+},
+
+{
+	name="cryo_door",
+	cell="char",
+	class="story",
+	asc=ascii("="),
+	desc="a cryo generic door",
+	
+},
+
+
+{
+	name="ant",
+	cell="char",
 	class="ant",
 	asc=ascii("a"),
 	desc="an ant",
@@ -99,17 +126,20 @@ ant={{
 		roam="random",
 	},
 	
-},{
-	score=2,
-	hp=2,
-	dam_min=0,
-	dam_max=1,
-	def_add=-1,
-	def_mul=0,
-}}
+	level={
+		score=2,
+		hp=2,
+		dam_min=0,
+		dam_max=1,
+		def_add=-1,
+		def_mul=0,
+		},
+},
 
 
-blob={{
+{
+	name="blob",
+	cell="char",
 	class="blob",
 	asc=ascii("b"),
 	desc="a blob",
@@ -128,34 +158,48 @@ blob={{
 		roam="random",
 	},
 	
-},{
-	score=10,
-	hp=10,
-	dam_min=2,
-	dam_max=2,
-	def_add=-1,
-	def_mul=0,
-}}
+	level={
+		score=10,
+		hp=10,
+		dam_min=2,
+		dam_max=2,
+		def_add=-1,
+		def_mul=0,
+		},
+},
 
 
 
-ant_corpse={{
+{
+	name="ant_corpse",
+	cell="item",
 	class="corpse",
 	flavour="ant",
 	asc=ascii("%"),
 	weight=1,
 	desc="a corpse of an ant",
-},{
-}}
+},
 
 
-blob_corpse={{
+{
+	name="blob_corpse",
+	cell="item",
 	class="corpse",
 	flavour="blob",
 	asc=ascii("%"),
 	weight=1,
 	desc="a corpse of a blob",
-},{
-}}
+},
+
+}
+
+-- swing both ways
+for i,v in ipairs(dd) do
+
+	dd[ v.name ] = v -- look up by name
+	v.id=i -- every data gets a unique id
+
+end
+
 
 
