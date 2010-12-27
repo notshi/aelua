@@ -40,7 +40,7 @@
   <property name="log.days" value="2"/>
 
 
-  <property name="war.dir" location="war"/>
+  <property name="war.dir" location=".war"/>
 
   <target name="war" depends="compile" description="Assemble the application directory">
     <mkdir dir="${war.dir}/WEB-INF"/>

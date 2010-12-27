@@ -1,0 +1,8 @@
+
+[project]
+name=hoe-house
+description=
+base_path=./
+run_cmd=
+regenerate=true
+typel=All
