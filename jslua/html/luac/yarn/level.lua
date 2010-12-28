@@ -23,7 +23,6 @@ local yarn_map=require("yarn.map")
 local yarn_room=require("yarn.room")
 local yarn_cell=require("yarn.cell")
 local yarn_item=require("yarn.item")
-local yarn_char=require("yarn.char")
 local yarn_attr=require("yarn.attr")
 
 local yarn_prefab=require("yarn.prefab")
