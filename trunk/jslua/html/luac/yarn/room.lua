@@ -12,6 +12,7 @@ local os=os
 local setfenv=setfenv
 local unpack=unpack
 local require=require
+local setmetatable=setmetatable
 
 
 module(...)
@@ -23,6 +24,10 @@ function create(t)
 local d={}
 setfenv(1,d)
 
+	attr=yarn_attr.create(t)
+	metatable={__index=attr}
+	setmetatable(d,metatable)
+
 	level=t.level
 	xp=t.xp or 0
 	yp=t.yp or 0
@@ -32,8 +37,6 @@ setfenv(1,d)
 	
 --	cellfind={} -- find cells in his room only?
 --	celllist={}
-	
-	attr=yarn_attr.create(t)
 	
 -- point to this room from the cells we cover, only one room pointer per cell
 
