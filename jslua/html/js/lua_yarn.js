@@ -4,7 +4,7 @@ var L; // this will be our lua state
 // lua has no fileaccess for module loading
 // so instead all modulefiles must be preloaded and shoved into package.preload
 // a little bit harsh for requesting lots of small files
-// but it will do for now, obviously this coul be all wrapped up into one bundle
+// but it will do for now, obviously this could be all wrapped up into one bundle
 // as a simple optimisation
 
 var preload_lua_list=[
@@ -13,8 +13,7 @@ var preload_lua_list=[
 	{file:"/luac/yarn/attr.lua",			name:"yarn.attr"},
 	{file:"/luac/yarn/attrdata.lua",		name:"yarn.attrdata"},
 	{file:"/luac/yarn/cell.lua",			name:"yarn.cell"},
-	{file:"/luac/yarn/charfight.lua",		name:"yarn.charfight"},
-	{file:"/luac/yarn/char.lua",			name:"yarn.char"},
+	{file:"/luac/yarn/fight.lua",			name:"yarn.fight"},
 	{file:"/luac/yarn/item.lua",			name:"yarn.item"},
 	{file:"/luac/yarn/level.lua",			name:"yarn.level"},
 	{file:"/luac/yarn/map.lua",				name:"yarn.map"},
