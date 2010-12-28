@@ -81,7 +81,7 @@ setfenv(1,d)
 	
 	function post_create()
 		for _,cell in level.cpairs(xp,yp,xh,yh) do
-			cell.set("floor")
+			cell.set.name("floor")
 		end
 --		set_walls()
 	end

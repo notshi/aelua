@@ -13,6 +13,7 @@ local os=os
 local setfenv=setfenv
 local unpack=unpack
 local require=require
+local setmetatable=setmetatable
 
 
 
@@ -26,6 +27,10 @@ function create(t,_level)
 local d={}
 setfenv(1,d)
 
+	attr=yarn_attr.create(t)
+	metatable={__index=attr}
+	setmetatable(d,metatable)
+
 	level=_level or t.level
 	class=t.class
 	
@@ -33,8 +38,6 @@ setfenv(1,d)
 	
 	time_passed=level.time_passed
 
-	attr=yarn_attr.create(t)
-	
 	function del()
 		if cell then -- remove link from old cell
 			cell.items[d]=nil

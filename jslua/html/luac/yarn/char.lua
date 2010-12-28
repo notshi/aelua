@@ -15,6 +15,7 @@ local os=os
 local setfenv=setfenv
 local unpack=unpack
 local require=require
+local setmetatable=setmetatable
 
 
 
@@ -27,34 +28,35 @@ local a_at=string.byte("@",1)
 local a_a=string.byte("a",1)
 
 
-function create(_t,_level)
+function create(t,_level)
 
 	
 local d={}
 setfenv(1,d)
 
-	t=_t
+	attr=yarn_attr.create(t)
+	metatable={__index=attr}
+	setmetatable(d,metatable)
+
 	level=_level or t.level
 	class=t.class
 	
 	time_passed=level.time_passed
 
-	attr=yarn_attr.create(t)
-	
 	function del()
 		if cell then -- remove link from old cell
-			cell.char=nil
+			cell.items[d]=nil
 		end
 	end
 	
 	function set_cell(c)
 	
 		if cell then -- remove link from old cell, only one char per cell
-			cell.char=nil
+			cell.items[d]=nil
 		end
 		
 		cell=c
-		cell.char=d
+		cell.items[d]=true
 		
 		if attr.can.make_room_visible then -- this char makes the room visible (ie its the player)
 			for i,v in cell.neighboursplus() do -- apply to neighbours and self
@@ -70,16 +72,30 @@ setfenv(1,d)
 		local x=cell.xp+vx
 		local y=cell.yp+vy
 		local c=level.get_cell(x,y)
+		
 		if c and c.name=="floor" then -- its a cell we can move into
-			if c.char then -- interact with another char?
-				if c.char.attr.can.fight then
-					yarn_fight.hit(d,c.char)
+		
+			local char=c.get_char()
+			if char then -- interact with another char?
+				if char.can.use and can.operate then
+				
+					local usename=char.can.use
+					
+					if char.call[usename] then
+						char.call[usename](char , d )
+					end
+					
+				elseif char.can.fight and can.fight then
+				
+					yarn_fight.hit(d,char)
 					return 1
+					
 				end
 			else -- just move
 				set_cell(c)
 				return 1 -- time taken to move
 			end
+			
 		end
 		return 0
 	end
