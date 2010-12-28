@@ -1,6 +1,5 @@
 
--- a monter or player or any other character, really just a slightly more active item
--- these are items that need to update as time passes
+-- data to fill up attr with, this is the main game item/monster/logic content
 
 local _G=_G
 
@@ -47,7 +46,7 @@ dd={
 
 {
 	name="player",
-	cell="char",
+	form="char",
 	class="player",
 	asc=ascii("@"),
 	desc="a human",
@@ -64,13 +63,14 @@ dd={
 	{
 		fight=true,
 		make_room_visible=true,
+		operate=true,
 	},
 	
 },
 
 {
 	name="stairs_up",
-	cell="char",
+	form="char",
 	class="stairs",
 	asc=ascii(">"),
 	desc="some stairs up",
@@ -79,7 +79,7 @@ dd={
 
 {
 	name="stairs_down",
-	cell="char",
+	form="char",
 	class="stairs",
 	asc=ascii("<"),
 	desc="some stairs down",
@@ -88,26 +88,60 @@ dd={
 
 {
 	name="cryo_bed",
-	cell="char",
+	form="char",
 	class="story",
 	asc=ascii("="),
 	desc="a cryo generic capsule",
 	
+	open=true,
+	
+	can=
+	{
+		use="look",
+	},
+	
+	call=
+	{
+		acts=function(it,by)
+			return {"look","open","close"}
+		end,
+		
+		look=function(it,by)
+			it.level.set_msg("the cryo generic capsule is ".. (it.open and "open" or "closed") )
+		end,
+	},
 },
 
 {
 	name="cryo_door",
-	cell="char",
+	form="char",
 	class="story",
 	asc=ascii("="),
 	desc="a cryo generic door",
 	
+	open=false,
+	
+	can=
+	{
+		use="look",
+	},
+	
+	call=
+	{
+		acts=function(it,by)
+			return {"look","open","close"}
+		end,
+		
+		look=function(it,by)
+			it.level.set_msg("the cryo generic door is ".. (it.open and "open" or "closed") )
+		end,
+	},
 },
 
 
 {
 	name="ant",
-	cell="char",
+	form="char",
 	class="ant",
 	asc=ascii("a"),
 	desc="an ant",
@@ -139,7 +173,7 @@ dd={
 
 {
 	name="blob",
-	cell="char",
+	form="char",
 	class="blob",
 	asc=ascii("b"),
 	desc="a blob",
@@ -172,7 +206,7 @@ dd={
 
 {
 	name="ant_corpse",
-	cell="item",
+	form="item",
 	class="corpse",
 	flavour="ant",
 	asc=ascii("%"),
@@ -183,7 +217,7 @@ dd={
 
 {
 	name="blob_corpse",
-	cell="item",
+	form="item",
 	class="corpse",
 	flavour="blob",
 	asc=ascii("%"),
@@ -193,7 +227,7 @@ dd={
 
 }
 
--- swing both ways
+-- swing data both ways
 for i,v in ipairs(dd) do
 
 	dd[ v.name ] = v -- look up by name

@@ -92,7 +92,7 @@ setfenv(1,d)
 			n=at.name
 		end
 		local it
-		if at.cell=="char" then -- slightly bigger item
+		if at.form=="char" then -- slightly bigger item
 			it=yarn_char.create( at ,d)
 			chars[it]=true -- special table for chars
 		else -- item by default

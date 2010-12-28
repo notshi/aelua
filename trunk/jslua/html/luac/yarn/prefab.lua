@@ -79,7 +79,7 @@ strings.home_bedroom=[[
 # # # # # # # # # #
 # . . . . . . . . #
 # . # # # # # # . #
-# . # =1. @ . =2. #
+# . # =1@ . . =2. #
 # . # # # # # # . #
 # . . . . . . . . #
 # # # # # # # # # #
@@ -177,7 +177,7 @@ function map_opts(name)
 			
 			local at
 			if d.name=="wall" then
-				d.cell.set("wall")
+				d.cell.set.name("wall")
 			else
 				at=yarn_attrdata.get(d.name)
 			end

@@ -1,5 +1,6 @@
 
 -- shared attributes, across cells, items and chars
+-- we metamap .attr in these tables so cell.get gets attributes
 
 local _G=_G
 
@@ -24,30 +25,35 @@ function create(t)
 local d={}
 setfenv(1,d)
 
+	for i,v in pairs(t) do -- start with a simple 1 deep copy
+		d[i]=v
+	end
+
+--clear some bits?
+	
+-- an array of can flags so tests such as "if can.walk do this" reads as engrish	
+-- an array of trigger functions to call that we can change in place
+
+	for _,n in ipairs{"can","call"} do -- copy these slightly deeper
+		local newtab={}
+		for i,v in pairs( t[n] or {} ) do
+			newtab[i]=v
+		end		
+		d[n]=newtab
+	end
+
+	hpmax=hp -- remember initial hp
+
 	set={}
 	get={}
-	
-	asc=t.asc
-	hp=t.hp
-	hpmax=hp
-	score=t.score
-	desc=t.desc
-	
-	wheel=t.wheel
-	dam_min=t.dam_min
-	dam_max=t.dam_max
-	def_add=t.def_add
-	def_mul=t.def_mul
 
--- an array of can flags so tests such as "if can.walk do this" reads as engrish
-	can={}
-	for i,v in pairs(t.can or {}) do -- copy can flags (which may be strings or true)
-		can[i]=v
-	end
+	function set.name(v)       name=v end
+	function get.name() return name   end
 	
-	function set.visible(v) visible=v end
+	function set.visible(v)       visible=v end
+	function get.visible() return visible   end
 	
-	function get.visible() return visible end
+	
 --	function get.visible() return true end -- debug
 
 	return d
