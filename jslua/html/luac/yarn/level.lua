@@ -91,14 +91,8 @@ setfenv(1,d)
 			at=n
 			n=at.name
 		end
-		local it
-		if at.form=="char" then -- slightly bigger item
-			it=yarn_char.create( at ,d)
-			chars[it]=true -- special table for chars
-		else -- item by default
-			it=yarn_item.create( at ,d)
-		end
-		items[it]=true -- everything lives in items
+		local it=yarn_item.create( at ,d)
+		items[it]=true -- everything lives in items list
 		return it
 	end
 	function del_item(it)
@@ -286,7 +280,7 @@ setfenv(1,d)
 --		player.attr.hp=math.floor(player.attr.hp+time_update)
 --		if player.attr.hp > player.attr.hpmax then player.attr.hp = player.attr.hpmax end
 		
-		for v,b in pairs(chars) do
+		for v,b in pairs(items) do
 			v.update()
 		end
 		
