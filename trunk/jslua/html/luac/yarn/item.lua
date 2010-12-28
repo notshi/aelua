@@ -19,7 +19,7 @@ local setmetatable=setmetatable
 
 module(...)
 local yarn_attr=require("yarn.attr")
-local yarn_fight=require("yarn.charfight")
+local yarn_fight=require("yarn.fight")
 
 
 function create(t,_level)
