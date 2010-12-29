@@ -101,16 +101,12 @@ setfenv(1,d)
 	-- build a requester
 	function build_request(t)
 	
--- t[1] the main body of text, t[2++] are your options and are displayed on lines below this text
--- every single line is wrapped and an id is set for each line so you can work out what has
--- been selected
-		
+-- t[1++].txt is the main body of text, t[1++].use is a call back function if this is
+-- selectable, if there is no callback then selecting that option just hides the menu
+
 		local lines={}
 		for id=1,#t do
-			if id==2 then -- divider
-				lines[#lines+1]={s="",id=id}
-			end
-			local ls=strings.smart_wrap(t[id],32)
+			local ls=strings.smart_wrap(t[id].txt,32)
 			for i=1,#ls do lines[#lines+1]={s=ls[i],id=id} end
 		end
 		

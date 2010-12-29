@@ -214,15 +214,8 @@ setfenv(1,d)
 		if key=="space" then
 			
 			up.menu.show(up.menu.build_request({
-[[Welcome to YARN, where an @ is you.
-
- Press the cursor keys to move up/down/left/right.
- 
- Space bar is the action/menu button.
- 
- The menu is context sensitive so if you are standing near anything interesting you will be given options to interact with it.
- 
- ]],[[Press SPACE to exit.]]}))
+{txt=[[Press SPACE to continue.]]},
+}))
  
 		end
 		
