@@ -12,7 +12,7 @@ local os=os
 local setfenv=setfenv
 local unpack=unpack
 local require=require
-
+local pairs=pairs
 
 local strings=require("yarn.strings")
 
@@ -24,21 +24,49 @@ function create(t,up)
 local d={}
 setfenv(1,d)
 
+	stack={}
+
 	dirty=0
+	cursor=0
 	
 	-- set a menu to display
-	function show(t,_curser)
+	function show(top)
+	
+		if #stack>0 then
+			stack[#stack].cursor=cursor -- remember cursor position
+		end
 
-		display=t
-		curser=_curser or 1
+		stack[#stack+1]=top --push
+		
+		if top.call then top.call(top) end -- refresh
+		
+		display=top.display
+		cursor=top.cursor or 1
 		
 		dirty=1
 	end
 	
+	-- go back to the previous menu
+	function back()
 
-	-- stop showing a menu
+		stack[#stack]=nil -- this was us
+		
+		if #stack==0 then return hide() end -- clear all menus
+		
+		local top=stack[#stack] -- pop up a menu
+		
+		if top.call then top.call(top) end -- refresh
+		
+		display=top.display
+		cursor=top.cursor or 1
+		
+		dirty=1
+	end
+	
+	-- stop showing all menus and clear the stack
 
 	function hide()
+		stack={}
 		display=nil
 		dirty=1
 	end
@@ -49,21 +77,33 @@ setfenv(1,d)
 		
 		dirty=1
 		
+		local tab=display[ cursor ]
+		
+		if tab.tab then tab=tab.tab end -- use this data
+		
 		if act=="down" then
 		
 			if key=="space" then
 			
-				hide()
+				if tab.call then -- do this
+				
+					tab.call( tab )
+					
+				else -- just back by default
+				
+					back()
+				
+				end
 			
 			elseif key=="up" then
 			
-				curser=curser-1
-				if curser<1 then curser=#display end
+				cursor=cursor-1
+				if cursor<1 then cursor=#display end
 			
 			elseif key=="down" then
 				
-				curser=curser+1
-				if curser>#display then curser=1 end
+				cursor=cursor+1
+				if cursor>#display then cursor=1 end
 			
 			end
 		
@@ -88,13 +128,21 @@ setfenv(1,d)
 
 		if not display then return end
 		
+		local top=stack[#stack]
+
 		up.asc_draw_box(1,1,38,#display+4)
+		
+		if top.title then
+			local title=(top.title:upper())
+			local wo2=math.floor(#title/2)
+			up.asc_print(20-wo2,1,title)
+		end
 		
 		for i,v in ipairs(display) do
 			up.asc_print(4,i+2,v.s)
 		end
 		
-		up.asc_print(3,curser+2,">")
+		up.asc_print(3,cursor+2,">")
 		
 	end
 
@@ -107,10 +155,151 @@ setfenv(1,d)
 		local lines={}
 		for id=1,#t do
 			local ls=strings.smart_wrap(t[id].txt,32)
-			for i=1,#ls do lines[#lines+1]={s=ls[i],id=id} end
+			for i=1,#ls do lines[#lines+1]={s=ls[i],id=id,tab=t[id]} end
 		end
 		
 		return lines
+	end
+
+
+	function show_player_menu(player)
+		local top={}
+		
+		top.title="look around you"
+
+		top.call=function(tab)
+		
+			local tab={}
+			
+	-- add cancel option
+			tab[#tab+1]={
+				txt=[[..]],
+				call=function(it)
+					back()
+				end
+			}
+			
+	-- add backpack option
+			tab[#tab+1]={
+				txt=[[your loot and tools]],
+				call=function(it)
+					show_loot_menu(player)
+				end
+			}
+			
+			local items={}
+			for i,v in player.cell.bordersplus() do
+				for item,b in pairs(v.items) do
+					items[#items+1]=item
+				end				
+			end
+			
+			for i,v in ipairs(items) do
+				if v.call.acts then				
+					tab[#tab+1]={
+						txt=v.desc,
+						call=function(it)
+							show_item_menu(v)
+						end
+					}
+				end
+			end
+			
+
+			top.display=build_request(tab)
+		end
+		
+		show(top)
+	end
+
+
+	function show_loot_menu(player)
+		local top={}
+		
+		top.title="your loot and tools"
+		
+		top.call=function(tab)
+		
+			local tab={}
+			
+-- add cancel option
+			tab[#tab+1]={
+				txt=[[..]],
+				call=function(it)
+					back()
+				end
+			}
+			
+			top.display=build_request(tab)
+		end
+		
+		show(top)
+	end
+
+	function show_item_menu(item)
+		local top={}
+
+		top.title=item.desc
+		
+		top.call=function(tab)
+		
+			local tab={}
+			local player=item.level.player
+	-- add cancel option
+			tab[#tab+1]={
+				txt=[[..]],
+				call=function(it)
+					back()
+				end
+			}
+			
+
+			
+			local acts=item.call.acts(item,player)
+			
+			for i,v in ipairs(acts) do
+				tab[#tab+1]={
+					txt=v,
+					call=function(it)
+						if item.call[v] then
+							item.call[v](item)
+						end
+						hide()
+					end
+				}
+			end
+
+			top.display=build_request(tab)
+		end
+		
+		show(top)
+	end
+	
+	function show_welcome()
+		local top={}
+		
+		top.title="welcome"
+		
+		top.call=function(tab)
+	
+			top.display=(build_request({
+{
+txt=[[
+Welcome to YARN, where an @ is you.
+
+Press the CURSOR keys to move up/down/left/right.
+
+Press SPACE bar for a menu or to select a menu items.
+
+The menu is context sensitive so if you are standing near anything interesting press SPACE bar to interact with it.
+
+Press SPACE to start.
+]],
+},
+}))
+		end
+		
+		show(top)
 	end
 
 	return d

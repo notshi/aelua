@@ -29,10 +29,12 @@ local yarn_prefab=require("yarn.prefab")
 local yarn_attrdata=require("yarn.attrdata")
 
 
-function create(t,up)
+function create(t,_up)
 
 local d={}
 setfenv(1,d)
+
+	up=_up
 
 	time_passed=0
 	time_update=0
@@ -212,11 +214,9 @@ setfenv(1,d)
 	function key_do(key)
 	
 		if key=="space" then
+		
+			up.menu.show_player_menu(player)
 			
-			up.menu.show(up.menu.build_request({
-{txt=[[Press SPACE to continue.]]},
-}))
- 
 		end
 		
 		key_repeat_count=0 -- always zero the repeat counter

@@ -80,6 +80,15 @@ setfenv(1,d)
 		end , d , 1
 	end
 	
+	function bordersplus()
+		local n_x_look={ -1 ,  0 ,  1 , -1 , 1 , -1 , 0 , 1 , 0 }
+		local n_y_look={ -1 , -1 , -1 ,  0 , 0 ,  1 , 1 , 1 , 0 }
+		return function(d,i)
+			if i>9 then return nil,nil end -- no more edges
+			return i+1 , level.get_cell( xp+n_x_look[i] , yp+n_y_look[i] )
+		end , d , 1
+	end
+
 	function get_item() -- although there are multiple item slots, just pick one
 		for v,b in pairs(items) do
 			if v.form=="item" then return v end
