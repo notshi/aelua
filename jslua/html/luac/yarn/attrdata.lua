@@ -103,11 +103,11 @@ dd={
 	call=
 	{
 		acts=function(it,by)
-			return {"look","open","close"}
+			return {"read welcome","look","open","close"}
 		end,
 		
 		look=function(it,by)
-			it.level.set_msg("your cryo generic capsule is ".. (it.open and "open" or "closed") )
+			it.level.up.menu.show_text(it.desc,"your cryo generic capsule is ".. (it.open and "open" or "closed") )
 		end,
 		open=function(it,by)
 			it.attr.open=true
@@ -117,6 +117,20 @@ dd={
 			it.attr.open=false
 			it.call.look(it,by)
 		end,
+		
+		["read welcome"]=function(it,by)
+			it.level.up.menu.show_text("Welcome to YARN, where an @ is you",
+[[
+Press the CURSOR keys to move up/down/left/right.
+
+Press SPACE bar for a menu or to select a menu items.
+
+If you are standing near anything interesting press SPACE bar to interact with it.
+
+Press SPACE to continue.
+]])
+		end,
+		
 	},
 },
 
@@ -141,7 +155,7 @@ dd={
 		end,
 		
 		look=function(it,by)
-			it.level.set_msg("your cryo generic door is ".. (it.open and "open" or "closed") )
+			it.level.up.menu.show_text(it.desc,"your cryo generic door is ".. (it.open and "open" or "closed") )
 		end,
 		open=function(it,by)
 			it.attr.open=true

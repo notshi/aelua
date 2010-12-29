@@ -35,6 +35,7 @@ asc_xh=0
 asc_yh=0	
 
 level={}
+menu={}
 
 function setup()
 

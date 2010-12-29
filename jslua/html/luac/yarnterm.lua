@@ -4,12 +4,16 @@ local yarn=require("yarn")
 
 local function keycode(code)
 
-	if code==65 then return "up" end
-	if code==66 then return "down" end
-	if code==68 then return "left" end
-	if code==67 then return "right" end
-	if code==32 then return "space" end
-	if code==27 then return "esc" end
+--print(code)
+
+	if code==65  then return "up" end
+	if code==66  then return "down" end
+	if code==68  then return "left" end
+	if code==67  then return "right" end
+	if code==32  then return "space" end
+	if code==127 then return "backspace" end
+	if code==27  then return "esc" end
+	if code==10  then return "enter" end
 
 	return ""
 end

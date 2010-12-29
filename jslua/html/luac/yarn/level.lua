@@ -213,7 +213,7 @@ setfenv(1,d)
 	
 	function key_do(key)
 	
-		if key=="space" then
+		if key=="space" or key=="enter" then
 		
 			up.menu.show_player_menu(player)
 			

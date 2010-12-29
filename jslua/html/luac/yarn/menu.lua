@@ -83,7 +83,7 @@ setfenv(1,d)
 		
 		if act=="down" then
 		
-			if key=="space" then
+			if key=="space" or key=="enter" then
 			
 				if tab.call then -- do this
 				
@@ -94,6 +94,10 @@ setfenv(1,d)
 					back()
 				
 				end
+			
+			elseif key=="backspace" then
+			
+				hide()
 			
 			elseif key=="up" then
 			
@@ -262,9 +266,8 @@ setfenv(1,d)
 					txt=v,
 					call=function(it)
 						if item.call[v] then
-							item.call[v](item)
+							item.call[v](item,player)
 						end
-						hide()
 					end
 				}
 			end
@@ -275,25 +278,48 @@ setfenv(1,d)
 		show(top)
 	end
 	
+	function show_text(title,display)
+		local top={}
+
+		local tab={}
+-- add cancel option
+		tab[#tab+1]={
+			txt=[[..]],
+			call=function(it)
+				back()
+			end
+		}
+			
+		tab[#tab+1]={
+			txt=display,
+			call=function(it)
+				hide()
+			end
+		}
+
+		top.title=title
+		top.display=build_request(tab)
+		
+		show(top)		
+	end
+	
 	function show_welcome()
 		local top={}
 		
-		top.title="welcome"
+		top.title="Welcome to YARN, where an @ is you"
 		
 		top.call=function(tab)
 	
 			top.display=(build_request({
 {
 txt=[[
-Welcome to YARN, where an @ is you.
-
 Press the CURSOR keys to move up/down/left/right.
 
 Press SPACE bar for a menu or to select a menu items.
 
 The menu is context sensitive so if you are standing near anything interesting press SPACE bar to interact with it.
 
-Press SPACE to start.
+Press SPACE to continue.
 ]],
 },
 }))
