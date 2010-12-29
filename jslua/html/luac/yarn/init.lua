@@ -68,7 +68,8 @@ local i
 	
 	level.set_msg("Welcome to the jungle.")
 	
-	menu.show_welcome()
+	local f=level.call["read welcome"]
+	if f then f(level) end
 
 end
 

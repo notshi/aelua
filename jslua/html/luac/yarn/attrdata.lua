@@ -91,7 +91,7 @@ dd={
 	form="char",
 	class="story",
 	asc=ascii("="),
-	desc="your cryo generic capsule",
+	desc="your SwordStone vault capsule",
 	
 	open=true,
 	
@@ -103,31 +103,60 @@ dd={
 	call=
 	{
 		acts=function(it,by)
-			return {"read welcome","look","open","close"}
+			return {"read welcome","read license","look","open","close"}
 		end,
 		
 		look=function(it,by)
-			it.level.up.menu.show_text(it.desc,"your cryo generic capsule is ".. (it.open and "open" or "closed") )
+			it.level.main.menu.show_text(it.desc,
+			"your SwordStone vault capsule is ".. (it.open and "open" or "closed") )
 		end,
 		open=function(it,by)
-			it.attr.open=true
-			it.call.look(it,by)
+			if it.open then
+				it.level.main.menu.show_text(it.desc,
+				"it is already open")
+			else
+				it.level.main.menu.show_text(it.desc,
+				"your SwordStone vault capsule is held shut using licensed SwordStone technologies")
+			end
 		end,
 		close=function(it,by)
-			it.attr.open=false
-			it.call.look(it,by)
+			if it.open then
+				it.attr.open=false
+				it.level.main.menu.show_text(it.desc,
+				"your SwordStone vault capsule closes very very very slowly")
+			else
+				it.level.main.menu.show_text(it.desc,
+				"it is already shut")
+			end
 		end,
 		
 		["read welcome"]=function(it,by)
-			it.level.up.menu.show_text("Welcome to YARN, where an @ is you",
+			it.level.main.menu.show_text("Welcome to YARN, where an @ is you",
 [[
 Press the CURSOR keys to move up/down/left/right.
 
-Press SPACE bar for a menu or to select a menu items.
+Press SPACE bar for a menu or to select a menu item.
 
 If you are standing near anything interesting press SPACE bar to interact with it.
 
 Press SPACE to continue.
+]])
+		end,
+		
+		["read license"]=function(it,by)
+			it.level.main.menu.show_text(it.desc,
+[[
+SwordStone technologies: where your future, is our buisness.
+
+Handling this license* creates a binding and unbreakable contract between SwordStone technologies and you.
+
+Please remain calm.
+
+Our patent pending hero from the past vault is guaranteed to create a successful hero.
+
+Eventually.
+
+*The full text of this license is copyright SwordStone technologies and cannot be reproduced here.
 ]])
 		end,
 		
@@ -139,7 +168,7 @@ Press SPACE to continue.
 	form="char",
 	class="story",
 	asc=ascii("|"),
-	desc="your cryo generic door",
+	desc="your SwordStone vault door",
 	
 	open=false,
 	
@@ -155,13 +184,18 @@ Press SPACE to continue.
 		end,
 		
 		look=function(it,by)
-			it.level.up.menu.show_text(it.desc,"your cryo generic door is ".. (it.open and "open" or "closed") )
+			it.level.main.menu.show_text(it.desc,"your SwordStone vault door is ".. (it.open and "open" or "closed") )
 		end,
 		open=function(it,by)
-			it.attr.open=true
-			it.attr.form="item"
-			it.attr.asc=ascii("/"),
-			it.call.look(it,by)
+			local capsule=it.level.find_item("cryo_bed")
+			if not capsule or capsule.open==true then
+				it.level.main.menu.show_text(it.desc,"please ensure that your SwordStone vault capsule is closed before exiting your SwordStone vault")
+			else
+				it.attr.open=true
+				it.attr.form="item"
+				it.attr.asc=ascii("/"),
+				it.call.look(it,by)
+			end
 		end,
 		close=function(it,by)
 			it.attr.open=false

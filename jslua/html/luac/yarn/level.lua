@@ -16,7 +16,7 @@ local setfenv=setfenv
 local unpack=unpack
 local require=require
 local type=type
-
+local setmetatable=setmetatable
 
 module(...)
 local yarn_map=require("yarn.map")
@@ -29,12 +29,17 @@ local yarn_prefab=require("yarn.prefab")
 local yarn_attrdata=require("yarn.attrdata")
 
 
-function create(t,_up)
+function create(t,up)
 
 local d={}
 setfenv(1,d)
 
-	up=_up
+	attr=yarn_attr.create(t)
+	metatable={__index=attr}
+	setmetatable(d,metatable)
+
+	level=d -- we are the level
+	main=up
 
 	time_passed=0
 	time_update=0
@@ -43,11 +48,9 @@ setfenv(1,d)
 	yh=t.yh or 30
 
 	rooms={}
-	cells={}
 	items={}
-	chars={}
-	attrs={}
-	
+		
+	cells={}
 	cellfind={}
 	celllist={}
 
@@ -64,6 +67,15 @@ setfenv(1,d)
 	function get_asc(x,y)
 		local cell=get_cell(x,y)
 		return (cell and cell.asc())
+	end
+
+-- use to find a unique named item in this level
+	function find_item(name)
+		for v,b in pairs(items) do
+			if v.name==name then
+				return v
+			end
+		end
 	end
 	
 	function get_cell(x,y)
@@ -94,11 +106,16 @@ setfenv(1,d)
 		end
 		local it=yarn_item.create( at ,d)
 		items[it]=true -- everything lives in items list
+		
+		for i,v in pairs(it.call) do -- every item puts its call functions in the levels call table
+			d.call[i]=v
+		end
+		-- this means we can easily add uniquely named call functions to a level using any item
+
 		return it
 	end
 	function del_item(it)
 		items[it]=nil
-		chars[it]=nil
 		it.del()
 	end
 	

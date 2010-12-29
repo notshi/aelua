@@ -299,35 +299,11 @@ setfenv(1,d)
 
 		top.title=title
 		top.display=build_request(tab)
+		top.cursor=2
 		
 		show(top)		
 	end
 	
-	function show_welcome()
-		local top={}
-		
-		top.title="Welcome to YARN, where an @ is you"
-		
-		top.call=function(tab)
-	
-			top.display=(build_request({
-{
-txt=[[
-Press the CURSOR keys to move up/down/left/right.
-
-Press SPACE bar for a menu or to select a menu items.
-
-The menu is context sensitive so if you are standing near anything interesting press SPACE bar to interact with it.
-
-Press SPACE to continue.
-]],
-},
-}))
-		end
-		
-		show(top)
-	end
-
 	return d
 	
 end
