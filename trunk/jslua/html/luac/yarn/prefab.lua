@@ -171,7 +171,7 @@ function map_opts(name)
 		
 			d.level.cellfind[d.name]=d.cell -- last generated cell of this type
 			
-			local l=d.level.celllist[d.name] or {} -- all gnerated cells of this type
+			local l=d.level.celllist[d.name] or {} -- all generated cells of this type
 			l[#l+1]=d.cell
 			d.level.celllist[d.name]=l
 			
