@@ -328,6 +328,9 @@ setfenv(1,d)
 		return display_msg or ""
 	end
 
+	function destroy()
+	end
+
 	return d
 	
 end

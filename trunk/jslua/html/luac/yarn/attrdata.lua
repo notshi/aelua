@@ -20,6 +20,8 @@ local tostring=tostring
 local exit=exit
 
 module(...)
+local yarn_level=require("yarn.level")
+
 local attrdata=require(...)
 
 function ascii(a) return string.byte(a,1) end
@@ -73,7 +75,7 @@ dd={
 	form="char",
 	class="stairs",
 	asc=ascii(">"),
-	desc="some stairs up",
+	desc="some stairs",
 	
 },
 
@@ -82,8 +84,27 @@ dd={
 	form="char",
 	class="stairs",
 	asc=ascii("<"),
-	desc="some stairs down",
+	desc="some stairs",
 	
+	can=
+	{
+		use="menu",
+	},
+	
+	call=
+	{
+		acts=function(it,by)
+			return {"use"}
+		end,
+		
+		use=function(it,by)
+			local main=it.level.main
+			main.level=main.level.destroy()
+			main.level=yarn_level.create({xh=40,yh=28},main)
+			main.menu.hide()
+
+		end,
+	}
 },
 
 {
@@ -146,7 +167,7 @@ Press SPACE to continue.
 		["read license"]=function(it,by)
 			it.level.main.menu.show_text(it.desc,
 [[
-SwordStone technologies: where your future, is our buisness.
+SwordStone technologies: Where your future, is our buisness.
 
 Handling this license* creates a binding and unbreakable contract between SwordStone technologies and you.
 
