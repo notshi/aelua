@@ -67,22 +67,7 @@ local i
 	
 	level.set_msg("Welcome to the jungle.")
 	
-	menu.show(menu.build_request({
-{
-txt=[[
-Welcome to YARN, where an @ is you.
-
-Press the CURSOR keys to move up/down/left/right.
-
-Press SPACE bar for a menu or to select a menu items.
-
-The menu is context sensitive so if you are standing near anything interesting press SPACE bar to interact with it.
-
-Press SPACE to start.
-]],
-},
-}))
-
+	menu.show_welcome()
 
 end
 

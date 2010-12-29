@@ -91,13 +91,13 @@ dd={
 	form="char",
 	class="story",
 	asc=ascii("="),
-	desc="a cryo generic capsule",
+	desc="your cryo generic capsule",
 	
 	open=true,
 	
 	can=
 	{
-		use="look",
+		use="menu",
 	},
 	
 	call=
@@ -107,7 +107,15 @@ dd={
 		end,
 		
 		look=function(it,by)
-			it.level.set_msg("the cryo generic capsule is ".. (it.open and "open" or "closed") )
+			it.level.set_msg("your cryo generic capsule is ".. (it.open and "open" or "closed") )
+		end,
+		open=function(it,by)
+			it.attr.open=true
+			it.call.look(it,by)
+		end,
+		close=function(it,by)
+			it.attr.open=false
+			it.call.look(it,by)
 		end,
 	},
 },
@@ -116,14 +124,14 @@ dd={
 	name="cryo_door",
 	form="char",
 	class="story",
-	asc=ascii("="),
-	desc="a cryo generic door",
+	asc=ascii("|"),
+	desc="your cryo generic door",
 	
 	open=false,
 	
 	can=
 	{
-		use="look",
+		use="menu",
 	},
 	
 	call=
@@ -133,7 +141,19 @@ dd={
 		end,
 		
 		look=function(it,by)
-			it.level.set_msg("the cryo generic door is ".. (it.open and "open" or "closed") )
+			it.level.set_msg("your cryo generic door is ".. (it.open and "open" or "closed") )
+		end,
+		open=function(it,by)
+			it.attr.open=true
+			it.attr.form="item"
+			it.attr.asc=ascii("/"),
+			it.call.look(it,by)
+		end,
+		close=function(it,by)
+			it.attr.open=false
+			it.attr.form="char"
+			it.attr.asc=ascii("|"),
+			it.call.look(it,by)
 		end,
 	},
 },
