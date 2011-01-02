@@ -14,33 +14,22 @@ local os=os
 local setfenv=setfenv
 local unpack=unpack
 local require=require
-
+local type=type
+local print=print
 
 module(...)
+local attrdata=require("yarn.attrdata")
 
-
-function create(t)
-
+-- pass in a table created by attrdata.get
+function create(ad)
 	
-local d={}
+local d=ad
 setfenv(1,d)
 
-	for i,v in pairs(t) do -- start with a simple 1 deep copy
-		d[i]=v
-	end
+-- any state data you expect to persist must be stored in the base table
+-- never change any of the sub tables, such as .can or .call these are
+-- shared tables so any change will effect all other objects of the same class
 
---clear some bits?
-	
--- an array of can flags so tests such as "if can.walk do this" reads as engrish	
--- an array of trigger functions to call that we can change in place
-
-	for _,n in ipairs{"can","call"} do -- copy these slightly deeper
-		local newtab={}
-		for i,v in pairs( t[n] or {} ) do
-			newtab[i]=v
-		end		
-		d[n]=newtab
-	end
 
 	hpmax=hp -- remember initial hp
 
@@ -58,5 +47,36 @@ setfenv(1,d)
 
 	return d
 	
+end
+
+-- create a save state for this attr which contains enough information
+-- to recreate this attr when combined with the attrdata tables
+-- so this is a diff from an attrdata.get
+-- the result should be good to save as json
+function save(it)
+
+	local ad=attrdata.get(it.name,it.pow) -- get base data to compare
+	local sd={}
+	for i,v in pairs(it) do
+		if ( type(ad[i])==type(v) ) and ad[i]==v then -- no change from base
+		else
+			if type(v)=="table" then --ignore tables, one deep save only
+			else
+				sd[i]=v -- this is something we are interested in
+			end
+		end
+	end
+-- always include these two
+
+	sd.name=it.name
+	sd.pow=it.pow
+	if sd.pow==0 then sd.pow=nil end
+	
+	return sd -- a table of changes to base data
+end
+
+-- reload a saved data (use instead of create)
+function load(sd)
+	return create( attrdata.get(sd.name,sd.pow,sd) ) -- unpack and create
 end
 

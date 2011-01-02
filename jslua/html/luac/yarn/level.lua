@@ -26,7 +26,7 @@ local yarn_item=require("yarn.item")
 local yarn_attr=require("yarn.attr")
 
 local yarn_prefab=require("yarn.prefab")
-local yarn_attrdata=require("yarn.attrdata")
+local attrdata=require("yarn.attrdata")
 
 
 function create(t,up)
@@ -59,7 +59,7 @@ setfenv(1,d)
 	for y=0,yh-1 do
 		for x=0,xh-1 do
 			local i=x+y*xh
-			cells[i]=yarn_cell.create({ level=d, xp=x, yp=y, id=i })
+			cells[i]=yarn_cell.create(attrdata.get("cell",0,{ level=d, xp=x, yp=y, id=i }))
 		end
 	end
 
@@ -99,7 +99,7 @@ setfenv(1,d)
 	function new_item(n,l)
 		local at
 		if type(n)=="string" then
-			at=yarn_attrdata.get(n,l)
+			at=attrdata.get(n,l)
 		else
 			at=n
 			n=at.name
@@ -159,7 +159,8 @@ setfenv(1,d)
 	
 -- now turn that generated map into real rooms we can put stuff in
 	for i,v in ipairs(map.rooms) do
-		rooms[i]=yarn_room.create({ level=d, xp=v.x, yp=v.y, xh=v.xh, yh=v.yh, })
+		rooms[i]=yarn_room.create(attrdata.get("room",0,
+			{ level=d, xp=v.x, yp=v.y, xh=v.xh, yh=v.yh, }) )
 		rooms[i].opts=v.opts
 	end
 
@@ -331,6 +332,39 @@ setfenv(1,d)
 	function destroy()
 	end
 
+-- create a save state for this data
+	function save()
+		local sd={}
+		
+		sd.attr=yarn_attr.save(attr)
+		
+		sd.rooms={}
+		sd.cells={}
+		
+		for i,v in ipairs(cells) do -- cells contain all items so they get saved here
+			sd.cells[i]=v.save()
+			if sd.cells[i].attr.name=="wall" then
+				if not sd.cells[i].attr.visible then
+					if not sd.cells[i].items then
+						sd.cells[i]=nil				-- do not need to save
+					end
+				end
+			end
+		end
+		
+		for i,v in ipairs(rooms) do -- rooms are just areas of cells
+			sd.rooms[i]=v.save()
+		end
+		
+		return sd
+	end
+
+-- reload a saved data (create and then load)
+	function load(sd)
+		d.attr=yarn_attr.load(sd.attr)
+		d.metatable.__index=attr
+	end
+	
 	return d
 	
 end

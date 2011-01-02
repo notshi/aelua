@@ -130,6 +130,20 @@ setfenv(1,d)
 		
 	end
 
+-- create a save state for this data
+	function save()
+		local sd={}
+		
+		sd.attr=yarn_attr.save(attr)
+		
+		return sd
+	end
+
+-- reload a saved data (create and then load)
+	function load(sd)
+		d.attr=yarn_attr.load(sd.attr)
+		d.metatable.__index=attr
+	end
 
 	return d
 	

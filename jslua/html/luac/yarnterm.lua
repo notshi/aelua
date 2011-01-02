@@ -1,6 +1,7 @@
 package.path=package.path..";./?/init.lua"
 
 local yarn=require("yarn")
+local yarn_strings=require("yarn.strings")
 
 local function keycode(code)
 
@@ -20,7 +21,14 @@ end
 
 local aesc=string.char(27) .. '['
 
-yarn.setup()
+local fp=io.open("savedata.lua","r")
+local sd
+if fp then
+	sd=yarn_strings.unserialize(fp:read())
+	fp:close()
+end
+
+yarn.setup(sd)
 yarn.update()
 print( aesc.."2J"..aesc.."0;0H"..yarn.draw(2) )
 
@@ -40,4 +48,8 @@ while not exit do
 
 end
 
+local sd=yarn.save()
+local fp=io.open("savedata.lua","w")
+fp:write(yarn_strings.serialize(sd))
+fp:close()
 

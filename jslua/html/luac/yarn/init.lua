@@ -37,7 +37,7 @@ asc_yh=0
 level={}
 menu={}
 
-function setup()
+function setup(sd)
 
 
 local i
@@ -53,7 +53,7 @@ local i
 		end
 	end
 	
-	level=yarn_level.create({xh=40,yh=28},yarn)
+	level=yarn_level.create(attrdata.get("level",0,{xh=40,yh=28}),yarn)
 	menu=yarn_menu.create({},yarn)
 	
 	for y=0,asc_yh-1 do
@@ -208,4 +208,16 @@ local t={}
 	
 end
 
+
+-- create a save state for this data
+function save()
+	local sd={}
+	sd.levels={}
+	sd.levels["home"]=level.save()
+	return sd
+end
+
+-- reload a saved data (create and then load)
+function load(sd)
+end
 

@@ -1,5 +1,5 @@
 
--- a collection of cells
+-- a local area of cells
 
 local _G=_G
 
@@ -86,47 +86,21 @@ setfenv(1,d)
 		for _,cell in level.cpairs(xp,yp,xh,yh) do
 			cell.set.name("floor")
 		end
---		set_walls()
 	end
 
--- work out the wall edges for the cells of this room
-	function set_walls()
-	
-		for _,cell in level.cpairs(xp,yp-1,xh,1) do
-			if cell.wall=="|" or cell.wall=="-" then
-				cell.wall="-"
-			else
-				cell.wall="-"
-			end
-		end
-		for _,cell in level.cpairs(xp,yp+yh,xh,1) do
-			if cell.wall=="|" or cell.wall=="-" then
-				cell.wall="-"
-			else
-				cell.wall="-"
-			end
-		end
+-- create a save state for this data
+	function save()
+		local sd={}
 		
-		for _,cell in level.cpairs(xp-1,yp,1,yh) do
-			if cell.wall=="-" or cell.wall=="+" then
-				cell.wall="-"
-			else
-				cell.wall="|"
-			end
-		end
-		for _,cell in level.cpairs(xp+xh,yp,1,yh) do
-			if cell.wall=="-" or cell.wall=="+" then
-				cell.wall="-"
-			else
-				cell.wall="|"
-			end
-		end
+		sd.attr=yarn_attr.save(attr)
+		
+		return sd
+	end
 
-		level.get_cell(xp-1 ,yp-1 ).wall="-"
-		level.get_cell(xp+xh,yp-1 ).wall="-"
-		level.get_cell(xp-1 ,yp+yh).wall="-"
-		level.get_cell(xp+xh,yp+yh).wall="-"
-
+-- reload a saved data (create and then load)
+	function load(sd)
+		d.attr=yarn_attr.load(sd.attr)
+		d.metatable.__index=attr
 	end
 	
 	return d

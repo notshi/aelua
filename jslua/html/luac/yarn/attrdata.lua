@@ -26,25 +26,52 @@ local attrdata=require(...)
 
 function ascii(a) return string.byte(a,1) end
 
-function get(n,f)
+function get(name,pow,xtra)
 
-	if not dd[n] then return nil end -- no data
+	if not dd[name] then return nil end -- no data
 
-	f=f or 0
+	pow=pow or 0 -- pow is a +1 -1 etc, base item adjustment
 	
 	local it={}
 	
-	local d=dd[n] -- get base
+	local d=dd[name] -- get base
 	
 	for i,v in pairs(d) do it[i]=v end -- copy 1 deep only
-	for i,v in pairs(d.level or {} ) do it[i]=(it[i] or 0)+ math.floor(v*f) end
-	it.level=nil
+	for i,v in pairs(d.powup or {} ) do it[i]=(it[i] or 0)+ math.floor(v*pow) end
+	
+-- make sure these exist
+	it.call=it.call or {}
+	it.can=it.can or {}
+	
+	it.pow=pow -- remember pow
+	
+	for i,v in pairs(xtra or {}) do
+		it[i]=v
+	end
 	
 	return it
 
 end
 
 dd={
+
+{
+	name="cell",
+},
+{
+	name="wall",
+},
+{
+	name="floor",
+},
+
+{
+	name="level",
+},
+
+{
+	name="room",
+},
 
 {
 	name="player",
@@ -71,20 +98,11 @@ dd={
 },
 
 {
-	name="stairs_up",
-	form="char",
-	class="stairs",
-	asc=ascii(">"),
-	desc="some stairs",
-	
-},
-
-{
-	name="stairs_down",
+	name="stairs",
 	form="char",
 	class="stairs",
 	asc=ascii("<"),
-	desc="some stairs",
+	desc="a doorstone inscribed, stairs",
 	
 	can=
 	{
@@ -94,13 +112,13 @@ dd={
 	call=
 	{
 		acts=function(it,by)
-			return {"use"}
+			return {"activate"}
 		end,
 		
-		use=function(it,by)
+		activate=function(it,by)
 			local main=it.level.main
 			main.level=main.level.destroy()
-			main.level=yarn_level.create({xh=40,yh=28},main)
+			main.level=yarn_level.create(attrdata.get("level",0,{xh=40,yh=28}),main)
 			main.menu.hide()
 
 		end,
@@ -111,7 +129,7 @@ dd={
 	name="cryo_bed",
 	form="char",
 	class="story",
-	asc=ascii("="),
+	asc=ascii("<"),
 	desc="your SwordStone vault capsule",
 	
 	open=true,
@@ -124,30 +142,31 @@ dd={
 	call=
 	{
 		acts=function(it,by)
-			return {"read welcome","read license","look","open","close"}
+			local t={"read welcome","read license","look"}
+			if it.open then
+				t[#t+1]="close"
+			else
+				t[#t+1]="open"
+			end
+			return t
 		end,
 		
 		look=function(it,by)
 			it.level.main.menu.show_text(it.desc,
-			"your SwordStone vault capsule is ".. (it.open and "open" or "closed") )
+			"Your SwordStone vault capsule is ".. (it.open and "open" or "closed").."." )
 		end,
 		open=function(it,by)
-			if it.open then
+			if not it.open then
 				it.level.main.menu.show_text(it.desc,
-				"it is already open")
-			else
-				it.level.main.menu.show_text(it.desc,
-				"your SwordStone vault capsule is held shut using licensed SwordStone technologies")
+				"Your SwordStone vault capsule is held shut by something inside.")
 			end
 		end,
 		close=function(it,by)
 			if it.open then
 				it.attr.open=false
 				it.level.main.menu.show_text(it.desc,
-				"your SwordStone vault capsule closes very very very slowly")
-			else
-				it.level.main.menu.show_text(it.desc,
-				"it is already shut")
+				"Your SwordStone vault capsule closes very very very slowly.")
+				it.attr.asc=ascii("=")
 			end
 		end,
 		
@@ -167,7 +186,7 @@ Press SPACE to continue.
 		["read license"]=function(it,by)
 			it.level.main.menu.show_text(it.desc,
 [[
-SwordStone technologies: Where your future, is our buisness.
+SwordStone technologies: Where your future, is our business.
 
 Handling this license* creates a binding and unbreakable contract between SwordStone technologies and you.
 
@@ -201,7 +220,13 @@ Eventually.
 	call=
 	{
 		acts=function(it,by)
-			return {"look","open","close"}
+			local t={"look"}
+			if it.open then
+				t[#t+1]="close"
+			else
+				t[#t+1]="open"
+			end
+			return t
 		end,
 		
 		look=function(it,by)
@@ -249,7 +274,7 @@ Eventually.
 		roam="random",
 	},
 	
-	level={
+	powup={
 		score=2,
 		hp=2,
 		dam_min=0,
@@ -281,7 +306,7 @@ Eventually.
 		roam="random",
 	},
 	
-	level={
+	powup={
 		score=10,
 		hp=10,
 		dam_min=2,

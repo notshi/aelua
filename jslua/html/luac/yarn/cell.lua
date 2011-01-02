@@ -15,6 +15,7 @@ local unpack=unpack
 local pairs=pairs
 local require=require
 local setmetatable=setmetatable
+local print=print
 
 module(...)
 local yarn_attr=require("yarn.attr")
@@ -113,29 +114,38 @@ setfenv(1,d)
 		
 		if item then return item.asc() end
 		
-		if room then
---[[
-			if door then
-				if room.xh==1 or room.yh==1 then
-					if door.xh~=1 and door.yh~=1 then
-						return a_equal
-					end
-				end
-			end
-]]
-			if name=="wall" then
-				return a_hash
-			else
-				return a_dot
-			end
-			
---			if room then return a_dot end
+		if name=="wall" then -- some cells are just walls
+			return a_hash
+		else
+			return a_dot
 		end
-		
---		if wall then return string.byte(wall,1) end
+			
 		return a_hash
 	end
 
+-- create a save state for this data
+	function save()
+		local sd={}
+		sd.attr=yarn_attr.save(attr)
+		
+		sd.attr.xp=nil
+		sd.attr.yp=nil
+		sd.attr.id=nil
+		
+		for v,b in pairs(items) do
+			sd.items=sd.items or {}
+			sd.items[#sd.items+1]=v.save()
+		end
+		
+		return sd
+	end
+
+-- reload a saved data (create and then load)
+	function load(sd)
+		d.attr=yarn_attr.load(sd.attr)
+		d.metatable.__index=attr
+	end
+	
 	return d
 	
 end
