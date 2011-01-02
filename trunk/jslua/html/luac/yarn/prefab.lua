@@ -33,8 +33,7 @@ keys.base={
 	["- "]="item_spawn",
 	["= "]="bigitem_spawn",
 	["@ "]="player_spawn",
-	["< "]="stairs_up",
-	["> "]="stairs_down",
+	["< "]="stairs",
 }
 
 keys.home_bedroom={
@@ -100,7 +99,7 @@ strings.home_entrance=[[
 # # # # # # # # #
 # # . . . . . # #
 # . . # # # . . #
-# . . . > # . . #
+# . . . < # . . #
 # . . # # # . . #
 # # . . . . . # #
 # # # # # # # # #
@@ -197,10 +196,16 @@ function map_opts(name)
 	end
 	
 	if name=="home" then
+	
 		local r
 		r=add_room(get_room("home_entrance"))
 		r=add_room(get_room("home_bedroom"))
 		r=add_room(get_room("home_mainroom"))
+		
+	elseif name=="town" then
+	
+		r=add_room(get_room("home_entrance"))
+	
 	end
 	
 	return opts

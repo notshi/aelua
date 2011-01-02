@@ -137,7 +137,7 @@ setfenv(1,d)
 		up.asc_draw_box(1,1,38,#display+4)
 		
 		if top.title then
-			local title=(top.title:upper())
+			local title=" "..(top.title:upper()).." "
 			local wo2=math.floor(#title/2)
 			up.asc_print(20-wo2,1,title)
 		end

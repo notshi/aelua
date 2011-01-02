@@ -13,7 +13,9 @@ local os=os
 local setfenv=setfenv
 local unpack=unpack
 local require=require
-
+local type=type
+local loadstring=loadstring
+local pairs=pairs
 module(...)
 
 
@@ -130,3 +132,74 @@ function smart_wrap(s,w)
 	
 	return t
 end
+
+
+-----------------------------------------------------------------------------
+--
+-- opposite of serialize, returns table
+--
+-----------------------------------------------------------------------------
+function unserialize(s)
+	if not s then return nil end
+	
+	local t
+	local f,err=loadstring(s)
+	if f then
+		t={}
+		setfenv(f,t)
+		local ret,err pcall(f)
+		if not ret then t=nil end -- error
+	end
+	return t
+end
+
+-----------------------------------------------------------------------------
+--
+-- serialize a simple table to a lua string that would hopefully recreate said table if executed
+--
+-- returns a string
+--
+-----------------------------------------------------------------------------
+function serialize(o,fout)
+
+	if not fout then -- call with a function to build and return a strin	
+		local ret={}
+		fout=function(s)
+			ret[#ret+1]=s
+		end
+		serialize(o,fout)		
+		return table.concat(ret)
+	end
+
+	if type(o) == "number" then
+	
+		return fout(o)
+		
+	elseif type(o) == "boolean" then
+	
+		if o then return fout("true") else return fout("false") end
+		
+	elseif type(o) == "string" then
+	
+		return fout(string.format("%q", o))
+		
+	elseif type(o) == "table" then
+	
+		fout("{\n")
+		
+		for k,v in pairs(o) do
+			fout("  [")
+			serialize(k,fout)
+			fout("] = ")
+			serialize(v,fout)
+			fout(",\n")
+		end
+		
+		return fout("}\n")
+	else
+		error("cannot serialize a " .. type(o))
+	end
+	
+end
+
+
