@@ -18,6 +18,32 @@ local loadstring=loadstring
 local pairs=pairs
 module(...)
 
+-----------------------------------------------------------------------------
+--
+-- split on separator
+--
+-- such that a concat(seperator) on the result would return the original
+--
+-----------------------------------------------------------------------------
+function split(text,separator)
+	
+	local parts = {}  
+	local start = 1
+	
+	local split_start, split_end = text:find(separator, start)
+	
+	while split_start do
+		if split_start>1 then table.insert(parts, text:sub(start, split_start-1)) end		-- the word
+		start = split_end + 1
+		split_start, split_end = text:find(separator, start)
+	end
+	
+	if text:sub(start)~="" then
+		table.insert(parts, text:sub(start) )
+	end
+	
+	return parts
+end
 
 -----------------------------------------------------------------------------
 --

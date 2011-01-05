@@ -21,6 +21,7 @@ local exit=exit
 
 module(...)
 local yarn_level=require("yarn.level")
+local strings=require("yarn.strings")
 
 local attrdata=require(...)
 
@@ -38,19 +39,25 @@ function get(name,pow,xtra)
 	
 	for i,v in pairs(d) do it[i]=v end -- copy 1 deep only
 	for i,v in pairs(d.powup or {} ) do it[i]=(it[i] or 0)+ math.floor(v*pow) end
-	
--- make sure these exist
-	it.call=it.call or {}
-	it.can=it.can or {}
-	
+		
 	it.pow=pow -- remember pow
 	
 	for i,v in pairs(xtra or {}) do
 		it[i]=v
 	end
 	
+	local parents=strings.split(name,"%.")
+	if parents[2] then -- there is a dot so inherit
+		parents[#parents]=nil -- lose trailing part
+		local parent=table.concat(parents,".") -- and build parents name
+		return get(parent,pow,it) -- recurse
+	end
+	
+-- make sure these exist
+	it.call=it.call or {}
+	it.can=it.can or {}
+	
 	return it
-
 end
 
 dd={
@@ -67,6 +74,12 @@ dd={
 
 {
 	name="level",
+},
+{
+	name="level.home",
+},
+{
+	name="level.town",
 },
 
 {
@@ -118,11 +131,17 @@ dd={
 		activate=function(it,by)
 			local main=it.level.main
 			main.level=main.level.destroy()
-			main.level=yarn_level.create(attrdata.get("level",0,{xh=40,yh=28}),main)
+			main.level=yarn_level.create(attrdata.get("level.town",0,{xh=40,yh=28}),main)
 			main.menu.hide()
 
 		end,
 	}
+},
+
+{
+	name="stairs.home",
+	stairs="home",
+	desc="a doorstone inscribed, stairs to town",
 },
 
 {
