@@ -53,7 +53,7 @@ local i
 		end
 	end
 	
-	level=yarn_level.create(attrdata.get("level",0,{xh=40,yh=28}),yarn)
+	level=yarn_level.create(attrdata.get("level.home",1,{xh=40,yh=28}),yarn)
 	menu=yarn_menu.create({},yarn)
 	
 	for y=0,asc_yh-1 do
@@ -213,7 +213,8 @@ end
 function save()
 	local sd={}
 	sd.levels={}
-	sd.levels["home"]=level.save()
+	sd.levels["home"]={}
+	sd.levels["home"][1]=level.save()
 	return sd
 end
 

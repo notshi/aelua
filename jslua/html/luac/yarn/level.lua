@@ -151,7 +151,7 @@ setfenv(1,d)
 	end
 	
 	do
-		local opts=yarn_prefab.map_opts("home")
+		local opts=yarn_prefab.map_opts(d.name,d.pow)
 		opts.xh=d.xh
 		opts.yh=d.yh
 		map=yarn_map.create(opts) -- create an empty map, this is only a room layout
@@ -163,6 +163,7 @@ setfenv(1,d)
 			{ level=d, xp=v.x, yp=v.y, xh=v.xh, yh=v.yh, }) )
 		rooms[i].opts=v.opts
 	end
+
 
 -- find link door locations	
 	for i,v in ipairs(rooms) do v.find_doors() end
@@ -192,6 +193,27 @@ setfenv(1,d)
 			end
 			if r.opts.callback then
 				r.opts.callback({call="room",level=d,room=r})
+			end
+		end
+	end
+	
+	
+	if map.opts.bigroom then
+
+--		rooms[#rooms+1]=yarn_room.create(attrdata.get("room",0,
+--			{ level=d, xp=1, yp=1, xh=xh-2, yh=yh-2, }) )
+
+		for y=0,yh-1 do
+			for x=0,xh-1 do
+				local i=x+y*xh
+				local cell=cells[i]
+				if map.room_find(x,y)==map.bigroom then
+					cell.set.name("floor")
+					cell.attr.set.visible(true)
+				end
+				if cell.name=="wall" then
+					cell.attr.set.visible(true)
+				end
 			end
 		end
 	end

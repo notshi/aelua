@@ -36,11 +36,6 @@ keys.base={
 	["< "]="stairs",
 }
 
-keys.home_bedroom={
-	["=1"]="cryo_bed",
-	["=2"]="cryo_door",
-}
-
 strings={}
 
 strings.bigroom=[[
@@ -74,6 +69,46 @@ strings.bigroom=[[
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 ]]
 
+strings.pub=[[
+# # # # # # # #
+# . . . . . . #
+# . = = = = . #
+# . = = = = . #
+# . . . . . . #
+# # # # # # # #
+]]        
+
+strings.bank=[[
+# # # # # #
+# . . . . #
+# . = = . #
+# . = = . #
+# . . . . #
+# # # # # #
+]]        
+
+strings.shop=[[
+# # # # # #
+# . . . . #
+# . = = . #
+# . = = . #
+# . = = . #
+# . = = . #
+# . . . . #
+# # # # # #
+]]        
+
+strings.hotel=[[
+# # # # # # #
+# . . . . . #
+# . = = = . #
+# . = = = . #
+# . = = = . #
+# . . . . . #
+# # # # # # #
+]]        
+
+
 strings.home_bedroom=[[
 # # # # # # # # # #
 # . . . . . . . . #
@@ -83,6 +118,10 @@ strings.home_bedroom=[[
 # . . . . . . . . #
 # # # # # # # # # #
 ]]
+keys.home_bedroom={
+	["=1"]="cryo_bed",
+	["=2"]="cryo_door",
+}
 
 strings.home_mainroom=[[
 # # # # # # # # # #
@@ -95,7 +134,7 @@ strings.home_mainroom=[[
 # # # # # # # # # #
 ]]        
 
-strings.home_entrance=[[
+strings.home_stairs=[[
 # # # # # # # # #
 # # . . . . . # #
 # . . # # # . . #
@@ -104,6 +143,9 @@ strings.home_entrance=[[
 # # . . . . . # #
 # # # # # # # # #
 ]]
+keys.home_stairs={
+	["< "]="stairs.home",
+}
 
 function string_to_room(s,key)
 
@@ -160,7 +202,7 @@ end
 
 
 
-function map_opts(name)
+function map_opts(name,pow)
 
 	local opts={}
 	opts.rooms={} -- required rooms for this map
@@ -195,16 +237,25 @@ function map_opts(name)
 		return r
 	end
 	
-	if name=="home" then
+	local r
+	if pow==0 then -- level 0 is always town no matter what the name
 	
-		local r
-		r=add_room(get_room("home_entrance"))
+		r=add_room(get_room("home_stairs"))
+		r=add_room(get_room("pub"))
+		r=add_room(get_room("bank"))
+		r=add_room(get_room("shop"))
+		r=add_room(get_room("hotel"))
+		
+		opts.mode="town"
+		opts.only_these_rooms=true
+	
+	elseif name=="level.home" then
+	
+		r=add_room(get_room("home_stairs"))
 		r=add_room(get_room("home_bedroom"))
 		r=add_room(get_room("home_mainroom"))
 		
-	elseif name=="town" then
-	
-		r=add_room(get_room("home_entrance"))
+	elseif name=="level.town" then
 	
 	end
 	
