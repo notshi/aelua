@@ -261,6 +261,34 @@ end
 
 --------------------------------------------------------------------------------
 --
+-- add a shout act, tab should contain:
+--
+-- actor1	= id of player
+-- shout	= that which was shouted
+--
+--------------------------------------------------------------------------------
+function add_shout(H,tab)
+
+	local e=create(H)
+	local c=e.cache
+	
+	c.act="shout" -- type of act
+	c.type="chat"
+	c.owner=tab.actor1
+	c.private=0
+	c.actor1=tab.actor1
+	c.actor2=0
+	
+	for i,v in pairs(tab) do -- just copy tab into data
+		c.data[i]=v
+	end
+	
+	put(H,e)
+	
+	return e
+end
+--------------------------------------------------------------------------------
+--
 -- add a namechange act, tab should contain:
 --
 -- actor1	= id of player
@@ -274,6 +302,7 @@ function add_namechange(H,tab)
 	local c=e.cache
 	
 	c.act="namechange" -- type of act
+	c.type="chat"
 	c.owner=tab.actor1
 	c.private=0
 	c.actor1=tab.actor1

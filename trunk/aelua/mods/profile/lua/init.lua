@@ -223,7 +223,7 @@ function makechunk_name(content,chunk)
 	name=user.name,
 	plink=plink,
 	purl=purl,
-	icon=user.avatar_url or users.email_to_avatar_url(user.email),
+	icon=user.avatar_url or users.email_to_avatar_url(user),
 	})
 	
 		

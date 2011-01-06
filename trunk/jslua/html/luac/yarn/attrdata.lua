@@ -81,6 +81,9 @@ dd={
 {
 	name="level.town",
 },
+{
+	name="level.dump",
+},
 
 {
 	name="room",
@@ -116,6 +119,9 @@ dd={
 	class="stairs",
 	asc=ascii("<"),
 	desc="a doorstone inscribed, stairs",
+	stairs="town",
+	stairs_min=0,
+	stairs_max=0,
 	
 	can=
 	{
@@ -124,16 +130,8 @@ dd={
 	
 	call=
 	{
-		acts=function(it,by)
-			return {"activate"}
-		end,
-		
-		activate=function(it,by)
-			local main=it.level.main
-			main.level=main.level.destroy()
-			main.level=yarn_level.create(attrdata.get("level.town",0,{xh=40,yh=28}),main)
-			main.menu.hide()
-
+		menu=function(it,by)
+			it.level.main.menu.show_stairs_menu(it,by)
 		end,
 	}
 },
@@ -141,7 +139,17 @@ dd={
 {
 	name="stairs.home",
 	stairs="home",
-	desc="a doorstone inscribed, stairs to town",
+	desc="a doorstone inscribed, home",
+	stairs_min=1,
+	stairs_max=1,
+},
+
+{
+	name="stairs.dump",
+	stairs="dump",
+	desc="a doorstone inscribed, garbage dump",
+	stairs_min=1,
+	stairs_max=5,
 },
 
 {

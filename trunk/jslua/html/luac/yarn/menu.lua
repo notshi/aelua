@@ -14,14 +14,17 @@ local unpack=unpack
 local require=require
 local pairs=pairs
 
-local strings=require("yarn.strings")
 
 module(...)
+local strings=require("yarn.strings")
+local yarn_level=require("yarn.level")
+local attrdata=require("yarn.attrdata")
 
 
 function create(t,up)
 
 local d={}
+local us=d
 setfenv(1,d)
 
 	stack={}
@@ -272,6 +275,52 @@ setfenv(1,d)
 				}
 			end
 
+			top.display=build_request(tab)
+		end
+		
+		show(top)
+	end
+	
+	function show_stairs_menu(it,by)
+		local top={}
+
+		local goto_level=function(name,pow)
+			local main=it.level.main
+			main.level=main.level.destroy()
+			main.level=yarn_level.create(attrdata.get(name,pow,{xh=40,yh=28}),main)
+			main.menu.hide()
+		end
+		
+		top.title=it.desc
+		
+		top.call=function(tab)
+		
+			local tab={}
+			local player=it.level.player
+	-- add cancel option
+			tab[#tab+1]={
+				txt=[[..]],
+				call=function(it)
+					back()
+				end
+			}
+
+			tab[#tab+1]={
+				txt="town (0)",
+				call=function()
+					goto_level("level.town",0)
+				end
+			}
+			
+			for i=it.stairs_min,it.stairs_max do
+				tab[#tab+1]={
+					txt=it.stairs.." ("..i..")",
+					call=function()
+						goto_level("level."..it.stairs,i)
+					end
+				}
+			end
+			
 			top.display=build_request(tab)
 		end
 		
