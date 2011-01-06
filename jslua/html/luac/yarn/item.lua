@@ -86,7 +86,11 @@ setfenv(1,d)
 					if char.call[usename] then
 						char.call[usename](char , d )
 					elseif usename=="menu" then
-						level.main.menu.show_item_menu(char)
+						if char.call.menu then
+							char.call.menu(char,d)
+						else
+							level.main.menu.show_item_menu(char)
+						end
 					end
 					
 				elseif char.can.fight and can.fight then

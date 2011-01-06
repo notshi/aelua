@@ -578,6 +578,9 @@ function serv_round_profile(H)
 			local s=posts.shout		
 			if string.len(s) > 100 then s=string.sub(s,1,100) end		
 			by.shout=wet_html.esc(s)
+			if ( H.player.cache.lastshout or 0 ) + 60 < os.time() then -- not too often
+				by.lastshout=os.time() - ( H.player.cache.lastshout or 0 )
+			end
 		end
 		
 		local r=players.update_add(H,H.player,by)
@@ -587,6 +590,13 @@ function serv_round_profile(H)
 					actor1 = H.player.key.id ,
 					name1  = H.player.cache.name ,
 					name2  = r.cache.name ,
+					})
+			end
+			if by.shout and by.lastshout then -- shout change, log it in the actions, if not spammy
+				acts.add_shout(H,{
+					actor1 = H.player.key.id ,
+					name1  = H.player.cache.name ,
+					shout  = by.shout ,
 					})
 			end
 			H.player=r
@@ -1184,7 +1194,16 @@ function serv_round_acts(H)
 	put("header",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
-	local a=acts.list(H,{ dupe=0 , private=0 , limit=20 , offset=0 })
+	local tt={ dupe=0 , private=0 , limit=20 , offset=0 }
+	local tail=H.arg(2)
+	if tail=="chat" then
+		tt.type="chat"
+	elseif tail=="trade" then
+		tt.type="trade"
+	elseif tail=="fight" then
+		tt.type="fight"
+	end
+	local a=acts.list(H,tt)
 	if a then
 		for i=1,#a do local v=a[i]
 			local s=acts.plate(H,v,"html")

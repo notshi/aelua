@@ -368,7 +368,7 @@ function build_get_comment(srv,tab,c)
 	purl=purl or "http://google.com/search?q="..c.cache.user.name,
 	time=os.date("%Y-%m-%d %H:%M:%S",c.created),
 	id=c.id,
-	icon=c.cache.avatar or users.email_to_avatar_url(c.cache.user.email),
+	icon=c.cache.avatar or users.email_to_avatar_url(c.cache.user),
 	})
 end
 
@@ -470,7 +470,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				title=wet_html.esc(title)
 			end
 			c.cache.user=tab.user.cache
-			c.avatar=users.email_to_avatar_url(user.email or "") -- this can be expensive so we cache it
+			c.avatar=users.email_to_avatar_url(tab.user.cache or "") -- this can be expensive so we cache it
 			c.author=tab.user.cache.email
 			c.url=tab.url
 			c.group=id
@@ -597,7 +597,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		purl=purl or "http://google.com/search?q="..(user.name or ""),
 		time=os.date("%Y-%m-%d %H:%M:%S"),
 		id=num,
-		icon=users.email_to_avatar_url(user.email or ""),
+		icon=users.email_to_avatar_url(user or ""),
 		upload=upload,
 		post_text=post_text,
 		})

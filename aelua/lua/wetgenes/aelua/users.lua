@@ -435,11 +435,32 @@ end
 --
 -----------------------------------------------------------------------------
 function email_to_avatar_url(email,w,h)
+	local user=nil
+	
 	w=w or 100
 	h=h or 100
 	local url
 
-
+	if type(email)=="table" then
+		if email.info then
+			if email.info.email then -- use this bit
+				user=email
+				email=email.info.email 
+			end
+		end
+	end
+	if type(email)=="table" then
+		if email.email then -- use this bit
+			user=email
+			email=email.email 
+		end
+	end
+	if type(email)=="table" then -- we have a problem
+		user=email
+		email="" -- fake it with nothing
+	end
+	if type(email)=="string" then email=email:lower() end
+	
 	local endings={"@id.wetgenes.com"}
 	for i,v in ipairs(endings) do
 		if string.sub(email,-#v)==v then

@@ -22,9 +22,19 @@ local yarn_strings=require("yarn.strings")
 local yarn_attrdata=require("yarn.attrdata")
 
 
-
-
+strings={}
 keys={}
+
+
+local function room(name,map,key)
+	if map then
+		strings[name]=map
+	end
+	if key then
+		keys[name]=key
+	end
+end
+
 
 -- basic key, every map string uses this by default and then adds more or overides
 keys.base={
@@ -36,9 +46,8 @@ keys.base={
 	["< "]="stairs",
 }
 
-strings={}
 
-strings.bigroom=[[
+room("bigroom",[[
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . #
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . #
@@ -67,27 +76,27 @@ strings.bigroom=[[
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . #
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-]]
+]])
 
-strings.pub=[[
+room("pub",[[
 # # # # # # # #
 # . . . . . . #
 # . = = = = . #
 # . = = = = . #
 # . . . . . . #
 # # # # # # # #
-]]        
+]])
 
-strings.bank=[[
+room("bank",[[
 # # # # # #
 # . . . . #
 # . = = . #
 # . = = . #
 # . . . . #
 # # # # # #
-]]        
+]])
 
-strings.shop=[[
+room("shop",[[
 # # # # # #
 # . . . . #
 # . = = . #
@@ -96,9 +105,9 @@ strings.shop=[[
 # . = = . #
 # . . . . #
 # # # # # #
-]]        
+]])
 
-strings.hotel=[[
+room("hotel",[[
 # # # # # # #
 # . . . . . #
 # . = = = . #
@@ -106,10 +115,10 @@ strings.hotel=[[
 # . = = = . #
 # . . . . . #
 # # # # # # #
-]]        
+]])
 
 
-strings.home_bedroom=[[
+room("home_bedroom",[[
 # # # # # # # # # #
 # . . . . . . . . #
 # . # # # # # # . #
@@ -117,13 +126,12 @@ strings.home_bedroom=[[
 # . # # # # # # . #
 # . . . . . . . . #
 # # # # # # # # # #
-]]
-keys.home_bedroom={
+]],{
 	["=1"]="cryo_bed",
 	["=2"]="cryo_door",
-}
+})
 
-strings.home_mainroom=[[
+room("home_mainroom",[[
 # # # # # # # # # #
 # . . . . . . . . #
 # . = = . . = = . #
@@ -132,20 +140,39 @@ strings.home_mainroom=[[
 # . = = . . = = . #
 # . . . . . . . . #
 # # # # # # # # # #
-]]        
+]])
 
-strings.home_stairs=[[
-# # # # # # # # #
-# # . . . . . # #
-# . . # # # . . #
-# . . . < # . . #
-# . . # # # . . #
-# # . . . . . # #
-# # # # # # # # #
-]]
-keys.home_stairs={
+room("home_stairs",[[
+# # # # # # #
+# . . . . . #
+# . # # # . #
+# . . < # . #
+# . # # # . #
+# . . . . . #
+# # # # # # #
+]],{
 	["< "]="stairs.home",
-}
+})
+
+room("dump_stairs",[[
+# # # # #
+# . . . #
+# . < . #
+# . . . #
+# # # # #
+]],{
+	["< "]="stairs.dump",
+})
+
+room("stairs",[[
+# # # # #
+# . . . #
+# . < . #
+# . . . #
+# # # # #
+]],{
+	["< "]="stairs",
+})
 
 function string_to_room(s,key)
 
@@ -241,6 +268,7 @@ function map_opts(name,pow)
 	if pow==0 then -- level 0 is always town no matter what the name
 	
 		r=add_room(get_room("home_stairs"))
+		r=add_room(get_room("dump_stairs"))
 		r=add_room(get_room("pub"))
 		r=add_room(get_room("bank"))
 		r=add_room(get_room("shop"))
@@ -255,7 +283,9 @@ function map_opts(name,pow)
 		r=add_room(get_room("home_bedroom"))
 		r=add_room(get_room("home_mainroom"))
 		
-	elseif name=="level.town" then
+	else
+
+		r=add_room(get_room("stairs"))
 	
 	end
 	

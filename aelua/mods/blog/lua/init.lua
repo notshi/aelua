@@ -233,6 +233,8 @@ local get,put=make_get_put(srv)
 				ext="atom"
 			elseif ap[#ap]=="data" then -- just this pages raw data as text
 				ext="data"
+			elseif ap[#ap]=="dbg" then -- a debug json dump of data(inherited)
+				ext="dbg"
 			end
 			if ext then
 				ap[#ap]=nil
@@ -351,31 +353,39 @@ local get,put=make_get_put(srv)
 			chunks.link=srv.url_local:sub(1,-2) .. ent.cache.pubname
 			chunks.pubdate=(os.date("%Y-%m-%d %H:%M:%S",ent.cache.pubdate))
 			chunks.it=ent.cache
-			local text=get(macro_replace(chunks.plate_page or chunks.plate_post or "{body}",chunks))
-
-			srv.set_mimetype("text/html; charset=UTF-8")
-			put("header",{title="blog : "..ent.cache.pubname,
-				css=chunks.css,
-				H={sess=sess,user=user},
-				adminbar=get("blog_admin_links",{it=ent.cache,user=user}),
-				})
-
---			chunks.title=""
-			chunks.body=text
-			put(macro_replace(chunks.plate or "{body}",chunks))
 			
-			local ret=comments.build(srv,{title=chunks.title,url=chunks.link,posts=posts,get=get,put=put,sess=sess,user=user})
+			if ext=="dbg" then -- dump out all the bubbled chunks as json
+
+				srv.set_mimetype("text/plain; charset=UTF-8")
+				put( json.encode(chunks) )
 			
-			if ret and ret.count then
-				if ret.count~=ent.cache.comment_count then -- need to update cached number of comments
-					pages.update(srv,ent,function(srv,e) e.cache.comment_count=ret.count return true end)
+			else
+			
+				local text=get(macro_replace(chunks.plate_page or chunks.plate_post or "{body}",chunks))
+
+				srv.set_mimetype("text/html; charset=UTF-8")
+				put("header",{title="blog : "..ent.cache.pubname,
+					css=chunks.css,
+					H={sess=sess,user=user},
+					adminbar=get("blog_admin_links",{it=ent.cache,user=user}),
+					})
+
+--				chunks.title=""
+				chunks.body=text
+				put(macro_replace(chunks.plate or "{body}",chunks))
+				
+				local ret=comments.build(srv,{title=chunks.title,url=chunks.link,posts=posts,get=get,put=put,sess=sess,user=user})
+				
+				if ret and ret.count then
+					if ret.count~=ent.cache.comment_count then -- need to update cached number of comments
+						pages.update(srv,ent,function(srv,e) e.cache.comment_count=ret.count return true end)
+					end
 				end
-			end
 
-			put("footer")
-			
-		end
-			
+				put("footer")
+				
+			end
+		end			
 	end
 	
 end

@@ -211,8 +211,20 @@ setfenv(1,d)
 					cell.set.name("floor")
 					cell.attr.set.visible(true)
 				end
-				if cell.name=="wall" then
+				if y==0 or y==yh-1 or x==0 or x==xh-1 then
 					cell.attr.set.visible(true)
+				end
+			end
+		end
+		for i,r in ipairs(rooms) do
+			if r.xh>1 and r.yh>1 then -- not corridors
+				for x=r.xp-1,r.xp+r.xh do
+					for y=r.yp-1,r.yp+r.yh do
+						if x==r.xp-1 or x==r.xp+r.xh or y==r.yp-1 or y==r.yp+r.yh then
+							local cell=get_cell(x,y)
+							cell.attr.set.visible(true)
+						end
+					end
 				end
 			end
 		end
@@ -220,6 +232,7 @@ setfenv(1,d)
 	
 	player=new_item( "player" )
 	player.set_cell( cellfind["player_spawn"] or rand_room_cell({}) )
+	player.attr.soul=main.soul -- we got soul
 	
 	for i=1,10 do
 		c=rand_room_cell({})
