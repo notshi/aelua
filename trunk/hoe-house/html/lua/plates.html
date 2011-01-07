@@ -151,6 +151,12 @@
 			<div class="menup"><a href="{H.url_base}list"><img src="/art/bookia.png" width="100" height="100" /></a></div>
 			<div class="menun">Go see Wooki, the Booki.</div>
 		</div>
+		<div class="menu1">
+			<div class="menuit"><a href="{H.url_base}acts">ACTS</a></div>
+			<div class="menuline"></div>
+			<div class="menup"><a href="{H.url_base}acts"><img src="/art/actsa.png" width="100" height="100" /></a></div>
+			<div class="menun">Don't cross the streams.</div>
+		</div>
 	</div>
 </div>
 <div class="clear"></div>
@@ -214,6 +220,11 @@
 		<div class="act">
 			<div class="actp">
 				<a href="{H.url_base}booki"><img src="/art/booki.png" width="30" height="30" /></a>
+			</div>
+		</div>
+		<div class="act">
+			<div class="actp">
+				<a href="{H.url_base}acts"><img src="/art/acts.png" width="30" height="30" /></a>
 			</div>
 		</div>
 		<div class="clear"></div>
@@ -1149,10 +1160,10 @@ You do not have the {need} bux needed.
 
 <div class="trade" style="margin-bottom:20px;">
 	<div class="trade1">
-<a href="#" onclick="return tradeshowtab('houses');"><span style="-moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px 8px;width:150px;height:50px;background-color:#353535;padding:10px 20px 10px 20px;font-size:16px;color:#ccc;">Trade <img src="/art/houses.png"/> &amp; <img src="/art/hoes.png"/></span></a>
-<a href="#" onclick="return tradeshowtab('hoes');"><span style="-moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px 8px;width:150px;height:50px;background-color:#353535;padding:10px 20px 10px 20px;font-size:16px;color:#ccc;">Trade <img src="/art/hoes.png"/> &amp; <img src="/art/bros.png"/></span></a>
-<a href="#" onclick="return tradeshowtab('bros');"><span style="-moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px 8px;width:150px;height:50px;background-color:#353535;padding:10px 20px 10px 20px;font-size:16px;color:#ccc;">Trade <img src="/art/bros.png"/> &amp; <img src="/art/bux.png"/></span></a>
-<a href="#" onclick="return tradeshowtab('all');"><span style="-moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px 8px;width:150px;height:50px;background-color:#353535;padding:10px 20px 10px 20px;font-size:16px;color:#ccc;">Show All</span></a>
+<a href="#" onclick="return tradeshowtab('houses');"><span class="tabs">Trade <img src="/art/houses.png"/> &amp; <img src="/art/hoes.png"/></span></a>
+<a href="#" onclick="return tradeshowtab('hoes');"><span class="tabs">Trade <img src="/art/hoes.png"/> &amp; <img src="/art/bros.png"/></span></a>
+<a href="#" onclick="return tradeshowtab('bros');"><span class="tabs">Trade <img src="/art/bros.png"/> &amp; <img src="/art/bux.png"/></span></a>
+<a href="#" onclick="return tradeshowtab('all');"><span class="tabs">Show All</span></a>
 	</div>
 </div>
 
@@ -1501,17 +1512,32 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 
 #acts_header
 <div class="cont">
-<a href="{url}">ALL</a>
-<a href="{url}/chat">CHAT</a>
-<a href="{url}/fight">FIGHT</a>
-<a href="{url}/trade">TRADE</a>
+	<div class="chunk3a">
+		<div class="chunk3ait">
+			<img src="/art/acts.png" width="30" height="30" /> Acts<br/>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="illacts1"></div>
+	<div class="chunk8a">
+
+<div class="trade" style="margin-bottom:20px;">
+	<div class="trade1">
+<a href="{url}"><span class="tabs">All</span></a>
+<a href="{url}/chat"><span class="tabs">Chat</span></a>
+<a href="{url}/fight"><span class="tabs">Fight</span></a>
+<a href="{url}/trade"><span class="tabs">Trade</span></a>
+	</div>
 </div>
 
 #acts_footer
-<div class="cont">
-<a href="{url}">TOP</a>
-<a href="{url}?off={prev_off}">PREV</a>
-<a href="{url}?off={next_off}">NEXT</a>
+<span class="acts_paging">
+	<a href="{url}">^TOP</a>
+	<a href="{url}?off={prev_off}"> | PREV</a>
+	<a href="{url}?off={next_off}"> | NEXT</a>
+	<div class="clear"></div>
+</span>
+</div>
 </div>
 
 

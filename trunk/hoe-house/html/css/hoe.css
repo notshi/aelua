@@ -286,7 +286,7 @@ div.illhoe3, div.illwork1, div.illwork2, div.illwork3, div.illleave1,
 div.illleave2, div.illleave3, div.illlist1, div.illlist2, div.illlist3,
 div.illshop1, div.illtrade1, div.illpro1, div.illpro1, div.illfight1, 
 div.illfight2, div.illfight3, div.illchoose,  div.illchoose1,
-div.illbrobux, div.illhoebro, div.wookiback {
+div.illbrobux, div.illhoebro, div.wookiback, div.illacts1 {
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px 8px;
@@ -358,7 +358,7 @@ div.illlist1, div.illlist2, div.illlist3,
 div.illshop1, div.illtrade1, div.illpro1, 
 div.illpro2, div.illfight1, div.illfight2, 
 div.illfight3, div.illchoose, div.illchoose1,
-div.wookiback  {
+div.wookiback, div.illacts1  {
 	border: 0;
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
@@ -423,6 +423,9 @@ div.illchoose {
 div.wookiback {
 	background-image:url('/art/wookiback.png');
 	height: 160px;
+}
+div.illacts1 {
+	background-image:url('/art/illacts1.png');
 }
 
 /* div big bold fonts */
@@ -530,7 +533,7 @@ div.chunk3line {
 div.chunk4{
 /*	background-color: #ECEAEA;*/
 	margin: 0px auto;
-	width: 500px;
+	width: 550px;
 	height: 48px;
 	clear: both;
 	padding: 0px 5px 5px 5px;
@@ -1801,6 +1804,35 @@ div.help:hover{
 div.help:active{
 	background-color:#00C224;
 }
+
+.tabs{
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px 8px;
+	width:150px;
+	height:50px;
+	background-color:#353535;
+	padding:10px 20px 10px 20px;
+	font-size:16px;
+	color:#ccc;
+}
+.tabs:hover{
+	background-color:#424242;
+}
+.tabs:active{
+	background-color:#353535;
+}
+
+.acts_paging{
+	font-size:12px;
+	font-weight:bold;
+	margin:20px;
+}
+.acts_paging a:focus		{color: #ccc; text-decoration: none;}
+.acts_paging a:link			{color: #ccc; text-decoration: none;}
+.acts_paging a:visited		{color: #ccc; text-decoration: none;}
+.acts_paging a:hover		{color: #ccc; text-decoration: underline;}
+.acts_paging a:active		{color: #ccc; text-decoration: none;}
 
 div.crumit{
 	font-family: Georgia, serif;
