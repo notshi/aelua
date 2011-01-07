@@ -3,7 +3,7 @@ echo "This will apt-get install lua(5.1) and svn if needed and then checkout the
 
 type -P lua &>/dev/null || {
 echo "installing lua using sudo apt-get"
-sudo apt-get install lua5.1 subversion
+sudo apt-get install lua5.1
 }
 
 type -P svn &>/dev/null || {
