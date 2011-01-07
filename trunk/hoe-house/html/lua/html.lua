@@ -332,7 +332,7 @@ end
 -----------------------------------------------------------------------------
 player_work_form=function(d)
 
-	for i,v in pairs{1,5,10} do
+	for i,v in pairs{1,5,10,20} do
 		if v==d.xwork then
 			d["check"..v]=" checked=\"true\""
 		else
