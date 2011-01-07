@@ -62,7 +62,7 @@ function create(H)
 	p.created=H.srv.time
 	p.updated=H.srv.time
 	
-	p.timestep=600 -- 60*10 -- a 10 minute tick, gives 144 ticks a day
+	p.timestep=300 -- 60*10 -- a 10 minute tick, gives 144 ticks a day
 	
 	p.endtime=H.srv.time+(p.timestep*4032) -- default game end after about a month of standard ticks
 	-- setting the tick to 1 second gets us the same amount of game time in about 1 hour
@@ -186,10 +186,10 @@ end
 --
 --------------------------------------------------------------------------------
 function get_active(H)
-	return (list(H,{state="active",timestep=600,limit=1})[1])
+	return (list(H,{state="active",timestep=300,limit=1})[1])
 end
 function get_last(H)
-	return (list(H,{state="over",timestep=600,limit=1})[1])
+	return (list(H,{state="over",timestep=600,limit=1})[1]) -- need to fix this at start of next round
 end
 function get_speed(H)
 	return (list(H,{state="over",timestep=1,limit=1})[1])

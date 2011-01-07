@@ -1316,7 +1316,7 @@ function serv_cron(H)
 			end
 		end
 		
-		if v.cache.timestep < 600 then -- a fast round is any tick less than 10 minutes
+		if v.cache.timestep < 300 then -- a fast round is any tick less than 5 minutes
 			numof_fastrounds=numof_fastrounds+1
 		end
 		
@@ -1337,6 +1337,7 @@ function serv_cron(H)
 		end
 	end
 	
+--[[
 	if numof_fastrounds==0 then -- check if we should create a new fastround
 
 		H.srv.put("there are no active fast rounds\n")
@@ -1352,5 +1353,6 @@ function serv_cron(H)
 			H.srv.put("created new speed round "..r.key.id.."\n")
 		end
 	end
+]]
 
 end
