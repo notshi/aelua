@@ -11,10 +11,7 @@ echo "installing svn using sudo apt-get"
 sudo apt-get install subversion
 }
 
-
 echo "getting or updating yarn from google code"
 svn checkout https://aelua.googlecode.com/svn/trunk/jslua/html/luac .
-cd yarn
-
 
 echo "you may now run ./yarnterm.sh to play"
