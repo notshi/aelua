@@ -279,6 +279,16 @@ local get,put=make_get_put(srv)
 		end
 	end
 	
+	local function atom_escape(s)
+	
+		return string.gsub(s, "([%&%<])",
+			function(c)
+				if c=="&" then return "&amp;" end
+				if c=="<" then return "&lt;" end
+				return c
+			end)
+	end
+	
 	if page=="" then -- a list
 		
 		if ext=="atom" then -- an atom feed
@@ -300,7 +310,7 @@ local get,put=make_get_put(srv)
 				local chunks=bubble(srv,v) -- this gets parent entities
 				local text=get(macro_replace(chunks.plate_post or "{body}",chunks))
 				
-				put("blog_atom_item",{it=v.cache,chunks=chunks,text=text})
+				put("blog_atom_item",{it=v.cache,chunks=chunks,text=atom_escape(text)})
 			end
 			put("blog_atom_foot",{})
 			

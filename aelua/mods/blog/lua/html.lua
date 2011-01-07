@@ -147,11 +147,11 @@ blog_atom_item=function(d)
 	d.id=d.link
 	return replace([[
 	<entry>
-		<title>{chunks.title}</title>
+		<title type="text">{chunks.title}</title>
 		<link href="{link}"/>
 		<id>{id}</id>
 		<updated>{pubdate}</updated>
-		<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">{text}</div></content>
+		<content type="html">{text}</content>
 	</entry>
 ]],d)
 
