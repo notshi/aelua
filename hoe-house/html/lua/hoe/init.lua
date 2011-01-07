@@ -1194,6 +1194,8 @@ function serv_round_acts(H)
 	put("header",{})
 	put("player_bar",{player=H.player and H.player.cache})
 	
+	put("acts_header",{url=url})
+	
 	local tt={ dupe=0 , private=0 , limit=20 , offset=0 }
 	local tail=H.arg(2)
 	if tail=="chat" then
@@ -1203,6 +1205,9 @@ function serv_round_acts(H)
 	elseif tail=="fight" then
 		tt.type="fight"
 	end
+	local off=math.floor( tonumber(H.srv.gets.off) or 0)
+	if off<0 then off=0 end
+	tt.offset=off
 	local a=acts.list(H,tt)
 	if a then
 		for i=1,#a do local v=a[i]
@@ -1210,6 +1215,10 @@ function serv_round_acts(H)
 			put("profile_act",{act=v.cache,html=s})
 		end
 	end
+	
+	local this_url=url
+	if tt.type then this_url=this_url.."/"..tt.type end
+	put("acts_footer",{url=this_url,prev_off=tt.offset-tt.limit,next_off=tt.offset+tt.limit})
 		
 	put("footer",footer_data)
 
