@@ -88,7 +88,7 @@ function get_alerts(H)
 	local as={}
 	function as_add(a) if a then as[#as+1]=a end end
 
-	as_add(check_speedround(H))
+--	as_add(check_speedround(H))
 	as_add(check_thisround(H))
 
 	return as
