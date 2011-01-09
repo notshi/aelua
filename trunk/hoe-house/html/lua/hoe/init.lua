@@ -29,6 +29,7 @@ local alerts=require("hoe.alerts")
 
 local blog=require("blog")
 local comments=require("note.comments")
+local profile=require("profile")
 
 local os=os
 local math=math
@@ -619,10 +620,12 @@ function serv_round_profile(H)
 	local a
 	if view and view.cache then 
 		put("player_profile",{player=view.cache,edit=false,fight=true})
+		put(profile.get_profile_html(H.srv,view.cache.email))
 		a=acts.list(H,{ owner=view.cache.id , private=0 , limit=20 , offset=0 })
 
 	elseif H.player then
 		put("player_profile",{player=H.player.cache,edit=true})
+		put(profile.get_profile_html(H.srv,H.player.cache.email))
 		a=acts.list(H,{ owner=H.player.key.id , limit=20 , offset=0 })
 	end
 	
@@ -815,14 +818,50 @@ function serv_round_fight(H)
 		
 	else
 	
-	local a=acts.list(H,{ type="fight" , dupe=0 , private=0 , limit=20 , offset=0 })
-	if a then
-		for i=1,#a do local v=a[i]
-			local s=acts.plate(H,v,"html")
-			put("profile_act",{act=v.cache,html=s})
-		end
-	end
+		local page={} -- this sort of dumb paging should be fine for now? bad for appengine though
+		page.show=0
+		page.size=50
+		page.next=page.size
+		page.prev=0
 		
+		if H.srv.gets.off then
+			page.show=math.floor( tonumber(H.srv.gets.off) or 0)
+		end
+		if page.show<0 then page.show=0 end	-- no negative offsets going in
+		
+		local list=players.list(H,{limit=page.size,offset=page.show})
+		
+		page.next=page.show+page.size
+		page.prev=page.show-page.size
+		if page.prev<0 then page.prev=0 end -- and prev does not go below 0 either	
+		if #list < lim then page.next=0 end -- looks last page so set to 0
+		
+		put("player_row_header",{url=H.srv.url,page=page})
+		for i=1,#list do local v=list[i]
+			local profile=users.email_to_profile_link(v.cache.email) or ""
+			v.cache.shout=""
+			if player then
+				local f={}			
+				f[1]=fights.create_robbery(H,player,v).cache
+				f[2]=fights.create_arson(H,player,v).cache
+				f[3]=fights.create_party(H,player,v).cache
+
+				f[4]=fights.create_robbery(H,v,player).cache
+				f[5]=fights.create_arson(H,v,player).cache
+				f[6]=fights.create_party(H,v,player).cache
+
+				local fmt=string.format
+				v.cache.shout=
+[[<a href="]]..url..[[/]]..v.cache.id..[[">
+R: ]]..fmt("%02d",f[1].percent)..[[% (]]..fmt("%02d",f[4].percent)..[[%)<br/>
+A: ]]..fmt("%02d",f[2].percent)..[[% (]]..fmt("%02d",f[5].percent)..[[%)<br/>
+P: ]]..fmt("%02d",f[3].percent)..[[% (]]..fmt("%02d",f[6].percent)..[[%)</a>]]
+
+			end
+			put("player_row",{player=v.cache,idx=i+page.show,crowns="",profile=profile})
+		end
+		put("player_row_footer",{url=H.srv.url,page=page})
+
 	end
 		
 	put("footer",footer_data)
