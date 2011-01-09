@@ -97,8 +97,55 @@ local get=make_get(srv)
 	
 	if name then -- need to check the name is valid
 		local pusr=users.get(srv,name) -- get user from email or nickname
-		if pusr then -- gots a user to display profile of
+		local phtml=get_profile_html(srv,name)
+		if pusr and phtml then
 			baseurl=baseurl.."/"..name
+			
+			srv.set_mimetype("text/html; charset=UTF-8")
+			put("header",{title="profile ",H={user=user,sess=sess}})
+
+			put(phtml)
+
+			comments.build(srv,{
+				url=baseurl,
+				posts=posts,
+				get=get,
+				put=put,
+				sess=sess,
+				user=user,
+				post_lock="admin",
+				admin=pusr.cache.email,
+				save_post="status",
+				post_text="change your status",
+				title=pusr.cache.name.." profile",
+				})
+			
+			put("footer")
+			return
+		end	
+	end
+
+-- nothing to see here, move along	
+--	sys.redirect(srv,"/")
+end
+
+
+-----------------------------------------------------------------------------
+--
+-- given a user email, ie the public email
+-- return some html that represents information about them
+-- something that can be shoved into other game profiles and provide
+-- links back to their real profile
+--
+-----------------------------------------------------------------------------
+function get_profile_html(srv,name)
+
+local get=make_get(srv)
+
+	if name then -- need to check the name is valid
+	
+		local pusr=users.get(srv,name) -- get user from email or nickname
+		if pusr then -- gots a user to display profile of
 			
 			local content={head={},foot={},wide={},side={}}
 			local list={ -- default stuff to display
@@ -138,42 +185,18 @@ local get=make_get(srv)
 			end
 	
 	
-				for i,v in ipairs(list) do -- get all chunks
+			for i,v in ipairs(list) do -- get all chunks
 				makechunk(content,v)
 			end
 
-			srv.set_mimetype("text/html; charset=UTF-8")
-			put("header",{title="profile ",H={user=user,sess=sess}})
-
-			put("profile_layout",content)
-
-			comments.build(srv,{
-				url=baseurl,
-				posts=posts,
-				get=get,
-				put=put,
-				sess=sess,
-				user=user,
-				post_lock="admin",
-				admin=pusr.cache.email,
-				save_post="status",
-				post_text="change your status",
-				title=pusr.cache.name.." profile",
-				})
+			return get("profile_layout",content)
 			
-			put("footer")
-			
-			return
 		end
 		
 	end
 
--- nothing to see here, move along	
---	sys.redirect(srv,"/")
+	return nil
 end
-
-
-
 
 -----------------------------------------------------------------------------
 --

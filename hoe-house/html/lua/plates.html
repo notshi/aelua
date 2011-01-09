@@ -1221,7 +1221,7 @@ $(function(){ tradeshowtab("all"); });
 	<div class="trade2">
 		<form action="{url}" method="POST" enctype="multipart/form-data" id="trade_{trade.offer}4{trade.seek}" class="tradeform">
 		
-		<button type="submit" class="button">Sell!</button>
+		<button type="submit" class="button">Sell {trade.offer}!</button>
 		<input type="hidden" name="cmd" value="sell" /> 
 		<input type="hidden" name="trade" value="{trade.offer}4{trade.seek}" /> 
 		<input type="text" name="count" value="0" size="9" class="field" id="trade_{trade.offer}4{trade.seek}_count" /> <img src="/art/{trade.offer}.png" /> {trade.offer}
@@ -1318,7 +1318,7 @@ $("#trade_{trade.offer}4{trade.seek}").validate({
 		<div class="trade3b">
 		Someone is offering {best.count} <img src="/art/{best.offer}.png" /> {best.offer} for {best.price} <img src="/art/{best.seek}.png" /> {best.seek}
 		<br /> ( {best.cost} <img src="/art/{trade.b}.png" /> {trade.b} each )
-		<button type="submit" class="button">Buy!</button>
+		<button type="submit" class="button">Buy {best.offer}!</button>
 		
 		</form>
 		</div>
