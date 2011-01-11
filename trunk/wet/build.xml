@@ -6,8 +6,6 @@
 
   <property name="appengine.sdk" location="../appengine-java-sdk"/>
 
-<available file="../jslua" type="dir" property="jslua.dir.present"/>
-
   <!-- Check that the SDK value is set and seems sane, so we can give a nicer error if not.  -->
   <fail message="Please define the appengine.sdk property to point to your SDK directory" >
     <condition>
@@ -41,8 +39,21 @@
   <!-- Number of days worth of logs to retrieve -->
   <property name="log.days" value="2"/>
 
-
   <property name="war.dir" location=".war"/>
+
+  <available file="../jslua" type="dir" property="jslua.dir.present"/>
+
+  <target name="copy.jslua" description="copy prebuilt jslua files"  if="jslua.dir.present" >
+    <copy todir="${war.dir}/JsLua" includeEmptyDirs="false">
+      <fileset dir="../jslua/war/JsLua">          <exclude name="**/.svn/**"/> </fileset>
+    </copy>
+    <copy todir="${war.dir}/luac" includeEmptyDirs="false">
+      <fileset dir="../jslua/html/luac">          <exclude name="**/.svn/**"/> </fileset>
+    </copy>
+    <copy todir="${war.dir}/js" includeEmptyDirs="false">
+      <fileset dir="../jslua/html/js">          <exclude name="**/.svn/**"/> </fileset>
+    </copy>
+  </target>
 
   <target name="war" depends="compile" description="Assemble the application directory">
     <mkdir dir="${war.dir}/WEB-INF"/>
@@ -63,16 +74,8 @@
       <fileset dir="../aelua/class">            <include name="**/*.jar"/> </fileset>
     </copy>
     
-    <copy todir="${war.dir}/JsLua" includeEmptyDirs="false" if="jslua.dir.present" >
-      <fileset dir="../jslua/war/JsLua">          <exclude name="**/.svn/**"/> </fileset>
-    </copy>
-    <copy todir="${war.dir}/luac" includeEmptyDirs="false" if="jslua.dir.present" >
-      <fileset dir="../jslua/html/luac">          <exclude name="**/.svn/**"/> </fileset>
-    </copy>
-    <copy todir="${war.dir}/js" includeEmptyDirs="false" if="jslua.dir.present" >
-      <fileset dir="../jslua/html/js">          <exclude name="**/.svn/**"/> </fileset>
-    </copy>
-
+    <antcall target="copy.jslua"/>
+      
 	<for param="file"> 
 		<path> 
 			<dirset dir="../aelua/mods">
