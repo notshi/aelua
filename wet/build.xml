@@ -6,6 +6,8 @@
 
   <property name="appengine.sdk" location="../appengine-java-sdk"/>
 
+<available file="../jslua" type="dir" property="jslua.dir.present"/>
+
   <!-- Check that the SDK value is set and seems sane, so we can give a nicer error if not.  -->
   <fail message="Please define the appengine.sdk property to point to your SDK directory" >
     <condition>
@@ -61,13 +63,13 @@
       <fileset dir="../aelua/class">            <include name="**/*.jar"/> </fileset>
     </copy>
     
-    <copy todir="${war.dir}/JsLua" includeEmptyDirs="false" >
+    <copy todir="${war.dir}/JsLua" includeEmptyDirs="false" if="jslua.dir.present" >
       <fileset dir="../jslua/war/JsLua">          <exclude name="**/.svn/**"/> </fileset>
     </copy>
-    <copy todir="${war.dir}/luac" includeEmptyDirs="false" >
+    <copy todir="${war.dir}/luac" includeEmptyDirs="false" if="jslua.dir.present" >
       <fileset dir="../jslua/html/luac">          <exclude name="**/.svn/**"/> </fileset>
     </copy>
-    <copy todir="${war.dir}/js" includeEmptyDirs="false" >
+    <copy todir="${war.dir}/js" includeEmptyDirs="false" if="jslua.dir.present" >
       <fileset dir="../jslua/html/js">          <exclude name="**/.svn/**"/> </fileset>
     </copy>
 
