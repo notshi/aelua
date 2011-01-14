@@ -348,7 +348,7 @@ function build_get_comment(srv,tab,c)
 	
 	local media=""
 	if c.media~=0 then
-		media=[[<a href="/data/]]..c.media..[["><img src="/thumbcache/460/345/data/]]..c.media..[[" class="wetnote_comment_img" /></a>]]
+		media=[[<a href="/data/]]..c.media..[["><img src="]]..srv.url_domain..[[/thumbcache/460/345/data/]]..c.media..[[" class="wetnote_comment_img" /></a>]]
 	end
 	
 	local plink,purl=users.email_to_profile_link(c.cache.user.email)
@@ -368,7 +368,7 @@ function build_get_comment(srv,tab,c)
 	purl=purl or "http://google.com/search?q="..c.cache.user.name,
 	time=os.date("%Y-%m-%d %H:%M:%S",c.created),
 	id=c.id,
-	icon=c.cache.avatar or users.email_to_avatar_url(c.cache.user),
+	icon=srv.url_domain..( c.cache.avatar or users.email_to_avatar_url(c.cache.user) ),
 	})
 end
 
@@ -547,7 +547,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 <div class="wetnote_comment_form_div">
 <a href="{url}">Reply</a>
 </div>]],{
-			url=tab.url.."/"..num
+			url=srv.url_domain..tab.url.."/"..num
 		})
 	end
 	
@@ -558,7 +558,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 <div class="wetnote_comment_form_div">
 <a href="{url}" ">Reply</a>
 </div>]],{
-			url=tab.url,
+			url=srv.url_domain..tab.url,
 			id=num,
 		})
 		end
@@ -606,7 +606,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		purl=purl or "http://google.com/search?q="..(user.name or ""),
 		time=os.date("%Y-%m-%d %H:%M:%S"),
 		id=num,
-		icon=users.email_to_avatar_url(user or ""),
+		icon=srv.url_domain .. ( users.email_to_avatar_url(user or "") ),
 		upload=upload,
 		post_text=post_text,
 		})
@@ -659,7 +659,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 <div><a href="{url}">View {pagecount} comments.</a></div>
 ]],{
 	pagecount=c.pagecount,
-	url=tab.url.."/"..c.id,
+	url=srv.url_domain..tab.url.."/"..c.id,
 	})
 			end
 
@@ -704,7 +704,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 						hide_state="hide"
 						tab.put([[
 <div class="wetnote_comment_hide_div">
-<a href="#" onclick="$(this).hide(400);$('#wetnote_comment_hide_{id}').show(400);return false;">Show {hide} hidden comments</a>
+<a href="#" onclick="if($){$(this).hide(400);$('#wetnote_comment_hide_{id}').show(400);} return false;">Show {hide} hidden comments</a>
 <div id="wetnote_comment_hide_{id}" style="display:none">
 ]],{
 		id=c.id,
@@ -847,7 +847,7 @@ function recent_to_html(srv,tab)
 		time=rough_english_duration(os.time()-c.created),
 		title=c.title or c.url,
 		link=link,
-		purl=purl or "http://google.com/search?q="..c.cache.user.name,
+		purl=srv.url_domain..purl or "http://google.com/search?q="..c.cache.user.name,
 	})
 		
 	end

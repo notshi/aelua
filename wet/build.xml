@@ -41,7 +41,7 @@
 
   <property name="war.dir" location=".war"/>
 
-  <available file="../jslua" type="dir" property="jslua.dir.present"/>
+  <available file="../jslua/war" type="dir" property="jslua.dir.present"/>
 
   <target name="copy.jslua" description="copy prebuilt jslua files"  if="jslua.dir.present" >
     <copy todir="${war.dir}/JsLua" includeEmptyDirs="false">

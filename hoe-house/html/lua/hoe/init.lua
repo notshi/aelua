@@ -11,6 +11,7 @@ local sys=require("wetgenes.aelua.sys")
 local log=require("wetgenes.aelua.log").log -- grab the func from the package
 
 local wet_string=require("wetgenes.string")
+local trim=wet_string.trim
 local str_split=wet_string.str_split
 local serialize=wet_string.serialize
 
@@ -54,6 +55,8 @@ module("hoe")
 -- create a main hoe state table
 -- this can contain cached round and player info as well as srv
 -- so for hoe functions we can pass this around rather than srv directly
+-- this is a bad idea :) future apps will use srv and add fields rather than
+-- wrapping srv into another value like this.
 --
 -----------------------------------------------------------------------------
 function create(srv)
@@ -571,6 +574,8 @@ function serv_round_profile(H)
 		if posts.do_name and posts.name and posts.name~=H.player.cache.name then
 			local s=posts.name
 			if string.len(s) > 20 then s=string.sub(s,1,20) end
+			s=trim(s) -- no leading or trailing spaces
+			if string.len(s) < 2 then s="DumDum" end
 			by.name=wet_html.esc(s)
 			by.energy=-1				-- costs one energy to change your name
 		end
@@ -636,7 +641,14 @@ function serv_round_profile(H)
 			put("profile_act",{act=v.cache,html=s})
 		end
 		put("profile_acts_footer")
-	end
+		put([[
+<script language="javascript" type="text/javascript">
+	$(function(){
+		$(".wetnote_comment_text a").autoembedlink({width:460,height:345});
+	});
+</script>
+]])
+		end
 	
 	
 	put("footer",footer_data)
@@ -880,7 +892,7 @@ function serv_round_trade(H)
 	-- and the second name is the payment type
 	local valid_trades={
 			{"houses","hoes",min=5,max=50,},
-			{"hoes","bros",min=100,max=1000,},
+			{"hoes","bros",min=40,max=1000,},
 			{"bros","bux",min=1000,max=10000,},
 		}
 

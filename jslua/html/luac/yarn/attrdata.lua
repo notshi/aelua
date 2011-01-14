@@ -366,6 +366,49 @@ Eventually.
 	desc="a corpse of a blob",
 },
 
+{
+	name="rat",
+	form="char",
+	class="blob",
+	asc=ascii("r"),
+	desc="a rat",
+	score=10,
+	hp=10,
+	
+	wheel=0,
+	dam_min=2,
+	dam_max=4,
+	def_add=0,
+	def_mul=0.75,
+	
+	can=
+	{
+		fight=true,
+		roam="random",
+	},
+	
+	powup={
+		score=10,
+		hp=10,
+		dam_min=2,
+		dam_max=2,
+		def_add=-1,
+		def_mul=0,
+		},
+},
+
+
+
+{
+	name="rat_corpse",
+	form="item",
+	class="corpse",
+	flavour="rat",
+	asc=ascii("%"),
+	weight=1,
+	desc="a corpse of a rat",
+},
+
 }
 
 -- swing data both ways
