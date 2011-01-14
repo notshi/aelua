@@ -553,6 +553,15 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	
 -- reply form
 	function get_reply_form(num)
+		if tab.linkonly then
+			return tab.get([[
+<div class="wetnote_comment_form_div">
+<a href="{url}" ">Reply</a>
+</div>]],{
+			url=tab.url,
+			id=num,
+		})
+		end
 		if not user then -- must login to reply
 			return tab.get([[
 <div class="wetnote_comment_form_div">
@@ -560,7 +569,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 <div id="wetnote_comment_form_{id}" style="{formcss}"> <a href="{url}">You must login to comment.<br/> Click here to login with twitter/gmail/etc...</a>
 </div>
 </div>]],{
-			url="/dumid/login/?continue="..url_esc(srv.url),
+			url="/dumid/login/?continue="..url_esc(tab.url),
 			actioncss=(num==0) and "display:none" or "display:block",
 			formcss=(num==0) and "display:block" or "display:none",
 			id=num,
@@ -724,7 +733,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	tab.put([[</div>]])
 	
 	
-	if tab.toponly then
+	if tab.toponly or tab.linkonly then
 		r={}
 	else
 		local r=get_recent(srv,50)

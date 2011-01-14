@@ -66,7 +66,7 @@ cache.countzero()
 	srv.flavour=nil -- sub modules can use this flavour to seperate themselves depending when called
 	
 	srv.domainport=srv.url_slash[3]
-	if srv.domain then srv.domainport=str_split(":",srv.domain)[1] end -- lose any port part
+	if srv.domainport then srv.domain=str_split(":",srv.domainport)[1] end -- lose any port part
 	
 	srv.url_domain=table.concat({srv.url_slash[1],srv.url_slash[2],srv.url_slash[3]},"/")
 	srv.url_local="/"

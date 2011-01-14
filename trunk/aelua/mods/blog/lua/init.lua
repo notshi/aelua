@@ -309,7 +309,7 @@ local get,put=make_get_put(srv)
 			
 				local chunks=bubble(srv,v) -- this gets parent entities
 				local text=get(macro_replace(chunks.plate_post or "{body}",chunks))
-				
+				text=text..[[<script type="text/javascript" src="]]..srv.url_domain..[[/note/import/blog]]..v.cache.pubname..[[.js"></script>]]
 				put("blog_atom_item",{it=v.cache,chunks=chunks,text=atom_escape(text)})
 			end
 			put("blog_atom_foot",{})

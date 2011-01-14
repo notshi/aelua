@@ -1424,6 +1424,7 @@ flag:
     }
 
     String s = Double.toString(d);
+    if(s=="Infinity") { return "Infinity"; } // this is bad...
     StringBuffer t = new StringBuffer(s);
     int e;      // Exponent value
     if (d == 0)
@@ -1471,6 +1472,7 @@ flag:
   private String formatFloatRawF(double d)
   {
     String s = Double.toString(d);
+    if(s=="Infinity") { return "Infinity"; } // this is bad...
     StringBuffer t = new StringBuffer(s);
 
     int di = s.indexOf('.');
