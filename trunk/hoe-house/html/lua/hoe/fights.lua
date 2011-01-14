@@ -257,7 +257,6 @@ function create_robbery(H,p1,p2)
 
 	c.energy=math.ceil(p1.cache.bros/1000) -- costs 1 energy per 1000 bros
 	if c.energy<1  then c.energy=1  end
-	if c.energy>20 then c.energy=20 end -- cap it at about 3 hours worth of energy
 	
 	c.actor1=p1.key.id
 	c.actor2=p2.key.id
@@ -271,9 +270,7 @@ function create_robbery(H,p1,p2)
 	
 	for i=1,#c.sides do local v=c.sides[i]
 		v.result={} -- the change in stats
-		v.bros_min=math.ceil(v.player.bros/v.player.houses) -- minimum bros involved, houses spread out your bros
-		v.bros_max=v.player.bros -- maximum bros involved
-		v.bros=math.floor((v.bros_min+v.bros_max)/2) -- number of bros involved in this fight
+		v.bros=v.player.bros -- all bros are involved
 		v.sticks=v.bros -- every bro gets a stick
 		if v.sticks>v.player.sticks then v.sticks=v.player.sticks end -- unless there are not enough sticks
 		v.power=v.bros+v.sticks -- total fighting power
@@ -339,7 +336,6 @@ function create_arson(H,p1,p2)
 
 	c.energy=math.ceil(p1.cache.bros/1000) -- costs 1 energy per 1000 bros
 	if c.energy<1  then c.energy=1  end
-	if c.energy>20 then c.energy=20 end -- cap it at about 3 hours worth of energy
 	
 	c.actor1=p1.key.id
 	c.actor2=p2.key.id
@@ -353,10 +349,10 @@ function create_arson(H,p1,p2)
 	
 	for i=1,#c.sides do local v=c.sides[i]
 		v.result={} -- the change in stats
-		v.bros=math.ceil(v.player.bros/v.player.houses) -- number of bros involved, houses spread out your bros
+		v.bros=v.player.bros -- all bros are involved
 		v.sticks=v.bros -- every bro gets a stick
 		
-		if v==att then -- 10x sticks for attacker
+		if v==att then -- need 10x the sticks for attacker
 			v.sticks=v.sticks*10
 		end
 		
@@ -440,7 +436,6 @@ function create_party(H,p1,p2)
 
 	c.energy=math.ceil(p1.cache.houses) -- costs 1 energy per house
 	if c.energy<1  then c.energy=1  end
-	if c.energy>20 then c.energy=20 end -- cap it at about 3 hours worth of energy
 	
 	c.actor1=p1.key.id
 	c.actor2=p2.key.id
@@ -454,7 +449,7 @@ function create_party(H,p1,p2)
 	
 	for i=1,#c.sides do local v=c.sides[i]
 		v.result={} -- the change in stats
-		v.party=math.ceil(v.player.houses*10000*v.player.houses/v.player.hoes) -- 10 hoes a house is worth 1000*houses
+		v.party=v.player.houses*1000 -- every house is worth 1000 manure
 		v.manure=v.player.houses*1000 -- every party needs manure
 		
 		if v.manure>v.player.manure then v.manure=v.player.manure end -- unless there is not enough manure
@@ -462,9 +457,7 @@ function create_party(H,p1,p2)
 		v.power=v.party+v.manure -- total fighting power is manure powered only, hoes are fickle
 		
 	end
-	
-	if att.manure==0 then att.power=0 end -- must use some manure to attack
-	
+		
 	c.percent=winchance(att.power,def.power) -- this is the real chance of attacker winning (maybe randomised?)
 		
 	c.display_percent=c.percent -- display this number, in case we wish to lie slightly
@@ -482,7 +475,7 @@ function create_party(H,p1,p2)
 		att.result.manure=-att.manure -- all manure used is lost
 		def.result.manure=-def.manure -- all manure used is lost
 		
-		c.result.hoes     = frand(	def.player.hoes,	5,15,100)		-- att gains 5%->15% hoes from def		
+		c.result.hoes     = frand(	def.player.hoes,	5,15,100)		-- att gains 5%->15% hoes from def
 		att.result.hoes   =c.result.hoes
 		def.result.hoes   =-c.result.hoes
 		

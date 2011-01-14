@@ -304,9 +304,11 @@ local reverse=false
 	
 	if reverse then
 			q[#q+1]={"sort","cost","DESC"} -- we want the most expensive
+			q[#q+1]={"sort","count","ASC"} -- then we want the smallest amount
 			q[#q+1]={"sort","created","ASC"} -- and we want the oldest so FIFO	
 	else
 			q[#q+1]={"sort","cost","ASC"} -- we want the cheapest
+			q[#q+1]={"sort","count","ASC"} -- then we want the smallest amount
 			q[#q+1]={"sort","created","ASC"} -- and we want the oldest so FIFO	
 	end
 		
