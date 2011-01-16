@@ -99,6 +99,8 @@ local get,put=make_get_put(srv)
 			srv.set_mimetype(em.cache.mimetype)
 			
 			srv.set_header("Cache-Control","public") -- allow caching of page
+			srv.set_header("Date",os.date("%a, %d %b %Y %H:%M:%S GMT",em.cache.updated)) -- date?
+
 			
 			while true do
 			
@@ -222,6 +224,7 @@ function read(srv,id)
 		srv.set_mimetype(em.cache.mimetype)
 		
 		srv.set_header("Cache-Control","public") -- allow caching of page
+		srv.set_header("Date",os.date("%a, %d %b %Y %H:%M:%S GMT",em.cache.updated)) -- date?
 		
 		local c=em.cache
 		
