@@ -28,6 +28,7 @@ local log=require("wetgenes.aelua.log").log -- grab the func from the package
 local math=math
 local string=string
 local table=table
+local os=os
 
 local ipairs=ipairs
 local tostring=tostring
