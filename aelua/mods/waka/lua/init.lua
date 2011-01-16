@@ -93,7 +93,7 @@ local ext
 	
 	if aa[#aa] then
 		local ap=str_split(".",aa[#aa])
-		if ap[#ap] then
+		if #ap>1 and ap[#ap] then
 			if ap[#ap]=="css" then -- css
 				ext="css"
 			elseif ap[#ap]=="html" then -- just the pages html 
