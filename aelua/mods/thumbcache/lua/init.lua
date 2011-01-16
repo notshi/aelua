@@ -69,6 +69,7 @@ function serv(srv)
 		
 			srv.set_mimetype( data.mimetype )
 			srv.set_header("Cache-Control","public") -- allow caching of page
+			srv.set_header("Expires",os.date("%a, %d %b %Y %H:%M:%S GMT",os.time()+(60*60))) -- one hour cache
 			srv.put(data.data)
 			return
 			
@@ -144,6 +145,7 @@ function serv(srv)
 				
 					srv.set_mimetype( "image/"..string.lower(image.format) )
 					srv.set_header("Cache-Control","public") -- allow caching of page
+					srv.set_header("Expires",os.date("%a, %d %b %Y %H:%M:%S GMT",os.time()+(60*60))) -- one hour cache
 					srv.put(image.data)
 				
 					return
