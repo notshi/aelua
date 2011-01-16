@@ -228,7 +228,7 @@ local get,put=make_get_put(srv)
 
 	if aa[#aa] and aa[#aa]~="" then
 		local ap=str_split(".",aa[#aa])
-		if ap[#ap] then
+		if #ap>1 and ap[#ap] then
 			if ap[#ap]=="atom" then -- the pages in atom wrapper
 				ext="atom"
 			elseif ap[#ap]=="data" then -- just this pages raw data as text
