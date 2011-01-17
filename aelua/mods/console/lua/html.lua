@@ -23,7 +23,7 @@ footer=function(d)
 	d=d or {}
 	
 	d.mod_name="console"
-	d.mod_link="http://code.google.com/p/aelua/wiki/ModConsole"
+	d.mod_link="http://boot-str.appspot.com/about/mod/console"
 	
 	return html.footer(d)
 end

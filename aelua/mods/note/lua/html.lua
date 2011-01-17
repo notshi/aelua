@@ -21,7 +21,7 @@ setmetatable(_M,{__index=html}) -- use a meta table to also return html base
 -----------------------------------------------------------------------------
 footer=function(d)
 	d.mod_name="note"
-	d.mod_link="http://code.google.com/p/aelua/wiki/ModNote"
+	d.mod_link="http://boot-str.appspot.com/about/mod/note"
 	return html.footer(d)
 end
 
