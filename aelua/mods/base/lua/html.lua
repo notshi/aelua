@@ -90,7 +90,12 @@ header=function(d)
 	
 	d.extra=(d.srv and d.srv.extra or "") .. ( d.extra or "" )
 	
-	for _,v in ipairs{d.srv or {},d} do
+	d.favicon="/favicon.ico"
+	d.blogtitle="blog"
+	d.blogurl="/blog/.atom"
+
+
+	for _,v in ipairs{d.srv or {},d,opts.head or {} } do
 		
 		if v.extra_css then
 			for i,v in ipairs(v.extra_css) do
@@ -104,8 +109,18 @@ header=function(d)
 ]]
 			end
 		end
-		if v.css then --embed some css
+		if v.css then --embed some raw css
 			d.extra=d.extra.."<style type=\"text/css\">"..v.css.."</style>"
+		end
+		
+		if v.favicon then --favicon link
+			d.favicon=v.favicon
+		end
+		if v.blogtitle then --blogtitle
+			d.blogtitle=v.blogtitle
+		end
+		if v.blogurl then --blogurl
+			d.blogurl=v.blogurl
 		end
 	end
 	
@@ -139,9 +154,9 @@ header=function(d)
 
 <title>{title}</title>
 
-<link rel="alternate" type="application/atom+xml" title="blog Feed" href="/blog/.atom" />
+<link rel="alternate" type="application/atom+xml" title="{blogtitle}" href="{blogurl}" />
 
-<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="shortcut icon" href="{favicon}" />
 
 <link rel="stylesheet" type="text/css" href="/css/base/aelua.css" /> 
 <link rel="stylesheet" type="text/css" href="/.css" /> 
@@ -221,15 +236,17 @@ end
 about=function(d)
 
 	d=d or {}
+	d.bootstrapp="<a href=\"http://boot-str.appspot.com/\">bootstrapp</a>"
 	d.aelua="<a href=\"http://code.google.com/p/aelua/\">aelua</a>"
-	d.lua="<a href=\"http://www.lua.org/\">lua</a>"
-	d.appengine="<a href=\"http://code.google.com/appengine/\">appengine</a>"
 	d.wetgenes="<a href=\"http://www.wetgenes.com/\">wetgenes</a>"
+	d.version=opts.bootstrapp_version or 0
+
+--	d.lua="<a href=\"http://www.lua.org/\">lua</a>"
+--	d.appengine="<a href=\"http://code.google.com/appengine/\">appengine</a>"
 
 	local p=get_plate("about",[[
 <div class="aelua_about">
-	{aelua} is a {lua} core and framework compatible with {appengine}.<br/>
-	{aelua} is designed and developed by {wetgenes}.<br/>
+	{bootstrapp} {version} is a distribution of {aelua} mods developed by {wetgenes}.
 </div>
 ]])
 	return replace(p,d)
