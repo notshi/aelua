@@ -23,7 +23,7 @@ footer=function(d)
 	d=d or {}
 	
 	d.mod_name="dice"
-	d.mod_link="http://code.google.com/p/aelua/wiki/ModDice"
+	d.mod_link="http://boot-str.appspot.com/about/mod/dice"
 	
 	return html.footer(d)
 end

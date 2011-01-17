@@ -16,6 +16,16 @@ module("admin.html")
 setmetatable(_M,{__index=html}) -- use a meta table to also return html base 
 
 
+-----------------------------------------------------------------------------
+--
+-- overload footer
+--
+-----------------------------------------------------------------------------
+footer=function(d)
+	d.mod_name="admin"
+	d.mod_link="http://boot-str.appspot.com/about/mod/admin"
+	return html.footer(d)
+end
 
 -----------------------------------------------------------------------------
 --
