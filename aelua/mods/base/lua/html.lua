@@ -20,6 +20,7 @@ local ipairs=ipairs
 local tostring=tostring
 local require=require
 
+local opts=opts
 local opts_html={}
 if opts and opts.html then opts_html=opts.html end
 opts_html.bar=opts_html.bar or "head"
@@ -239,14 +240,14 @@ about=function(d)
 	d.bootstrapp="<a href=\"http://boot-str.appspot.com/\">bootstrapp</a>"
 	d.aelua="<a href=\"http://code.google.com/p/aelua/\">aelua</a>"
 	d.wetgenes="<a href=\"http://www.wetgenes.com/\">wetgenes</a>"
-	d.version=opts.bootstrapp_version or 0
-
+	
+--	d.version=opts.bootstrapp_version or 0
 --	d.lua="<a href=\"http://www.lua.org/\">lua</a>"
 --	d.appengine="<a href=\"http://code.google.com/appengine/\">appengine</a>"
 
 	local p=get_plate("about",[[
 <div class="aelua_about">
-	{bootstrapp} {version} is a distribution of {aelua} mods developed by {wetgenes}.
+	{bootstrapp} is a distribution of {aelua} mods developed by {wetgenes}.
 </div>
 ]])
 	return replace(p,d)
