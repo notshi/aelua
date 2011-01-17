@@ -17,6 +17,15 @@ local type=type
 
 module("opts")
 
+bootstrapp_version=20110117 -- hand bump on release
+
+urls={}
+
+head={} -- stuff to inject into the html header
+head.favicon="/favicon.ico" -- the favicon
+head.extra_css={} -- more css links
+head.extra_js={} -- more js links
+
 users={}
 users.admin={ -- users with hard and unremovable admin rights for this app
 	["notshi@gmail.com"]=true,
@@ -55,6 +64,7 @@ map={ -- base lookup table
 						["#flavour"]	=	app_name, 			-- use this flavour when serving
 						["#opts"]		=	{
 												url="/blog",
+												title="blog",
 											},
 					},
 
