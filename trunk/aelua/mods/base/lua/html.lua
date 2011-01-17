@@ -238,6 +238,7 @@ about=function(d)
 
 	d=d or {}
 	d.bootstrapp="<a href=\"http://boot-str.appspot.com/\">bootstrapp</a>"
+	d.mods="<a href=\"http://boot-str.appspot.com/about\">mods</a>"
 	d.aelua="<a href=\"http://code.google.com/p/aelua/\">aelua</a>"
 	d.wetgenes="<a href=\"http://www.wetgenes.com/\">wetgenes</a>"
 	
@@ -247,7 +248,7 @@ about=function(d)
 
 	local p=get_plate("about",[[
 <div class="aelua_about">
-	{bootstrapp} is a distribution of {aelua} mods developed by {wetgenes}.
+	{bootstrapp} is a distribution of {aelua} {mods} developed by {wetgenes}.
 </div>
 ]])
 	return replace(p,d)
