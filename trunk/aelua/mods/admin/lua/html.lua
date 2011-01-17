@@ -42,6 +42,7 @@ admin_edit=function(d)
 	return replace([[
 <div>
 <p>This install is running {bootstrapp} version {version}</p>
+<p> <a href="/admin/console">console</a> <a href="/data">data</a> <a href="/blog//admin">blog</a> <a href="/blog//note">note</a> </p>
 <form name="post" id="post" action="" method="post" enctype="multipart/form-data">
 	<textarea name="text" cols="120" rows="24" class="field" >{text}</textarea>
 	<br/>
