@@ -102,6 +102,8 @@ local ext
 				ext="data"
 			elseif ap[#ap]=="frame" then -- special version of this page intended to be embeded in an iframe
 				ext="frame"
+			elseif ap[#ap]=="dbg" then -- a debug json dump of data(inherited)
+				ext="dbg"
 			end
 			if ext then
 				ap[#ap]=nil
@@ -218,6 +220,11 @@ local ext
 		srv.set_mimetype("text/plain; charset=UTF-8")
 		srv.put(page.cache.text or "")
 		
+	elseif ext=="dbg" then -- dump out all the bubbled chunks as json
+
+		srv.set_mimetype("text/plain; charset=UTF-8")
+		put( json.encode(chunks) )
+			
 	else
 	
 		srv.set_mimetype("text/html; charset=UTF-8")
