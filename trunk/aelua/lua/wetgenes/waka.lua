@@ -323,6 +323,9 @@ function form_chunks(srv,chunks,opts)
 					local blog=require("blog")
 					s=blog.recent_posts(srv,e.count or 5)
 				end
+			elseif e.import=="gsheet" then -- we need to grab some json from google
+				local gsheet=require("waka.gsheet")
+				s=gsheet.getwaka(srv,e) -- get a string
 			end
 		
 		else -- "html" default to basic waka format, html allowed
