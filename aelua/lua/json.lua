@@ -18,6 +18,10 @@
 --   compat-5.1 if using Lua 5.0
 --
 -- CHANGELOG
+--
+-- This file has been fucked with so it will decode *some* javascript as well as json
+-- sorry :)
+--
 --   0.9.20 Introduction of local Lua functions for private functions (removed _ function prefix). 
 --          Fixed Lua 5.1 compatibility issues.
 --   		Introduced json.null to have null values in associative arrays.
@@ -26,12 +30,15 @@
 --   0.9.10 Fix to array encoding / decoding to correctly manage nil/null values in arrays.
 -----------------------------------------------------------------------------
 
+
 -----------------------------------------------------------------------------
 -- Imports and dependencies
 -----------------------------------------------------------------------------
 local math = require('math')
 local string = require("string")
 local table = require("table")
+
+local tonumber=tonumber
 
 local base = _G
 
@@ -210,7 +217,8 @@ function decode_scanConstant(s, startPos)
       return consts[k], startPos + string.len(k)
     end
   end
-  base.assert(nil, 'Failed to scan constant from string ' .. s .. ' at starting position ' .. startPos)
+  return decode_fakeString(s,startPos) -- try again
+--  base.assert(nil, 'Failed to scan constant from string ' .. s .. ' at starting position ' .. startPos)
 end
 
 --- Scans a number from the JSON encoded string.
@@ -303,10 +311,27 @@ function decode_scanString(s,startPos)
     endPos = endPos + 1
     base.assert(endPos <= stringLen+1, "String decoding failed: unterminated string at position " .. endPos)
   until bEnded
-  local stringValue = 'return ' .. string.sub(s, startPos, endPos-1)
+  
+local str=string.sub(s, startPos, endPos-1)
+
+-- more h4x to deal with java escape codes, just convert them to lua
+	str = string.gsub(str, "\\u(%x%x%x%x)", function(hex)
+        return "\\"..(tonumber(hex, 16)) -- to lua escape string
+    end)
+    
+  local stringValue = 'return ' .. str
   local stringEval = base.loadstring(stringValue)
   base.assert(stringEval, 'Failed to load string [ ' .. stringValue .. '] in JSON4Lua.decode_scanString at position ' .. startPos .. ' : ' .. endPos)
   return stringEval(), endPos  
+end
+-- hacky hack hack to parse js...
+function decode_fakeString(str,startPos)
+	local s,e=str:find(":",startPos,true)
+	if s then
+		return str:sub(startPos,s-1),s
+	else
+  base.assert(stringEval, 'Failed to load fakestring [ ' .. str .. '] in JSON4Lua.decode_scanString at position ' .. startPos )
+  	end
 end
 
 --- Scans a JSON string skipping all whitespace from the current start position.
