@@ -14,6 +14,8 @@ local img=require("wetgenes.aelua.img")
 
 local log=require("wetgenes.aelua.log").log -- grab the func from the package
 
+local wet_sandbox=require("wetgenes.sandbox")
+
 local wet_string=require("wetgenes.string")
 local replace=wet_string.replace
 local macro_replace=wet_string.macro_replace
@@ -43,7 +45,8 @@ local tonumber=tonumber
 local type=type
 local pcall=pcall
 local loadstring=loadstring
-
+local setfenv=setfenv
+local pcall=pcall
 
 --
 -- Which can be overeiden in the global table opts
@@ -184,14 +187,47 @@ local ext
 	end
 
 	
-	local form=wet_waka.form_chunks(srv,chunks) -- build processed strings
-
 	local pageopts={
 		flame="on",
 	}
 	if chunks.opts then
 		for n,s in pairs(chunks.opts.opts) do
 			pageopts[n]=s
+		end
+	end
+	
+	pageopts.limit=math.floor(tonumber(pageopts.limit or 10) or 10)
+	if pageopts.limit<1 then pageopts.limit=1 end
+	
+	pageopts.offset=math.floor(tonumber(srv.vars.offset or 0) or 0)
+	if pageopts.offset<0 then pageopts.offset=0 end
+	
+	pageopts.offset_next=pageopts.offset+pageopts.limit
+	pageopts.offset_prev=pageopts.offset-pageopts.limit
+	if pageopts.offset_prev<0 then pageopts.offset_prev=0 end
+	
+	if chunks.lua then -- we have some lua code for this page
+		local e=wet_sandbox.make_env()
+		local f,err=loadstring(chunks.lua.text)
+		if f then
+			setfenv(f, e)
+			pcall(f)
+		else
+			s=err
+		end
+		chunks.lua.env=e -- store it for later
+		
+		if chunks.lua.env.opts then
+			pcall(function() chunks.lua.env.opts(pageopts) end) -- update pageopts
+		end
+	end
+
+	local refined={}
+	if not display_edit_only then
+		refined=wet_waka.refine_chunks(srv,chunks,pageopts) -- build processed strings
+
+		if chunks.lua and chunks.lua.env.chunks then
+			pcall(function() chunks.lua.env.chunks(refined) end) -- update refined
 		end
 	end
 
@@ -205,15 +241,15 @@ local ext
 	
 		srv.set_mimetype("text/css; charset=UTF-8")
 		srv.set_header("Cache-Control","public") -- allow caching of css page
-		srv.put(form.css or "")
+		srv.put(refined.css or "")
 		
 	elseif ext=="frame" then -- special iframe render mode
 	
 		srv.set_mimetype("text/html; charset=UTF-8")
-		put(macro_replace(form.frame or [[
+		put(macro_replace(refined.frame or [[
 		<h1>{title}</h1>
 		{body}
-		]],form))
+		]],refined))
 		
 	elseif ext=="data" then -- raw chunk data
 	
@@ -229,7 +265,7 @@ local ext
 	
 		srv.set_mimetype("text/html; charset=UTF-8")
 		local css
-		if form.css then css=macro_replace(form.css,form) end
+		if refined.css then css=macro_replace(refined.css,refined) end
 		
 		put("header",{title="waka : "..pagename:sub(2),css=css--[[,css=url..".css"]]})
 		
@@ -239,13 +275,13 @@ local ext
 		
 		if not display_edit_only then
 		
-			put(macro_replace(form.plate or [[
+			put(macro_replace(refined.plate or [[
 			<h1>{title}</h1>
 			{body}
-			]],form))
+			]],refined))
 			
 			if pageopts.flame=="on" then -- add comments to this page
-				comments.build(srv,{title=form.title or pagename,url=url_local,posts=posts,get=get,put=put,sess=sess,user=user})
+				comments.build(srv,{title=refined.title or pagename,url=url_local,posts=posts,get=get,put=put,sess=sess,user=user})
 			end
 			
 		end

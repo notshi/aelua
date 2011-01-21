@@ -289,12 +289,21 @@ end
 --
 -- turn some chunks into their prefered form, escape, trim and expand
 --
+-- i need a naming convention that make sense so this is now called
+-- refine_chunks with coare meaning unrefined
+--
 -----------------------------------------------------------------------------
-function form_chunks(srv,chunks,opts)
+function form_chunks(srv,chunks,opts) return refine_chunks(srv,chunks,opts) end
+function refine_chunks(srv,chunks,opts)
 
 	opts=opts or {}
 
 	local form={}
+	
+	for i,v in pairs(opts) do -- copy opts into form
+		form[i]=v
+	end
+	
 	for i,v in ipairs(chunks) do -- do basic process of all of the page chunks into their prefered form 
 		local s=v.text
 		if v.opts.trim=="ends" then s=str.trim(s) end -- trim?
@@ -325,12 +334,17 @@ function form_chunks(srv,chunks,opts)
 				end
 			elseif e.import=="gsheet" then -- we need to grab some json from google
 				local gsheet=require("waka.gsheet")
+				e.offset = e.offset or opts.offset -- can choose new pages
+				e.limit  = e.limit  or opts.limit -- can choose new pages
+				e.query  = e.query  or opts.query
+				e.plate  = e.plate  or opts.plate
+				e.key    = e.key    or opts.key
 				s=gsheet.getwaka(srv,e) -- get a string
 			end
 		
 		else -- "html" default to basic waka format, html allowed
 
-			s=waka_to_html(s,{base_url=opts.baseurl,escape_html=false}) 
+			s=waka_to_html(s,{base_url=opts.baseurl,escape_html=false})
 
 		end
 		form[v.name]=s

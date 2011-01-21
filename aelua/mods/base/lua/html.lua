@@ -240,7 +240,7 @@ about=function(d)
 	d.bootstrapp="<a href=\"http://boot-str.appspot.com/\">bootstrapp</a>"
 	d.mods="<a href=\"http://boot-str.appspot.com/about\">mods</a>"
 	d.aelua="<a href=\"http://code.google.com/p/aelua/\">aelua</a>"
-	d.wetgenes="<a href=\"http://www.wetgenes.com/\">wetgenes</a>"
+	d.wetgenes="<a href=\"http://about.wetgenes.com\">wetgenes</a>"
 	
 --	d.version=opts.bootstrapp_version or 0
 --	d.lua="<a href=\"http://www.lua.org/\">lua</a>"
