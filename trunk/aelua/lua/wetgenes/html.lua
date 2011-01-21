@@ -61,7 +61,7 @@ end
 --
 -----------------------------------------------------------------------------
 function url_esc(s)
-	return string.gsub(s, "([&=%%%#%?%'%\" ])", function(c)
+	return string.gsub(s, "([&=%%%#%?%'%\" ><])", function(c)
 		return string.format("%%%02x", string.byte(c))
 	end)
 end

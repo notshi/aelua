@@ -10,6 +10,8 @@ local fetch=require("wetgenes.aelua.fetch")
 
 local cache=require("wetgenes.aelua.cache")
 
+local log=require("wetgenes.aelua.log").log -- grab the func from the package
+
 local json=require("json")
 
 local setmetatable=setmetatable
@@ -32,12 +34,18 @@ function getwaka(srv,opts)
 	local t=get(srv,opts)
 	local o={}
 	
-	if t and t.table and t.table.rows then
+	if t and t.table and t.table.rows  and t.table.cols then
 		for i,v in ipairs(t.table.rows) do
 			for i,v in ipairs(v and v.c or {} ) do
-				o[#o+1]="{V"..i.."=}"
-				o[#o+1]=v and v.v
-				o[#o+1]="{=V"..i.."}"
+				local id=(t.table.cols[i].id) or i
+				local s=(v and v.v) or ""
+				
+				-- stuff coming in seems to be a bit crazy, this forces it to 7bit ascii
+				if type(s)=="string" then s=s:gsub("[^!-~%s]","") end
+
+				o[#o+1]="{"..id.."=}"
+				o[#o+1]=s
+				o[#o+1]="{="..id.."}"
 			end
 			o[#o+1]="{"..(opts.plate or "item").."}"
 		end
@@ -54,7 +62,7 @@ function get(srv,opts)
 
 --"http://spreadsheets.google.com/tq?tq=select+*+limit+10+offset+0+&key=tYrIfWhE3Q1i8t8VLKgEZSA"
 
-	local tq="select * limit "..opts.limit.." offset "..opts.offset
+	local tq=(opts.query or "select *").." limit "..opts.limit.." offset "..opts.offset
 	local url
 
 	url="http://spreadsheets.google.com/tq?key="..opts.key
@@ -62,21 +70,35 @@ function get(srv,opts)
 	url=url.."&tq="..url_esc(tq)
 
 	local cachename="waka_gsheet&"..url_esc(url)
-	local data=cache.get(cachename)
+	local datastr
+	local err
 	
-	if data then return data end -- we got it from the cache
+	local data=cache.get(cachename) -- check cache
+	if data then return data end
 	
-	data=fetch.get(url) -- get from internets
-	if data then data=data.body end -- check
-	
-	if type(data)=="string" then -- trim some junk get string within the outermost {}
-		data=data:match("^[^{]*(.-)[^}]*$")
+	if not datastr then -- we didnt got it from the cache?
+		datastr,err=fetch.get(url) -- get from internets
+		if err then
+			log(err)
+		end
+		if datastr then datastr=datastr.body end -- check
+		if type(datastr)=="string" then -- trim some junk get string within the outermost {}
+			datastr=datastr:match("^[^{]*(.-)[^}]*$")
+		end
 	end
 	
-	local suc
-	suc,data=pcall(function() return json.decode(data) end) -- convert from json, hopefully
-	if not suc then data=nil end
 	
-	cache.put(cachename,data,60*60)
+	local origsize=0
+	
+	if datastr then
+	
+		origsize=datastr:len() or 0
+		local suc
+		suc,data=pcall(function() return json.decode(datastr) end) -- convert from json, hopefully
+		if not suc then data=nil end
+		
+		cache.put(cachename,data,60*60)
+	end
+		
 	return data
 end

@@ -13,6 +13,7 @@ import java.util.*;
 import java.net.*;
 
 import com.google.appengine.api.urlfetch.*;
+import static com.google.appengine.api.urlfetch.FetchOptions.Builder.*;
 
 public class Fetch
 {
@@ -85,7 +86,9 @@ public class Fetch
 			LuaTable t=L.newTable();
 			
 			URL url = new URL(s);
-			HTTPResponse response = fetcher.fetch(url);
+			HTTPRequest req=new HTTPRequest(url,HTTPMethod.GET,
+				com.google.appengine.api.urlfetch.FetchOptions.Builder.followRedirects().setDeadline(10.0) );
+			HTTPResponse response = fetcher.fetch(req);
 			
 			URL finalUrl = response.getFinalUrl();
 			if(finalUrl!=null) // we got redirected to here
@@ -141,9 +144,10 @@ public class Fetch
 		}
 		catch(IOException e)
 		{
-			return 0;
+			L.pushNil();
+			L.pushString( e.toString() );
+			return 2;
 		}
-//		return 0;
 	}
 	
 }

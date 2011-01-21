@@ -369,7 +369,7 @@ Eventually.
 {
 	name="rat",
 	form="char",
-	class="blob",
+	class="rat",
 	asc=ascii("r"),
 	desc="a rat",
 	score=10,
