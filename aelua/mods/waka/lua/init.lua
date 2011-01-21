@@ -196,6 +196,8 @@ local ext
 		end
 	end
 	
+	pageopts.vars=srv.vars -- page code is allowed access
+	
 	pageopts.limit=math.floor(tonumber(pageopts.limit or 10) or 10)
 	if pageopts.limit<1 then pageopts.limit=1 end
 	
