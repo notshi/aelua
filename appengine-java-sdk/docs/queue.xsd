@@ -20,6 +20,8 @@
       <xs:element type="name-Type" name="name"/>
       <xs:element type="rate-Type" name="rate"/>
       <xs:element type="xs:nonNegativeInteger" name="bucket-size" minOccurs="0"/>
+      <xs:element type="xs:nonNegativeInteger" name="max-concurrent-requests" minOccurs="0"/>
+      <xs:element type="retry-parameters-Type" name="retry-parameters" minOccurs="0"/>
     </xs:all>
   </xs:complexType>
 
@@ -33,6 +35,28 @@
     <xs:restriction base="xs:string">
       <xs:pattern value="0"/>
       <xs:pattern value="([0-9]+(\.[0-9]*)?)/([smhd])"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="retry-parameters-Type">
+    <xs:all>
+      <xs:element type="xs:nonNegativeInteger" name="task-retry-limit" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="task-age-limit-Type" name="task-age-limit" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="nonNegativeDouble" name="min-backoff-seconds" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="nonNegativeDouble" name="max-backoff-seconds" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="xs:nonNegativeInteger" name="max-doublings" maxOccurs="1" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:simpleType name="task-age-limit-Type">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([0-9]+(\\.[0-9]*([eE][-+]?[0-9]+)?)?)([smhd])"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="nonNegativeDouble">
+    <xs:restriction base="xs:double">
+      <xs:minInclusive value="0"/>
     </xs:restriction>
   </xs:simpleType>
 
