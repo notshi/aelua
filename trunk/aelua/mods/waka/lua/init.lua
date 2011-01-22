@@ -118,11 +118,11 @@ local ext
 	
 	local url=srv.url_base
 	local baseurl=url
-	local crumbs=" <a href=\"/\">home</a> / <a href=\""..url.."\">"..srv.slash.."</a> "
+	local crumbs={ {url=url,text="Home"}}
 	for i,v in ipairs(aa) do
 		baseurl=url
 		url=url..v
-		crumbs=crumbs.." / <a href=\""..url.."\">"..v.."</a> "
+		crumbs[#crumbs+1]={url=url,text=v}
 		url=url.."/"
 	end
 	local pagename="/"..table.concat(aa,"/")
@@ -273,9 +273,9 @@ local ext
 		local css
 		if refined.css then css=macro_replace(refined.css,refined) end
 		
-		put("header",{title="waka : "..pagename:sub(2),css=css--[[,css=url..".css"]]})
+		put("header",{title=refined.title,css=css--[[,css=url..".css"]],crumbs=crumbs})
 		
-		put("waka_bar",{crumbs=crumbs,page=pagename})
+		put("waka_bar",{page=pagename})
 		
 		if display_edit then srv.put(display_edit) end
 		
