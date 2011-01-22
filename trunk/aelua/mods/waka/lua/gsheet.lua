@@ -31,11 +31,12 @@ module("waka.gsheet")
 function getwaka(srv,opts)
 
 	local s=""
-	local t=get(srv,opts)
+	local t,err=get(srv,opts)
 	local o={}
 	
 	if t and t.table and t.table.rows  and t.table.cols then
 		for i,v in ipairs(t.table.rows) do
+			local tab={}
 			for i,v in ipairs(v and v.c or {} ) do
 				local id=(t.table.cols[i].id) or i
 				local s=(v and v.v) or ""
@@ -43,6 +44,12 @@ function getwaka(srv,opts)
 				-- stuff coming in seems to be a bit crazy, this forces it to 7bit ascii
 				if type(s)=="string" then s=s:gsub("[^!-~%s]","") end
 
+				tab[id]=s
+			end
+			if opts.hook then -- update this stuff?
+				opts.hook(tab)
+			end
+			for id,s in pairs(tab) do
 				o[#o+1]="{"..id.."=}"
 				o[#o+1]=s
 				o[#o+1]="{="..id.."}"
@@ -50,6 +57,8 @@ function getwaka(srv,opts)
 			o[#o+1]="{"..(opts.plate or "item").."}"
 		end
 		s=table.concat(o)
+	else
+		s=err or "GSHEET IMPORT fail please reload page to try again."
 	end
 
 	return s
@@ -88,17 +97,17 @@ function get(srv,opts)
 	end
 	
 	
-	local origsize=0
+--	local origsize=0
 	
 	if datastr then
 	
-		origsize=datastr:len() or 0
+--		origsize=datastr:len() or 0
 		local suc
 		suc,data=pcall(function() return json.decode(datastr) end) -- convert from json, hopefully
 		if not suc then data=nil end
 		
-		cache.put(cachename,data,60*60)
+		if data then cache.put(cachename,data,60*60) end
 	end
 		
-	return data
+	return data,err
 end

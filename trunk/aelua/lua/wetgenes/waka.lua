@@ -160,9 +160,20 @@ function chunks_merge(dest,source)
 
 	local dest=dest or {}
 	
+	local locked=dest.opts and dest.opts.opts.lock=="on" -- parent chunk locked
+			
 	for i,v in ipairs(source) do
 	
 		local c=dest[v.name] -- merge or
+		
+		local function set_data()
+			c.lines=v.lines -- set or override
+			c.text=v.text -- set or override
+			for ii,vv in pairs(v.opts) do
+				c.opts[ii]=vv
+			end
+		end
+		
 		if not c then -- make a new chunk
 			c={}
 			c.id=#dest+1
@@ -170,13 +181,12 @@ function chunks_merge(dest,source)
 			c.opts={}
 			dest[c.id]=c -- link it into dest by array
 			dest[c.name]=c -- and by name
-		end
-
-		c.lines=v.lines -- overwritten
-		c.text=v.text -- overwritten
-		
-		for i,v in pairs(v.opts) do -- merge options
-			c.opts[i]=v
+			
+			set_data()
+		else
+			if not locked then -- skip lock
+				set_data()
+			end
 		end
 
 	end
@@ -339,6 +349,7 @@ function refine_chunks(srv,chunks,opts)
 				e.query  = e.query  or opts.query
 				e.plate  = e.plate  or opts.plate
 				e.key    = e.key    or opts.key
+				e.hook   = e.hook   or opts.hook -- callback function to fixup data
 				s=gsheet.getwaka(srv,e) -- get a string
 			end
 		
