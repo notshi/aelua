@@ -46,7 +46,7 @@ blog_edit_form=function(d)
 	<tr><td> pubname </td><td> <input type="text" name="pubname" size="20" value="{it.pubname}"/> </td></tr>
 	<tr><td> layer   </td><td> <input type="text" name="layer"   size="20" value="{it.layer}"  /> </td></tr>
 	</table>
-	<textarea name="text" cols="120" rows="24" class="field" >{it.text}</textarea>
+	<textarea style="width:100%" name="text" cols="80" rows="24" class="field" >{it.text}</textarea>
 	<br/>
 	<input type="submit" name="submit" value="Save" class="button" />
 	<input type="submit" name="submit" value="Preview" class="button" />
@@ -72,7 +72,7 @@ blog_admin_links=function(d)
 		d.edit_post=""
 	end
 	return replace([[
-	<div>
+	<div class="aelua_admin_bar">
 		<a href="{srv.url_base}" class="button" > View Blog </a> 
 		<a href="{srv.url_base}/admin/pages" class="button" > List </a> 
 		<a href="{srv.url_base}/admin/edit/$newpage" class="button" > New Post </a>

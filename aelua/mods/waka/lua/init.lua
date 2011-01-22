@@ -175,7 +175,7 @@ local ext
 	local ps={}
 	local p=page
 	ps[1]=p
-	while p.cache.group ~= p.cache.id do -- grab each page going upwards
+	while p.cache.group ~= p.cache.id do -- grab each parent page going upwards
 		p=pages.manifest(srv,p.cache.group)
 		ps[#ps+1]=p
 	end
@@ -196,7 +196,10 @@ local ext
 		end
 	end
 	
-	pageopts.vars=srv.vars -- page code is allowed access
+	pageopts.vars=srv.vars -- page code is allowed access to these bits
+	pageopts.url           = srv.url
+	pageopts.url_slash     = srv.url_slash
+	pageopts.url_slash_idx = srv.url_slash_idx
 	
 	pageopts.limit=math.floor(tonumber(pageopts.limit or 10) or 10)
 	if pageopts.limit<1 then pageopts.limit=1 end
@@ -234,7 +237,8 @@ local ext
 	end
 
 -- disable comments if page is not saved to the database IE a MISSING PAGE	
-	if ps[1].key.notsaved then
+-- except when page has been locked upstream
+	if ps[1].key.notsaved and pageopts.lock~="on" then
 		pageopts.flame="off"
 	end
 
