@@ -8,8 +8,8 @@ clean:
 	ant clean
 	
 serv: bake
-	../appengine-java-sdk/bin/dev_appserver.sh war
+	../appengine-java-sdk/bin/dev_appserver.sh .war
 
 upload: bake
-	../appengine-java-sdk/bin/appcfg.sh update war
+	../appengine-java-sdk/bin/appcfg.sh update .war
 
