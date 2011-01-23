@@ -1,0 +1,35 @@
+indexes:
+
+- kind: blog.pages
+  properties:
+  - name: group
+  - name: layer
+  - name: pubdate
+    direction: desc
+
+- kind: blog.pages
+  properties:
+  - name: layer
+  - name: pubdate
+    direction: desc
+    
+- kind: blog.pages
+  properties:
+  - name: pubname
+  - name: layer
+    
+
+- kind: note.comments
+  properties:
+  - name: group
+  - name: url
+  - name: updated
+
+
+- kind: note.comments
+  properties:
+  - name: group
+  - name: url
+  - name: updated
+    direction: desc
+
