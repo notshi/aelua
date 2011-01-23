@@ -27,9 +27,9 @@ head.extra_css={} -- more css links
 head.extra_js={} -- more js links
 
 users={}
-users.admin={ -- users with hard and unremovable admin rights for this app
-	["notshi@gmail.com"]=true,
-	["krissd@gmail.com"]=true,
+users.admin={ -- users with admin rights for this app
+--	["notshi@gmail.com"]=true,
+--	["krissd@gmail.com"]=true,
 }
 
 local app_name=nil -- best not to use an appname, unless we run multiple apps on one site 
