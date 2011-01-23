@@ -308,13 +308,11 @@ local sess,user=users.get_viewer_session(srv)
 local put=make_put(srv)
 local get=make_get(srv)
 
-	local crumbs=" <a href=\"/\">home</a> / <a href=\""..srv.url_base.."\">"..srv.slash.."</a> "
-	crumbs=crumbs.." / <a href=\""..srv.url_base.."/admin\">admin</a> "
 	local cmd= srv.url_slash[ srv.url_slash_idx+2]
 
 	if not ( user and user.cache and user.cache.admin ) then -- not admin, no access
 		put("header",{title="waka : admin"})
-		put("waka_bar",{crumbs=crumbs})
+		put("waka_bar",{})
 		put("footer")
 		return
 	end
@@ -322,7 +320,7 @@ local get=make_get(srv)
 	
 	put("header",{title="waka : admin"})
 
-	put("waka_bar",{crumbs=crumbs})
+	put("waka_bar",{})
 
 	if cmd=="pages" then
 	
