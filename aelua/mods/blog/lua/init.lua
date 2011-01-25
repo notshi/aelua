@@ -478,7 +478,7 @@ local output_que={} -- delayed page content
 			ent.cache.group=group
 			ent.cache.pubname=group..name
 			ent.cache.layer=LAYER_DRAFT
-			ent.cache.text=[[#title form=raw trim=ends
+			ent.cache.text=[[#title
 
 The #title of your post.
 
