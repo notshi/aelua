@@ -114,6 +114,32 @@ dd={
 },
 
 {
+	name="sensei",
+	form="char",
+	class="sensei",
+	asc=ascii("&"),
+	desc="a sensei",
+	
+	can=
+	{
+		use="menu",
+	},
+	
+	call=
+	{
+		menu=function(it,by)
+			it.level.main.menu.show_sensei_menu(it,by)
+		end,
+	}
+},
+
+{
+	name="sensei.dump",
+	sensei="dump",
+	desc="a sensei called eeyore",
+},
+
+{
 	name="stairs",
 	form="char",
 	class="stairs",

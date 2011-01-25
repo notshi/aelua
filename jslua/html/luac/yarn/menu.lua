@@ -327,6 +327,36 @@ setfenv(1,d)
 		show(top)
 	end
 	
+	function show_sensei_menu(it,by)
+		local top={}
+		
+		top.title=it.desc
+		
+		top.call=function(tab)
+		
+			local tab={}
+			local player=it.level.player
+	-- add cancel option
+			tab[#tab+1]={
+				txt=[[..]],
+				call=function(it)
+					back()
+				end
+			}
+
+			tab[#tab+1]={
+				txt="hello",
+				call=function()
+					back()
+				end
+			}
+			
+			top.display=build_request(tab)
+		end
+		
+		show(top)
+	end
+	
 	function show_text(title,display)
 		local top={}
 
