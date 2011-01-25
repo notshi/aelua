@@ -316,17 +316,31 @@ function refine_chunks(srv,chunks,opts)
 	
 	for i,v in ipairs(chunks) do -- do basic process of all of the page chunks into their prefered form 
 		local s=v.text
-		if v.opts.trim=="ends" then s=str.trim(s) end -- trim?
+		
+		local format=v.opts.form
+		local trim=v.opts.trim
 
-		if v.opts.form=="raw" then -- predefined, use exactly as is, html
+		if not format then
+			if v.name:sub(1,4)=="body" then -- all chunks begining with body are waka format by default
+				format="waka"
+			end
+		end
 
-			s=s
+		if not trim then
+			if v.name:sub(1,4)=="title" then -- all chunks begining with title are trimed by default
+				trim="ends"
+			end
+		end
 
-		elseif v.opts.form=="nohtml" then -- normal but all html is escaped
+
+		if trim=="ends" then s=str.trim(s) end -- trim?
+
+
+		if format=="nohtml" then -- normal but all html is escaped
 
 			s=waka_to_html(s,{base_url=opts.baseurl,escape_html=true}) 
 
-		elseif v.opts.form=="import" then -- very special import, treat as chunk of lua import opts
+		elseif format=="import" then -- very special import, treat as chunk of lua import opts
 		
 			local e={}
 			local f,err=loadstring(s)
@@ -353,11 +367,16 @@ function refine_chunks(srv,chunks,opts)
 				s=gsheet.getwaka(srv,e) -- get a string
 			end
 		
-		else -- "html" default to basic waka format, html allowed
+		elseif format=="waka" then -- basic waka format, html allowed but links are upgraded and line ends are <br/>
 
 			s=waka_to_html(s,{base_url=opts.baseurl,escape_html=false})
 
+		else -- raw
+			
+			s=s
+
 		end
+
 		form[v.name]=s
 	end
 	return form
