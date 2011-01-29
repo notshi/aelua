@@ -352,11 +352,17 @@ function refine_chunks(srv,chunks,opts)
 			end
 			
 			if e.import=="blog" then
+			
+--				e.over = e.over or opts.over
+--				e.plate = e.plate or opts.plate
+				
 				if not opts.noblog then -- prevent recursions
 					local blog=require("blog")
-					s=blog.recent_posts(srv,e.count or 5)
+					s=blog.recent_posts(srv,e.count or 5,e.over,e.plate)
 				end
+				
 			elseif e.import=="gsheet" then -- we need to grab some json from google
+			
 				local gsheet=require("waka.gsheet")
 				e.offset = e.offset or opts.offset -- can choose new pages
 				e.limit  = e.limit  or opts.limit -- can choose new pages
@@ -365,6 +371,7 @@ function refine_chunks(srv,chunks,opts)
 				e.key    = e.key    or opts.key
 				e.hook   = e.hook   or opts.hook -- callback function to fixup data
 				s=gsheet.getwaka(srv,e) -- get a string
+				
 			end
 		
 		elseif format=="waka" then -- basic waka format, html allowed but links are upgraded and line ends are <br/>

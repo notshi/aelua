@@ -136,7 +136,7 @@ dd={
 {
 	name="sensei.dump",
 	sensei="dump",
-	desc="a sensei called eeyore",
+	desc="a sensei named eeyore",
 },
 
 {
