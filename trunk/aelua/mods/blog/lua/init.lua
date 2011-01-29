@@ -179,7 +179,7 @@ end
 -- and an optional css chunk to style this
 --
 -----------------------------------------------------------------------------
-function recent_posts(srv,num,over)
+function recent_posts(srv,num,over,plate)
 
 local get,put=make_get_put(srv)
 
@@ -198,7 +198,7 @@ local get,put=make_get_put(srv)
 		refined.pubdate=(os.date("%Y-%m-%d %H:%M:%S",v.cache.pubdate))
 		refined.it=v.cache
 
-		local text=get(macro_replace(refined.plate_wrap or refined.plate_post or "{body}",refined))
+		local text=get(macro_replace(refined[plate] or refined.plate_wrap or refined.plate_post or "{body}",refined))
 		
 		if refined.css then css=refined.css end -- need to pass out some css too
 		

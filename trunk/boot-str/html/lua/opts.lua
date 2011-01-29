@@ -17,7 +17,7 @@ local type=type
 
 module("opts")
 
-bootstrapp_version=20110122 -- hand bump to todays date on release
+bootstrapp_version=20110123 -- hand bump to todays date on release
 
 urls={}
 
