@@ -21,6 +21,13 @@ indexes:
 
 - kind: note.comments
   properties:
+  - name: type
+  - name: created
+    direction: desc
+
+
+- kind: note.comments
+  properties:
   - name: group
   - name: url
   - name: updated
