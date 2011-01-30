@@ -24,6 +24,7 @@ local pcall=pcall
 
 -- my string functions
 local str=require("wetgenes.string")
+local sbox=require("wetgenes.sandbox")
 
 
 module("wetgenes.waka")
@@ -342,7 +343,7 @@ function refine_chunks(srv,chunks,opts)
 
 		elseif format=="import" then -- very special import, treat as chunk of lua import opts
 		
-			local e={}
+			local e=sbox.make_env()
 			local f,err=loadstring(s)
 			if f then
 				setfenv(f, e)
@@ -355,10 +356,11 @@ function refine_chunks(srv,chunks,opts)
 			
 --				e.over = e.over or opts.over
 --				e.plate = e.plate or opts.plate
+				e.hook   = e.hook   or opts.hook -- callback function to fixup data
 				
 				if not opts.noblog then -- prevent recursions
 					local blog=require("blog")
-					s=blog.recent_posts(srv,e.count or 5,e.over,e.plate)
+					s=blog.recent_posts(srv,e)--.count or 5,e.over,e.plate)
 				end
 				
 			elseif e.import=="gsheet" then -- we need to grab some json from google

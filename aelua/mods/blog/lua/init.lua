@@ -179,7 +179,10 @@ end
 -- and an optional css chunk to style this
 --
 -----------------------------------------------------------------------------
-function recent_posts(srv,num,over,plate)
+function recent_posts(srv,opts)--num,over,plate)
+opts=opts or {}
+
+local num=opts.num or 5
 
 local get,put=make_get_put(srv)
 
@@ -187,18 +190,26 @@ local get,put=make_get_put(srv)
 	local css=""
 	local list=pages.list(srv,{group=group,limit=num,layer=LAYER_PUBLISHED,sort="pubdate"})
 	
-	if over and type(over)=="string" then over=pages.cache_find_by_pubname(srv,over) end 
+	if opts.over and type(opts.over)=="string" then
+		opts.over=pages.cache_find_by_pubname(srv,opts.over)
+	else
+		opts.over=nil
+	end 
 	
 	for i,v in ipairs(list) do
 	
-		local refined=bubble(srv,v,over) -- this gets parent entities
+		local refined=bubble(srv,v,opts.over) -- this gets parent entities
 
 -- bad hardcoded, need to fix
 		refined.link="/blog" .. v.cache.pubname
 		refined.pubdate=(os.date("%Y-%m-%d %H:%M:%S",v.cache.pubdate))
 		refined.it=v.cache
+		
+		if type(opts.hook) == "function" then
+			opts.hook(refined)
+		end
 
-		local text=get(macro_replace(refined[plate] or refined.plate_wrap or refined.plate_post or "{body}",refined))
+		local text=get(macro_replace(refined[opts.plate or ""] or refined.plate_wrap or refined.plate_post or "{body}",refined))
 		
 		if refined.css then css=refined.css end -- need to pass out some css too
 		
@@ -515,6 +526,7 @@ This is the #body of your post and can contain any html you wish.
 					
 					if posts.submit=="Publish" then posts.layer=LAYER_PUBLISHED end
 					if posts.submit=="UnPublish" then posts.layer=LAYER_DRAFT end
+					ent.cache.layer=posts.layer or ent.cache.layer
 					
 					pages.put(srv,ent)
 				end
