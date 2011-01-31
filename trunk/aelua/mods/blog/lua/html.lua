@@ -3,6 +3,7 @@ local sys=require("wetgenes.aelua.sys")
 local wet_html=require("wetgenes.html")
 local replace=wet_html.replace
 local url_esc=wet_html.url_esc
+local html_esc=wet_html.esc
 
 local html=require("html")
 
@@ -39,6 +40,8 @@ end
 -----------------------------------------------------------------------------
 blog_edit_form=function(d)
 
+	d.text=html_esc(d.it.text)
+
 	return replace([[
 <form name="post" id="post" action="" method="post" enctype="multipart/form-data">
 	<table style="float:right">
@@ -46,7 +49,7 @@ blog_edit_form=function(d)
 	<tr><td> pubname </td><td> <input type="text" name="pubname" size="20" value="{it.pubname}"/> </td></tr>
 	<tr><td> layer   </td><td> <input type="text" name="layer"   size="20" value="{it.layer}"  /> </td></tr>
 	</table>
-	<textarea style="width:100%" name="text" cols="80" rows="24" class="field" >{it.text}</textarea>
+	<textarea style="width:100%" name="text" cols="80" rows="24" class="field" >{text}</textarea>
 	<br/>
 	<input type="submit" name="submit" value="Save" class="button" />
 	<input type="submit" name="submit" value="Preview" class="button" />

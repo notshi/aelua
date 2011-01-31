@@ -3,6 +3,7 @@ local sys=require("wetgenes.aelua.sys")
 local wet_html=require("wetgenes.html")
 local replace=wet_html.replace
 local url_esc=wet_html.url_esc
+local html_esc=wet_html.esc
 
 local html=require("html")
 
@@ -58,6 +59,8 @@ end
 --
 -----------------------------------------------------------------------------
 waka_edit_form=function(d)
+
+	d.text=html_esc(d.text)
 
 	return replace([[
 <form name="post" id="post" action="" method="post" enctype="multipart/form-data">
