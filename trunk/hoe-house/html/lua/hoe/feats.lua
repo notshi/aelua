@@ -53,22 +53,27 @@ function get_top_players(H,round_id)
 
 	local ret={}
 	
-	for _,stat in ipairs{"score","bux","houses","hoes","bros"} do
+	local list=players.list(H,{sort="score",limit=100,order="DESC",round_id=round_id})
 	
-		local list=players.list(H,{sort=stat,limit=20,order="DESC",round_id=round_id})
-		
-		local t={}
-		for i=1,#list do local v=list[i].cache
-			local tst="@id.wetgenes.com"
-			if v.email:sub(-tst:len())==tst then -- privacy check, only publish wetgenes ids
-				t[#t+1]=v.email
-			end
-			if #t>=10 then break end -- first ten only
+	local t={}
+	local topscore=1
+	for i=1,#list do local v=list[i]
+		local crowns=""
+		local c=0
+		if i==1 then
+			topscore=v.cache.score
+			if topscore<1 then topscore=1 end -- sane
+			c=10
+		else
+			c=math.floor(10*v.cache.score/topscore)
 		end
-		
-		ret[stat]=t
-	
+
+		if c>10 then c=10 end -- sane
+		if c<0  then c=0  end -- sane
+		t[#t+1]={ id=v.cache.email , crown=c , score=v.cache.score }
 	end
+	
+	ret.info=t
 	
 	cache.put(cachekey,json.encode(ret),10*60) -- save this new result for 10 mins
 	return ret

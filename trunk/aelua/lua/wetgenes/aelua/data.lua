@@ -41,18 +41,24 @@ end
 
 function del(ent)
 
+	count=count+0.5
+	
 	return core.del(nil,ent)
 
 end
 
 function put(ent)
 
+	count=count+0.5
+	
 	return core.put(nil,ent)
 
 end
 
 function get(ent)
 
+	count=count+0.5
+	
 	return core.get(nil,ent)
 
 end

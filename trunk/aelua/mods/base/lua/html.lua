@@ -141,8 +141,10 @@ header=function(d)
 		local crumbs=d.srv.crumbs
 		local s
 		for i=1,#crumbs do local v=crumbs[i]
-			if not s then s="" else s=s.." - " end
-			s=s..v.title
+			if v.title then
+				if not s then s="" else s=s.." - " end
+				s=s..v.title
+			end
 		end
 		d.title=s
 	end
@@ -274,8 +276,10 @@ home_bar=function(d)
 	local crumbs=d.crumbs or d.srv.crumbs
 	local s
 	for i=1,#crumbs do local v=crumbs[i]
-		if not s then s="" else s=s.." / " end
-		s=s.."<a href=\""..v.url.."\">"..v.text.."</a>"
+		if v.text then
+			if not s then s="" else s=s.." / " end
+			s=s.."<a href=\""..v.url.."\">"..v.text.."</a>"
+		end
 	end
 	d.crumbs=s or "<a href=\"/\">Home</a>" -- default
 		

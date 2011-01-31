@@ -70,10 +70,19 @@ function create(srv)
 	local p=ent.props
 	
 	p.created=srv.time
-	p.updated=srv.time
+	p.updated=srv.time -- use as a fifo stack
 	
-	p.data=""    -- the cached data returned from this url
-	p.type=""    -- the type of data this should be processed as
+	-- the url is used as the key id, so only 1 entity per url
+	-- numeric keys are used for task logs
+	
+	p.lock=0     -- use this to lock an entity with a time value, if the time is more than this then 
+ 				 -- you are not allowed to modify it, this lets us auto timeout broken locks
+ 				 
+	p.task=0     -- use this to link an entity to a taskid	
+	p.state=""   -- the state of this data. set to "get" if it needs to be got, "win" when complete
+				 -- "fail" for fail and anything else for substates
+	p.type=""    -- the type of data this should be processed as	
+	p.data=""    -- the full cached data returned from this url for fast reprocessing.
 	
 	dat.build_cache(ent) -- this just copies the props across
 	
@@ -98,38 +107,6 @@ function check(srv,ent)
 	return ent,ok
 end
 
-
---------------------------------------------------------------------------------
---
--- manifest a meta comment cache, there is only one of these per url
--- so we can use that as its key
--- most data is kept in its ent.cache.cache table
---
---------------------------------------------------------------------------------
-function manifest(srv,url,t)
-
-	local ent
-	
-	local fill=false
-	
-	if not ent then
-		ent=create(srv)
-		ent.key.id=url
-		ent=get(srv,ent,t) -- prevent manifest recursion by passing in ent
-	end
-	
-	if not ent then
-		ent=create(srv)
-		fill=true
-	end
-	
-	if fill then
-		ent.key.id=url -- force id which is page name string
-		ent.cache.id=url -- copy here
-	end
-	
-	return (check(serv,ent)) -- wrap in () to just return the ent
-end
 
 --------------------------------------------------------------------------------
 --
@@ -164,10 +141,6 @@ end
 --
 --------------------------------------------------------------------------------
 function get(srv,id,t)
-
-	if type(id)=="string" then -- auto manifest by url
-		return manifest(srv,id,t)
-	end
 	
 	local ent=id
 	if type(ent)~="table" then -- get by id
@@ -177,7 +150,7 @@ function get(srv,id,t)
 	
 	t=t or dat -- use transaction?
 	
-	if not t.get(ent) then return nil end	
+	if not t.get(ent) then return nil end
 	dat.build_cache(ent)
 	
 	return check(srv,ent)

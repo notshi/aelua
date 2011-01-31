@@ -132,7 +132,7 @@ function serv(srv)
 	
 	H.alerts=alerts.alerts_to_html(H,alerts.get_alerts(H)) or "" -- display some alerts? (no round)
 	
-	local blog_html,blog_css=blog.recent_posts(srv,5,"/frontpage")
+	local blog_html,blog_css=blog.recent_posts(srv,{num=5,over="/frontpage"})
 
 	H.srv.set_mimetype("text/html; charset=UTF-8")
 	put("header",{css=blog_css})
@@ -330,17 +330,27 @@ local put=H.put
 	local endlen=string.len(ending)
 	local c=10
 	put("player_row_header",{url=H.srv.url,page=page})
+	local topscore=1
 	for i=1,#list do local v=list[i]
 		local crowns=""
-		local profile=users.email_to_profile_link(v.cache.email) or ""
-		if string.sub(v.cache.email,-endlen)==ending then
-			if page.show==0 then -- can calculate crowns
-				if c>0 then
+		local c=0
+		if page.show==0 then
+			if i==1 then
+				topscore=v.cache.score
+				if topscore<1 then topscore=1 end -- sane
+				c=10
+			else
+				c=math.floor(10*v.cache.score/topscore)
+			end
+			if c>10 then c=10 end -- sane
+			if c<0  then c=0  end -- sane
+			if c>0 then
+				if string.sub(v.cache.email,-endlen)==ending then
 					crowns="+"..c
-					c=c-1
 				end
 			end
 		end
+		local profile=users.email_to_profile_link(v.cache.email) or ""
 		put("player_row",{player=v.cache,idx=i+page.show,crowns=crowns,profile=profile})
 	end
 	put("player_row_footer",{url=H.srv.url,page=page})
@@ -1304,12 +1314,13 @@ function serv_api(H)
 			jret.last=feats.get_top_players(H,round.key.id)
 			jret.result="OK"
 		end
-		
+--[[		
 		local round=rounds.get_speed(H) -- get speed round
 		if round then
 			jret.speed=feats.get_top_players(H,round.key.id)
 			jret.result="OK"
 		end
+]]
 	end
 	
 	H.srv.set_mimetype("text/plain; charset=UTF-8")
