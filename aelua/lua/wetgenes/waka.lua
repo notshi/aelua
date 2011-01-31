@@ -67,6 +67,8 @@ local split_equal		=str.split_equal
 -----------------------------------------------------------------------------
 function text_to_chunks(text,chunks)
 
+local chunkend -- special end of chunk test
+
 	chunks=chunks or {}
 
 	local function manifest_chunk(line,oldchunk)
@@ -74,7 +76,7 @@ function text_to_chunks(text,chunks)
 		local name=string.lower( opts[1] or "body" )
 		local chunk
 		local c2=line:sub(2,2)
-		
+				
 		if c2:find("%s") then -- if first char after # is whitespace, then use the old chunk 
 			chunk=oldchunk
 		end
@@ -121,13 +123,30 @@ function text_to_chunks(text,chunks)
 		local c=v:sub(1,1) -- the first char is special
 		
 		if c=="#" then -- start of chunk
+		
+			if chunkend then -- waiting for special end everything is inserted
+			
+				if chunkend==v:sub(1,#chunkend) then -- got it
+					chunkend=nil
+				else
+					if not chunk then chunk=manifest_chunk("#body") end --sanity				
+					table.insert(chunk.lines , v)
+				end
+				
+			else
 
-			if v:sub(2,2)~="#" then -- skip all comments
+				if "#[["==v:sub(1,3) then -- special open
+				
+					chunkend="#]]"..v:sub(4) -- any special hash we need to close
+				
+				elseif v:sub(2,2)~="#" then -- skip all comments
 
-				chunk=manifest_chunk(v,chunk)
+					chunk=manifest_chunk(v,chunk)
 
+				end
+				
 			end
-	
+			
 		else -- normal lime add to the current chunk
 		
 			if not chunk then chunk=manifest_chunk("#body") end --sanity
