@@ -189,7 +189,7 @@ function get_active(H)
 	return (list(H,{state="active",timestep=300,limit=1})[1])
 end
 function get_last(H)
-	return (list(H,{state="over",timestep=600,limit=1})[1]) -- need to fix this at start of next round
+	return (list(H,{state="over",timestep=300,limit=1})[1]) -- need to fix this at start of next round
 end
 function get_speed(H)
 	return (list(H,{state="over",timestep=1,limit=1})[1])

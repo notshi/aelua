@@ -81,6 +81,8 @@ function num_to_thousands(n)
 	if n<0 then return "-"..s else return s end -- put the sign back and return it
 end
 
+
+--[[
 -----------------------------------------------------------------------------
 --
 --
@@ -112,8 +114,10 @@ header=function(d)
 		local crumbs=d.srv.crumbs
 		local s
 		for i=1,#crumbs do local v=crumbs[i]
-			if not s then s="" else s=s.." - " end
-			s=s..v.title
+			if v.title then
+				if not s then s="" else s=s.." - " end
+				s=s..v.title
+			end
 		end
 		d.title=s
 	end
@@ -154,6 +158,7 @@ footer=function(d)
 	return replace(get_plate("footer"),d)
 
 end
+]]
 		
 -----------------------------------------------------------------------------
 --
