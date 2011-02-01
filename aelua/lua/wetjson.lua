@@ -105,7 +105,7 @@ end
 --
 -----------------------------------------------------------------------------
 local function split(text)
-	local separator = "[\",:{}%[%]]"
+	local separator = "[\",:{}%[%]']"
 	
 	local parts = {}  
 	local start = 1
@@ -182,6 +182,7 @@ local t
 	local top={tab=out,idx=1,inc=true}
 	local stack={ top }
 	local sb -- string buffer building for the use of
+	local sbend -- the string terminator
 	
 	function err(s)
 		error(s.." ("..chash..")")
@@ -214,7 +215,7 @@ local t
 			
 		if sb then -- continue building a string
 		
-			if v=="\"" then -- end of string
+			if v==sbend then -- end of string
 				if sb[2] then
 					val=unesc(table.concat(sb))
 				else
@@ -234,6 +235,10 @@ local t
 			
 				if l=="\"" then -- start a string 
 					sb={}
+					sbend="\""
+				elseif l=="'" then -- start a string 
+					sb={}
+					sbend="'"
 				elseif l=="{" then
 					val={}
 					setval()
