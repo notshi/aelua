@@ -3,6 +3,14 @@
 --         version 2011-01-31
 --         use encode to encode a table and decode to decode a json string
 --
+-- other json encode/decode pure lua library seemed too slow
+-- here is a fast and loose one lets see if it goes any faster :)
+-- should be a direct replacement for JSON4Lua which is what I was using before
+--
+-- find the latest version online here
+-- http://code.google.com/p/aelua/source/browse/trunk/aelua/lua/wetjson.lua
+--
+--
 -- Copyright (C) 2011 by http://about.wetgenes.com/
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,9 +31,6 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- other json encode/decode pure lua library seemed too slow
--- here is a fast and loose one lets see if it goes any faster :)
--- should be a direct replacement for JSON4Lua which is what I was using before
 
 local table=table
 local string=string
