@@ -316,7 +316,7 @@ local str=string.sub(s, startPos, endPos-1)
 
 -- more h4x to deal with java escape codes, just convert them to lua
 	str = string.gsub(str, "\\u(%x%x%x%x)", function(hex)
-        return "\\"..(tonumber(hex, 16)) -- to lua escape string
+        return "\\"..string.format("%03d",(tonumber(hex, 16))) -- to lua escape string
     end)
     
   local stringValue = 'return ' .. str
