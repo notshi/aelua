@@ -7,6 +7,10 @@ print("starting json tests")
 local strs={
 
 [[
+{version:'0.6',status:'ok',sig:'239038500',table:{cols:[{id:'A',label:'',type:'string',pattern:''},{id:'B',label:'',type:'string',pattern:''}],rows:[{c:[{v:'boot-str.appspot.com'},{v:'This is where you are, right now :)'}]},{c:[{v:'hoe-house.appspot.com'},{v:'A grow, trade and fight stats based webgame. Work yo hoes to make yo money.'}]},{c:[{v:'www.esyou.com/blog'},{v:'Shi\u0027s homepage full of secret things.'}]},{c:[{v:'gen-information.appspot.com'},{v:'A local band\u0027s homepage.'}]},{c:[{v:'wet.appspot.com'},{v:'Top secret futures of bootstrapp and beyond.'}]},{c:[{v:'cake-or-games.appspot.com'},{v:'You have no chance to survive, make your cake.'}]}]}}
+]],
+
+[[
 {
     "glossary": {
         "title": "example \"\" glossary",
@@ -65,7 +69,7 @@ local strs={
 
 for i,v in ipairs(strs) do
 
---if i~=1 then os.exit(0) end
+if i~=1 then os.exit(0) end
 
 print("INPUT")
 	print(v)
@@ -82,6 +86,8 @@ print("MIRROR")
 print("DONE")
 
 end
+
+exit(0)
 
 print("JSON")
 print(os.time())
