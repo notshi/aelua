@@ -71,6 +71,10 @@ local sess,user=users.get_viewer_session(srv)
 local put=make_put(srv)
 local get=make_get(srv)
 	
+	if not( user and user.cache and user.cache.admin ) then -- adminfail
+		return false
+	end
+
 	local url=srv.url_base
 	if url:sub(-1)=="/" then url=url:sub(1,-2) end -- trim any trailing /
 	

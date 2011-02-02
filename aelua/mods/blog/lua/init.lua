@@ -388,7 +388,7 @@ local get,put=make_get_put(srv)
 				local text=get(macro_replace(refined.plate_page or refined.plate_post or "{body}",refined))
 
 				srv.set_mimetype("text/html; charset=UTF-8")
-				put("header",{title="blog : "..ent.cache.pubname,
+				put("header",{title=refined.title,
 					css=refined.css,
 					H={sess=sess,user=user},
 					adminbar=get("blog_admin_links",{it=ent.cache,user=user}),
@@ -424,6 +424,10 @@ function serv_admin(srv)
 local sess,user=users.get_viewer_session(srv)
 local get,put=make_get_put(srv)
 
+	if not( user and user.cache and user.cache.admin ) then -- adminfail
+		return false
+	end
+
 local output_que={} -- delayed page content
 
 	local function que(a,b) -- que
@@ -432,15 +436,6 @@ local output_que={} -- delayed page content
 
 	local css=css
 	
-	if not ( user and user.cache and user.cache.admin ) then -- not admin, no access
-		srv.set_mimetype("text/html; charset=UTF-8")
-		put("header",{title="blog : admin",
-			H={sess=sess,user=user},
-			})
-
-		put("footer")
-		return
-	end
 	
 	local posts={} -- remove any gunk from the posts input
 	if srv.method=="POST" and srv.headers.Referer and srv.headers.Referer==srv.url then

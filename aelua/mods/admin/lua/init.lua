@@ -61,6 +61,10 @@ function serv(srv)
 local sess,user=users.get_viewer_session(srv)
 local put=make_put(srv)
 
+	if not( user and user.cache and user.cache.admin ) then -- adminfail
+		return false
+	end
+
 	local url=srv.url_base:sub(1,-2) -- lose the trailing /
 
 	put("header",{})
