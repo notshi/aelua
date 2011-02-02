@@ -21,6 +21,7 @@ local wet_waka=require("wetgenes.waka")
 -- require all the module sub parts
 local html=require("profile.html")
 
+local wakapages=require("waka.pages")
 local comments=require("note.comments")
 
 local math=math
@@ -100,11 +101,20 @@ local get=make_get(srv)
 		local phtml=get_profile_html(srv,name)
 		if pusr and phtml then
 			baseurl=baseurl.."/"..name
-			
+
+-- need the base wiki page, its kind of the main site everything
+			local rootpage=wakapages.cache_get(srv,"/") -- may fail
+			local roottext=(rootpage and rootpage.cache.text) or ""
+			local chunks=wet_waka.text_to_chunks(roottext)
+			local refined=wet_waka.refine_chunks(srv,chunks,{noblog=true}) -- build processed strings
+	
+
 			srv.set_mimetype("text/html; charset=UTF-8")
 			put("header",{title="profile ",H={user=user,sess=sess}})
 
-			put(phtml)
+			refined.body=phtml
+			refined.title=pusr.cache.name.." profile"
+			put( refined.plate or "{body}", refined )
 
 			comments.build(srv,{
 				url=baseurl,
@@ -117,7 +127,7 @@ local get=make_get(srv)
 				admin=pusr.cache.email,
 				save_post="status",
 				post_text="change your status",
-				title=pusr.cache.name.." profile",
+				title=refined.title,
 				})
 			
 			put("footer")
@@ -274,7 +284,7 @@ function makechunk_site(content,chunk)
 	
 	if chunk.site=="wetgenes" then
 	
-		chunk.site=replace([[<a href="{chunk.url}"><img src="http://like.wetgenes.com/-/badge/{name}/640/50/.png" /></a>]],d)
+		chunk.site=replace([[<a href="{chunk.url}"><img src="http://like.wetgenes.com/-/badge/{name}/640/50/badge.png" /></a>]],d)
 		
 	elseif chunk.site=="twitter" then
 
