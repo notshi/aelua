@@ -308,14 +308,11 @@ local sess,user=users.get_viewer_session(srv)
 local put=make_put(srv)
 local get=make_get(srv)
 
-	local cmd= srv.url_slash[ srv.url_slash_idx+2]
-
-	if not ( user and user.cache and user.cache.admin ) then -- not admin, no access
-		put("header",{title="waka : admin"})
-		put("waka_bar",{})
-		put("footer")
-		return
+	if not( user and user.cache and user.cache.admin ) then -- adminfail
+		return false
 	end
+
+	local cmd= srv.url_slash[ srv.url_slash_idx+2]
 	
 	
 	put("header",{title="waka : admin"})

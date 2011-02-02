@@ -150,7 +150,7 @@ blog_atom_item=function(d)
 	d.id=d.link
 	return replace([[
 	<entry>
-		<title type="text">{chunks.title}</title>
+		<title type="text">{refined.title}</title>
 		<link href="{link}"/>
 		<id>{id}</id>
 		<updated>{pubdate}</updated>
