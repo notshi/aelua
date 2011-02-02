@@ -87,9 +87,6 @@ local sess,user=users.get_viewer_session(srv)
 local get,put=make_get_put(srv)
 
 --	put(tostring(user and user.cache),{H=H})
-	if not( user and user.cache and user.cache.admin ) then -- adminfail
-		return false
-	end
 
 
 	local num=math.floor( tonumber( srv.url_slash[srv.url_slash_idx+0] or 0 ) or 0 )
@@ -129,6 +126,10 @@ local get,put=make_get_put(srv)
 	
 	
 	
+	if not( user and user.cache and user.cache.admin ) then -- adminfail
+		return false
+	end
+
 -- upload / list for admin
 
 	srv.set_mimetype("text/html; charset=UTF-8")
