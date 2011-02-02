@@ -15,6 +15,7 @@ local wet_string=require("wetgenes.string")
 local trim=wet_string.trim
 local str_split=wet_string.str_split
 local serialize=wet_string.serialize
+local macro_replace=wet_string.macro_replace
 
 local wet_waka=require("wetgenes.waka")
 
@@ -114,7 +115,7 @@ local get=make_get(srv)
 
 			refined.body=phtml
 			refined.title=pusr.cache.name.." profile"
-			put( refined.plate or "{body}", refined )
+			put( macro_replace(refined.plate_profile or refined.plate or "{body}", refined ) )
 
 			comments.build(srv,{
 				url=baseurl,
