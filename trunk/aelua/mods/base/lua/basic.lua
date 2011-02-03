@@ -85,8 +85,8 @@ cache.countzero()
 				local ab={}
 				for i=#aa,1,-1 do ab[#ab+1]=aa[i] end --reverse
 				local ac=table.concat(ab,"/") or ""
-				if not (ac=="" or ac=="www") then -- perform a redirect
-					srv.redirect("/"..ac)
+				if not (ac=="" or ac=="www") then -- perform a redirect of base address only
+					srv.redirect("http://www"..v..ac) -- to the www version
 					return
 				end
 			end
