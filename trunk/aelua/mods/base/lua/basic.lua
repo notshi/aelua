@@ -67,12 +67,32 @@ cache.countzero()
 	
 	srv.domainport=srv.url_slash[3]
 	if srv.domainport then srv.domain=str_split(":",srv.domainport)[1] end -- lose any port part
-	
+		
 	srv.url_domain=table.concat({srv.url_slash[1],srv.url_slash[2],srv.url_slash[3]},"/")
 	srv.url_local="/"
 	srv.slash="/"
 	local loop=true
 	
+	if opts.basedomains then
+		for i,v in ipairs(opts.basedomains) do
+			log(srv.url.."=="..srv.url_domain)
+			v="."..v.."/"
+			if srv.url:sub(-#v)==v then -- bare domain request?
+				local aa=srv.url:sub(1,-(#v+1))
+				aa=str_split("/",aa)
+				aa=aa[#aa] -- remove http:// bit
+				aa=str_split(".",aa)
+				local ab={}
+				for i=#aa,1,-1 do ab[#ab+1]=aa[i] end --reverse
+				local ac=table.concat(ab,"/") or ""
+				if not (ac=="" or ac=="www") then -- perform a redirect
+					srv.redirect("/"..ac)
+					return
+				end
+			end
+		end
+	end
+
 	function build_tail(frm)
 			local tail=""
 			for i=frm , #srv.url_slash do

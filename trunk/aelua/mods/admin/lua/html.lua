@@ -37,7 +37,7 @@ admin_edit=function(d)
 	d=d or {}
 	d.bootstrapp="<a href=\"http://boot-str.appspot.com/\">bootstrapp</a>"	
 	d.version=opts.bootstrapp_version or 0
-	d.oldopts=wet_string.serialize({})
+	d.oldopts=wet_string.serialize(opts,{pretty=true})
 
 	return replace([[
 <div>
