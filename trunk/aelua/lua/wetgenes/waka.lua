@@ -347,7 +347,7 @@ function refine_chunks(srv,chunks,opts)
 		end
 
 		if not trim then
-			if v.name:sub(1,4)=="title" then -- all chunks begining with title are trimed by default
+			if v.name:sub(1,5)=="title" then -- all chunks begining with title are trimed by default
 				trim="ends"
 			end
 		end
