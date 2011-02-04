@@ -214,11 +214,10 @@ local ext
 	if chunks.lua then -- we have some lua code for this page
 		local e=wet_sandbox.make_env()
 		local f,err=loadstring(chunks.lua.text)
+		chunks.lua.text=err or "OK"
 		if f then
 			setfenv(f, e)
 			pcall(f)
-		else
-			s=err
 		end
 		chunks.lua.env=e -- store it for later
 		
