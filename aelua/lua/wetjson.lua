@@ -1,6 +1,6 @@
 --
 -- wetjson
---         version 2011-01-31
+--         version 2011-02-31
 --         use encode to encode a table and decode to decode a json string
 --
 -- other json encode/decode pure lua library seemed too slow
