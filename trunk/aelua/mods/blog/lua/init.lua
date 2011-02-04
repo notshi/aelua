@@ -424,7 +424,7 @@ function serv_admin(srv)
 local sess,user=users.get_viewer_session(srv)
 local get,put=make_get_put(srv)
 
-	if not( user and user.cache and user.cache.admin ) then -- adminfail
+	if not( user and user.cache and user.cache.admin ) then
 		return false
 	end
 

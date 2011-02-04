@@ -257,7 +257,7 @@ local t
 				elseif l=="," then
 				else
 					val=l
-					val=valreplace[val] or val
+					if valreplace[val]~=nil then val=valreplace[val] end
 					val=tonumber(val) or val
 					setval()
 				end
