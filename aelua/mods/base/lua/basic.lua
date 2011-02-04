@@ -75,7 +75,7 @@ cache.countzero()
 	
 	if opts.basedomains then
 		for i,v in ipairs(opts.basedomains) do
-			log(srv.url.."=="..srv.url_domain)
+--			log(srv.url.."=="..srv.url_domain)
 			v="."..v.."/"
 			if srv.url:sub(-#v)==v then -- bare domain request?
 				local aa=srv.url:sub(1,-(#v+1))
