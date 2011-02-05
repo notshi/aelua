@@ -1,6 +1,6 @@
 --
 -- wetjson
---         version 2011-02-31
+--         version 2011-02-04
 --         use encode to encode a table and decode to decode a json string
 --
 -- other json encode/decode pure lua library seemed too slow
@@ -337,7 +337,7 @@ local encode_tab
 			put("{")
 			for i,v in pairs(vv) do
 				put(comma and ",") comma=true
-				put(encode_str(i))
+				put(encode_it(i)) -- allow numbers or strings
 				put(":")
 				t=type(v)
 				if t=="table" then
@@ -350,7 +350,7 @@ local encode_tab
 		end
 	end
 
-	encode_tab(tab,false)
+	encode_tab(tab,is_array(tab)) -- technically this should not be an array but we allow it
 
 
 	return table.concat(out)

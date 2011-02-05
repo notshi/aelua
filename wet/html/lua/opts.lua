@@ -137,6 +137,12 @@ map={ -- base lookup table
 												url="/thumbcache",
 											},
 					},
+["mirror"]		=	{			-- talk to talk
+						["#default"]	=	"mirror", 		-- no badlinks, we own everything under here
+						["#opts"]		=	{
+												url="/mirror",
+											},
+					},
 
 }
 

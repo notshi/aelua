@@ -74,18 +74,21 @@ public final class LuaTable extends java.util.Hashtable
    */
   LuaTable(int narray, int nhash)
   {
+
     // :todo: super(nhash) isn't clearly correct as adding nhash hash
     // table entries will causes a rehash with the usual implementation
     // (which rehashes when ratio of entries to capacity exceeds the
     // load factor of 0.75).  Perhaps ideally we would size the hash
     // tables such that adding nhash entries will not cause a rehash.
     super(nhash);
+/* // disable array part
     array = new Object[narray];
     for (int i=0; i<narray; ++i)
     {
       array[i] = Lua.NIL;
     }
     sizeArray = narray;
+*/
   }
 
   /**
@@ -220,6 +223,8 @@ public final class LuaTable extends java.util.Hashtable
    */
   private void resize(int nasize)
   {
+return; // disable array part
+/*
     if (nasize == sizeArray)
     {
       return;
@@ -264,12 +269,14 @@ public final class LuaTable extends java.util.Hashtable
     }
     array = newarray;
     sizeArray = array.length;
+*/
   }
 
   protected void rehash()
   {
     boolean oldinrehash = inrehash;
     inrehash = true;
+/* disable array part
     if (!oldinrehash)
     {
       int[] nasize = new int[1];
@@ -281,6 +288,7 @@ public final class LuaTable extends java.util.Hashtable
 
       resize(nasize[0]);
     }
+*/
     super.rehash();
     inrehash = oldinrehash;
   }

@@ -773,13 +773,14 @@ function get_recent(srv,num)
 	local r=cache.get(cachekey) -- do we already know the answer?
 
 	if r then -- we cached the answer
---		return json.decode(r) -- turn back into data
-		return r -- turn back into data
+		return r
 	end
 
 	local recent=list(srv,{limit=num,type="ok",csortdate="DESC"})
 
---	cache.put(cachekey,json.encode(recent),2*60) -- save this in cache for 2 minutes
+-- the lua array + hash for its tables was the problem
+-- I have disable the array part lets see if it has a performance impact...
+
 	cache.put(cachekey,recent,2*60) -- save this in cache for 2 minutes
 	
 	return recent
