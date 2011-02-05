@@ -17,7 +17,9 @@ local type=type
 
 module("opts")
 
-bootstrapp_version=20110204.1 -- hand bump to todays(ish) date on release
+--Machine generated data. Read between the lines, but do not edit.
+bootstrapp_version=20110205.22
+--Machine generated data. Read between the lines, but do not edit.
 
 urls={}
 
