@@ -319,8 +319,8 @@ end
 --
 -- turn some chunks into their prefered form, escape, trim and expand
 --
--- i need a naming convention that make sense so this is now called
--- refine_chunks with coare meaning unrefined
+-- i need a naming convention that make sense so this is now calledm
+-- refine_chunks with coarse meaning unrefined
 --
 -----------------------------------------------------------------------------
 function form_chunks(srv,chunks,opts) return refine_chunks(srv,chunks,opts) end
@@ -360,7 +360,7 @@ function refine_chunks(srv,chunks,opts)
 
 			s=waka_to_html(s,{base_url=opts.baseurl,escape_html=true}) 
 
-		elseif format=="import" then -- very special import, treat as chunk of lua import opts
+		elseif format=="import" then -- very special import, treat as chunk of lua import opts/code
 		
 			local e=sbox.make_env()
 			local f,err=loadstring(s)
@@ -373,13 +373,25 @@ function refine_chunks(srv,chunks,opts)
 			
 			if e.import=="blog" then
 			
---				e.over = e.over or opts.over
---				e.plate = e.plate or opts.plate
-				e.hook   = e.hook   or opts.hook -- callback function to fixup data
+				e.hook   = e.hook   or opts.hook
+				e.limit=e.limit or 5
+				e.layer=e.layer or 0
+				e.sort=e.sort or "pubdate"
 				
 				if not opts.noblog then -- prevent recursions
 					local blog=require("blog")
-					s=blog.recent_posts(srv,e)--.count or 5,e.over,e.plate)
+					s=blog.chunk_import(srv,e)
+				end
+				
+			elseif e.import=="note" then
+			
+				e.hook   = e.hook   or opts.hook
+				e.limit=e.limit or 5
+				e.sort=e.sort or "pubdate"
+				
+				if not opts.nonote then -- prevent recursions
+					local note=require("note")
+					s=note.chunk_import(srv,e)
 				end
 				
 			elseif e.import=="gsheet" then -- we need to grab some json from google

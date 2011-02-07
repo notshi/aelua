@@ -61,6 +61,9 @@ local function make_get(srv)
 		return wet_html.get(html,a,b)
 	end
 end
+local function make_get_put(srv)
+	return make_get(srv),make_put(srv)
+end
 local function make_url(srv)
 	local url=srv.url_base
 	if url:sub(-1)=="/" then url=url:sub(1,-2) end -- trim any trailing /
@@ -211,4 +214,60 @@ if (!document.getElementById('{css}'))
 
 		put("footer",{about="",report="",bar="",})
 	end
+end
+
+
+-----------------------------------------------------------------------------
+--
+-- get a html string which is a handful of recent comments,
+--
+-----------------------------------------------------------------------------
+function chunk_import(srv,opts)
+opts=opts or {}
+
+local get,put=make_get_put(srv)
+
+	local t={}
+	local css=""
+	local list=comments.list(srv,opts)
+
+	local ret={}
+	for i,v in pairs(opts) do ret[i]=v end -- copy opts into the return
+	
+	for i,v in ipairs(list) do
+	
+		local c=v.cache
+		if c.cache.user then
+		
+			local media=""
+			if c.media~=0 then
+				media=[[<a href="/data/]]..c.media..[["><img src="]]..srv.url_domain..[[/thumbcache/460/345/data/]]..c.media..[[" class="wetnote_comment_img" /></a>]]
+			end	
+			local plink,purl=users.email_to_profile_link(c.cache.user.email)
+			
+			c.media=media -- img tag+link or ""
+			
+			c.title=""
+			c.body=wet_waka.waka_to_html(c.text,{base_url="/",escape_html=true})
+			
+			c.link=c.url.."?wetnote="..c.id.."#wetnote"..c.id
+			
+			c.author_name=c.cache.user.name
+			c.author_icon=srv.url_domain..( c.cache.avatar or users.email_to_avatar_url(c.cache.user) )		
+			c.author_link=purl or "http://google.com/search?q="..c.cache.user.name
+			
+			c.date=os.date("%Y-%m-%d %H:%M:%S",c.created)
+		
+		
+			if type(opts.hook) == "function" then -- fix up each item?
+				opts.hook(v,{class="note"})
+			end
+			
+			ret[#ret+1]=c
+
+		end
+	end
+	
+	return ret
+		
 end

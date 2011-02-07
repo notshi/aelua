@@ -256,12 +256,14 @@ function list(srv,opts,t)
 		offset=opts.offset or 0,
 	}
 	
-	if opts.layer then
-		q[#q+1]={"filter","layer","==",opts.layer}
-	end
-	
-	if opts.group then
-		q[#q+1]={"filter","group","==",opts.group}
+-- add filters?
+	for i,v in ipairs{"layer","group"} do
+		if opts[v] then
+			local t=type(opts[v])
+			if t=="string" or t=="number" then
+				q[#q+1]={"filter",v,"==",opts[v]}
+			end
+		end
 	end
 	
 	if     opts.sort=="pubdate" then q[#q+1]={"sort","pubdate","DESC"} -- newest published

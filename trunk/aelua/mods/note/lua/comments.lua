@@ -281,11 +281,13 @@ function list(srv,opts,t)
 		limit=opts.limit or 100,
 		offset=opts.offset or 0,
 	}
-	
 -- add filters?
 	for i,v in ipairs{"author","url","group","type"} do
 		if opts[v] then
-			q[#q+1]={"filter",v,"==",opts[v]}
+			local t=type(opts[v])
+			if t=="string" or t=="number" then
+				q[#q+1]={"filter",v,"==",opts[v]}
+			end
 		end
 	end
 

@@ -142,6 +142,8 @@ function bubble(srv,ent,overload)
 	end
 	
 -- start with the base wiki page, its kind of the main site everything
+	p=wakapages.cache_get(srv,"/blog")
+	ps[#ps+1]=p
 	p=wakapages.cache_get(srv,"/")
 	ps[#ps+1]=p
 	
@@ -166,8 +168,76 @@ function bubble(srv,ent,overload)
 	if not refined.title then -- build a title
 		refined.title=string.sub(refined.body,1,80)
   	end
-	
+  		
 	return refined -- return the merged, processed chunks as an easy lookup table
+end
+
+-----------------------------------------------------------------------------
+--
+-- turn an entity into a chunk ready to be turned into a string via a plate
+--
+-----------------------------------------------------------------------------
+function chunk_prepare(srv,ent,opts)
+opts=opts or {}
+
+	local c=ent.cache
+
+	local plink,purl=users.email_to_profile_link(c.author)
+	
+	local refined=bubble(srv,ent) -- this gets parent entities
+	
+	for i,v in pairs(c) do refined[i]=v end	c=refined -- merge with the cache
+	
+	if type(opts.hook) == "function" then -- fix up each item?
+		opts.hook(refined,{class="blog_refined"})
+	end
+	
+	c.title=macro_replace("{title}",refined) -- build title
+	c.body=macro_replace("{body}",refined) -- and body from the blogs chunks only
+	
+	c.media=""
+
+	c.link="/blog" .. c.pubname
+	
+	c.author_name=c.author_name
+	c.author_icon=srv.url_domain..( c.author_icon or users.email_to_avatar_url(c.author) )
+	c.author_link=purl or "http://google.com/search?q="..c.author_name
+	
+	c.date=os.date("%Y-%m-%d %H:%M:%S",c.created)
+
+	if type(opts.hook) == "function" then -- fix up each item?
+		opts.hook(c,{class="blog"})
+	end
+
+	return c	
+end
+
+-----------------------------------------------------------------------------
+--
+-- import some blog entries into the waka
+--
+-----------------------------------------------------------------------------
+function chunk_import(srv,opts)
+opts=opts or {}
+
+local get,put=make_get_put(srv)
+
+	local t={}
+	local css=""
+	local list=pages.list(srv,opts)
+
+	local ret={}
+	for i,v in pairs(opts) do ret[i]=v end -- copy opts into the return
+	
+--	if true then return ret end
+
+	for i,v in ipairs(list) do
+		local c=chunk_prepare(srv,v,opts)
+		if c then ret[#ret+1]=c end
+	end
+	
+	return ret
+		
 end
 
 -----------------------------------------------------------------------------
@@ -179,6 +249,7 @@ end
 -- and an optional css chunk to style this
 --
 -----------------------------------------------------------------------------
+--function chunk_import(srv,opts) return recent_posts(srv,opts) end
 function recent_posts(srv,opts)--num,over,plate)
 opts=opts or {}
 
@@ -198,22 +269,11 @@ local get,put=make_get_put(srv)
 	
 	for i,v in ipairs(list) do
 	
-		local refined=bubble(srv,v,opts.over) -- this gets parent entities
-
--- bad hardcoded, need to fix
-		refined.link="/blog" .. v.cache.pubname
-		refined.pubdate=(os.date("%Y-%m-%d %H:%M:%S",v.cache.pubdate))
-		refined.it=v.cache
+		local c=chunk_prepare(srv,v,opts)
 		
-		if type(opts.hook) == "function" then
-			opts.hook(refined)
+		if c then
+			t[#t+1]=get(macro_replace(c[opts.plate or ""] or c.plate_wrap or c.plate_post or "{body}",c))
 		end
-
-		local text=get(macro_replace(refined[opts.plate or ""] or refined.plate_wrap or refined.plate_post or "{body}",refined))
-		
-		if refined.css then css=refined.css end -- need to pass out some css too
-		
-		t[#t+1]=text
 	end
 	
 	return table.concat(t),css
@@ -229,7 +289,7 @@ function serv(srv)
 	if srv.url_slash[srv.url_slash_idx+0]=="" and srv.url_slash[srv.url_slash_idx+1]=="admin" then
 		return serv_admin(srv)
 	end
-	
+local opts={}
 local sess,user=users.get_viewer_session(srv)
 local get,put=make_get_put(srv)
 
@@ -321,10 +381,10 @@ local get,put=make_get_put(srv)
 			put("blog_atom_head",{title="blog",updated=updated,author_name=author_name})
 			for i,v in ipairs(list) do
 			
-				local refined=bubble(srv,v) -- this gets parent entities
-				local text=get(macro_replace(refined.plate_post or "{body}",refined))
+				local c=chunk_prepare(srv,v,opts)
+				local text=get(macro_replace(c[opts.plate or ""] or c.plate_post or "{body}",c))
 				text=text..[[<script type="text/javascript" src="]]..srv.url_domain..[[/note/import/blog]]..v.cache.pubname..[[.js"></script>]]
-				put("blog_atom_item",{it=v.cache,refined=refined,text=atom_escape(text)})
+				put("blog_atom_item",{it=v.cache,refined=c,text=atom_escape(text)})
 			end
 			put("blog_atom_foot",{})
 			
@@ -332,8 +392,8 @@ local get,put=make_get_put(srv)
 		else
 			local list=pages.list(srv,{group=group,limit=10,layer=LAYER_PUBLISHED,sort="pubdate"})
 			local refined
-			if list[1] then
-				refined=bubble(srv,list[1]) -- this gets parent entities
+			if list[1] then -- get css?
+				refined=chunk_prepare(srv,list[1],opts)
 			end
 			local css=refined and refined.css
 			srv.set_mimetype("text/html; charset=UTF-8")
@@ -341,16 +401,13 @@ local get,put=make_get_put(srv)
 				H={sess=sess,user=user},
 				adminbar=get("blog_admin_links",{user=user})})
 		
-			local refined
 			local ss={}
 			for i,v in ipairs(list) do
 			
-				refined=bubble(srv,v) -- this gets parent entities
-				
-				refined.link=srv.url_local:sub(1,-2) .. v.cache.pubname
-				refined.pubdate=(os.date("%Y-%m-%d %H:%M:%S",v.cache.pubdate))
-				refined.it=v.cache
-				local text=get(macro_replace(refined.plate_wrap or "{body}",refined))
+				local c=chunk_prepare(srv,v,opts)
+				refined.it=c
+
+				local text=get(macro_replace(c[opts.plate or ""] or c.plate_wrap or "{it.body}",refined))
 				ss[#ss+1]=text
 			end
 			
@@ -373,10 +430,8 @@ local get,put=make_get_put(srv)
 		end
 		if ent and ent.cache.layer==LAYER_PUBLISHED then -- must be published
 		
-			local refined=bubble(srv,ent) -- this gets parent entities
-			refined.link=srv.url_local:sub(1,-2) .. ent.cache.pubname
-			refined.pubdate=(os.date("%Y-%m-%d %H:%M:%S",ent.cache.pubdate))
-			refined.it=ent.cache
+			local refined=chunk_prepare(srv,ent,opts)
+			refined.it=refined
 			
 			if ext=="dbg" then -- dump out all the bubbled refined as json
 
@@ -385,7 +440,7 @@ local get,put=make_get_put(srv)
 			
 			else
 			
-				local text=get(macro_replace(refined.plate_page or refined.plate_post or "{body}",refined))
+				local text=get(macro_replace(refined.plate_page or refined.plate_post or "{it.body}",refined))
 
 				srv.set_mimetype("text/html; charset=UTF-8")
 				put("header",{title=refined.title,
@@ -533,8 +588,9 @@ This is the #body of your post and can contain any html you wish.
 		if ent.cache.layer==LAYER_PUBLISHED then publish="UnPublish" end
 		que("blog_edit_form",{it=ent.cache,publish=publish,url=url})
 		
-		local refined=bubble(srv,ent) -- this gets parent entities
-		que(macro_replace(refined.plate or "{body}",refined))
+		local refined=chunk_prepare(srv,ent,opts)
+		refined.it=refined
+		que(macro_replace(refined.plate or "{it.body}",refined))
 		css=refined.css
 
 	
