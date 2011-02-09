@@ -67,9 +67,15 @@ waka_edit_form=function(d)
 	<textarea name="text" cols="80" rows="24" class="field" style="width:100%">{text}</textarea>
 	<br/>
 	<input type="submit" name="submit" value="Save" class="button" />
+	<input type="submit" name="submit" value="Write" class="button" />
 	<input type="submit" name="submit" value="Preview" class="button" />
 	<br/>	
 </form>
+<script type="text/javascript">
+	$(function(){
+		$('textarea[name=text]').indent();
+	});
+</script>
 ]],d)
 
 end

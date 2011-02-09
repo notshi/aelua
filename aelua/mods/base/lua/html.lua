@@ -137,6 +137,8 @@ header=function(d)
 		d.jquery_validate_js="/js/base/jquery.validate.js"
 	end
 	
+	d.all_min_js="/js/base/all.min.js"
+		
 	if not d.title then
 		local crumbs=d.srv.crumbs
 		local s
@@ -169,6 +171,7 @@ header=function(d)
 <script type="text/javascript" src="{jquery_validate_js}"></script>
 <script type="text/javascript" src="{swfobject_js}"></script>
 
+<script type="text/javascript" src="/js/base/jquery.indent-1.0.min.js"></script>
 <script type="text/javascript" src="/js/base/jquery-wet.js"></script>
 
 {extra}
