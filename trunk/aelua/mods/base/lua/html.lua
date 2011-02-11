@@ -312,7 +312,7 @@ user_bar=function(d)
 	
 	if user then
 	
-		d.name="<span title=\""..user.cache.email.."\" >"..(user.cache.name or "?").."</span>"
+		d.name="<a href=\"/profile/"..user.cache.email.."\" >"..(user.cache.name or "?").."</a>"
 	
 		d.hello="Hello, "..d.name.."."
 		

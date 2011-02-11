@@ -143,6 +143,12 @@ map={ -- base lookup table
 												url="/mirror",
 											},
 					},
+["port"]		=	{			-- port to port
+						["#default"]	=	"port", 		-- no badlinks, we own everything under here
+						["#opts"]		=	{
+												url="/port",
+											},
+					},
 
 }
 
