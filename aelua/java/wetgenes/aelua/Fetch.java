@@ -64,6 +64,7 @@ public class Fetch
 	int open_lib(Lua L,LuaTable lib)
 	{
 		reg_get(L,lib);
+		reg_post(L,lib);
 		
 		return 0;
 	}
@@ -83,12 +84,87 @@ public class Fetch
 		
 		try
 		{
-			LuaTable t=L.newTable();
-			
 			URL url = new URL(s);
 			HTTPRequest req=new HTTPRequest(url,HTTPMethod.GET,
 				com.google.appengine.api.urlfetch.FetchOptions.Builder.followRedirects().setDeadline(10.0) );
 			HTTPResponse response = fetcher.fetch(req);
+			
+			return response_results(L,response);
+		}
+		catch(IOException e)
+		{
+			L.pushNil();
+			L.pushString( e.toString() );
+			return 2;
+		}
+	}
+
+//
+// A simple and blocking url post
+//
+	void reg_post(Lua L,Object lib)
+	{ 
+		final Fetch _base=this;
+		L.setField(lib, "post", new LuaJavaCallback(){ Fetch base=_base; public int luaFunction(Lua L){ return base.post(L); } });
+	}
+	int post(Lua L)
+	{
+		Object o;
+		
+		String s=L.checkString(1); // url to fetch
+		
+		o=L.value(2);
+		if(!L.isTable(o)) { L.error("header must be a table"); }
+		LuaTable t2=(LuaTable)o;
+		
+		String s3=L.checkString(3); // post data payload
+		
+		try
+		{
+			
+			URL url = new URL(s);
+			HTTPRequest req=new HTTPRequest(url,HTTPMethod.POST,
+				com.google.appengine.api.urlfetch.FetchOptions.Builder.followRedirects().setDeadline(10.0) );
+				
+ 			
+			Enumeration t = t2.keys();
+	 
+			while(t.hasMoreElements())
+			{
+				String i=L.toString(t.nextElement());
+				String v=L.toString(t2.getlua(i));
+				
+				req.setHeader( new HTTPHeader(i,v) );
+				
+//req.setHeader( new HTTPHeader("Content-Type","x-www-form-urlencoded; charset=utf-8") );
+			
+			}
+
+
+			req.setPayload( s3.getBytes("UTF-8") );
+			
+			HTTPResponse response = fetcher.fetch(req);
+			
+			return response_results(L,response);
+			
+		}
+		catch(IOException e)
+		{
+			L.pushNil();
+			L.pushString( e.toString() );
+			return 2;
+		}
+	}
+
+
+//
+// handle the results
+//
+	int response_results(Lua L,HTTPResponse response)
+	{ 
+		try
+		{
+			LuaTable t=L.newTable();
 			
 			URL finalUrl = response.getFinalUrl();
 			if(finalUrl!=null) // we got redirected to here
@@ -149,7 +225,7 @@ public class Fetch
 			return 2;
 		}
 	}
-	
+
 }
 
 

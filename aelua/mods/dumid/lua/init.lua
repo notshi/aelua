@@ -29,7 +29,7 @@ local opts_twitter=( opts and opts.twitter ) or {}
 
 -- require all the module sub parts
 local html=require("dumid.html")
-local oauth=require("dumid.oauth")
+local oauth=require("wetgenes.aelua.oauth")
 
 
 
@@ -131,8 +131,8 @@ local put=make_put(srv)
 		local k,q = oauth.build(vars,{post="GET",url=baseurl,api_secret=opts_twitter.secret})
 		
 		local got=fetch.get(baseurl.."?"..q) -- get from internets		
-log(type(got.body))
-log(tostring(got.headers))
+--log(type(got.body))
+--log(tostring(got.headers))
 		local gots=oauth.decode(got.body)
 		
 		if gots.oauth_token then

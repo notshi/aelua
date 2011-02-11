@@ -1,5 +1,4 @@
 
---[[
 
 local wet_html=require("wetgenes.html")
 
@@ -21,14 +20,6 @@ local str_split=wet_string.str_split
 local serialize=wet_string.serialize
 
 
-local opts=require("opts")
-local opts_users_admin=( opts and opts.users and opts.users.admin ) or {}
-
-
--- require all the module sub parts
-local html=require("dumid.html")
-
-
 local math=math
 local string=string
 local table=table
@@ -43,14 +34,7 @@ local pcall=pcall
 local loadstring=loadstring
 
 
---
--- Which can be overidden in the global table opts
---
-local opts_mods_dumid={}
-if opts and opts.mods and opts.mods.dumid then opts_mods_dumid=opts.mods.dumid end
-
-
-module("dumid.oauth")
+module(...)
 
 -----------------------------------------------------------------------------
 --
@@ -60,7 +44,7 @@ module("dumid.oauth")
 --
 --
 -----------------------------------------------------------------------------
-local function esc(s)
+function esc(s)
 	return string.gsub(s,'[^0-9A-Za-z%-._~]', -- RFC3986 happy chars
 		function(c) return ( string.format("%%%02X", string.byte(c)) ) end )
 end
@@ -169,5 +153,5 @@ function decode(s)
 end
 
 
-]]
+
 
