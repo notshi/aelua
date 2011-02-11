@@ -81,9 +81,10 @@ function create(srv)
 	p.updated=srv.time
 
 	p.flavour=""
-	p.email=""
+	p.email="" -- this is just a duplicate of the id
 	p.name=""
-		
+	p.parent=nil -- set to a parent id for linked accounts
+	
 	dat.build_cache(ent) -- this just copies the props across
 	
 -- these are json only vars
