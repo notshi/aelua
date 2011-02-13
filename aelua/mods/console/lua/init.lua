@@ -15,6 +15,7 @@ local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
 local serialize=wet_string.serialize
 
+local d_sess =require("dumid.sess")
 
 -- require all the module sub parts
 local html=require("console.html")
@@ -49,7 +50,7 @@ module("console")
 --
 -----------------------------------------------------------------------------
 function serv(srv)
-local sess,user=users.get_viewer_session(srv)
+local sess,user=d_sess.get_viewer_session(srv)
 
 	if not( user and user.cache and user.cache.admin ) then -- adminfail
 		return false

@@ -18,6 +18,8 @@ local serialize=wet_string.serialize
 local macro_replace=wet_string.macro_replace
 
 local wet_waka=require("wetgenes.waka")
+local d_sess =require("dumid.sess")
+local d_users=require("dumid.users")
 
 -- require all the module sub parts
 local html=require("profile.html")
@@ -66,7 +68,7 @@ end
 --
 -----------------------------------------------------------------------------
 function serv(srv)
-local sess,user=users.get_viewer_session(srv)
+local sess,user=d_sess.get_viewer_session(srv)
 local put=make_put(srv)
 local get=make_get(srv)
 	
@@ -98,7 +100,7 @@ local get=make_get(srv)
 	if name then name=name:lower() end -- force to lower
 	
 	if name then -- need to check the name is valid
-		local pusr=users.get(srv,name) -- get user from email or nickname
+		local pusr=d_users.get(srv,name) -- get user from userid
 		local phtml=get_profile_html(srv,name)
 		if pusr and phtml then
 			baseurl=baseurl.."/"..name
@@ -125,7 +127,7 @@ local get=make_get(srv)
 				sess=sess,
 				user=user,
 				post_lock="admin",
-				admin=pusr.cache.email,
+				admin=pusr.cache.id,
 				save_post="status",
 				post_text="change your status",
 				title=refined.title,
@@ -143,7 +145,7 @@ end
 
 -----------------------------------------------------------------------------
 --
--- given a user email, ie the public email
+-- given a userid
 -- return some html that represents information about them
 -- something that can be shoved into other game profiles and provide
 -- links back to their real profile
@@ -155,7 +157,7 @@ local get=make_get(srv)
 
 	if name then -- need to check the name is valid
 	
-		local pusr=users.get(srv,name) -- get user from email or nickname
+		local pusr=d_users.get(srv,name) -- get user from userid
 		if pusr then -- gots a user to display profile of
 			
 			local content={head={},foot={},wide={},side={}}
@@ -168,15 +170,15 @@ local get=make_get(srv)
 			content.list=list
 			content.user=pusr.cache
 			local t={form="site",show="head"}
-			t.email=pusr.cache.email
+			t.userid=pusr.cache.id
 			t.url=""
 			t.site=""
 			t.siteid=0
 			
 			local endings={"@id.wetgenes.com"}
 			for i,v in ipairs(endings) do
-				if string.sub(t.email,-#v)==v then
-					t.siteid=tonumber(string.sub(t.email,1,-(#v+1)))
+				if string.sub(t.userid,-#v)==v then
+					t.siteid=tonumber(string.sub(t.userid,1,-(#v+1)))
 					t.url="http://like.wetgenes.com/-/profile/$"..t.siteid
 					t.site="wetgenes"
 					list[#list+1]=t
@@ -186,8 +188,8 @@ local get=make_get(srv)
 
 			local endings={"@id.twitter.com"}
 			for i,v in ipairs(endings) do
-				if string.sub(t.email,-#v)==v then
-					t.siteid=tonumber(string.sub(t.email,1,-(#v+1)))
+				if string.sub(t.userid,-#v)==v then
+					t.siteid=tonumber(string.sub(t.userid,1,-(#v+1)))
 					t.url="/js/dumid/twatbounce.html?id="..t.siteid
 					t.site="twitter"
 					list[#list+1]=t
@@ -243,7 +245,7 @@ function makechunk_name(content,chunk)
 	d.name=user.name
 	d.status=user.comment_status or "NO COMMENT"
 	
-	local plink,purl=users.email_to_profile_link(user.email)
+	local plink,purl=d_users.get_profile_link(user.id)
 	d.status = replace([[
 <div class="wetnote_comment_div" id="wetnote{id}" >
 <div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
@@ -253,11 +255,11 @@ function makechunk_name(content,chunk)
 </div>
 ]],{
 	text=wet_waka.waka_to_html(d.status,{base_url="/",escape_html=true}),
-	author=user.email,
+	author=user.id,
 	name=user.name,
 	plink=plink,
 	purl=purl,
-	icon=user.avatar_url or users.email_to_avatar_url(user),
+	icon=user.avatar_url or d_users.get_avatar_url(user),
 	})
 	
 		

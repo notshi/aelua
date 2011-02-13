@@ -22,6 +22,9 @@ local serialize=wet_string.serialize
 
 local wet_waka=require("wetgenes.waka")
 
+local d_sess =require("dumid.sess")
+local d_users=require("dumid.users")
+
 -- require all the module sub parts
 local html=require("note.html")
 local comments=require("note.comments")
@@ -94,7 +97,7 @@ function serv(srv)
 		return serv_import(srv)
 	end
 
-local sess,user=users.get_viewer_session(srv)
+local sess,user=d_Sess.get_viewer_session(srv)
 local put=make_put(srv)
 local get=make_get(srv)
 local posts=make_posts(srv)
@@ -129,7 +132,7 @@ end
 -----------------------------------------------------------------------------
 function serv_import(srv)
 
-local sess,user=users.get_viewer_session(srv)
+local sess,user=d_sess.get_viewer_session(srv)
 local put=make_put(srv)
 local get=make_get(srv)
 local posts=make_posts(srv)
@@ -243,7 +246,7 @@ local get,put=make_get_put(srv)
 			if c.media~=0 then
 				media=[[<a href="/data/]]..c.media..[["><img src="]]..srv.url_domain..[[/thumbcache/460/345/data/]]..c.media..[[" class="wetnote_comment_img" /></a>]]
 			end	
-			local plink,purl=users.email_to_profile_link(c.cache.user.email)
+			local plink,purl=d_users.get_profile_link(c.cache.user.id)
 			
 			c.media=media -- img tag+link or ""
 			
@@ -253,7 +256,7 @@ local get,put=make_get_put(srv)
 			c.link=c.url.."?wetnote="..c.id.."#wetnote"..c.id
 			
 			c.author_name=c.cache.user.name
-			c.author_icon=srv.url_domain..( c.cache.avatar or users.email_to_avatar_url(c.cache.user) )		
+			c.author_icon=srv.url_domain..( c.cache.avatar or d_users.get_avatar_url(c.cache.user) )		
 			c.author_link=purl or "http://google.com/search?q="..c.cache.user.name
 			
 			c.date=os.date("%Y-%m-%d %H:%M:%S",c.created)

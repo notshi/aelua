@@ -19,6 +19,8 @@ local log=require("wetgenes.aelua.log").log -- grab the func from the package
 local wet_waka=require("wetgenes.waka")
 local wet_html=require("wetgenes.html")
 
+local d_users=require("dumid.users")
+
 local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
 local replace  =wet_string.replace
@@ -73,7 +75,7 @@ function create(srv)
 	p.created=srv.time
 	p.updated=srv.time
 	
-	p.author="" -- the email of who wrote this comment (can be used to lookup user)
+	p.author="" -- the userid of who wrote this comment (can be used to lookup user)
 	p.url=""    -- the site url for which this is a comment on, site comments relative to root begin with "/"
 	p.group=0   -- the id of our parent or 0 if this is a master comment on a url, -1 if it is a meta cache
 	p.type="ok" -- a type string to filter on
@@ -353,7 +355,7 @@ function build_get_comment(srv,tab,c)
 		media=[[<a href="/data/]]..c.media..[["><img src="]]..srv.url_domain..[[/thumbcache/460/345/data/]]..c.media..[[" class="wetnote_comment_img" /></a>]]
 	end
 	
-	local plink,purl=users.email_to_profile_link(c.cache.user.email)
+	local plink,purl=d_users.get_profile_link(c.cache.user.id)
 	return tab.get([[
 <div class="wetnote_comment_div" id="wetnote{id}" >
 <div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
@@ -364,13 +366,13 @@ function build_get_comment(srv,tab,c)
 ]],{
 	media=media,
 	text=wet_waka.waka_to_html(c.text,{base_url=tab.url,escape_html=true}),
-	author=c.cache.user.email,
+	author=c.cache.user.id,
 	name=c.cache.user.name,
 	plink=plink,
 	purl=purl or "http://google.com/search?q="..c.cache.user.name,
 	time=os.date("%Y-%m-%d %H:%M:%S",c.created),
 	id=c.id,
-	icon=srv.url_domain..( c.cache.avatar or users.email_to_avatar_url(c.cache.user) ),
+	icon=srv.url_domain..( c.cache.avatar or d_users.get_avatar_url(c.cache.user) ),
 	})
 end
 
@@ -472,8 +474,8 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				title=wet_html.esc(title)
 			end
 			c.cache.user=tab.user.cache
-			c.avatar=users.email_to_avatar_url(tab.user.cache or "") -- this can be expensive so we cache it
-			c.author=tab.user.cache.email
+			c.avatar=d_users.get_avatar_url(tab.user.cache or "") -- this can be expensive so we cache it
+			c.author=tab.user.cache.id
 			c.url=tab.url
 			c.group=id
 			c.text=tab.posts.wetnote_comment_text
@@ -485,7 +487,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				dat.data=tab.posts.filedata and tab.posts.filedata.data
 				dat.size=tab.posts.filedata and tab.posts.filedata.size
 				dat.name=tab.posts.filedata and tab.posts.filedata.name
-				dat.owner=user.email
+				dat.owner=user.id
 				
 				wetdata.upload(srv,dat)
 
@@ -587,7 +589,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		else
 			if tab.reply_text then reply_text=tab.reply_text end
 		end
-		local plink,purl=users.email_to_profile_link(user.email or "")
+		local plink,purl=d_users.get_profile_link(user.id or "")
 		return tab.get([[
 <div class="wetnote_comment_form_div">
 <a href="#" onclick="$(this).hide(400);$('#wetnote_comment_form_{id}').show(400);return false;" style="{actioncss}">Reply</a>
@@ -602,13 +604,13 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 ]],{
 		actioncss=(num==0) and "display:none" or "display:block",
 		formcss=(num==0) and "display:block" or "display:none",
-		author=user.email or "",
+		author=user.id or "",
 		name=user.name or "",
 		plink=plink,
 		purl=purl or "http://google.com/search?q="..(user.name or ""),
 		time=os.date("%Y-%m-%d %H:%M:%S"),
 		id=num,
-		icon=srv.url_domain .. ( users.email_to_avatar_url(user or "") ),
+		icon=srv.url_domain .. ( d_users.get_avatar_url(user or "") ),
 		upload=upload,
 		post_text=post_text,
 		})
@@ -628,7 +630,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	if tab.post_lock=="admin" then
 		show_post=false
 		if tab.admin then -- who has admin
-			if user and user.email==tab.admin then
+			if user and user.id==tab.admin then
 				show_post=true
 			end
 		end
@@ -841,7 +843,7 @@ function recent_to_html(srv,tab)
 		end
 		if link:sub(1,1)=="/" then link=srv.url_domain..link end -- and make it absolute
 		
-		local plink,purl=users.email_to_profile_link(c.cache.user.email)
+		local plink,purl=d_users.get_profile_link(c.cache.user.id)
 
 		put([[
 <div class="wetnote_tick">

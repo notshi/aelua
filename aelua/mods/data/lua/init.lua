@@ -22,6 +22,8 @@ local str_split=wet_string.str_split
 local serialize=wet_string.serialize
 
 local wet_waka=require("wetgenes.waka")
+local d_sess =require("dumid.sess")
+
 
 -- require all the module sub parts
 local html=require("data.html")
@@ -83,7 +85,7 @@ function serv(srv)
 --		return serv_admin(srv)
 	end
 	
-local sess,user=users.get_viewer_session(srv)
+local sess,user=d_sess.get_viewer_session(srv)
 local get,put=make_get_put(srv)
 
 --	put(tostring(user and user.cache),{H=H})
