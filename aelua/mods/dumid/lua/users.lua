@@ -10,8 +10,6 @@ local fetch=require("wetgenes.aelua.fetch")
 local sys=require("wetgenes.aelua.sys")
 
 
-local core=require("wetgenes.aelua.users.core")
-
 local os=os
 local string=string
 local math=math

@@ -75,7 +75,7 @@ end
 --
 -----------------------------------------------------------------------------
 function serv(srv)
-local sess,user=users.get_viewer_session(srv)
+local sess,user=d_sess.get_viewer_session(srv)
 local put=make_put(srv)
 
 	local cmd=srv.url_slash[ srv.url_slash_idx+0 ]
@@ -256,12 +256,12 @@ local put=make_put(srv)
 			
 			local t=dat.begin()
 			
-			user=users.get(srv,email:lower(),t) -- try and read a current user
+			user=d_users.get(srv,email:lower(),t) -- try and read a current user
 			
 			if not user then -- didnt get, so make and put a new user?
 			
-				user=users.manifest(srv,email,name,flavour) -- name can be nil, it will just be created from the email
-				if not users.put(srv,user,t) then user=nil end
+				user=d_users.manifest(srv,email,name,flavour) -- name can be nil, it will just be created from the email
+				if not d_users.put(srv,user,t) then user=nil end
 			end
 			
 			if user then
@@ -274,7 +274,7 @@ local put=make_put(srv)
 
 			user.cache.admin=admin
 			user.cache.info=info -- extra info
-			if not users.put(srv,user,t) then user=nil end -- always write
+			if not d_users.put(srv,user,t) then user=nil end -- always write
 			
 			if user then -- things are looking good try a commit
 				if t.commit() then break end -- success
@@ -287,7 +287,7 @@ local put=make_put(srv)
 	if user then -- we got us a user now save it in a session
 	
 		-- remove all old sessions associated with this user?	
-		users.del_sess(user.cache.email)
+		d_sess.del(srv,user.cache.id)
 	
 		-- create a new session for this user
 		
@@ -295,9 +295,9 @@ local put=make_put(srv)
 		for i=1,8 do
 			hash=hash..string.format("%04x", math.random(0,65535) ) -- not so good but meh it will do for now
 		end
-		sess=users.new_sess(hash,user)
-		sess.cache.ip=srv.ip -- lock to this ip?
-		users.put_sess(sess) -- dump the session
+		sess=d_sess.manifest(srv,user,hash)
+--		sess.cache.ip=srv.ip -- lock to this ip?
+		d_users.put(srv,sess) -- dump the session
 		srv.set_cookie{name="wet_session",value=hash,domain=srv.domain,path="/",live=os.time()+(60*60*24*28)}
 	end
 
@@ -316,7 +316,7 @@ end
 --
 -----------------------------------------------------------------------------
 function serv_logout(srv)
-local sess,user=users.get_viewer_session(srv)
+local sess,user=d_sess.get_viewer_session(srv)
 local put=make_put(srv)
 
 	local cmd=srv.url_slash[ srv.url_slash_idx+0 ]
@@ -327,7 +327,7 @@ local put=make_put(srv)
 	
 	if user and data then
 		if data==sess.key.id then -- simple permission check
-			users.del_sess(user.cache.email) -- kill all sessions
+			d_sess.del(srv,user.cache.email) -- kill all sessions
 		end
 	end
 

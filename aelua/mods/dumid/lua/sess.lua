@@ -10,8 +10,6 @@ local fetch=require("wetgenes.aelua.fetch")
 local sys=require("wetgenes.aelua.sys")
 
 
-local core=require("wetgenes.aelua.users.core")
-
 local os=os
 local string=string
 local math=math
@@ -19,6 +17,7 @@ local math=math
 local tostring=tostring
 local type=type
 local ipairs=ipairs
+local require=require
 
 local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
@@ -37,6 +36,7 @@ local serialize=wet_string.serialize
 --------------------------------------------------------------------------------
 
 module("dumid.sess")
+local d_users=require("dumid.users")
 dat.set_defs(_M) -- create basic data handling funcs
 
 props=
@@ -80,7 +80,7 @@ end
 -----------------------------------------------------------------------------
 function manifest(srv,user,hash)
 
-	local sess=create(srv)
+	local ent=create(srv)
 	local p=ent.props
 	local c=ent.cache
 
@@ -89,7 +89,7 @@ function manifest(srv,user,hash)
 	c.userid=user.key.id
 	c.ip=srv.ip
 	
-	return sess
+	return ent
 end
 
 
@@ -99,7 +99,7 @@ end
 -- delete all sessions with the given user id
 -- 
 -----------------------------------------------------------------------------
-function del(userid)
+function del(srv,userid)
 
 	local r=dat.query({
 		kind="user.sess",
@@ -172,7 +172,7 @@ function get_viewer_session(srv)
 	
 	if srv.cookies.wet_session then -- we have a cookie session to check
 	
-		sess=get_sess(srv,srv.cookies.wet_session) -- this is probably a cache get
+		sess=get(srv,srv.cookies.wet_session) -- this is probably a cache get
 		
 		if sess then -- need to validate
 			if sess.cache.ip ~= srv.ip then -- ip must match, this makes stealing sessions a local affair.
@@ -184,7 +184,7 @@ function get_viewer_session(srv)
 	srv.sess=sess
 	srv.user=nil
 	if sess then
-		srv.user=dumid_user.get(srv,sess.cache.userid) -- this is probably also a cache get
+		srv.user=d_users.get(srv,sess.cache.userid) -- this is probably also a cache get
 	end
 	return srv.sess,srv.user -- return sess , user
 	
