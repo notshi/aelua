@@ -19,6 +19,7 @@ local math=math
 local tostring=tostring
 local type=type
 local ipairs=ipairs
+local require=require
 
 local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
@@ -26,6 +27,11 @@ local serialize=wet_string.serialize
 
 module("wetgenes.aelua.users")
 
+-- we are intrinsically bound to dumid when handling users
+-- just include the users.core if you dont want this to be the case
+--local d_users=require("dumid.users")
+--local d_sess =require("dumid.sess")
+--local d_acts =require("dumid.acts")
 
 
 function login_url(a)
@@ -44,6 +50,16 @@ end
 function get_google_user()
 
 	return core.get_google_user()
+
+end
+
+
+
+--[[ let the pain begin
+
+function get_viewer_session(srv)
+
+	return d_sess.get_viewer_session(srv)
 
 end
 
@@ -413,15 +429,7 @@ function email_to_profile_link(email)
 			profile="<a href="..url.."><img src=\"/art/icon_twat.png\" /></a>"
 		end
 	end
---[[
-	local endings={"@gmail.com","@googlemail.com"}
-	for i,v in ipairs(endings) do
-		if string.sub(email,-#v)==v then
-			url="http://www.google.com/profiles/"..string.sub(email,1,-(#v+1))
-			profile="<a href="..url.."><img src=\"/art/icon_goog.png\" /></a>"
-		end
-	end
-]]
+
 
 	return profile,url
 end
@@ -485,16 +493,11 @@ function email_to_avatar_url(email,w,h)
 		end
 	end
 
---[[
-	local endings={"@gmail.com","@googlemail.com"}
-	for i,v in ipairs(endings) do
-		if string.sub(email,-#v)==v then
-			url="http://www.google.com/profiles/"..string.sub(email,1,-(#v+1))
-		end
-	end
-]]
+
 
 	url=url or "/thumbcache/"..w.."/"..h.."/www.gravatar.com/avatar/"..sys.md5(email):lower().."?s=200&d=identicon&r=x"
 	
 	return url -- return nil if no image found
 end
+
+]]

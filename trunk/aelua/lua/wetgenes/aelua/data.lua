@@ -3,6 +3,7 @@ local json=require("json")
 
 local pairs=pairs
 local require=require
+local type=type
 
 
 local core=require("wetgenes.aelua.data.core")
@@ -343,6 +344,7 @@ function def_cache_key(env,srv,id)
 	return "ent="..env.kind(srv).."&id="..id
 end
 
+
 --------------------------------------------------------------------------------
 --
 -- given an entity return or update a list of memcache keys we should recalculate
@@ -351,9 +353,8 @@ end
 --------------------------------------------------------------------------------
 function def_cache_what(env,srv,ent,mc)
 	local mc=mc or {} -- can supply your own result table for merges	
-	local c=ent.cache
 	
-	mc[ env.cache_key(srv,c.id) ] = true
+	mc[ env.cache_key(srv,ent.key.id) ] = true
 	
 	return mc
 end
