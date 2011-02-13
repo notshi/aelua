@@ -21,6 +21,7 @@ local serialize=wet_string.serialize
 
 local ae_opts=require("wetgenes.aelua.opts")
 
+local d_sess =require("dumid.sess")
 
 -- require all the module sub parts
 local html=require("admin.html")
@@ -58,7 +59,7 @@ end
 --
 -----------------------------------------------------------------------------
 function serv(srv)
-local sess,user=users.get_viewer_session(srv)
+local sess,user=d_sess.get_viewer_session(srv)
 local put=make_put(srv)
 
 	if not( user and user.cache and user.cache.admin ) then -- adminfail
