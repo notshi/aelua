@@ -23,6 +23,10 @@ local serialize=wet_string.serialize
 
 local wet_waka=require("wetgenes.waka")
 
+local d_sess =require("dumid.sess")
+local d_users=require("dumid.users")
+
+
 -- require all the module sub parts
 local html=require("blog.html")
 local pages=require("blog.pages")
@@ -182,7 +186,7 @@ opts=opts or {}
 
 	local c=ent.cache
 
-	local plink,purl=users.email_to_profile_link(c.author)
+	local plink,purl=d_users.get_profile_link(c.author)
 	
 	local refined=bubble(srv,ent) -- this gets parent entities
 	
@@ -200,7 +204,7 @@ opts=opts or {}
 	c.link="/blog" .. c.pubname
 	
 	c.author_name=c.author_name
-	c.author_icon=srv.url_domain..( c.author_icon or users.email_to_avatar_url(c.author) )
+	c.author_icon=srv.url_domain..( c.author_icon or d_users.get_avatar_url(c.author) )
 	c.author_link=purl or "http://google.com/search?q="..c.author_name
 	
 	c.date=os.date("%Y-%m-%d %H:%M:%S",c.created)
@@ -290,7 +294,7 @@ function serv(srv)
 		return serv_admin(srv)
 	end
 local opts={}
-local sess,user=users.get_viewer_session(srv)
+local sess,user=d_sess.get_viewer_session(srv)
 local get,put=make_get_put(srv)
 
 	local ext -- an extension if any
@@ -476,7 +480,7 @@ end
 --
 -----------------------------------------------------------------------------
 function serv_admin(srv)
-local sess,user=users.get_viewer_session(srv)
+local sess,user=d_sess.get_viewer_session(srv)
 local get,put=make_get_put(srv)
 
 	if not( user and user.cache and user.cache.admin ) then
@@ -535,7 +539,7 @@ local output_que={} -- delayed page content
 		if not ent then -- make a new ent but do not write it to the database unless it needs an id
 		
 			ent=pages.create(srv)
-			ent.cache.author=user.cache.email
+			ent.cache.author=user.cache.id
 			ent.cache.group=group
 			ent.cache.pubname=group..name
 			ent.cache.layer=LAYER_DRAFT
@@ -562,7 +566,7 @@ This is the #body of your post and can contain any html you wish.
 -- if two people edit a page at the same time, one edit will be lost
 -- this is however a blog, you should not need to cope with that problem :)
 
-			ent.cache.author=user.cache.email
+			ent.cache.author=user.cache.id
 			ent.cache.author_name=user.cache.name
 			for i,v in pairs({"text","group","pubname","layer"}) do -- can change these parts
 				if posts[v] then ent.cache[v]=posts[v] end
