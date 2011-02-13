@@ -88,7 +88,7 @@ function create(srv)
 
 	p.group="/" -- master group of this post, "/" by default, this is the directory part of the pubname
 	
-	p.author="" -- email of last editor of this post
+	p.author="" -- userid of last editor of this post
 	
 	p.pubname="" -- the published name of this page if published, or "" if not published yet
 	p.pubdate=srv.time  -- the date published (unixtime)
