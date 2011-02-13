@@ -17,6 +17,10 @@ local serialize=wet_string.serialize
 
 local json=require("json")
 
+local d_sess=require("dumid.sess")
+local d_users=require("dumid.users")
+local d_acts=require("dumid.acts")
+
 -- require all the module sub parts
 local html=require("html")
 local players=require("hoe.players")
@@ -61,7 +65,7 @@ module("hoe")
 -----------------------------------------------------------------------------
 function create(srv)
 
-local sess,user=users.get_viewer_session(srv)
+local sess,user=d_sess.get_viewer_session(srv)
 
 	local H={}
 	
@@ -178,13 +182,32 @@ local put=H.put
 
 	H.user_data_name=H.srv.flavour.."_hoe_"..H.round.key.id -- unique data name for this round
 
-	if H.user then -- we have a user
+	if H.sess and H.user then -- we have a session and user
 	
+		local c=H.sess.cache
+		
+		c.hoeplayer=c.hoeplayer or {}
+		
+		if c.hoeplayer[H.round.key.id] then -- we have an id
+		
+			if c.hoeplayer[H.round.key.id]==0 then -- none
+				H.player=nil
+			else
+				H.player=players.get(H,c.hoeplayer[H.round.key.id])
+			end
+		
+		else -- session needs fixing to link to player
+					
+			H.player=players.fix_session(H,H.sess,H.round.key.id,H.user.key.id)
+		end
+		
+--[[
 		local user_data=H.user.cache[H.user_data_name]
 
 		if user_data then -- we already have data, so use it
 			H.player=players.get(H,user_data.player_id)
 		end
+]]
 		
 		if not H.player then -- no player in this round
 		
@@ -206,7 +229,7 @@ local put=H.put
 	if cmd=="do" then -- perform a basic action with mild security
 	
 		local id=H.arg(2)
-		local dat=users.get_act(H.user,id)
+		local dat=d_acts.get(srv,H.user,id)
 		
 		if dat then
 		
@@ -245,7 +268,7 @@ local put=H.put
 	put("player_bar",{player=H.player and H.player.cache})
 	
 	if H.cmd_request=="join" then
-		put("request_join",{act=users.put_act(H.user,{cmd="join",check=H.user_data_name})})
+		put("request_join",{act=d_acts.put(srv,H.user,{cmd="join",check=H.user_data_name})})
 	elseif H.cmd_request=="login" then
 		put("request_login",{})
 	end
@@ -350,7 +373,7 @@ local put=H.put
 				end
 			end
 		end
-		local profile=users.email_to_profile_link(v.cache.email) or ""
+		local profile=d_users.get_profile_link(v.cache.email) or ""
 		put("player_row",{player=v.cache,idx=i+page.show,crowns=crowns,profile=profile})
 	end
 	put("player_row_footer",{url=H.srv.url,page=page})
@@ -860,7 +883,7 @@ function serv_round_fight(H)
 		
 		put("player_row_header",{url=H.srv.url,page=page})
 		for i=1,#list do local v=list[i]
-			local profile=users.email_to_profile_link(v.cache.email) or ""
+			local profile=d_users.get_profile_link(v.cache.email) or ""
 			v.cache.shout=""
 			if player then
 				local f={}			

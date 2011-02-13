@@ -15,6 +15,7 @@ local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
 local serialize=wet_string.serialize
 
+local d_sess=require("dumid.sess")
 
 -- require all the module sub parts
 local html  =require("hoe.html")
@@ -170,6 +171,66 @@ function get(H,id,t)
 	return check(H,ent)
 end
 
+
+--------------------------------------------------------------------------------
+--
+-- remove any extra players and find our player
+--
+--------------------------------------------------------------------------------
+function find(H,roundid,userid)
+
+-- check that we only have one player
+
+	local q={
+			kind=kind(H),
+			limit=100,
+			offset=0,
+			}
+		
+	q[#q+1]={"filter","round_id","==",roundid}
+	q[#q+1]={"filter","email","==",userid}
+	q[#q+1]={"sort","created","ASC"}
+	
+	local r=dat.query(q)
+	
+	for i=2,#r.list do local v=r.list[i] -- delete any extra ghosts if they exist
+		dat.del(v.key)
+		rounds.dec_players(H,H.round.key.id) -- adjust round player count -1
+	end
+	
+	if r.list[1] then -- this is who we are
+		return dat.build_cache(r.list[1])
+	end
+
+end
+
+
+--------------------------------------------------------------------------------
+--
+-- fix session and return player
+--
+--------------------------------------------------------------------------------
+function fix_session(H,sess,roundid,userid)
+
+	local c=sess.cache
+
+	local p=find(H,roundid,userid)
+	
+	if p then
+		c.hoeplayer[roundid]=p.key.id
+	else
+		c.hoeplayer[roundid]=0 -- not found
+	end
+	
+	d_sess.update(H.srv,sess,function(e)
+			e.cache.hoeplayer=e.cache.hoeplayer or {}
+			e.cache.hoeplayer[H.round.key.id]=c.hoeplayer[H.round.key.id]
+			return true
+		end)
+	
+	return p
+end
+
 --------------------------------------------------------------------------------
 --
 -- create a player in this game for the given user
@@ -180,57 +241,19 @@ end
 --
 --------------------------------------------------------------------------------
 function join(H,user)
-	if H.round.cache.state~="active" then return false end -- can only join active round
+	if H.round.cache.state~="active" then return false end -- can only join an active round
 
-	for retry=1,10 do
+	local p=create(H)
+	p.cache.email=user.cache.id
+	p.cache.name=user.cache.name
 
-		local tu=dat.begin()
-		local tp=dat.begin()
-		local kp=nil
-		local ku=nil
+	if put(H,p) then -- new player put ok
+
+		rounds.inc_players(H,H.round.key.id) -- adjust round player count +1
 		
-		local p=create(H)
-		p.cache.email=user.cache.email
-		p.cache.name=user.cache.name
-		
-		if put(H,p,tp) then -- new player put ok
-		
-			local u=users.get(H.srv,user.cache.id,tu) -- get user
-			
-			if u then
-				local ud=u.cache[H.user_data_name] or {} -- userdata for this round
-				u.cache[H.user_data_name]=ud
-				
-				-- this bit deals with the fact that we have two transactions and that
-				-- tu may get commited then tp might fail
-				if ud.player_id then -- already joined?
-					p=get(H,ud.player_id) -- does the player exist? (no transaction needed)
-					if p and p.cache.email==user.cache.email then -- check that link to player is good
-						tu.rollback()
-						tp.rollback()
-						return false
-					end
-				end
-				
-				ud.player_id=p.key.id -- link the user to this player id for this round
-				
-				if users.put(H.srv,u,tu) then -- user put ok?
-				
-					if tu.commit() then -- commit the pointer first, pointers can be updated later
-						if tp.commit() then -- failure means tu was commited but tp was not
-							rounds.inc_players(H,H.round.key.id) -- adjust round player count +1
-							return true
-						end
-					end
-				end
-			end
-		end
-		
-		tu.rollback() -- try and undo everything ready to try again
-		tp.rollback()
+		return find(H,H.round.key.id,user.cache.id) -- find this player and remove any bad players
+
 	end
-	
-	return false
 end
 
 --------------------------------------------------------------------------------
