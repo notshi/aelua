@@ -38,9 +38,8 @@ function put(srv,user,dat)
 local id=tostring(math.random(10000,99999)) -- need a random number but "random" isnt a big issue
 	
 local key="user=act&"..user.cache.id.."&"..id
-local str=json.encode(dat)
 
-	cache.put(key,str,60*5) -- store for 5 mins
+	cache.put(key,dat,60*5) -- store for 5 mins
 	
 	return id
 end
@@ -54,12 +53,12 @@ function get(srv,user,id)
 	if not user or not id then return nil end
 	
 local key="user=act&"..user.cache.id.."&"..id
-local str=cache.get(key)
+local dat=cache.get(key)
 
-	if not str then return nil end -- notfound
+	if not dat then return nil end -- notfound
 	
 	cache.del(key) -- one use only
 	
-	return json.decode(str)
+	return dat
 
 end

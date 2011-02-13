@@ -274,6 +274,7 @@ local put=make_put(srv)
 
 			user.cache.admin=admin
 			user.cache.info=info -- extra info
+			if info.email then user.cache.email=info.email end -- real email if available
 			if not d_users.put(srv,user,t) then user=nil end -- always write
 			
 			if user then -- things are looking good try a commit
@@ -327,7 +328,7 @@ local put=make_put(srv)
 	
 	if user and data then
 		if data==sess.key.id then -- simple permission check
-			d_sess.del(srv,user.cache.email) -- kill all sessions
+			d_sess.del(srv,user.cache.id) -- kill all sessions
 		end
 	end
 

@@ -220,6 +220,32 @@ function inc_players(H,id)
 	return false
 end
 
+
+--------------------------------------------------------------------------------
+--
+-- dec the number of players in this round
+-- this may get out pf sync and need to be recalculated
+--
+--------------------------------------------------------------------------------
+function dec_players(H,id)
+	id=id or H.round.key.id -- use this round?
+	
+	for retry=1,10 do
+		local t=dat.begin()
+		local r=get(H,id,t)
+		if r then
+			r.cache.players=(r.cache.players or 0)-1
+			if put(H,r) then
+				if t.commit() then
+					return true
+				end
+			end
+		end
+	end
+	
+	return false
+end
+
 --------------------------------------------------------------------------------
 --
 -- get - update - put
