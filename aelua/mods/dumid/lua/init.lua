@@ -29,6 +29,12 @@ local opts_twitter=( opts and opts.twitter ) or {}
 
 -- require all the module sub parts
 local html=require("dumid.html")
+
+local d_users=require("dumid.users")
+local d_sess =require("dumid.sess")
+local d_acts =require("dumid.acts")
+
+
 local oauth=require("wetgenes.aelua.oauth")
 
 

@@ -25,45 +25,30 @@ local str_split=wet_string.str_split
 local serialize=wet_string.serialize
 
 module("dumid.users")
+dat.set_defs(_M) -- create basic data handling funcs
+
+props=
+{
+	flavour="",
+	email  ="", -- this is a duplicate of the userid or a real email
+	name   ="",
+	parent ="", -- set to a parent userid for linked accounts
+}
+
+cache=
+{
+}
+
+
 
 --------------------------------------------------------------------------------
+--
+-- allways this kind
 --
 --------------------------------------------------------------------------------
 function kind(srv)
 	return "user.data"
 end
-
-
---------------------------------------------------------------------------------
---
--- Create a new local entity filled with initial data
---
---------------------------------------------------------------------------------
-function create(srv)
-
-	local ent={}
-	
-	ent.key={kind=kind(srv)} -- we will not know the key id until after we save
-	ent.props={}
-	
-	local p=ent.props
-	
-	p.created=srv.time
-	p.updated=srv.time
-
-	p.flavour=""
-	p.email="" -- this is a duplicate of the userid or maybe even a real email
-	p.name=""
-	p.parent="" -- set to a parent userid for linked accounts
-	
-	dat.build_cache(ent) -- this just copies the props across
-	
--- these are json only vars
-	local c=ent.cache
-
-	return check(srv,ent)
-end
-
 
 --------------------------------------------------------------------------------
 --
@@ -75,74 +60,15 @@ function check(srv,ent)
 
 	local ok=true
 	local c=ent.cache
-	
 		
 	return ent,ok
 end
 
------------------------------------------------------------------------------
---
--- convert the cache values to props then
--- put a previously got user ent within the given transaction t
--- pass in dat instead of a transaction if you do not need one
---
------------------------------------------------------------------------------
-function put(srv,ent,t)
-
-	t=t or dat -- use transaction?
-
-	local _,ok=check(srv,ent) -- check that this is valid to put
-	if not ok then return nil end
-
-	dat.build_props(ent)
-	local ks=t.put(ent)
-	
-	if ks then
-		ent.key=dat.keyinfo( ks ) -- update key with new id
-		dat.build_cache(ent)
-	end
-
-	return ks -- return the keystring which is an absolute name
-end
 
 
 -----------------------------------------------------------------------------
 --
--- get a user ent by id within the given transaction t
--- you may edit the cache values after this get in preperation for a put
---
--- an id (always all lowercase) is a user@domain string identifier
--- for instance 1234567@id.facebook.com which would indicate a facebook
--- account with the user id of 1234567
---
--- the id subdomain is used so as to seperate these ids from possibly
--- real emails at the various domains that could also be mixed in
---
------------------------------------------------------------------------------
-function get(srv,id,t)
-
-	local ent=id
-	
-	if type(ent)~="table" then -- get by id
-		ent=create(srv)
-		ent.key.id=id
-	end
-	
-	t=t or dat -- use transaction?
-	
-	if not t.get(ent) then return nil end	
-	dat.build_cache(ent)
-	
-	return check(srv,ent)
-end
-
-
-
-
-
------------------------------------------------------------------------------
---
--- Make a local user data, ready to be put
+-- Make a new local user data, ready to be put
 --
 -----------------------------------------------------------------------------
 function manifest(srv,userid,name,flavour)
@@ -162,12 +88,12 @@ function manifest(srv,userid,name,flavour)
 
 	userid=string.lower(userid)
 
-	user.key.id=userid -- email is the forcedkey value for this entity
-	user.cache.id=userid -- email is the forcedkey value for this entity
+	user.key.id=userid -- each userid is unique
+	user.cache.id=user.key.id
 
 	user.cache.flavour=flavour -- provider hint, we can mostly work this out from the email if missing
 	
-	user.cache.email=userid -- repeat the key
+	user.cache.email=userid -- repeat the key as the email
 
 	return user
 end
@@ -223,7 +149,7 @@ end
 -- so we cache it on site, pass in w,h for alternative sized avatar
 --
 -- this function may hit external sites and take some time to run
--- so cache it if you need it do not call this multiple times every page render
+-- so cache its result and do not call this multiple times every page render
 --
 -----------------------------------------------------------------------------
 function get_avatar_url(userid,w,h)
@@ -237,12 +163,10 @@ function get_avatar_url(userid,w,h)
 	if type(userid)=="table" then
 		user=userid
 		userid=user.id or ""
-		email=userid
-		if user.info and user.info.email then
-			email=user.info.email
-		end
+		email=user.email or userid
 	end
 	if type(userid)=="string" then userid=userid:lower() end
+	if type(email) =="string" then email = email:lower() end
 	
 	local endings={"@id.wetgenes.com"}
 	for i,v in ipairs(endings) do

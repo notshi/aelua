@@ -37,39 +37,23 @@ local serialize=wet_string.serialize
 --------------------------------------------------------------------------------
 
 module("dumid.sess")
+dat.set_defs(_M) -- create basic data handling funcs
+
+props=
+{
+	userid="", -- who this session belongs too
+	ip="", -- and the ip this session belongs to
+}
+
+cache=
+{
+}
 
 --------------------------------------------------------------------------------
 --
 --------------------------------------------------------------------------------
 function kind(srv)
 	return "user.sess"
-end
-
------------------------------------------------------------------------------
---
--- Make a local session ent
---
------------------------------------------------------------------------------
-function create(srv)
-
-	local ent={}
-	
-	ent.key={kind=kind(srv)} -- we will not know the key id until after we save
-	ent.props={}
-	
-	local p=ent.props
-	
-	p.created=srv.time
-	p.updated=srv.time
-
-	p.userid="" -- this is the userid unique key
-	
-	dat.build_cache(ent) -- this just copies the props across
-	
--- these are json only vars
-	local c=ent.cache
-
-	return check(srv,ent)
 end
 
 -----------------------------------------------------------------------------
@@ -81,12 +65,13 @@ function check(srv,ent)
 
 	local ok=true
 	local c=ent.cache
+	local p=ent.props
+	
+	p.userid=c.userid or ""
+	p.ip=c.ip or ""
 
 	return ent,ok
 end
-
-
-
 
 -----------------------------------------------------------------------------
 --
@@ -99,12 +84,10 @@ function manifest(srv,user,hash)
 	local p=ent.props
 	local c=ent.cache
 
-	c.userid=user.cache.userid or user.cache.email
+	ent.key.id=hash
 	
-	c.user=user -- save a copy of the user in this session
-	
--- make sure these are more than just cache values	
-	p.userid=c.userid
+	c.userid=user.key.id
+	c.ip=srv.ip
 	
 	return sess
 end
@@ -113,61 +96,7 @@ end
 
 -----------------------------------------------------------------------------
 --
---
------------------------------------------------------------------------------
-function get(srv,hash,tt)
-	local cachekey="user=sess&"..hash
-	
-	if not tt then -- not a transaction so try memcache first
-		local data=cache.get(cachekey)
-		if data then -- found in memcache
-			local d=json.decode(data) -- turn into table
-			local sess=new_sess(hash,d.user) -- build a body
-			sess.cache=d -- and replace the cache
-			d.user=get(srv,d.user.key.id) -- refresh user
-			return sess
-		end
-	end
-		
-	local t=tt or dat
-	if t.fail then return nil end
-	
-	local sess={key={kind="user.sess",id=hash}} -- hash is the key value for this entity
-	
-	if not t.get(sess) then return nil end -- failed to get
-	
-	dat.build_cache(sess) -- most data is kept in json
-	
-	sess.cache.user=get(srv,sess.cache.user.key.id,tt) -- refresh user
-	
-	if not tt then -- not a transaction so write it to memcache as well
-		cache.put(cachekey,json.encode(sess.cache),60*60)
-	end
-	return sess
-end
------------------------------------------------------------------------------
---
--- 
------------------------------------------------------------------------------
-function put(srv,sess,tt)
-	local t=tt or dat
-	if t.fail then return nil end
-		
-	dat.build_props(sess) -- most data is kept in json
-	
-	sess.props.updated=os.time() -- update stamp
-	
-	local r=t.put(sess)
-	if not tt then
-		cache.del("user=sess&"..sess.key.id) -- remove any memcache, after the put
-							--- (any transaction code will need to do this *again* after a commit)
-	end
-	return r
-end
-
------------------------------------------------------------------------------
---
--- delete all sessions with the given email
+-- delete all sessions with the given user id
 -- 
 -----------------------------------------------------------------------------
 function del(userid)
@@ -176,13 +105,15 @@ function del(userid)
 		kind="user.sess",
 		limit=100,
 		offset=0,
-			{"filter","email","==",email},
+			{"filter","userid","==",userid},
 		})
-		
+	
+	local mc={}
 	for i=1,#r.list do local v=r.list[i]
+		cache_what(srv,v,mc)
 		dat.del(v.key)
-		cache.del("user=sess&"..v.key.id) -- remove any memcache, after the del
 	end
+	cache_fix(srv,mc) -- remove cache of what was just deleted
 
 end
 
@@ -199,10 +130,9 @@ function put_act(srv,user,dat)
 	
 local id=tostring(math.random(10000,99999)) -- need a random number but "random" isnt a big issue
 	
-local key="user=act&"..user.cache.email.."&"..id
-local str=json.encode(dat)
+local key="user=act&"..user.key.id.."&"..id
 
-	cache.put(key,str,60*5)
+	cache.put(key,dat,60*5)
 	
 	return id
 end
@@ -215,14 +145,14 @@ end
 function get_act(srv,user,id)
 	if not user or not id then return nil end
 	
-local key="user=act&"..user.cache.email.."&"..id
-local str=cache.get(key)
+local key="user=act&"..user.key.id.."&"..id
+local dat=cache.get(key)
 
-	if not str then return nil end -- notfound
+	if not dat then return nil end -- notfound
 	
 	cache.del(key) -- one use only
 	
-	return json.decode(str)
+	return dat
 
 end
 
@@ -236,13 +166,13 @@ end
 -----------------------------------------------------------------------------
 function get_viewer_session(srv)
 
-	if srv.sess then return srv.sess,srv.user end -- may be called multiple times
+	if srv.sess and srv.user then return srv.sess,srv.user end -- may be called multiple times
 	
 	local sess
 	
 	if srv.cookies.wet_session then -- we have a cookie session to check
 	
-		sess=get_sess(srv,srv.cookies.wet_session) -- load session
+		sess=get_sess(srv,srv.cookies.wet_session) -- this is probably a cache get
 		
 		if sess then -- need to validate
 			if sess.cache.ip ~= srv.ip then -- ip must match, this makes stealing sessions a local affair.
@@ -252,8 +182,10 @@ function get_viewer_session(srv)
 	end
 	
 	srv.sess=sess
-	srv.user=sess and sess.cache and sess.cache.user -- and put the user somewhere easier
-	
-	return sess,srv.user -- return sess , user
+	srv.user=nil
+	if sess then
+		srv.user=dumid_user.get(srv,sess.cache.userid) -- this is probably also a cache get
+	end
+	return srv.sess,srv.user -- return sess , user
 	
 end
