@@ -32,7 +32,7 @@ local os=os
 local io=io
 local print=print
 
-
+local ipairs=ipairs
 
 module("wetgenes.bake")
 
@@ -141,11 +141,63 @@ local d=fpr:read("*a")
 local fpw=io.open(t,"wb")
 
 	fpw:write(d)
-
 	fpr:close()
 	fpw:close()
 end
 
+
+--
+-- given a filename make sure that its containing directory exists
+--
+create_dir_for_file=function(n)
+	local t={}
+	for w in string.gmatch(n, "[^/]+") do t[#t+1]=w end
+	local s=""
+	t[#t]=nil -- remove the filename
+	for i,v in ipairs(t) do
+		s=s..v
+		lfs.mkdir(s)
+		s=s.."/"
+	end
+end
+
+--
+-- get the filenames (relative to the basedir) of all files matching the filter
+--
+findfiles=function(opts)
+if not opts then return end
+if not opts.basedir then return end
+if not opts.dir then return end
+if not opts.filter then return end
+opts.ret=opts.ret or {}
+
+	local subdirs={}
+	local d=opts.basedir.."/"..opts.dir
+	for v in lfs.dir(d) do
+		local a=lfs.attributes(d.."/"..v)
+--print("test",v,a.mode)
+		if a.mode=="file" then
+			if string.find(v,opts.filter) then
+--print("found",v)
+				opts.ret[#opts.ret+1]=opts.dir.."/"..v
+			end
+		end
+		if a.mode=="directory" then
+			if v:sub(1,1)~="." then
+				subdirs[#subdirs+1]=v
+			end
+		end
+	end
+
+-- recurse
+	local dir=opts.dir
+	for i,v in ipairs(subdirs) do
+		opts.dir=dir.."/"..v
+		findfiles(opts)
+	end
+
+	return opts
+end
 
 
 
