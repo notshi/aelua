@@ -183,7 +183,8 @@ function get_viewer_session(srv)
 	
 	srv.sess=sess
 	srv.user=nil
-	if sess then
+	if sess and sess.cache and sess.cache.userid then -- this may be an old session
+	
 		srv.user=d_users.get(srv,sess.cache.userid) -- this is probably also a cache get
 	end
 	return srv.sess,srv.user -- return sess , user
