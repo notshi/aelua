@@ -518,8 +518,8 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			else -- this is a master comment
 			
 				if tab.save_post=="status" then -- we want to save this as user posted status
-					tab.user.cache.comment_status=c.text
-					users.put(srv,tab.user) -- probably safe?
+--					tab.user.cache.comment_status=c.text
+--					users.put(srv,tab.user) -- probably safe?
 				end
 
 			end
