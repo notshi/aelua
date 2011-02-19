@@ -26,7 +26,6 @@ html{
 body {
 	font-family: Lucida Sans Unicode, sans-serif;
 	height: 100%;
-	line-height: 1;
 	color: black;
 	background: white;
 }
@@ -303,3 +302,32 @@ width: 760px;
 line-height: 1.1;
 padding-right: 20px;
 }
+
+
+.button, .button:hover, .button:visited ,.button:active {
+	display:inline;
+	cursor:pointer;
+	color: #000;
+	background-color: #ddd;
+	padding: 1px 2px 0px 3px ;
+	border-top:    solid #fff 1px;
+	border-right:  solid #888 1px;
+	border-bottom: solid #888 1px;
+	border-left:   solid #fff 1px;
+}  
+.button:active {
+	cursor:pointer;
+	padding: 0px 2px 0px 2px ;
+	border-bottom: solid #fff 1px;
+	border-left:   solid #444 2px;
+	border-top:    solid #444 2px;
+	border-right:  solid #fff 1px;
+}
+
+.field {
+	border-bottom: solid #ccc 1px;
+	border-left:   solid #444 2px;
+	border-top:    solid #444 2px;
+	border-right:  solid #ccc 1px;
+}
+
