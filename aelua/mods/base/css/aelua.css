@@ -1,325 +1,293 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
+	text-decoration: none;
+}
 html{
 	overflow-y: scroll;
-	height:100%;
-/*
- 	background-image: url(/art/base/back.960.png) ;
-	background-position: 50% 0;
-	background-repeat: repeat-y;
-	background-color: #e6e6e6;
-*/
+	height: 100%;
 }
-
-body{
-	border-style:none;
-	border:none;
-	outline:none;
-	margin:0px;
-	padding:0px;
-	font-family: Verdana, Tahoma, "Myriad Web", Syntax, sans-serif;
-	font-size: 16px;
-
-	color: #000;	
-	background-color: transparent;
-	
-	word-wrap:break-word;
-}
-
-
-ul, li {
-	margin: 0px;
-	list-style-type:none;
-	padding-left:16;
-	padding-right:16;
-}
-
-img {
-	border-style:none;
-	border:none;
-	outline:none;
-	margin:0px;
-	padding:0px;
-}
-
-a {
-	border-style:none;
-	border:none;
-	outline:none;
-	margin:0px;
-	padding:0px;
-	color: #666;
-}
-
 :focus {
-	outline:none;
+	outline: 0;
+}
+body {
+	font-family: Lucida Sans Unicode, sans-serif;
+	height: 100%;
+	line-height: 1;
+	color: black;
+	background: white;
+}
+ol, ul {
+	list-style: none;
+}
+table {
+	border-collapse: separate;
+	border-spacing: 0;
+}
+caption, th, td {
+	text-align: left;
+	font-weight: normal;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: "";
+}
+blockquote, q {
+	quotes: "" "";
 }
 
-a:link {
-	text-decoration: none;
-}
-a:visited {
-	text-decoration: none;
-}
-a:active {
-	text-decoration: underline;
-}
-a:hover {
-	text-decoration: underline;
+pre, tt, code, kbd, samp, var {
+  font-family: "Courier New", Courier, monospace;
 }
 
-.button, .button:hover, .button:visited ,.button:active {
-	display:inline;
-	cursor:pointer;
-	color: #000;
-	background-color: #ddd;
-	padding: 1px 2px 0px 3px ;
-	border-top:    solid #fff 1px;
-	border-right:  solid #888 1px;
-	border-bottom: solid #888 1px;
-	border-left:   solid #fff 1px;
-}  
-.button:active {
-	cursor:pointer;
-	padding: 0px 2px 0px 2px ;
-	border-bottom: solid #fff 1px;
-	border-left:   solid #444 2px;
-	border-top:    solid #444 2px;
-	border-right:  solid #fff 1px;
+th, strong, dt, b {
+  font-weight: bold;
 }
 
-.field {
-	border-bottom: solid #ccc 1px;
-	border-left:   solid #444 2px;
-	border-top:    solid #444 2px;
-	border-right:  solid #ccc 1px;
-}
+h1 {font-size: 2em;}
+h2 {font-size: 1.8em;}
+h3 {font-size: 1.6em;}
+h4 {font-size: 1.4em;}
+h5 {font-size: 1.2em;}
+h6 {font-size: 1em;}
+
+a:link {color: #000;}
+a:visited {text-decoration: none;}
+a:hover {text-decoration: none;}
+a:focus {text-decoration: underline;}
 
 
 .aelua_body {
-
-	margin: auto;
+	background-color: transparent;
+    margin: auto;
 	width: 960px;
 	position: relative;
-	background-color: transparent;
 }
 
 .aelua_admin_bar {
-	left: 30%;
-	position: absolute;
-	text-align: center;
-	top: 0px;
-	width: 40%;
+    left: 30%;
+    position: absolute;
+    text-align: center;
+    top: 0px;
+    width: 40%;
 }
 
 .aelua_home_bar {
-	float:left;
 	background-color: transparent;
-	padding:4px;
+    float: left;
+    padding: 4px;
 }
 
 .aelua_user_bar {
-	float:right;
 	background-color: transparent;
-	padding:4px;
+    float: right;
+    padding: 4px;
 }
 
 .aelua_footer {
-
-	margin: auto;
-	width: 960px;
-	position: relative;
-	
-	font-size: 8px;
-	text-align: center;
+    margin: auto;
+    width: 960px;
+    position: relative;
+    font-size: 12px;
+    text-align: center;
 }
 
-.aelua_clear{ clear:both; }
-
+.aelua_clear{ clear: both; }
 
 
 .wetnote_comment_div , .wetnote_comment_hide_div {
-	position:relative;
-	clear:both;
+    position: relative;
+    clear: both;
 }
 
 /* Click here to show hidden */
 .wetnote_comment_hide_div {
-	font-family: Lucida Sans Unicode, sans-serif;
-	color: #999;
-	font-size: 16px;
+    color: #999;
+    font-size: 16px;
 }
 .wetnote_comment_hide_div a {
-	color:#999;
+    color: #999;
 }
 
 .wetnote_comment_div {
-	background-color: #fff;
-	-moz-border-radius: 8px;
-	-webkit-border-radius: 8px;
-	border-radius: 4px 4px;
-	margin: 10px 0 10px 0;
-	min-height: 100px;
-	width: 600px;
+    background-color: #fff;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 4px 4px;
+    margin: 10px 0 10px 0;
+    min-height: 100px;
+    width: 600px;
 }
 
 /* Click here to reply */
 .wetnote_comment_form_div{
-	margin-bottom: 40px;
-	clear:both;
-	
-	font-family: Lucida Sans Unicode, sans-serif;
-	color: #999;
-	font-size: 16px;
+    margin-bottom: 40px;
+    clear: both;    
+    color: #999;
+    font-size: 16px;
 }
 .wetnote_comment_form_div a {
-	color:#999;
+    color: #999;
 }
 
 .wetnote_reply_div{
-	margin-left:40px;
+    margin-left: 40px;
 }
 
 .wetnote_comment_icon {
- 	width:100px;
- 	height:100px;
- 	position: absolute;
+    width: 100px;
+    height: 100px;
+    position: absolute;
 }
 
 .wetnote_comment_text {
-	width:460px;
-	margin-left: 120px;
-	padding-bottom: 20px;
-	overflow: hidden;
-	
-	font-family: Lucida Sans Unicode, sans-serif;
-	color: #000;
-	font-size: 16px;
+    width: 460px;
+    margin-left: 120px;
+    padding-bottom: 20px;
+    overflow: hidden;    
+    color: #000;
+    font-size: 16px;
 }
 
 .wetnote_comment_head {
-	opacity:0;
-	padding-top: 5px;
-	padding-bottom: 10px;
-	width:460px;
-	margin-left:120px;
-	
-	font-family: Lucida Sans Unicode, sans-serif;
-	color: #666;
-	font-size: 12px;
+    opacity: 0;
+    padding-top: 5px;
+    padding-bottom: 10px;
+    width: 460px;
+    margin-left: 120px;    
+    color: #666;
+    font-size: 12px;
 }
 .wetnote_comment_head a {
-	color:#000;
+    color: #000;
 }
 
 .wetnote_comment_head:hover {
-	opacity:1;
+    opacity: 1;
 }
 
 .wetnote_comment_form{
-	width:640;
+    width: 640px;
 }
 
 .wetnote_comment_form_head{
-	width:640;
-	margin-bottom: 20px;
-	margin-top: 20px;
-	border-bottom: 1px solid #ddd;
+    width: 640px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-bottom: 1px solid #ddd;
 }
 
 .wetnote_comment_form_tail{
-	margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .wetnote_comment_form_text {
-	border: 1px solid #000;
-	margin-left: 110px;
-	width:500px;
-	height:120px;
+    border: 1px solid #000;
+    margin-left: 110px;
+    width: 478px;
+    height: 120px;
+    padding: 10px;
 }
 
 .wetnote_comment_post {
-	-moz-border-radius: 8px;
-	-webkit-border-radius: 8px;
-	border-radius: 4px 4px;
-	background-color: #DCDCDC;
-	margin-left: 110px;
-	width:502px;
-	height:30px;
-	border-bottom: 1px solid #999;
-	border-right: 1px solid #999;
-	border-top: 1px solid #fff;
-	border-left: 1px solid #fff;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 4px 4px;
+    background-color: #DCDCDC;
+    margin-left: 109px;
+    margin-top: 2px;
+    width: 501px;
+    height: 30px;
+    border-bottom: 1px solid #999;
+    border-right: 1px solid #999;
+    border-top: 1px solid #eee;
+    border-left: 1px solid #eee;
+    cursor: pointer;
 }
 .wetnote_comment_post:hover {
-	background-color: #E1E1E1;
+    background-color: #E1E1E1;
 }
 .wetnote_comment_post:active {
-	background-color: #DCDCDC;
+    background-color: #DCDCDC;
 }
 
 .wetnote_comment_img {
-	max-width:460px;
-	max-height:345px;
-	display:block;
+    max-width: 460px;
+    max-height: 345px;
+    display: block;
 }
 
 .wetnote_main{
-	display:table;
+    display: table;
 }
 .wetnote_main2{
-	display:table-row;
+    display: table-row;
 }
 .wetnote_comments{
-	vertical-align: top;
-	display:table-cell;
-	width:640px;
+    vertical-align: top;
+    display: table-cell;
+    width: 640px;
 }
 .wetnote_ticker{
-	vertical-align: top;
-	padding-top:50px;
-	width:320px;
-	display:table-cell;
-	font-family: Lucida Sans Unicode, sans-serif;
-	color: #aaa;
-	font-size: 12px;
+    vertical-align: top;
+    width: 320px;
+    display: table-cell;
+    color: #aaa;
+    font-size: 12px;
+    padding-top: 20px;
 }
 .wetnote_tick a {
-	color: #888;
+    color: #888;
 }
 
 .wetnote_tick{
-	margin:10px 20px 10px 20px;
-	text-align:center;
+    margin:10px 20px 10px 20px;
+    text-align: center;
 }
 
 
 .profile_layout{
-	width:960px;
+    width: 960px;
 }
 
 .profile_layout_head{
-	width:960px;
+    width: 960px;
 }
 
 
 .profile_layout_body{
-	width:960px;
+    width: 960px;
 }
 
 
 .profile_layout_wide{
-	width:640px;
-	float:right;
+    width: 640px;
+    float: right;
 }
 
 
 .profile_layout_side{
-	width:320px;
-	float:left;
+    width: 320px;
+    float: left;
 }
 
 
 .profile_layout_foot{
-	clear:both;
-	width:640px;
+    clear: both;
+    width: 640px;
 }
 
