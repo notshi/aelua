@@ -57,7 +57,7 @@ th, strong, dt, b {
   font-weight: bold;
 }
 
-h1 {font-size: 2em;}
+h1 {font-size: 3em; margin: 0.67em 0px;}
 h2 {font-size: 1.8em;}
 h3 {font-size: 1.6em;}
 h4 {font-size: 1.4em;}
@@ -88,13 +88,13 @@ a:focus {color: #000; text-decoration: underline;}
 .aelua_home_bar {
 	background-color: transparent;
     float: left;
-    padding: 4px;
+    padding: 4px 0;
 }
 
 .aelua_user_bar {
 	background-color: transparent;
     float: right;
-    padding: 4px;
+    padding: 4px 0;
 }
 
 .aelua_footer {
@@ -103,6 +103,7 @@ a:focus {color: #000; text-decoration: underline;}
     position: relative;
     font-size: 12px;
     text-align: center;
+    margin-bottom: 20px;
 }
 
 .aelua_clear{ clear: both; }
