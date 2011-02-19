@@ -275,6 +275,9 @@ local get,put=make_get_put(srv)
 	
 		local c=chunk_prepare(srv,v,opts)
 		
+		css=c.css
+		
+		c.it=c
 		if c then
 			t[#t+1]=get(macro_replace(c[opts.plate or ""] or c.plate_wrap or c.plate_post or "{body}",c))
 		end

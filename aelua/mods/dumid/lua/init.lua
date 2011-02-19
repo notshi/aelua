@@ -205,6 +205,8 @@ local put=make_put(srv)
 		if guser then -- google login OK
 			email=guser.gid .. "@id.google.com" -- hide real email slightly
 			name=guser.name
+			name=str_split("@",name)[1] -- get the left bit of any email like name
+			name=string.sub(name,1,32) -- limit length
 			admin=guser.admin
 			flavour="google"
 			info={ gid=guser.gid , fid=guser.fid , email=guser.email }

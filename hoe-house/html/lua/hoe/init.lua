@@ -139,7 +139,7 @@ function serv(srv)
 	local blog_html,blog_css=blog.recent_posts(srv,{num=5,over="/frontpage"})
 
 	H.srv.set_mimetype("text/html; charset=UTF-8")
-	put("header",{css=blog_css})
+	put("header",{css=blog_css,title="Welcome to the hoe house!"})
 	
 -- ask which round
 
@@ -238,6 +238,7 @@ local put=H.put
 				if dat.cmd=="join" then -- join this round
 			
 					players.join(H,H.user)
+					players.fix_session(H,H.sess,H.round.key.id,H.user.key.id)
 					H.srv.redirect(H.url_base) -- simplest just to redirect at this point
 					return true
 

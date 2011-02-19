@@ -199,7 +199,7 @@ function find(H,roundid,userid)
 	end
 	
 	if r.list[1] then -- this is who we are
-		return dat.build_cache(r.list[1])
+		return check(H,dat.build_cache(r.list[1]))
 	end
 
 end
@@ -207,13 +207,14 @@ end
 
 --------------------------------------------------------------------------------
 --
--- fix session and return player
+-- find player and fix the session to link to this player id
 --
 --------------------------------------------------------------------------------
 function fix_session(H,sess,roundid,userid)
 
 	local c=sess.cache
-
+	c.hoeplayer=c.hoeplayer or {}
+	
 	local p=find(H,roundid,userid)
 	
 	if p then
@@ -222,9 +223,9 @@ function fix_session(H,sess,roundid,userid)
 		c.hoeplayer[roundid]=0 -- not found
 	end
 	
-	d_sess.update(H.srv,sess,function(e)
+	d_sess.update(H.srv,sess,function(srv,e)
 			e.cache.hoeplayer=e.cache.hoeplayer or {}
-			e.cache.hoeplayer[H.round.key.id]=c.hoeplayer[H.round.key.id]
+			e.cache.hoeplayer[roundid]=c.hoeplayer[roundid]
 			return true
 		end)
 	
