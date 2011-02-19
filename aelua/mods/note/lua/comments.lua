@@ -20,6 +20,7 @@ local wet_waka=require("wetgenes.waka")
 local wet_html=require("wetgenes.html")
 
 local d_users=require("dumid.users")
+local goo=require("port.goo")
 
 local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
@@ -518,8 +519,10 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			else -- this is a master comment
 			
 				if tab.save_post=="status" then -- we want to save this as user posted status
---					tab.user.cache.comment_status=c.text
---					users.put(srv,tab.user) -- probably safe?
+					d_users.update(srv,tab.user,function(srv,ent)
+							ent.cache.comment_status=c.text
+							return true
+						end)
 				end
 
 			end
@@ -531,11 +534,19 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			
 				cache.del("kind="..kind(H).."&find=recent&limit="..(50)) -- reset normal recent cache
 
-				if id==0 then
-					sys.redirect(srv,tab.url.."?wetnote="..posted.cache.id.."#wetnote"..posted.cache.id)
-				else
-					sys.redirect(srv,tab.url.."?wetnote="..id.."#wetnote"..id)
-				end
+				local wetnoteid=id
+				if id==0 then wetnoteid=posted.cache.id end
+				sys.redirect(srv,tab.url.."?wetnote="..wetnoteid.."#wetnote"..wetnoteid)
+
+				
+-- try and get a short url from goo.gl and save it into the comment for later use
+
+				local short_url=goo.shorten(tab.url.."?wetnote="..wetnoteid)
+				
+				update(srv,posted,function(srv,ent)
+						ent.cache.short_url=short_url
+						return true
+					end)
 				
 				return
 			end
