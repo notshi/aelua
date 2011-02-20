@@ -149,7 +149,7 @@ local put=make_put(srv)
 
 	srv.set_mimetype("text/html; charset=UTF-8")
 	put("dumid_header",{})
-	put("dumid_choose",{continue=continue})
+	put("dumid_choose",{continue=continue,twitter=opts_twitter.key})
 	put("dumid_footer",{})
 	
 end
