@@ -18,7 +18,7 @@ local type=type
 module("opts")
 
 --Machine generated data. Read between the lines, but do not edit.
-bootstrapp_version=20110219.95
+bootstrapp_version=20110220.2
 --Machine generated data. Read between the lines, but do not edit.
 
 urls={}

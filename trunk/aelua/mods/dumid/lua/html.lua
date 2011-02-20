@@ -78,6 +78,16 @@ end
 --
 -----------------------------------------------------------------------------
 dumid_choose=function(d)
+
+	local more="" -- more logins that may not be available
+	
+	if d.twitter then
+more=more..[[
+<div class="cont">
+	<a class="button" href="{srv.url_base}login/twitter/?continue={continue}">Twitter</a>
+</div>
+]]
+	end
 	
 	d.continue=url_esc(d.continue)
 	return replace([[
@@ -90,10 +100,8 @@ dumid_choose=function(d)
 <div class="cont">
 	<a class="button" href="{srv.url_base}login/google/?continue={continue}">Google</a>
 </div>
-<div class="cont">
-	<a class="button" href="{srv.url_base}login/twitter/?continue={continue}">Twitter</a>
-</div>
-]],d)
+]]..more
+,d)
 
 end
 
