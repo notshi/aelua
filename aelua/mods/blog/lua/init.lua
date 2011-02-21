@@ -203,6 +203,7 @@ opts=opts or {}
 
 	c.link="/blog" .. c.pubname
 	
+--[[
 	if not c.author_icon then -- need to update our user icon
 		local author_icon = d_users.get_avatar_url(c.author)
 		d_users.update(srv,ent,function(srv,e)
@@ -211,9 +212,10 @@ opts=opts or {}
 		end)
 		c.author_icon=author_icon
 	end
+]]
 	
 	c.author_name=c.author_name
-	c.author_icon=srv.url_domain..( c.author_icon )
+	c.author_icon=srv.url_domain..( c.author_icon or "" )
 	c.author_link=purl or "http://google.com/search?q="..c.author_name
 	
 	c.date=os.date("%Y-%m-%d %H:%M:%S",c.created)
