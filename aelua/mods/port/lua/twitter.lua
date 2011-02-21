@@ -61,6 +61,9 @@ module("port.twitter")
 function post(it)
 local it=it or {}
 
+-- check it is a twitter user before going further
+	if not lookup(it,"user","cache","authentication","twitter","secret") then return end
+
 	local v={}
 	v.oauth_timestamp , v.oauth_nonce = oauth.time_nonce("sekrit")
 	v.oauth_consumer_key = opts_twitter.key
