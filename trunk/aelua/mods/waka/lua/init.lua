@@ -246,7 +246,8 @@ local ext
 	if ext=="css" then -- css only
 	
 		srv.set_mimetype("text/css; charset=UTF-8")
-		srv.set_header("Cache-Control","public") -- allow caching of css page
+		srv.set_header("Cache-Control","public") -- allow caching of page
+		srv.set_header("Expires",os.date("%a, %d %b %Y %H:%M:%S GMT",os.time()+(60*60))) -- one hour cache
 		srv.put(refined.css or "")
 		
 	elseif ext=="frame" then -- special iframe render mode
