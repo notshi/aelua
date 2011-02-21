@@ -5,6 +5,7 @@ local pairs=pairs
 local require=require
 local type=type
 
+local os=os
 
 local core=require("wetgenes.aelua.data.core")
 
@@ -16,18 +17,26 @@ local dat=_M
 
 function countzero()
 	count=0
+	api_time=0
 end
 countzero()
 
-
 local kind_props={}	-- default global props mapped to kinds
+
+local start_time -- handle simple api benchmarking of some calls
+local function apis()
+	start_time=os.time()
+end
+local function apie(...)
+	api_time=api_time+os.time()-start_time
+	return ...
+end
 
 
 
 function keyinfo(keystr)
-
+	
 	return core.keyinfo(keystr)
-
 end
 
 function keystr(kind,id,parent)
@@ -39,36 +48,33 @@ end
 
 
 function del(ent)
-
+	apis()
+	
 	count=count+0.5
 	
-	return core.del(nil,ent)
-
+	return apie(core.del(nil,ent))
 end
 
 function put(ent)
-
+	apis()
 	count=count+0.5
 	
-	return core.put(nil,ent)
-
+	return apie(core.put(nil,ent))
 end
 
 function get(ent)
-
+	apis()
+	
 	count=count+0.5
 	
-	return core.get(nil,ent)
-
+	return apie(core.get(nil,ent))
 end
 
 function query(q)
-
+	apis()
 	count=count+1
 
-	local r=core.query(nil,q)
-
-	return r
+	return apie(core.query(nil,q))
 end
 
 -----------------------------------------------------------------------------
@@ -103,25 +109,28 @@ function begin()
 	t.done=false -- set to true on commit or rollback to disable all methods
 	
  -- these methods are the same as the global ones but operate on this transaction
- 	t.del=function(ent)	if t.fail or t.done then return nil end return core.del(t,ent) end
-	t.put=function(ent)	if t.fail or t.done then return nil end return core.put(t,ent) end
-	t.get=function(ent)	if t.fail or t.done then return nil end return core.get(t,ent) end
-	t.query=function(q)	if t.fail or t.done then return nil end return core.query(t,q) end
+ 	t.del=function(ent)	if t.fail or t.done then return nil end apis() return apie(core.del(t,ent)) end
+	t.put=function(ent)	if t.fail or t.done then return nil end apis() return apie(core.put(t,ent)) end
+	t.get=function(ent)	if t.fail or t.done then return nil end apis() return apie(core.get(t,ent)) end
+	t.query=function(q)	if t.fail or t.done then return nil end apis() return apie(core.query(t,q)) end
 	
 	t.rollback=function() -- returns false to imply that nothing was commited
 		if t.done then return false end -- safe to rollback repeatedly
 		t.done=true
-		t.fail=not core.rollback(t.core) -- we always set fail and return false
+		apis()
+		t.fail=not apie(core.rollback(t.core)) -- we always set fail and return false
 		return not t.fail
 	end	
 	
 	t.commit=function() -- returns true if commited, false if not
 		if t.done then return false end -- safe to rollback repeatedly
 		if t.fail then -- rollback rather than commit
-			return t.rollback()
+			apis()
+			return apie(t.rollback())
 		end
 		t.done=true
-		t.fail=not core.commit(t.core)
+		apis()
+		t.fail=not apie(core.commit(t.core))
 		return not t.fail
 	end
 
