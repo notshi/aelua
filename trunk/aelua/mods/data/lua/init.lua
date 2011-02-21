@@ -99,29 +99,72 @@ local get,put=make_get_put(srv)
 		
 		if em then -- got a data file to serv
 		
-			local ef=file.get(srv,em.cache.filekey)
+			if em.cache.mimetype=="application/zip" then
 			
-			srv.set_mimetype(em.cache.mimetype)
-			
-			srv.set_header("Cache-Control","public") -- allow caching of page
-			srv.set_header("Expires",os.date("%a, %d %b %Y %H:%M:%S GMT",os.time()+(60*60))) -- one hour cache
-
-			
-			while true do
-			
-				if ef then
-				
-					srv.put(ef.cache.data)
-					
-					if ef.cache.nextkey==0 then return end -- last chunk
-					
+				local ds={}
+				local ef=file.get(srv,em.cache.filekey)
+				ds[#ds+1]=ef.cache.data
+				while ef.cache.nextkey~=0 do
 					ef=file.get(srv,ef.cache.nextkey) -- read next part
-					
-				else
-					return -- error
+					ds[#ds+1]=ef.cache.data
 				end
+				local zip=sys.bytes_join(ds) -- join them together
+				
+
+				if srv.url_slash[srv.url_slash_idx+1] then -- try requesting file inside
+					local t={}
+					for i=srv.url_slash_idx+1 , #srv.url_slash do
+						t[#t+1]=srv.url_slash[i]
+					end
+					local name=table.concat(t,"/") -- this is the name we want					
+					local data=sys.zip_read(zip,name)
+					if data then
+					
+						srv.set_mimetype( guess_mimetype(name) )
+						srv.set_header("Cache-Control","public") -- allow caching of page
+						srv.set_header("Expires",os.date("%a, %d %b %Y %H:%M:%S GMT",os.time()+(60*60))) -- one hour cache
+						srv.put(data)
+						return
+					end
+				end
+
+				
+-- by default we just try and list the contents
+				
+				local t=sys.zip_list(zip)
+				
+				for i,v in ipairs(t or {}) do
+				
+					srv.put(v.size.." : "..v.name.."\n")
+					
+				end
+				return
+				
+			else
+		
+				local ef=file.get(srv,em.cache.filekey)
+				
+				srv.set_mimetype(em.cache.mimetype)				
+				srv.set_header("Cache-Control","public") -- allow caching of page
+				srv.set_header("Expires",os.date("%a, %d %b %Y %H:%M:%S GMT",os.time()+(60*60))) -- one hour cache
+
+				
+				while true do
+				
+					if ef then
+					
+						srv.put(ef.cache.data)
+						
+						if ef.cache.nextkey==0 then return end -- last chunk
+						
+						ef=file.get(srv,ef.cache.nextkey) -- read next part
+						
+					else
+						return -- error
+					end
+				end
+				
 			end
-			
 		end
 		
 	end
@@ -315,38 +358,7 @@ local emc
 		
 		if (not dat.mimetype) or (dat.mimetype=="") then
 		
-			local l3=dat.name:sub(-3):lower()
-			local l4=dat.name:sub(-4):lower()
-			
-			if l3=="jpg" or l4=="jpeg" then
-			
-				emc.mimetype="image/jpeg"
-				
-			elseif l3=="png" then
-			
-				emc.mimetype="image/png"
-				
-			elseif l3=="gif" then
-			
-				emc.mimetype="image/gif"
-				
-			elseif l3=="txt" then
-			
-				emc.mimetype="text/plain"
-				
-			elseif l3=="css" then
-			
-				emc.mimetype="text/css"
-				
-			elseif l3=="htm" or l4=="html" then
-			
-				emc.mimetype="text/html"
-				
-			else
-			
-				emc.mimetype="application/octet-stream"
-				
-			end
+			emc.mimetype=guess_mimetype(dat.name)
 			
 		else
 			emc.mimetype=dat.mimetype
@@ -412,4 +424,47 @@ local emc
 	dat.url="/data/"..emc.pubname -- where to reference this file
 
 	return dat
+end
+
+
+--
+-- guess a mimetype give a filename
+--
+function guess_mimetype(name)
+	local l3=name:sub(-3):lower()
+	local l4=name:sub(-4):lower()
+
+	if l3=="jpg" or l4=="jpeg" then
+
+		return "image/jpeg"
+		
+	elseif l3=="png" then
+
+		return "image/png"
+		
+	elseif l3=="gif" then
+
+		return "image/gif"
+		
+	elseif l3=="txt" then
+
+		return "text/plain"
+		
+	elseif l3=="css" then
+
+		return "text/css"
+		
+	elseif l3=="htm" or l4=="html" then
+
+		return "text/html"
+		
+	elseif l3=="zip" then
+
+		return "application/zip"
+		
+	else
+
+		return "application/octet-stream"
+		
+	end
 end
