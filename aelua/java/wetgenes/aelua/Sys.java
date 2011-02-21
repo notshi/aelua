@@ -16,8 +16,11 @@ import java.lang.Thread;
 
 import java.util.*;
 
+import java.util.zip.*;
+
 import java.security.MessageDigest;
 import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 
 
 public class Sys
@@ -77,6 +80,9 @@ public class Sys
 		reg_sha1(L,lib);
 		reg_hmac_sha1(L,lib);
 		reg_bytes_split(L,lib);
+		reg_bytes_join(L,lib);
+		reg_zip_list(L,lib);
+		reg_zip_read(L,lib);
 		
 		return 0;
 	}
@@ -476,5 +482,124 @@ public class Sys
 
 	}
 
+//
+// split a (large) bytearray into smaller chunks
+//
+	public void reg_bytes_join(Lua L,Object lib)
+	{ 
+		final Sys _base=this;
+		L.rawSet(lib, "bytes_join", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.bytes_join(L); } });
+	}
+	public int bytes_join(Lua L)
+	{
+		LuaTable t=(LuaTable)L.value(1);
+		int size=0;
+		byte[] data;
+		int i=1;
+		Object o;
+		o=L.rawGetI(t,i++);
+		while(!L.isNil(o))
+		{
+			data=(byte[])o;
+			size+=data.length;
+			o=L.rawGetI(t,i++);
+		}
+		
+		byte[] ret=new byte[ size ];
+
+		int off=0;
+		i=1;
+		o=L.rawGetI(t,i++);
+		while(!L.isNil(o))
+		{
+			data=(byte[])o;
+			System.arraycopy(data, 0, ret, off, data.length);
+			off+=data.length;
+			o=L.rawGetI(t,i++);
+		}
+		L.push(ret);
+		return 1;
+	}
+
+//
+// list all the files we can find in a zipfile(bytearray) , this returns a table of data
+//
+	public void reg_zip_list(Lua L,Object lib)
+	{ 
+		final Sys _base=this;
+		L.rawSet(lib, "zip_list", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.zip_list(L); } });
+	}
+	public int zip_list(Lua L)
+	{
+		LuaTable t=L.createTable(0,0);
+		
+		try
+		{
+			byte[] bytes = (byte[])L.value(1); // the first object is bytes
+			
+			ByteArrayInputStream bs=new ByteArrayInputStream(bytes);
+			ZipInputStream zip=new ZipInputStream(bs);
+						
+			int i=1;
+			ZipEntry entry;
+			while((entry = zip.getNextEntry()) != null)
+			{
+				LuaTable tt=L.createTable(0,0);
+				L.rawSetI(t,i++,tt);
+				
+				L.rawSet(tt,"name",entry.getName());
+
+				L.rawSet(tt,"size", new Double(entry.getSize()) );
+			}
+		}
+   		catch(Exception e) { return 0; }
+		
+		L.push(t);
+		return 1;
+	}
+
+//
+// read a single file from a zipfile(bytearray) , this returns a bytearray
+//
+	public void reg_zip_read(Lua L,Object lib)
+	{ 
+		final Sys _base=this;
+		L.rawSet(lib, "zip_read", new LuaJavaCallback(){ Sys base=_base; public int luaFunction(Lua L){ return base.zip_read(L); } });
+	}
+	public int zip_read(Lua L)
+	{
+		String name=L.checkString(2); // full file name
+		
+		try
+		{
+			byte[] bytes = (byte[])L.value(1); // the first object is bytes
+			
+			ByteArrayInputStream bs=new ByteArrayInputStream(bytes);
+			ZipInputStream zip=new ZipInputStream(bs);
+						
+			ZipEntry entry;
+			while((entry = zip.getNextEntry()) != null)
+			{
+				if( entry.getName().equals(name) ) // found the file we want
+				{
+					byte data[] = new byte[(int)entry.getSize()];
+					int rem=(int)entry.getSize();
+					int off=0;
+					int d=0;
+					while(rem>0)
+					{
+						d=zip.read(data,off,rem);
+						off+=d;
+						rem-=d;
+					}
+					L.push(data);
+					return 1;
+				}
+			}
+		}
+   		catch(Exception e) { return 0; }
+		
+		return 0;
+	}
 
 }
