@@ -431,6 +431,7 @@ end
 -- guess a mimetype give a filename
 --
 function guess_mimetype(name)
+	local l2=name:sub(-2):lower()
 	local l3=name:sub(-3):lower()
 	local l4=name:sub(-4):lower()
 
@@ -461,6 +462,10 @@ function guess_mimetype(name)
 	elseif l3=="zip" then
 
 		return "application/zip"
+		
+	elseif l2=="js" then
+	
+		return "text/javascript"
 		
 	else
 
