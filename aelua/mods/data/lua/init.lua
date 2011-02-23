@@ -120,7 +120,7 @@ local get,put=make_get_put(srv)
 					local data=sys.zip_read(zip,name)
 					if data then
 					
-						srv.set_mimetype( guess_mimetype(name) )
+						srv.set_mimetype( srv.vars.mime or guess_mimetype(name) )
 						srv.set_header("Cache-Control","public") -- allow caching of page
 						srv.set_header("Expires",os.date("%a, %d %b %Y %H:%M:%S GMT",os.time()+(60*60))) -- one hour cache
 						srv.put(data)
@@ -144,7 +144,7 @@ local get,put=make_get_put(srv)
 		
 				local ef=file.get(srv,em.cache.filekey)
 				
-				srv.set_mimetype(em.cache.mimetype)				
+				srv.set_mimetype( srv.vars.mime or em.cache.mimetype)				
 				srv.set_header("Cache-Control","public") -- allow caching of page
 				srv.set_header("Expires",os.date("%a, %d %b %Y %H:%M:%S GMT",os.time()+(60*60))) -- one hour cache
 
@@ -272,11 +272,6 @@ function read(srv,id)
 	if em then -- got a data file to serv
 	
 		local ef=file.get(srv,em.cache.filekey)
-		
-		srv.set_mimetype(em.cache.mimetype)
-		
-		srv.set_header("Cache-Control","public") -- allow caching of page
-		srv.set_header("Expires",os.date("%a, %d %b %Y %H:%M:%S GMT",os.time()+(60*60))) -- one hour cache
 		
 		local c=em.cache
 		
@@ -466,6 +461,14 @@ function guess_mimetype(name)
 	elseif l2=="js" then
 	
 		return "text/javascript"
+		
+	elseif l3=="ogg" then
+	
+		return "audio/ogg"
+		
+	elseif l3=="mp3" then
+	
+		return "audio/mp3"
 		
 	else
 

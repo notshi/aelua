@@ -3,6 +3,7 @@ local opts=require("opts") -- setup global opts table full of options and overid
 local os=os
 local dat=require("wetgenes.aelua.data")
 local cache=require("wetgenes.aelua.cache")
+local fetch=require("wetgenes.aelua.fetch")
 
 local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
@@ -46,6 +47,7 @@ function serv(srv)
 
 dat.countzero()
 cache.countzero()
+fetch.countzero()
 
 	local allow,tab=iplog.ratelimit(srv.ip)
 	srv.iplog=tab -- iplog info
