@@ -1367,7 +1367,7 @@ protect:
    */
   public boolean toBoolean(Object o)
   {
-    return !(o == NIL || Boolean.FALSE.equals(o));
+    return !(o == NIL || ( (o instanceof Boolean) && (((Boolean)o).booleanValue()==false ) ) );
   }
 
   /**
@@ -4333,7 +4333,7 @@ reentry:
   /** Lua's is False predicate. */
   private boolean isFalse(Object o)
   {
-    return o == NIL || o == Boolean.FALSE;
+    return o == NIL || ( (o instanceof Boolean) && (((Boolean)o).booleanValue()==false ) );
   }
 
   /** @deprecated DO NOT CALL. */

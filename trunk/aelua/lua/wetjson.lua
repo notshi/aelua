@@ -176,7 +176,6 @@ local t
 
 	t=split(s,opts)
 	
-	local valreplace={["true"]=true,["false"]=false,["null"]=null}
 	local chash=0
 	local out={}
 	local top={tab=out,idx=1,inc=true}
@@ -257,8 +256,12 @@ local t
 				elseif l=="," then
 				else
 					val=l
-					if valreplace[val]~=nil then val=valreplace[val] end
-					val=tonumber(val) or val
+					if val=="true" then val=true
+					elseif val=="false" then val=false
+					elseif val=="null" then val=null
+					else
+						val=tonumber(val) or val
+					end
 					setval()
 				end
 				
