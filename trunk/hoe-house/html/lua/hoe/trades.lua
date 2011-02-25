@@ -111,17 +111,7 @@ function check(H,ent)
 	
 -- how long to sit in limbo for?
 
-	c.limbo=c.limbo or math.random( 6*H.round.cache.timestep , 12*6*H.round.cache.timestep ) --  1-12 hours with 10min timestep
---dbg	c.limbo=0
-	
--- price can be rebuilt?
---[[
-	if c.reverse then
-		c.price= c.count/c.cost
-	else
-		c.price= c.count*c.cost
-	end
-]]
+	c.limbo=c.limbo or math.random( 2*12*H.round.cache.timestep , 24*12*H.round.cache.timestep ) --  2-24 hours with default 5min timestep
 
 -- check?
 	if c.price<=0 then ok=false end
@@ -242,7 +232,9 @@ function what_memcache(H,ent,mc)
 	
 	local c=ent.cache
 	
-	mc[ "kind="..kind(H).."&find=cheapest&offer="..c.offer.."&seek="..c.seek ] =true
+	local sb="kind="..kind(H).."&round="..(H.round.key.id).."&find=cheapest&offer="..c.offer.."&seek="..c.seek
+	mc[ sb.."&reverse=false" ] =true
+	mc[ sb.."&reverse=true" ] =true
 
 	return mc
 end
@@ -276,57 +268,61 @@ local reverse=false
 	if type(opts.reverse)=="string" then -- this could be a string rather than a bool
 		if opts.reverse=="true" then reverse=true end
 	else
-		reverse=opts.revers
+		reverse=opts.reverse
 	end
 
 	-- a unique keyname for this query
-	local cachekey="kind="..kind(H).."&find=cheapest&offer="..opts.offer.."&seek="..opts.seek
+	local cachekey="kind="..kind(H).."&round="..(H.round.key.id).."&find=cheapest&offer="..opts.offer.."&seek="..opts.seek.."&reverse="..(reverse and "true" or "false")
 	
-	local r=cache.get(cachekey) -- do we already know the answer
+	local r=cache.get(cachekey) -- do we already know the answer?
 
-	if r then -- we cached the answer
---	log(r)
-		r=json.decode(r) -- turn back into data
-		return r["1"] or r[1] -- may be null and json may turn int keys to string keys
-	end
+	if not r then
 	
-	t=t or dat -- transactions shouldnt be used anyhow?
-	
-	local q={
-		kind=kind(H),
-		limit=100, -- there are probably not 100, and we need to skip any in limbo
-		offset=0,
-			{"filter","round_id","==",H.round.key.id},
-			{"filter","buyer","==",0}, -- must be available to buy
-			{"filter","offer","==",opts.offer},
-			{"filter","seek","==",opts.seek},
-		}
-	
-	if reverse then
-			q[#q+1]={"sort","cost","DESC"} -- we want the most expensive
-			q[#q+1]={"sort","count","ASC"} -- then we want the smallest amount
-			q[#q+1]={"sort","created","ASC"} -- and we want the oldest so FIFO	
-	else
-			q[#q+1]={"sort","cost","ASC"} -- we want the cheapest
-			q[#q+1]={"sort","count","ASC"} -- then we want the smallest amount
-			q[#q+1]={"sort","created","ASC"} -- and we want the oldest so FIFO	
-	end
+		t=t or dat -- transactions shouldnt be used anyhow?
 		
+		local q={
+			kind=kind(H),
+			limit=100, -- there are probably not 100, and we need to skip any in limbo
+			offset=0,
+				{"filter","round_id","==",H.round.key.id},
+				{"filter","buyer","==",0}, -- must be available to buy
+				{"filter","offer","==",opts.offer},
+				{"filter","seek","==",opts.seek},
+			}
 		
-	local r=t.query(q)
+		if reverse then
+				q[#q+1]={"sort","cost","DESC"} -- we want the most expensive
+				q[#q+1]={"sort","count","ASC"} -- then we want the smallest amount
+				q[#q+1]={"sort","created","ASC"} -- and we want the oldest so FIFO	
+		else
+				q[#q+1]={"sort","cost","ASC"} -- we want the cheapest
+				q[#q+1]={"sort","count","ASC"} -- then we want the smallest amount
+				q[#q+1]={"sort","created","ASC"} -- and we want the oldest so FIFO	
+		end
+			
+			
+		r=t.query(q)
+		cache.put(cachekey,r,10*60) -- save this (possibly random) result for 10 mins
+	
+	end
 	
 	local best
 		
-	for i=1,#r.list do local v=r.list[i] -- look for the first one that has passed its limbo wait period
+	for i=1,#r.list do local v=r.list[i] -- look for the first one that has passed its limbo wait period?
 		dat.build_cache(v)
-		if (v.cache.created+(v.cache.limbo or 0)) < H.srv.time then -- ignore new trades for a little while
-			best=v
-			break
+		if (not opts.skipmine) or (v.cache.player~=opts.skipmine) then -- we skip our own trades?
+			if opts.nowait then -- actually, we are not waiting
+				best=v
+				break
+			end
+			if (v.cache.created+(v.cache.limbo or 0)) < H.srv.time then -- ignore new trades for a little while
+				best=v
+				break
+			end
 		end
 	end
 	-- if we have 100 trades in limbo then no trades will be available...
 
-	cache.put(cachekey,json.encode({best}),10*60) -- save this (possibly random) result for 10 mins
 	
 	return best
 end
