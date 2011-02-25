@@ -242,7 +242,6 @@ local fp
 	fp:close()
 	fp=null
 
-
 -- load that string back in and run it to produce an output table
 pp_input_lua,_msg=loadfile(fname_out..".lua")
 ]]
