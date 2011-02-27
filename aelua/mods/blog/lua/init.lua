@@ -21,10 +21,13 @@ local trim=wet_string.trim
 local str_split=wet_string.str_split
 local serialize=wet_string.serialize
 
+local goo=require("port.goo")
+
 local wet_waka=require("wetgenes.waka")
 
 local d_sess =require("dumid.sess")
 local d_users=require("dumid.users")
+local d_nags=require("dumid.nags")
 
 
 -- require all the module sub parts
@@ -597,6 +600,7 @@ This is the #body of your post and can contain any html you wish.
 					ent.cache.layer=posts.layer or ent.cache.layer
 					
 					pages.put(srv,ent)
+			
 				end
 			end
 			
@@ -608,9 +612,50 @@ This is the #body of your post and can contain any html you wish.
 		
 		local refined=chunk_prepare(srv,ent,opts)
 		refined.it=refined
-		que(macro_replace(refined.plate or "{it.body}",refined))
+		local blog_text=macro_replace(refined.plate or "<h1>{it.title}</h1>{it.body}",refined)
+		que(blog_text)
 		css=refined.css
 
+		if user and user.cache and user.cache.admin then -- admin only, so less need to validate inputs
+				
+			if posts.submit=="Publish" then -- build a nag when we click publish
+				
+-- get or reuse a short url from goo.gl
+
+				local long_url=srv.url_base..ent.cache.pubname:sub(2)
+				local short_url
+				
+				if ent.cache.short_url then
+					short_url=ent.cache.short_url
+				else
+					short_url=goo.shorten(long_url)
+					pages.update(srv,ent,function(srv,ent)
+							ent.cache.short_url=short_url
+							return true
+						end)
+				end
+
+-- finally add a nag to pester us to twat it
+				local nag={}
+				
+				nag.id="blog"
+				nag.url=long_url
+				nag.short_url=short_url
+				
+				local s=blog_text
+				s=s:gsub("(%b<>)","") -- kill any html tags
+				s=s:gsub("%s+"," ") -- replace any range of whitespace with a single space
+				s=wet_string.trim(s)
+				s=s:sub(1,(140-1)-#short_url) -- reduce to 140ish chars, dont care if we chop a word
+				s=wet_string.trim(s)
+				
+				nag.c140_base=s -- some base text without the url
+				nag.c140=s.." "..short_url -- add a link on the end
+				
+				d_nags.save(srv,srv.sess,nag)
+				
+			end
+		end
 	
 	else -- default
 	
