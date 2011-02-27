@@ -33,6 +33,7 @@ local html=require("dumid.html")
 local d_users=require("dumid.users")
 local d_sess =require("dumid.sess")
 local d_acts =require("dumid.acts")
+local d_nags =require("dumid.nags")
 
 
 local oauth=require("wetgenes.aelua.oauth")
@@ -85,6 +86,7 @@ local put=make_put(srv)
 		login=		serv_login,
 		logout=		serv_logout,
 		callback=	serv_callback,
+		nag=		serv_nag,
 	}
 	local f=cmds[ string.lower(cmd or "") ]
 	if f then return f(srv) end
@@ -337,5 +339,29 @@ local put=make_put(srv)
 -- this logs you out of your gmail account, everywhere, which is anoying...
 --	srv.redirect( users.logout_url(continue) )
 	srv.redirect( continue )
+	
+end
+
+
+-----------------------------------------------------------------------------
+--
+--
+-----------------------------------------------------------------------------
+function serv_nag(srv)
+local sess,user=d_sess.get_viewer_session(srv)
+
+	local continue --="/"
+	if srv.gets.continue then continue=srv.gets.continue end -- where we wish to end up
+	
+	if srv.gets.nag and srv.gets.blanket then
+		if sess.cache.nags[srv.gets.nag] then
+			local nag=sess.cache.nags[srv.gets.nag]
+			if srv.gets.blanket==tostring(nag.blanket) then -- security blanket check to delete the nag
+				d_nags.delete(srv,sess,nag)
+			end
+		end
+	end
+
+	if continue then srv.redirect( continue ) end
 	
 end

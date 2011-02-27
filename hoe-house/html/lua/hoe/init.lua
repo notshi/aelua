@@ -92,9 +92,7 @@ local sess,user=d_sess.get_viewer_session(srv)
 	H.arg=function(i) return srv.url_slash[ srv.url_slash_idx + i ]	end -- get an arg from the url
 	
 	H.page_admin=( users.core.user and users.core.user.admin) or (H.user and H.user.cache and H.user.cache.admin) -- page admin flag
-	
-	srv.alerts_html=""
-	
+		
 	return H
 
 end
@@ -131,10 +129,14 @@ function serv(srv)
 		H.energy_frac=H.energy_frac-math.floor(H.energy_frac) -- fractional amount of energy we have
 		H.energy_step=H.round.cache.timestep
 
+		local wart=alerts.alerts_to_html(H,alerts.get_alerts(H)) -- display some alerts? (no round)
+		if wart then H.srv.alerts_html=(H.srv.alerts_html or "")..wart end
+	
 		return serv_round(H)
 	end
 	
-	H.alerts=alerts.alerts_to_html(H,alerts.get_alerts(H)) or "" -- display some alerts? (no round)
+	local wart=alerts.alerts_to_html(H,alerts.get_alerts(H)) -- display some alerts? (no round)
+	if wart then H.srv.alerts_html=(H.srv.alerts_html or "")..wart end
 	
 	local blog_html,blog_css=blog.recent_posts(srv,{num=5,over="/frontpage"})
 
@@ -246,8 +248,6 @@ local put=H.put
 			end
 		end
 	end
-	
-	H.srv.alerts_html=alerts.alerts_to_html(H,alerts.get_alerts(H)) or "" -- display some alerts? (we have a round)
 	
 -- functions for each special command	
 	local cmds={

@@ -331,3 +331,22 @@ padding-right: 20px;
 	border-right:  solid #ccc 1px;
 }
 
+.aelua_nags {
+background-color:#eee;
+width: 960px;
+margin: 0 auto;
+padding: 20px 0px;
+}
+.aelua_nag {
+-moz-border-radius: 8px;
+-webkit-border-radius: 8px;
+border-radius: 8px 8px;
+background-color: white;
+border: 0;
+margin: 0 auto;
+margin-top: 5px;
+margin-bottom: 5px;
+width: 900px;
+padding: 5px;
+text-align:center;
+}
