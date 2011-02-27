@@ -13,6 +13,7 @@ local sys=require("wetgenes.aelua.sys")
 local os=os
 local string=string
 local math=math
+local table=table
 
 local tostring=tostring
 local type=type
@@ -91,23 +92,29 @@ function render(srv,sess)
 	if not sess then return nil end
 	
 	local c=sess.cache
-	
-	if c.nags.note then
-		local s=""
-		n=c.nags.note
-		
-		n.blanket=n.blanket or ""
-		s=s..n.c140
-		
-		local twatit="http://twitter.com/home?status="..wet_string.url_encode(n.c140)
-		local dellit="/dumid/nag?nag="..n.id.."&blanket="..n.blanket
-		local dellit_and_twatit=dellit.."&continue="..wet_string.url_encode(twatit)
-		local dellit_and_continue=dellit.."&continue="..wet_string.url_encode(srv.url)
-		s=[[
+	local out={}
+
+	for _,id in ipairs{"note","blog"} do
+		if c.nags[id] then
+			local n=c.nags[id]
+			
+			if os.time()-n.time < (60*60*24) then -- auto ignore nags after 24 hours
+			
+				n.blanket=n.blanket or ""
+				
+				local twatit="http://twitter.com/home?status="..wet_string.url_encode(n.c140)
+				local dellit="/dumid/nag?nag="..n.id.."&blanket="..n.blanket
+				local dellit_and_twatit=dellit.."&continue="..wet_string.url_encode(twatit)
+				local dellit_and_continue=dellit.."&continue="..wet_string.url_encode(srv.url)
+out[#out+1]=[[
 <div class="aelua_nag">Post "<a target="_BLANK" href="]]..dellit_and_twatit..[[">]]..n.c140..[[</a>" to twitter! or
 <a href="]]..dellit_and_continue..[[">Cancel!</a></div>
-]]
-		return "<div class=\"aelua_nags\">"..s.."</div>"
+]]			
+			end
+		end
 	end
-
+	
+-- return all strings wrapped in a special div	
+	if out[1] then return "<div class=\"aelua_nags\">"..table.concat(out).."</div>" end
+-- or return nil if no strings
 end
