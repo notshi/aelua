@@ -24,6 +24,7 @@ local wet_waka=require("wetgenes.waka")
 
 local d_sess =require("dumid.sess")
 local d_users=require("dumid.users")
+local d_sess=require("dumid.sess")
 
 -- require all the module sub parts
 local html=require("note.html")

@@ -347,6 +347,7 @@ return false;
 <div class="aelua_clear"> </div>
 </div>
 {adminbar}
+{alerts_html}
 ]])
 	return replace(p,d)
 

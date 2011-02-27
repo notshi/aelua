@@ -37,6 +37,8 @@ local serialize=wet_string.serialize
 
 module("dumid.sess")
 local d_users=require("dumid.users")
+local d_nags=require("dumid.nags")
+
 dat.set_defs(_M) -- create basic data handling funcs
 
 props=
@@ -69,6 +71,8 @@ function check(srv,ent)
 	
 	p.userid=c.userid or ""
 	p.ip=c.ip or ""
+
+	c.nags=c.nags or {} -- make sure we always have a nag array
 
 	return ent,ok
 end
@@ -118,45 +122,6 @@ function del(srv,userid)
 end
 
 
-
-
------------------------------------------------------------------------------
---
--- associates a future action with the active user, returns a key valid for 5 minutes
--- 
------------------------------------------------------------------------------
-function put_act(srv,user,dat)
-	if not user or not dat then return nil end
-	
-local id=tostring(math.random(10000,99999)) -- need a random number but "random" isnt a big issue
-	
-local key="user=act&"..user.key.id.."&"..id
-
-	cache.put(key,dat,60*5)
-	
-	return id
-end
-
------------------------------------------------------------------------------
---
--- retrives an action for this active user or nil if not a valid key
---
------------------------------------------------------------------------------
-function get_act(srv,user,id)
-	if not user or not id then return nil end
-	
-local key="user=act&"..user.key.id.."&"..id
-local dat=cache.get(key)
-
-	if not dat then return nil end -- notfound
-	
-	cache.del(key) -- one use only
-	
-	return dat
-
-end
-
-
 -----------------------------------------------------------------------------
 --
 -- get the viewing user session
@@ -187,6 +152,10 @@ function get_viewer_session(srv)
 	
 		srv.user=d_users.get(srv,sess.cache.userid) -- this is probably also a cache get
 	end
+	
+	local snag=d_nags.render(srv,sess)
+	if snag then srv.alerts_html=(srv.alerts_html or "")..snag end
+	
 	return srv.sess,srv.user -- return sess , user
 	
 end

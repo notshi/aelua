@@ -20,6 +20,7 @@ local wet_waka=require("wetgenes.waka")
 local wet_html=require("wetgenes.html")
 
 local d_users=require("dumid.users")
+local d_nags=require("dumid.nags")
 local goo=require("port.goo")
 
 local wet_string=require("wetgenes.string")
@@ -541,12 +542,32 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				
 -- try and get a short url from goo.gl and save it into the comment for later use
 
-				local short_url=goo.shorten(tab.url.."?wetnote="..wetnoteid)
+				local long_url=srv.url_base:sub(1,-2) -- remove trailing / from url_base
+				long_url=long_url..tab.url.."#wetnote"..wetnoteid
+				local short_url=goo.shorten(long_url)
 				
 				update(srv,posted,function(srv,ent)
 						ent.cache.short_url=short_url
 						return true
 					end)
+
+-- finally add a nag to pester us to twat it
+				local nag={}
+				
+				nag.id="note"
+				nag.url=long_url
+				nag.short_url=short_url
+				
+				local s=c.text
+				s=string.gsub(s,"%s+"," ") -- replace any range of whitespace with a single space
+				s=wet_string.trim(s)
+				s=s:sub(1,(140-4)-#short_url) -- reduce to 140ish chars, dont care if we chop a word
+				s=wet_string.trim(s)
+				
+				nag.c140_base=s -- some base text without the url
+				nag.c140=s.."... "..short_url -- add a link on the end
+				
+				d_nags.save(srv,srv.sess,nag)
 				
 				return
 			end
