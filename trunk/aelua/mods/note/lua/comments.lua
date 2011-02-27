@@ -542,8 +542,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				
 -- try and get a short url from goo.gl and save it into the comment for later use
 
-				local long_url=srv.url_base:sub(1,-2) -- remove trailing / from url_base
-				long_url=long_url..tab.url.."#wetnote"..wetnoteid
+				local long_url=srv.url_domain..tab.url.."#wetnote"..wetnoteid
 				local short_url=goo.shorten(long_url)
 				
 				update(srv,posted,function(srv,ent)
