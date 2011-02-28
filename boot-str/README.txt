@@ -1,6 +1,6 @@
 
 This is boot strap, boot strap is very alpha, everything here is going to change
-so do not depend on any of it.
+so do not depend on any of it. That said we now seem to be mostly working :)
 
 
 All content is MIT licenesed unless explicitly stated otherwise.
