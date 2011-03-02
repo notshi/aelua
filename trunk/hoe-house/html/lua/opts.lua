@@ -16,6 +16,9 @@ local type=type
 
 module("opts")
 
+mail={}
+mail.from="spam@hoe-house.appspotmail.com"
+
 users={}
 users.admin={ -- users with admin rights for this app
 	["notshi@gmail.com"]=true,

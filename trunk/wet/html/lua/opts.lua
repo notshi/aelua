@@ -19,6 +19,9 @@ module("opts")
 
 bootstrapp_version=20110121 -- hand bump to todays date on release
 
+mail={}
+mail.from="spam@wet.appspotmail.com"
+
 urls={}
 
 head={} -- stuff to inject into the html header

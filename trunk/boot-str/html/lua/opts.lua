@@ -21,6 +21,8 @@ module("opts")
 bootstrapp_version=20110228.6
 --Machine generated data. Read between the lines, but do not edit.
 
+mail={}
+
 urls={}
 
 head={} -- stuff to inject into the html header
