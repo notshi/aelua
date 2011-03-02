@@ -11,6 +11,7 @@ local cache=require("wetgenes.aelua.cache")
 local users=require("wetgenes.aelua.users")
 
 local fetch=require("wetgenes.aelua.fetch")
+local mail=require("wetgenes.aelua.mail")
 
 local img=require("wetgenes.aelua.img")
 
@@ -46,6 +47,7 @@ local require=require
 
 -- opts
 local opts_mods_note=(opts and opts.mods and opts.mods.note) or {}
+local opts_mail_from=(opts and opts.mail and opts.mail.from)
 
 module("note.comments")
 local wetdata=require("data")
@@ -567,6 +569,11 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				nag.c140=s.." "..short_url -- add a link on the end
 				
 				d_nags.save(srv,srv.sess,nag)
+
+-- and send an email to admins if enabled?
+				if opts_mail_from then
+					mail.send{from=opts_mail_from,to="admin",subject="New comment on "..long_url,text=long_url.."\n\n"..c.text}
+				end
 				
 				return
 			end

@@ -22,6 +22,7 @@ public class Servlet extends HttpServlet {
 // this is hacks to cope with appengine going screwy, lets hope it works better with reuse of lua state?
 // ok looks like only the local debug engine will handle multiple requests at the same time
 // so all the multiple state stuff is not really used on the live instances
+// as when run on the live server it just creates a new instance.
 
 static Lua[] Lbase=new Lua[16]; // we keep one state, building it as needed
 static int[] runcount=new int[16]; // count number of requests and reload every 1000? just in case
@@ -79,6 +80,7 @@ static boolean[] running=new boolean[16]; // this will get stuck on true if we h
 				Cache.preload(L);
 				User.preload(L);
 				Fetch.preload(L);
+				Mail.preload(L);
 				
 				L.loadFile("lua/init.lua");
 				L.call(0,0);
