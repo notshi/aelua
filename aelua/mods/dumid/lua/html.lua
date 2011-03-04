@@ -88,6 +88,15 @@ more=more..[[
 </div>
 ]]
 	end
+
+	if d.facebook then
+more=more..[[
+<div class="cont">
+	<a class="button" href="{srv.url_base}login/facebook/?continue={continue}">Facebook</a>
+</div>
+]]
+	end
+
 	
 	d.continue=url_esc(d.continue)
 	return replace([[

@@ -25,6 +25,7 @@ local serialize=wet_string.serialize
 local opts=require("opts")
 local opts_users_admin=( opts and opts.users and opts.users.admin ) or {}
 local opts_twitter=( opts and opts.twitter ) or {}
+local opts_facebook=( opts and opts.facebook ) or {}
 
 
 -- require all the module sub parts
@@ -45,6 +46,7 @@ local string=string
 local table=table
 local os=os
 
+local assert=assert
 local ipairs=ipairs
 local pairs=pairs
 local tostring=tostring
@@ -53,6 +55,8 @@ local type=type
 local pcall=pcall
 local loadstring=loadstring
 
+--facebook?
+--perms=email,publish_stream,offline_access
 
 --
 -- Which can be overeiden in the global table opts
@@ -119,6 +123,11 @@ local put=make_put(srv)
 		if srv.url_slash[3]=="host.local:8080" then tld="local" end
 		return srv.redirect("http://lua.wetgenes."..tld.."/dumid.lua?continue="..wet_html.url_esc(callback))
 		
+	elseif dat=="facebook" then
+	
+		local callback=srv.url_base.."callback/facebook/"..wet_html.url_esc(continue)
+		return srv.redirect("https://www.facebook.com/dialog/oauth?client_id="..opts_facebook.id.."&scope=email,publish_stream,offline_access&redirect_uri="..wet_html.url_esc(callback))
+		
 	elseif dat=="google" then
 	
 		local callback=srv.url_base.."callback/google/?continue="..wet_html.url_esc(continue)
@@ -139,8 +148,6 @@ local put=make_put(srv)
 		local k,q = oauth.build(vars,{post="GET",url=baseurl,api_secret=opts_twitter.secret})
 		
 		local got=fetch.get(baseurl.."?"..q) -- get from internets		
---log(type(got.body))
---log(tostring(got.headers))
 		local gots=oauth.decode(got.body)
 		
 		if gots.oauth_token then
@@ -151,7 +158,7 @@ local put=make_put(srv)
 
 	srv.set_mimetype("text/html; charset=UTF-8")
 	put("dumid_header",{})
-	put("dumid_choose",{continue=continue,twitter=opts_twitter.key})
+	put("dumid_choose",{continue=continue,twitter=opts_twitter.key,facebook=opts_facebook.key})
 	put("dumid_footer",{})
 	
 end
@@ -168,7 +175,16 @@ local put=make_put(srv)
 	local data=srv.url_slash[ srv.url_slash_idx+1 ]
 
 	local continue="/"
+	if srv.url_slash[ srv.url_slash_idx+2 ] then
+		local t={}
+		for i=srv.url_slash_idx+2 , #srv.url_slash do
+			t[#t+1]=srv.url_slash[i]
+		end
+		continue=table.concat(t,"/")
+	end
 	if srv.gets.continue then continue=srv.gets.continue end -- where we wish to end up
+
+log(continue)
 	
 	local user
 	local sess
@@ -202,6 +218,40 @@ local put=make_put(srv)
 		
 		end
 			
+	elseif data=="facebook" then
+			
+		local fb_code=srv.gets.code
+		assert(fb_code,"need facebook code")
+
+-- use the code to get a token	
+		local got=fetch.get("https://graph.facebook.com/oauth/access_token?client_id="..(opts_facebook.id).."&redirect_uri="..oauth.esc(srv.url).."&client_secret="..(opts_facebook.secret).."&code="..oauth.esc(fb_code))
+		
+		local fbtoken=oauth.decode(got.body)
+		local token=fbtoken.access_token
+		assert(token,"need facebook token")
+
+-- fetch user information using this token
+		local got=fetch.get("https://graph.facebook.com/me?access_token="..oauth.esc(token))
+
+		if got.body then
+			local fbuser=json.decode(got.body)
+
+			if fbuser.id then
+				email=fbuser.id .. "@id.facebook.com" -- hide real email slightly
+				name=fbuser.name
+				name=string.sub(name,1,32) -- limit length
+				flavour="facebook"
+			
+				authentication.facebook={ -- all the facebook info we should also keep track of
+					token=token,
+					user=fbuser, -- save all user info
+					}
+					
+				info={ email=fbuser.email }
+					
+			end
+		end
+		
 	elseif data=="google" then
 		local guser=users.get_google_user() -- google handles its own login
 		if guser then -- google login OK
@@ -269,6 +319,7 @@ local put=make_put(srv)
 			end
 			
 			if user then
+				user.cache.name=name -- update?
 				user.cache.flavour=flavour
 				user.cache.authentication=user.cache.authentication or {} -- may need to create
 				for i,v in pairs(authentication) do -- remember any new special authentication values
@@ -277,7 +328,7 @@ local put=make_put(srv)
 			end
 
 			user.cache.admin=admin
-			user.cache.info=info -- extra info
+			user.cache.info=info -- extra procesed info
 			if info.email then user.cache.email=info.email end -- real email if available
 			if not d_users.put(srv,user,t) then user=nil end -- always write
 			
