@@ -55,9 +55,6 @@ local type=type
 local pcall=pcall
 local loadstring=loadstring
 
---facebook?
---perms=email,publish_stream,offline_access
-
 --
 -- Which can be overeiden in the global table opts
 --

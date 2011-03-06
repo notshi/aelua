@@ -178,7 +178,7 @@ local get=make_get(srv)
 			local endings={"@id.wetgenes.com"}
 			for i,v in ipairs(endings) do
 				if string.sub(t.userid,-#v)==v then
-					t.siteid=tonumber(string.sub(t.userid,1,-(#v+1)))
+					t.siteid=(string.sub(t.userid,1,-(#v+1)))
 					t.url="http://like.wetgenes.com/-/profile/$"..t.siteid
 					t.site="wetgenes"
 					list[#list+1]=t
@@ -189,7 +189,7 @@ local get=make_get(srv)
 			local endings={"@id.twitter.com"}
 			for i,v in ipairs(endings) do
 				if string.sub(t.userid,-#v)==v then
-					t.siteid=tonumber(string.sub(t.userid,1,-(#v+1)))
+					t.siteid=(string.sub(t.userid,1,-(#v+1)))
 					t.url="/js/dumid/twatbounce.html?id="..t.siteid
 					t.site="twitter"
 					list[#list+1]=t
@@ -197,6 +197,16 @@ local get=make_get(srv)
 				end
 			end
 	
+			local endings={"@id.facebook.com"}
+			for i,v in ipairs(endings) do
+				if string.sub(t.userid,-#v)==v then
+					t.siteid=(string.sub(t.userid,1,-(#v+1)))
+					t.url="http://www.facebook.com/profile.php?id="..t.siteid
+					t.site="facebook"
+					list[#list+1]=t
+					break
+				end
+			end
 	
 			for i,v in ipairs(list) do -- get all chunks
 				makechunk(content,v)
@@ -288,6 +298,10 @@ function makechunk_site(content,chunk)
 	if chunk.site=="wetgenes" then
 	
 		chunk.site=replace([[<a href="{chunk.url}"><img src="http://like.wetgenes.com/-/badge/{name}/640/50/badge.png" /></a>]],d)
+		
+	elseif chunk.site=="facebook" then
+	
+		chunk.site=replace([[<a href="{chunk.url}">View facebook profile</a>]],d)
 		
 	elseif chunk.site=="twitter" then
 
