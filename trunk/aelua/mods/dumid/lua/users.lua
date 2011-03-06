@@ -115,26 +115,33 @@ end
 function get_profile_link(userid)
 
 	local url="/profile/"..userid
-	local profile="<a href="..url.."><img src=\"/art/icon_goog.png\" /></a>"
+	local profile="<a href="..url.."><img src=\"/art/base/icon_goog.png\" /></a>"
 
 	local endings={"@id.wetgenes.com"}
 	for i,v in ipairs(endings) do
 		if string.sub(userid,-#v)==v then
-			profile="<a href="..url.."><img src=\"/art/icon_wet.png\" /></a>"
+			profile="<a href="..url.."><img src=\"/art/base/icon_wet.png\" /></a>"
+		end
+	end
+
+	local endings={"@id.facebook.com"}
+	for i,v in ipairs(endings) do
+		if string.sub(userid,-#v)==v then
+			profile="<a href="..url.."><img src=\"/art/base/icon_fb.png\" /></a>"
 		end
 	end
 
 	local endings={"@id.twitter.com"}
 	for i,v in ipairs(endings) do
 		if string.sub(userid,-#v)==v then
-			profile="<a href="..url.."><img src=\"/art/icon_twat.png\" /></a>"
+			profile="<a href="..url.."><img src=\"/art/base/icon_twat.png\" /></a>"
 		end
 	end
-
+	
 	local endings={"@id.google.com"}
 	for i,v in ipairs(endings) do
 		if string.sub(userid,-#v)==v then
-			profile="<a href="..url.."><img src=\"/art/icon_goog.png\" /></a>"
+			profile="<a href="..url.."><img src=\"/art/base/icon_goog.png\" /></a>"
 		end
 	end
 
@@ -172,6 +179,14 @@ function get_avatar_url(userid,w,h)
 			url="/thumbcache/"..w.."/"..h.."/www.wetgenes.com/icon/"..string.sub(userid,1,-(#v+1))
 		end
 	end
+
+	local endings={"@id.facebook.com"}
+	for i,v in ipairs(endings) do
+		if string.sub(userid,-#v)==v then
+			url="/thumbcache/"..w.."/"..h.."/graph.facebook.com/"..string.sub(userid,1,-(#v+1)).."/picture?type=large"
+		end
+	end
+
 
 	local endings={"@id.twitter.com"}
 	for i,v in ipairs(endings) do

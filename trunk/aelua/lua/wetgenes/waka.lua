@@ -187,8 +187,13 @@ function chunks_merge(dest,source)
 		local c=dest[v.name] -- merge or
 		
 		local function set_data()
-			c.lines=v.lines -- set or override
-			c.text=v.text -- set or override
+			if c.opts.append=="on" then -- add new lines to the end of the chunk rather than replace
+				c.text=(c.text or "") .. ( v.text or "" )
+				c.lines=split_lines(c.text) -- also need to build lines?
+			else -- just replace
+				c.lines=v.lines -- set or override
+				c.text=v.text -- set or override
+			end
 			for ii,vv in pairs(v.opts) do
 				c.opts[ii]=vv
 			end

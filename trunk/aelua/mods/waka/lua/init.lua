@@ -86,8 +86,14 @@ local display_edit_only=false
 local ext
 
 	local aa={}
-	for i=srv.url_slash_idx,#srv.url_slash do
-		aa[#aa+1]=srv.url_slash[ i ]
+	if srv.vars.page then -- overload with this forced pagename
+		if srv.vars.page~="" then
+			aa=str_split("/",srv.vars.page,true)
+		end
+	else
+		for i=srv.url_slash_idx,#srv.url_slash do
+			aa[#aa+1]=srv.url_slash[ i ]
+		end
 	end
 	if aa[#aa]=="" then aa[#aa]=nil end-- kill any trailing slash
 	
@@ -131,13 +137,14 @@ local ext
 	local url_local=srv.url_local..table.concat(aa,"/")
 	if ext then url=url.."."..ext end -- this is a page extension
 	
-	if srv.url~=url then -- force a redirect to the perfect page name with or without a trailing slash
+	if not srv.vars.page and srv.url~=url then -- force a redirect to the perfect page name with or without a trailing slash
 		return srv.redirect(url)
 	end
-	
+
 	local posts={} -- remove any gunk from the posts input
-	-- check if this post probably came from this page before allowing post params
-	if srv.method=="POST" and srv.headers.Referer and string.sub(srv.headers.Referer,1,string.len(url))==url then
+	-- check if this post probably came from this *SITE* before allowing post params
+	-- this is less of a check than normal since we are now lax with wiki edit urls
+	if srv.method=="POST" and srv.headers.Referer and string.sub(srv.headers.Referer,1,string.len(srv.url_base))==srv.url_base then
 		for i,v in pairs(srv.posts) do
 			posts[i]=v
 --			posts[i]=string.gsub(v,"[^%w%p ]","") -- sensible characters only please
@@ -242,6 +249,8 @@ local ext
 		pageopts.flame="off"
 	end
 
+-- disable comments if this is not the real page address
+	if srv.vars.page then pageopts.flame="off" end
 
 	if ext=="css" then -- css only
 	
