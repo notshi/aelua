@@ -39,7 +39,7 @@ local id=tostring(math.random(10000,99999)) -- need a random number but "random"
 	
 local key="user=act&"..user.cache.id.."&"..id
 
-	cache.put(key,dat,60*5) -- store for 5 mins
+	cache.put(srv,key,dat,60*5) -- store for 5 mins
 	
 	return id
 end
@@ -53,11 +53,11 @@ function get(srv,user,id)
 	if not user or not id then return nil end
 	
 local key="user=act&"..user.cache.id.."&"..id
-local dat=cache.get(key)
+local dat=cache.get(srv,key)
 
 	if not dat then return nil end -- notfound
 	
-	cache.del(key) -- one use only
+	cache.del(srv,key) -- one use only
 	
 	return dat
 

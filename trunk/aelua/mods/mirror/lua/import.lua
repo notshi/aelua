@@ -212,7 +212,7 @@ end
 --------------------------------------------------------------------------------
 function fix_memcache(srv,mc)
 	for n,b in pairs(mc) do
-		cache.del(n)
+		cache.del(srv,n)
 	end
 end
 

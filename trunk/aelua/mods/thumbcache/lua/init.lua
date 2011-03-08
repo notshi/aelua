@@ -58,7 +58,7 @@ function serv(srv)
 	
 	for i=1,100 do
 	
-		data=cache.get(cachename)
+		data=cache.get(srv,cachename)
 		
 		if type(data)=="string" and data=="*" then -- another thread is fetching the image we should wait for them
 --			log("sleeping")
@@ -77,7 +77,7 @@ function serv(srv)
 		elseif not data then -- we will go get it
 --			log("web")
 		
-			if cache.put(cachename,"*",10,"ADD_ONLY_IF_NOT_PRESENT") then -- get a 10sec lock
+			if cache.put(srv,cachename,"*",10,"ADD_ONLY_IF_NOT_PRESENT") then -- get a 10sec lock
 
 				local s1=srv.url_slash[ srv.url_slash_idx ]
 				local s2=srv.url_slash[ srv.url_slash_idx+1 ]
@@ -135,7 +135,7 @@ function serv(srv)
 --				image=img.resize(image,width,height,"JPEG") -- resize image and force it to a JPEG
 
 			
-					cache.put(cachename,{
+					cache.put(srv,cachename,{
 						data=image.data ,
 						size=image.size ,
 						width=image.width ,

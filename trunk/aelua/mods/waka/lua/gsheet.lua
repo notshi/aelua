@@ -82,7 +82,7 @@ function get(srv,opts)
 	local datastr
 	local err
 	
-	local data=cache.get(cachename) -- check cache
+	local data=cache.get(srv,cachename) -- check cache
 	if data then return data end
 	
 	if not datastr then -- we didnt got it from the cache?
@@ -106,7 +106,7 @@ function get(srv,opts)
 		suc,data=pcall(function() return json.decode(datastr) end) -- convert from json, hopefully
 		if not suc then data=nil end
 		
-		if data then cache.put(cachename,data,60*60) end
+		if data then cache.put(srv,cachename,data,60*60) end
 	end
 		
 	return data,err
