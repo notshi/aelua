@@ -248,7 +248,7 @@ end
 function fix_memcache(H,mc)
 
 	for n,b in pairs(mc) do
-		cache.del(n)
+		cache.del(srv,n)
 	end
 end
 
@@ -274,7 +274,7 @@ local reverse=false
 	-- a unique keyname for this query
 	local cachekey="kind="..kind(H).."&round="..(H.round.key.id).."&find=cheapest&offer="..opts.offer.."&seek="..opts.seek.."&reverse="..(reverse and "true" or "false")
 	
-	local r=cache.get(cachekey) -- do we already know the answer?
+	local r=cache.get(H.srv,cachekey) -- do we already know the answer?
 
 	if not r then
 	
@@ -302,7 +302,7 @@ local reverse=false
 			
 			
 		r=t.query(q)
-		cache.put(cachekey,r,10*60) -- save this (possibly random) result for 10 mins
+		cache.put(H.srv,cachekey,r,10*60) -- save this (possibly random) result for 10 mins
 	
 	end
 	
