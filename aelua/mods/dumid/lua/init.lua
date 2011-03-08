@@ -148,7 +148,7 @@ local put=make_put(srv)
 		local gots=oauth.decode(got.body)
 		
 		if gots.oauth_token then
-			cache.put("oauth_token="..gots.oauth_token,got.body) -- save data for a little while
+			cache.put(srv,"oauth_token="..gots.oauth_token,got.body) -- save data for a little while
 			return srv.redirect("https://twitter.com/oauth/authorize?oauth_token="..gots.oauth_token)
 		end
 	end
@@ -263,7 +263,7 @@ log(continue)
 		
 	elseif data=="twitter" then
 
-		local gots=cache.get("oauth_token="..srv.gets.oauth_token) -- recover data
+		local gots=cache.get(srv,"oauth_token="..srv.gets.oauth_token) -- recover data
 		if gots then gots=oauth.decode(gots) else gots={} end -- decode it again
 		
 -- ok now we get to ask twitter for an actual username using this junk we have collected so far

@@ -70,7 +70,7 @@ end
 --
 --------------------------------------------------------------------------------
 function get(ip)
-	local d=cache.get("iplog="..ip)
+	local d=cache.get(nil,"iplog="..ip)
 	if d then
 		return check(json.decode(d))
 	end
@@ -83,7 +83,7 @@ end
 --
 --------------------------------------------------------------------------------
 function put(it)
-	cache.put( "iplog="..it.ip , json.encode(it) , 60*60*24 )
+	cache.put(nil,"iplog="..it.ip , json.encode(it) , 60*60*24 )
 end
 
 --------------------------------------------------------------------------------

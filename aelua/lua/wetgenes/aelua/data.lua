@@ -9,7 +9,6 @@ local os=os
 
 local core=require("wetgenes.aelua.data.core")
 
-
 module("wetgenes.aelua.data")
 local cache=require("wetgenes.aelua.cache")
 local dat=_M
@@ -64,7 +63,6 @@ end
 
 function get(ent)
 	apis()
-	
 	count=count+0.5
 	
 	return apie(core.get(nil,ent))
@@ -287,8 +285,8 @@ function def_get(env,srv,id,tt)
 	
 	local ck=env.cache_key(srv,ent.key.id)
 	if not tt then -- can try for cached value outside of transactions
-		local ent=cache.get(ck)
-		if ent then return env.check(srv,ent) end -- we got a cached value
+		local ent=cache.get(srv,ck)
+		if ent then return env.check(srv,ent) end -- Yay, we got a cached value
 	end
 	
 	local t=tt or dat -- use transaction?
@@ -297,7 +295,7 @@ function def_get(env,srv,id,tt)
 	dat.build_cache(ent)
 	
 	if not tt then -- auto cache ent for one hour
-		cache.put(ck,ent,60*60)
+		cache.put(srv,ck,ent,60*60)
 	end
 	
 	return env.check(srv,ent)
@@ -377,7 +375,7 @@ end
 --------------------------------------------------------------------------------
 function def_cache_fix(env,srv,mc)
 	for n,b in pairs(mc) do
-		cache.del(n)
+		cache.del(srv,n)
 		srv.cache[n]=nil
 	end
 end

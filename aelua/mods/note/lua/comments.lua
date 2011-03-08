@@ -267,7 +267,7 @@ end
 --------------------------------------------------------------------------------
 function fix_memcache(srv,mc)
 	for n,b in pairs(mc) do
-		cache.del(n)
+		cache.del(srv,n)
 	end
 end
 
@@ -535,7 +535,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 
 			if posted and posted.cache then -- redirect to our new post
 			
-				cache.del("kind="..kind(H).."&find=recent&limit="..(50)) -- reset normal recent cache
+				cache.del(srv,"kind="..kind(H).."&find=recent&limit="..(50)) -- reset normal recent cache
 
 				local wetnoteid=id
 				if id==0 then wetnoteid=posted.cache.id end
@@ -812,7 +812,7 @@ function get_recent(srv,num)
 	-- a unique keyname for this query
 	local cachekey="kind="..kind(H).."&find=recent&limit="..num
 	
-	local r=cache.get(cachekey) -- do we already know the answer?
+	local r=cache.get(srv,cachekey) -- do we already know the answer?
 
 	if r then -- we cached the answer
 		return r
@@ -823,7 +823,7 @@ function get_recent(srv,num)
 -- the lua array + hash for its tables was the problem
 -- I have disable the array part lets see if it has a performance impact...
 
-	cache.put(cachekey,recent,2*60) -- save this in cache for 2 minutes
+	cache.put(srv,cachekey,recent,2*60) -- save this in cache for 2 minutes
 	
 	return recent
 end

@@ -67,6 +67,9 @@ end
 --
 --------------------------------------------------------------------------------
 function cache_key(id)
+	if type(id)=="table" then -- convert ent to id
+		id=ent.key.id
+	end
 	return "type=ent&waka="..id
 end
 
@@ -167,9 +170,11 @@ function get(srv,id,t)
 		ent.key.id=id
 	end
 	
-	t=t or dat -- use transaction?
-	
-	if not t.get(ent) then return nil end	
+	if t then 
+		if not t.get(ent) then return nil end	
+	else
+		return cache_get(srv,ent.key.id)
+	end
 	dat.build_cache(ent)
 	
 	return check(srv,ent)
@@ -182,7 +187,8 @@ end
 --------------------------------------------------------------------------------
 function manifest(srv,id,t)
 
-	local ent=get(srv,id,t)
+	local ent
+	if t then ent=get(srv,id,t) else ent=cache_get(srv,id) end --cache get?
 	
 	if not ent then -- make new
 		ent=create(srv)
@@ -322,6 +328,8 @@ function what_memcache(srv,ent,mc)
 	local mc=mc or {} -- can supply your own result table for merges	
 	local c=ent.cache
 	
+	mc[ cache_key(ent) ]=true
+	
 	return mc
 end
 
@@ -333,7 +341,7 @@ end
 --------------------------------------------------------------------------------
 function fix_memcache(srv,mc)
 	for n,b in pairs(mc) do
-		cache.del(n)
+		cache.del(srv,n)
 	end
 end
 
@@ -370,14 +378,19 @@ end
 --
 --------------------------------------------------------------------------------
 function cache_get(srv,id)
-
 	local key=cache_key(id)
+	local ent
+
+	if not ent then -- try to read from cache first
+		ent=cache.get(srv,key)
+	end
 	
-	if srv.cache[key] then return srv.cache[key] end
-	
-	ent=get(srv,id)
-	
-	srv.cache[key]=ent
-	
-	return ent
+	if not ent then -- otherwise read from database
+		ent=get(srv,id,dat) -- stop recursion by passing in dat as the transaction
+		if ent then
+			cache.put(srv,key,ent,60*60) -- and save into cache for an hour
+		end
+	end
+
+	return check(srv,ent)
 end
