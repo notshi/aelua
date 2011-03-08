@@ -48,7 +48,7 @@ function get_top_players(H,round_id)
 	-- a unique keyname for this query
 	local cachekey="feats=get_top_players&round="..round_id
 
-	local r=cache.get(cachekey) -- do we already know the answer
+	local r=cache.get(H.srv,cachekey) -- do we already know the answer
 	if r then return json.decode(r) end
 
 	local ret={}
@@ -75,7 +75,7 @@ function get_top_players(H,round_id)
 	
 	ret.info=t
 	
-	cache.put(cachekey,json.encode(ret),10*60) -- save this new result for 10 mins
+	cache.put(H.srv,cachekey,json.encode(ret),10*60) -- save this new result for 10 mins
 	return ret
 end
 

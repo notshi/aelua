@@ -234,7 +234,7 @@ end
 --------------------------------------------------------------------------------
 function fix_memcache(H,mc)
 	for n,b in pairs(mc) do
-		cache.del(n)
+		cache.del(srv,n)
 	end
 end
 

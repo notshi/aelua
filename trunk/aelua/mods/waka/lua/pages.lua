@@ -113,7 +113,8 @@ end
 --
 --------------------------------------------------------------------------------
 function check(srv,ent)
-
+	if not ent then return nil,false end
+	
 	local ok=true
 
 	local c=ent.cache
