@@ -116,44 +116,17 @@ function bubble(srv,ent,overload)
 	local chunks={}	-- merge all pages and their parents into this
 	local ps={}
 	
-	local function check(p)
+	ps[#ps+1]=ent
 	
-		if #ps>=16 then return nil end -- max depth
-		
-		local s=p.cache.group
-		
-		if string.len(s)>1 then -- skip "/"
-			if string.sub(s,-1) == "/" then
-				s=string.sub(s,1,-2) -- remove trailing /
-			end
-		end
-		
-		for i=1,#ps do local v=ps[i]
-			if v.cache.pubname==s then
-				return nil -- no recursion
-			end
-		end
-		
-		return s
-	end
-	
-	local p=ent
-	while p do -- grab each page going upwards while it seems like a good idea
-		ps[#ps+1]=p
-		local s=check(p)
-		if s then
-			p=pages.cache_find_by_pubname(srv,s)
-		else
-			p=nil
-		end
-	end
-	
--- start with the base wiki page, its kind of the main site everything
-	p=wakapages.cache_get(srv,"/blog")
+-- and the wiki pages for style, should fix this to use urls
+
+	local p=wakapages.get(srv,"/blog")
 	ps[#ps+1]=p
-	p=wakapages.cache_get(srv,"/")
+	p=wakapages.get(srv,"/")
 	ps[#ps+1]=p
-	
+
+
+
 	for i=#ps,1,-1 do local v=ps[i]
 		v.chunks = wet_waka.text_to_chunks(v.cache.text) -- build this page only
 		wet_waka.chunks_merge(chunks,v.chunks) -- merge all pages chunks
