@@ -73,7 +73,7 @@ end
 function query(q)
 	apis()
 	count=count+1
-log(tostring(q))	
+--log(tostring(q))	
 
 	return apie(core.query(nil,q))
 end
@@ -250,9 +250,9 @@ end
 -- build_props is called so code should always be updating the cache values
 --
 --------------------------------------------------------------------------------
-function def_put(env,srv,ent,t)
+function def_put(env,srv,ent,tt)
 
-	t=t or dat -- use transaction?
+	t=tt or dat -- use transaction?
 
 	local _,ok=env.check(srv,ent) -- check that this is valid to put
 	if not ok then return nil end
@@ -264,7 +264,7 @@ function def_put(env,srv,ent,t)
 		ent.key=dat.keyinfo( ks ) -- update key with new id
 		dat.build_cache(ent)
 		
-		env.cache_fix(srv,env.cache_what(srv,ent)) -- destroy any cache of this entity
+		if not tt then env.cache_fix(srv,env.cache_what(srv,ent)) end -- destroy any cache if not in transaction
 	end
 
 	return ks -- return the keystring which is an absolute name
@@ -379,7 +379,6 @@ end
 function def_cache_fix(env,srv,mc)
 	for n,b in pairs(mc) do
 		cache.del(srv,n)
-		srv.cache[n]=nil
 	end
 end
 

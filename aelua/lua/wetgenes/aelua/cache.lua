@@ -1,9 +1,11 @@
 
 
 local core=require("wetgenes.aelua.cache.core")
+local log=require("wetgenes.aelua.log").log
 
 local os=os
 local type=type
+local tostring=tostring
 
 module("wetgenes.aelua.cache")
 
@@ -41,14 +43,14 @@ function put(srv,id,tab,ttl)
 end
 
 function get(srv,id)
-	if srv and srv.cache[id] then return srv.cache[id] end -- very fast retry for multiple gets
+	if srv and type(srv.cache[id])~="nil" then return srv.cache[id] end -- very fast retry for multiple gets
 	
 	apis()
 	count=count+1
 
 	local r=apie(core.get(id))
 	
-	if type(r)~="nil" then count_got=count_got+1 end -- a false is still a good result
+	if type(r)~="nil" then count_got=count_got+1 else log("FAIL:"..id) end -- a false is still a good result
 
 	return r
 end

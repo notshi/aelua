@@ -388,9 +388,7 @@ function cache_get(srv,id)
 	
 	if not ent then -- otherwise read from database
 		ent=get(srv,id,dat) -- stop recursion by passing in dat as the transaction
-		if ent then
-			cache.put(srv,key,ent or false,60*60) -- and save into cache for an hour
-		end
+		cache.put(srv,key,ent or false,60*60) -- and save into cache for an hour
 	end
 
 	return (check(srv,ent))
