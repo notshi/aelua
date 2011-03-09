@@ -114,7 +114,8 @@ end
 --
 --------------------------------------------------------------------------------
 function check(srv,ent)
-
+	if not ent then return nil,false end
+	
 	local ok=true
 
 	local c=ent.cache
@@ -316,13 +317,15 @@ end
 function cache_find_by_pubname(srv,pubname)
 
 	local key=cache_key(pubname)
+	local ent=cache.get(srv,key)
+
+	if type(ent)=="boolean" then return nil end -- not found
+
+	if not ent then
+		ent=find_by_pubname(srv,pubname)
+		cache.put(srv,key,ent or false,60*60)
+	end
 	
-	if srv.cache[key] then return srv.cache[key] end
-	
-	ent=find_by_pubname(srv,pubname)
-	
-	srv.cache[key]=ent
-	
-	return ent
+	return (check(srv,ent))
 end
 
