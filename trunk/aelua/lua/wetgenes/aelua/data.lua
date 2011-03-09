@@ -8,6 +8,9 @@ local type=type
 local os=os
 
 local core=require("wetgenes.aelua.data.core")
+local log=require("wetgenes.aelua.log").log
+
+local tostring=tostring
 
 module("wetgenes.aelua.data")
 local cache=require("wetgenes.aelua.cache")
@@ -64,13 +67,13 @@ end
 function get(ent)
 	apis()
 	count=count+0.5
-	
 	return apie(core.get(nil,ent))
 end
 
 function query(q)
 	apis()
 	count=count+1
+log(tostring(q))	
 
 	return apie(core.query(nil,q))
 end

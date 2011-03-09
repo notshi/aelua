@@ -3,6 +3,7 @@
 local core=require("wetgenes.aelua.cache.core")
 
 local os=os
+local type=type
 
 module("wetgenes.aelua.cache")
 
@@ -47,7 +48,7 @@ function get(srv,id)
 
 	local r=apie(core.get(id))
 	
-	if r then count_got=count_got+1 end
+	if type(r)~="nil" then count_got=count_got+1 end -- a false is still a good result
 
 	return r
 end

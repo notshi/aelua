@@ -68,7 +68,7 @@ end
 --------------------------------------------------------------------------------
 function cache_key(id)
 	if type(id)=="table" then -- convert ent to id
-		id=ent.key.id
+		id=id.key.id
 	end
 	return "type=ent&waka="..id
 end
@@ -137,9 +137,9 @@ end
 -- build_props is called so code should always be updating the cache values
 --
 --------------------------------------------------------------------------------
-function put(srv,ent,t)
+function put(srv,ent,tt)
 
-	t=t or dat -- use transaction?
+	local t=tt or dat -- use transaction?
 
 	local _,ok=check(srv,ent) -- check that this is valid to put
 	if not ok then return nil end
@@ -151,6 +151,8 @@ function put(srv,ent,t)
 		ent.key=dat.keyinfo( ks ) -- update key with new id
 		dat.build_cache(ent)
 	end
+
+	if not tt then fix_memcache(srv,what_memcache(srv,ent)) end
 
 	return ks -- return the keystring which is an absolute name
 end
@@ -188,8 +190,8 @@ end
 --------------------------------------------------------------------------------
 function manifest(srv,id,t)
 
-	local ent
-	if t then ent=get(srv,id,t) else ent=cache_get(srv,id) end --cache get?
+	local ent=get(srv,id,t)
+--	if t then ent=get(srv,id,t) else ent=cache_get(srv,id) end --cache get?
 	
 	if not ent then -- make new
 		ent=create(srv)
@@ -292,7 +294,7 @@ function update(srv,id,f)
 
 	if type(id)=="table" then id=id.key.id end -- can turn an entity into an id
 		
-	for retry=1,10 do
+	for retry=1,10 do	
 		local mc={}
 		local t=dat.begin()
 		local e=manifest(srv,id,t)
@@ -380,18 +382,16 @@ end
 --------------------------------------------------------------------------------
 function cache_get(srv,id)
 	local key=cache_key(id)
-	local ent
+	local ent=cache.get(srv,key)
 
-	if not ent then -- try to read from cache first
-		ent=cache.get(srv,key)
-	end
+	if type(ent)=="boolean" then return nil end -- if cache is set to false then there is nothing to get
 	
 	if not ent then -- otherwise read from database
 		ent=get(srv,id,dat) -- stop recursion by passing in dat as the transaction
 		if ent then
-			cache.put(srv,key,ent,60*60) -- and save into cache for an hour
+			cache.put(srv,key,ent or false,60*60) -- and save into cache for an hour
 		end
 	end
 
-	return check(srv,ent)
+	return (check(srv,ent))
 end
