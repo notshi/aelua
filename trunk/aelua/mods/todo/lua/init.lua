@@ -94,9 +94,11 @@ local get,put=make_get_put(srv)
 	
 	if name then -- need to check the name is a valid thing
 	
-	else -- list all possible things
-	
 	end
+
+-- by default list all possible things
+	
+
 end
 
 
@@ -106,9 +108,17 @@ end
 --
 -----------------------------------------------------------------------------
 function waka_changed(srv,page)
+	if not page then return end
+	
 	log(tostring(page.key.id))
+	
+	local chunks=wet_waka.text_to_chunks( page.cache.text )
+	
+	log(tostring(chunks.title.text))
 end
 
--- add our hook to the waka stuffs, should get called on load
+-- add our hook to the waka stuffs, this should get called on module load
+-- so that we always watch the waka edits, the trailing slash is to make sure that
+-- we only catch task pages and bellow
 waka.add_changed_hook("^/todo/",waka_changed)
 

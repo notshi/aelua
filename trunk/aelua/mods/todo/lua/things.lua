@@ -27,6 +27,9 @@ dat.set_defs(_M) -- create basic data handling funcs
 
 default_props=
 {
+	title="",
+	synopsis="",
+	total=0, -- total of all "good" pledges
 	state="none",
 }
 
