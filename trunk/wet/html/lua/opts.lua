@@ -14,6 +14,7 @@ local pcall=pcall
 local pairs=pairs
 local ipairs=ipairs
 local type=type
+local require=require
 
 module("opts")
 
@@ -152,9 +153,14 @@ map={ -- base lookup table
 												url="/port",
 											},
 					},
-
+["todo"]		=	{			-- bribes
+						["#default"]	=	"todo", 		-- no badlinks, we own everything under here
+						["#opts"]		=	{
+												url="/todo",
+											},
+					},
 }
-
+local _=require("todo") -- need to initialize waka hooks
 
 mods={}
 

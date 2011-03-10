@@ -20,6 +20,7 @@ local str_split=wet_string.str_split
 local serialize=wet_string.serialize
 
 local wet_diff=require("wetgenes.diff")
+local wet_waka=require("wetgenes.waka")
 
 
 -- require all the module sub parts
@@ -392,4 +393,43 @@ function cache_get(srv,id)
 	end
 
 	return (check(srv,ent))
+end
+
+
+--------------------------------------------------------------------------------
+--
+-- load the page and all of its parent pages then build refined chunks.
+-- return all the chunks, with the refined chunks found in [0]
+-- unless unrefined is set in the opts, the opts are also passed into refine_chunks
+--
+--------------------------------------------------------------------------------
+function load(srv,id,opts)
+	opts=opts or {}
+
+	local pages={}
+	local chunks
+	local name=id
+	
+	pages[#pages+1]=wet_waka.text_to_chunks( manifest(srv,name).cache.text ) -- start with main page	
+	if id~="/" then -- if asking for root then no need to look for anything else
+		while string.find(name,"/") do -- whilst there are still / in the name	
+			name=string.gsub(name,"/[^/]*$","") -- remove the tail from the string			
+			if name~="" then -- skip empty
+				pages[#pages+1]=wet_waka.text_to_chunks( manifest(srv,name).cache.text )
+			end
+		end
+		pages[#pages+1]=wet_waka.text_to_chunks( manifest(srv,"/").cache.text ) -- finally always include root
+	end
+	
+-- merge all pages
+	for i=#pages,1,-1 do
+		chunks=wet_waka.chunks_merge(chunks,pages[i])
+	end
+	
+ -- build refined chunks
+	if not opts.unrefined then
+		chunks[0]=wet_waka.refine_chunks(srv,chunks,opts)
+	end
+	
+	return chunks
 end
