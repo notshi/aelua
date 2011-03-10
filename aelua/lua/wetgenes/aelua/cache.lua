@@ -50,7 +50,7 @@ function get(srv,id)
 
 	local r=apie(core.get(id))
 	
-	if type(r)~="nil" then count_got=count_got+1 else log("FAIL:"..id) end -- a false is still a good result
+	if type(r)~="nil" then count_got=count_got+1 end -- a false is still a good result
 
 	return r
 end

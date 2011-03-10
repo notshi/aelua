@@ -106,11 +106,7 @@ local get=make_get(srv)
 			baseurl=baseurl.."/"..name
 
 -- need the base wiki page, its kind of the main site everything
-			local rootpage=wakapages.cache_get(srv,"/") -- may fail
-			local roottext=(rootpage and rootpage.cache.text) or ""
-			local chunks=wet_waka.text_to_chunks(roottext)
-			local refined=wet_waka.refine_chunks(srv,chunks,{noblog=true}) -- build processed strings
-	
+			local refined=wakapages.load(srv,"/profile")[0]	
 
 			srv.set_mimetype("text/html; charset=UTF-8")
 			put("header",{title="profile ",H={user=user,sess=sess}})

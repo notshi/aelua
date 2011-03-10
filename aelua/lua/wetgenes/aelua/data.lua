@@ -227,7 +227,7 @@ function def_create(env,srv)
 	p.created=srv.time
 	p.updated=srv.time
 	
-	for i,v in pairs(env.props or {}) do
+	for i,v in pairs(env.default_props or {}) do
 		p[i]=v
 	end
 
@@ -236,7 +236,7 @@ function def_create(env,srv)
 -- these are json only vars
 	local c=ent.cache
 	
-	for i,v in pairs(env.cache or {}) do
+	for i,v in pairs(env.default_cache or {}) do
 		c[i]=v
 	end
 

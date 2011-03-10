@@ -41,13 +41,13 @@ local d_nags=require("dumid.nags")
 
 dat.set_defs(_M) -- create basic data handling funcs
 
-props=
+default_props=
 {
 	userid="", -- who this session belongs too
 	ip="", -- and the ip this session belongs to
 }
 
-cache=
+default_cache=
 {
 }
 

@@ -25,7 +25,7 @@ local serialize=wet_string.serialize
 module("dumid.users")
 dat.set_defs(_M) -- create basic data handling funcs
 
-props=
+default_props=
 {
 	flavour="",
 	email  ="", -- this is a duplicate of the userid or a real email
@@ -33,7 +33,7 @@ props=
 	parent ="", -- set to a parent userid for linked accounts
 }
 
-cache=
+default_cache=
 {
 }
 

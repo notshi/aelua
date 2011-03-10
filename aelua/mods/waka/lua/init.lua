@@ -71,6 +71,23 @@ local function make_get(srv)
 	end
 end
 
+hooks={
+	changed={},
+}
+
+-----------------------------------------------------------------------------
+--
+-- handle admin special pages/lists
+--
+-----------------------------------------------------------------------------
+function add_changed_hook(pat,func)
+
+	hooks.changed[func]=pat -- use func as the key
+	
+end
+
+
+
 -----------------------------------------------------------------------------
 --
 -- the serv function, where the action happens.
@@ -162,20 +179,28 @@ local ext
 		end
 		
 		if user and user.cache and user.cache.admin then -- admin
-			if posts.submit=="Save" then -- save page to database
+			if posts.submit=="Save" or posts.submit=="Write" then -- save page to database
 				if posts.text then
 					local chunks=wet_waka.text_to_chunks(posts.text)
-					pages.edit(srv,pagename,
+					local e=pages.edit(srv,pagename,
 						{
 							text=posts.text,
 							author=user.cache.id,
 							note=(chunks.note and chunks.note.text) or "",
 						})
+					for f,p in pairs(hooks.changed) do -- update hooks?
+						if string.find(pagename,p) then
+							f(srv,e)
+						end
+					end
 				end
-			else
+			end
+			
+			if posts.submit~="Save" then -- keep editing
 				display_edit=get("waka_edit_form",{text=page.cache.text}) -- still editing
 				if (srv.vars.cmd and srv.vars.cmd=="edit") then display_edit_only=true end
 			end
+			
 		end
 	end
 	
