@@ -559,14 +559,19 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				nag.url=long_url
 				nag.short_url=short_url
 				
+				local xlen=(140-2)-#short_url
 				local s=c.text
 				s=string.gsub(s,"%s+"," ") -- replace any range of whitespace with a single space
 				s=wet_string.trim(s)
-				s=s:sub(1,(140-1)-#short_url) -- reduce to 140ish chars, dont care if we chop a word
-				s=wet_string.trim(s)
+				s=s:sub(1,xlen) -- reduce to less chars, we may chop a word
+				s=wet_string.trim(s) -- remove spaces
+				if #s==xlen then -- we need to lose the last word to fit, this makes sure we do not split a word
+					s=s:gsub("([^%s]*)$","")
+					s=wet_string.trim(s)
+				end
 				
 				nag.c140_base=s -- some base text without the url
-				nag.c140=s.." "..short_url -- add a link on the end
+				nag.c140=s..".. "..short_url -- add a link on the end
 				
 				d_nags.save(srv,srv.sess,nag)
 
