@@ -410,6 +410,17 @@ function refine_chunks(srv,chunks,opts)
 				e.hook   = e.hook   or opts.hook -- callback function to fixup data
 				s=gsheet.getwaka(srv,e) -- get a string
 				
+			elseif e.import=="wikipedia" then -- we need to import some xml from wikipedia
+			
+				local wikipedia=require("waka.wikipedia")
+				e.offset = e.offset or opts.offset -- can choose new pages
+				e.limit  = e.limit  or opts.limit -- can choose new pages
+				e.name  = e.name  or opts.name -- get this page
+				e.search  = e.search  or opts.search -- search for
+				e.hook   = e.hook   or opts.hook -- callback function to fixup data
+				
+				s=wikipedia.getwaka(srv,e) -- get a string
+				
 			end
 		
 		elseif format=="waka" then -- basic waka format, html allowed but links are upgraded and line ends are <br/>
