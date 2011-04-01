@@ -116,25 +116,21 @@ function serv(srv)
 
 					image=img.get(data) -- convert to image
 
-					if (image.width>width) or (image.height>height) then -- resize smaller only
-					
-						image=img.resize(image,width,height,"JPEG") -- resize image
-						
-					end
 
-
---[[
 				image=img.composite({
 					format="JPEG",
 					width=image.width,
 					height=image.height,
-					color=0,
+					color=16777215, -- white
 					{image,0,0,1,"TOP_LEFT"},
 				}) -- and force it to a JPEG with a white background
-]]
---				image=img.resize(image,width,height,"JPEG") -- resize image and force it to a JPEG
 
-			
+					if (image.width>width) or (image.height>height) then -- smaller only
+					
+						image=img.resize(image,width,height,"JPEG") -- resize image
+						
+					end
+					
 					cache.put(srv,cachename,{
 						data=image.data ,
 						size=image.size ,
