@@ -99,6 +99,14 @@ map={ -- base lookup table
 												url="/profile",
 											},
 					},
+
+["data"]		=	{			-- a data module
+						["#default"]	=	"data", 		-- no badlinks, we own everything under here
+						["#opts"]		=	{
+												url="/data",
+											},
+					},
+
 }
 
 

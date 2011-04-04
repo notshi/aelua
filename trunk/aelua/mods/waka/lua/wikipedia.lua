@@ -121,39 +121,43 @@ function getwaka(srv,opts)
 			end
 
 			local info={}
-			for i,v in ipairs( simpxml.descendents(infobox,"tr") ) do
-				local td=simpxml.descendents(v,"td")
-				if td[2] then
-					local a1=simpxml.descendents(td[1],"a")
-					local a2=simpxml.descendents(td[2],"a")
-					local val={}
-					local st="http://en.wikipedia.org/wiki/"
-					for i,v in ipairs(a2) do
-						local s=simpxml.attr(v,"href")
-						if s:sub(1,#st)==st then
-							val[#val+1]=s:sub(#st+1)
+			if infobox then
+				for i,v in ipairs( simpxml.descendents(infobox,"tr") ) do
+					local td=simpxml.descendents(v,"td")
+					if td[2] then
+						local a1=simpxml.descendents(td[1],"a")
+						local a2=simpxml.descendents(td[2],"a")
+						local val={}
+						local st="http://en.wikipedia.org/wiki/"
+						for i,v in ipairs(a2) do
+							local s=simpxml.attr(v,"href")
+							if s:sub(1,#st)==st then
+								val[#val+1]=s:sub(#st+1)
+							end
 						end
-					end
-					for i,v in ipairs(a1) do
-						local s=simpxml.attr(v,"href")
-						if s:sub(1,#st)==st then
-							s=s:sub(#st+1)
-							info[s]=val
+						for i,v in ipairs(a1) do
+							local s=simpxml.attr(v,"href")
+							if s:sub(1,#st)==st then
+								s=s:sub(#st+1)
+								info[s]=val
+							end
 						end
 					end
 				end
-			end
 
 -- find image		
-			local img=simpxml.descendent(infobox,"img")
-			if img then img=simpxml.attr(img,"src") end
-			if img then info.img=img end
+				local img=simpxml.descendent(infobox,"img")
+				if img then img=simpxml.attr(img,"src") end
+				if img then info.img=img end
 
 -- find name
-			local name=simpxml.descendent(infobox,"tr")
-			if name then name=simpxml.descendent(name,"i") end
-			if name then info.name=name[1] end
-
+				local name=simpxml.descendent(infobox,"tr")
+				if name then name=simpxml.descendent(name,"i") end
+				if name then info.name=name[1] end
+				
+			end
+			
+			if not info.name then info.name=opts.name:gsub("_"," ") end
 
 -- debug
 --[[
