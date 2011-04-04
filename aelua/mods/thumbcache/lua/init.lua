@@ -80,11 +80,29 @@ function serv(srv)
 			if cache.put(srv,cachename,"*",10,"ADD_ONLY_IF_NOT_PRESENT") then -- get a 10sec lock
 
 				local s1=srv.url_slash[ srv.url_slash_idx ]
-				local s2=srv.url_slash[ srv.url_slash_idx+1 ]
+				
+				local lastarg=1
+				local mode="fit" -- fit into a size, may produce an image of different aspect
+				local hx=100
+				local hy=100
+				
+				if s1=="crop" then 
+				
+					mode="crop" -- we force crop to keep aspect ratio
+					hx=tonumber( srv.url_slash[ srv.url_slash_idx+1 ] or 100) or 100
+					hy=tonumber( srv.url_slash[ srv.url_slash_idx+2 ] or 100) or 100
+					lastarg=2
+					
+				else
+				
+					hx=tonumber( srv.url_slash[ srv.url_slash_idx+0 ] or 100) or 100
+					hy=tonumber( srv.url_slash[ srv.url_slash_idx+1 ] or 100) or 100
+					lastarg=1
+				end
 			
 				local t={}
 				for i=1,#srv.url_slash do local v=srv.url_slash[i]
-					if i>srv.url_slash_idx+1 then
+					if i>srv.url_slash_idx+lastarg then
 						t[#t+1]=v
 					end
 				end
@@ -100,13 +118,12 @@ function serv(srv)
 					end
 					data=fetch.get(url) -- get from internets
 					if data then data=data.body end -- check
-					
 				end
 				
 				if data then
 				
-					local width=tonumber(s1 or "") or 100
-					local height=tonumber(s2 or "") or 100
+					local width=hx or 100
+					local height=hy or 100
 
 					if width<1 then width=1 end
 					if width>1024 then width=1024 end
@@ -115,21 +132,39 @@ function serv(srv)
 					if height>1024 then height=1024 end
 
 					image=img.get(data) -- convert to image
+					
 
+-- crop it to desired aspect ratio and or size?
+				local px=0
+				local py=0
+				local ix=image.width
+				local iy=image.height
+					
+				if mode=="crop" then
+					local sx=width
+					local sy=height
+					if (ix/iy) > (sx/sy) then -- widthcrop
+						ix=math.floor(iy*(sx/sy))
+						px=0-math.floor((image.width-ix)/2)
+					elseif (iy/ix) > (sy/sx) then -- heightcrop
+						iy=math.floor(ix*(sy/sx))
+						py=0-math.floor((image.height-iy)/2)
+					end					
+				else
+				end
+
+--log(ix.." , "..iy.." : "..px.." , "..py)
 
 				image=img.composite({
-					format="JPEG",
-					width=image.width,
-					height=image.height,
-					color=16777215, -- white
-					{image,0,0,1,"TOP_LEFT"},
-				}) -- and force it to a JPEG with a white background
+					format="DEFAULT",
+					width=ix,
+					height=iy,
+					color=16777215, -- white, does not work?
+					{image,px,py,1,"TOP_LEFT"},
+				}) -- and force it to a JPEG with a white? background
 
-					if (image.width>width) or (image.height>height) then -- smaller only
-					
-						image=img.resize(image,width,height,"JPEG") -- resize image
-						
-					end
+				image=img.resize(image,width,height,"JPEG") -- resize image and force to jpeg
+
 					
 					cache.put(srv,cachename,{
 						data=image.data ,
