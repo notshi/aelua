@@ -96,7 +96,27 @@ local chunkend -- special end of chunk test
 		else -- create a new chunk
 		
 			chunk={} -- make default chunk
+
+-- set some default options depending on the chunk name
+
+			if name:sub(1,4)=="body" then -- all chunks begining with "body" are waka format by default
+				opts.form="waka"
+			end
+
+			if name:sub(1,5)=="title" then -- all chunks begining with "title" are trimed by default
+				opts.trim="ends"
+			end
+
+			if name:sub(1,3)=="css" then -- all chunks begining with "css" append children by default
+				opts.append="on"
+			end
+		
+			if name:sub(1,3)=="lua" then -- all chunks begining with "lua" are lua code by default
+				opts.form="lua"
+			end
 			
+-- the actual options will overide the defaults
+
 			for i=1,#opts do local v=opts[i]
 				local a,b=split_equal(v)
 				if a then opts[a]=b end
@@ -333,35 +353,42 @@ function refine_chunks(srv,chunks,opts)
 
 	opts=opts or {}
 
-	local form={}
+	local refined={}
 	
-	for i,v in pairs(opts) do -- copy opts into form
-		form[i]=v
+	for i,v in pairs(opts) do -- copy opts into refined
+		refined[i]=v
 	end
+
+-- start by compiling the lua chunks and running its pageopts hook
+	for i,v in ipairs(chunks) do
+	
+		if v.opts.form=="lua" then -- we have some lua code for this page
+			local e=sbox.make_env()
+			local f,err=loadstring(v.text)
+			v.text=err or "OK"
+			if f then
+				setfenv(f, e)
+				pcall(f)
+			end
+			v.env=e -- store it for later
+			
+			if v.env.hook_pageopts then
+				pcall(function() v.env.hook_pageopts(srv.pageopts) end) -- update pageopts?
+			end
+		end
+		
+	end
+
 	
 	for i,v in ipairs(chunks) do -- do basic process of all of the page chunks into their prefered form 
 		local s=v.text
 		
 		local format=v.opts.form
 		local trim=v.opts.trim
+		
+		if trim=="ends" then s=str.trim(s) end -- trim whitespace, useful for one word chunks?
 
-		if not format then
-			if v.name:sub(1,4)=="body" then -- all chunks begining with body are waka format by default
-				format="waka"
-			end
-		end
-
-		if not trim then
-			if v.name:sub(1,5)=="title" then -- all chunks begining with title are trimed by default
-				trim="ends"
-			end
-		end
-
-
-		if trim=="ends" then s=str.trim(s) end -- trim?
-
-
-		if format=="nohtml" then -- normal but all html is escaped
+		if format=="nohtml" then -- like normal but all html is escaped
 
 			s=waka_to_html(s,{base_url=opts.baseurl,escape_html=true}) 
 
@@ -433,7 +460,22 @@ function refine_chunks(srv,chunks,opts)
 
 		end
 
-		form[v.name]=s
+		refined[v.name]=s
 	end
-	return form
+	
+-- end by running any refined lua hooks
+	for i,v in ipairs(chunks) do
+		if v.opts.form=="lua" then -- we have some lua code for this page
+			
+			if v.env then -- stick the env table in the refined table
+				refined[v.name]=v.env
+				if v.env.hook_refined then
+					pcall(function() v.env.hook_refined(refined) end) -- update refined data
+				end
+			end
+		end
+	end
+
+	
+	return refined
 end

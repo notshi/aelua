@@ -25,10 +25,10 @@ local serialize=wet_string.serialize
 module("todo.things")
 dat.set_defs(_M) -- create basic data handling funcs
 
+-- the key used should be a local url id eg "/todo/something" this is also the waka page for more data
 default_props=
 {
-	title="",
-	synopsis="",
+	title="", -- a cache of the title of the waka page
 	total=0, -- total of all "good" pledges
 	state="none",
 }

@@ -25,11 +25,13 @@ local serialize=wet_string.serialize
 module("todo.bribes")
 dat.set_defs(_M) -- create basic data handling funcs
 
+-- the key used should be thing.."/"..user so one bribe per user per thing
 default_props=
 {
 	thing="", -- things id eg "/todo/something"
 	user="", -- users id eg "1234@id.gmail.com"
-	bribe=0,
+	bribe=0, -- a 0 bribe + benefits is perfectly valid
+	state="none",
 }
 
 default_cache=

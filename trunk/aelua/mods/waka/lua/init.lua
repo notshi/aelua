@@ -223,6 +223,8 @@ local ext
 	local pageopts={
 		flame="on",
 	}
+	srv.pageopts=pageopts -- keep the page options here
+	
 	if chunks.opts then
 		for n,s in pairs(chunks.opts.opts) do
 			pageopts[n]=s
@@ -244,28 +246,14 @@ local ext
 	pageopts.offset_prev=pageopts.offset-pageopts.limit
 	if pageopts.offset_prev<0 then pageopts.offset_prev=0 end
 	
-	if chunks.lua then -- we have some lua code for this page
-		local e=wet_sandbox.make_env()
-		local f,err=loadstring(chunks.lua.text)
-		chunks.lua.text=err or "OK"
-		if f then
-			setfenv(f, e)
-			pcall(f)
-		end
-		chunks.lua.env=e -- store it for later
-		
-		if chunks.lua.env.opts then
-			pcall(function() chunks.lua.env.opts(pageopts) end) -- update pageopts
-		end
-	end
 
 	local refined={}
 	if not display_edit_only then
 		refined=wet_waka.refine_chunks(srv,chunks,pageopts) -- build processed strings
-
-		if chunks.lua and chunks.lua.env.chunks then
-			pcall(function() chunks.lua.env.chunks(refined) end) -- update refined
-		end
+	end
+	
+	if pageopts.redirect then -- we may force a redirect here
+		return srv.redirect(pageopts.redirect)
 	end
 
 -- disable comments if page is not saved to the database IE a MISSING PAGE	
