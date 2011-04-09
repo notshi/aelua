@@ -14,7 +14,7 @@ local setfenv=setfenv
 local unpack=unpack
 local require=require
 
-local print=print
+local dbg=dbg or function()end
 
 module(...)
 
@@ -284,6 +284,10 @@ function map_opts(name,pow)
 		r=add_room(get_room("home_bedroom"))
 		r=add_room(get_room("home_mainroom"))
 		
+	elseif name=="level.dump" then
+
+		r=add_room(get_room("dump_stairs"))
+	
 	else
 
 		r=add_room(get_room("stairs"))
