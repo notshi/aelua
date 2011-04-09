@@ -1,5 +1,14 @@
 package.path=package.path..";./?/init.lua"
 
+dbg=function(s)
+	local fp=io.open("yarn.dbg","a")
+	if fp then
+		fp:write(s.."\n")
+		io.close(fp)
+	end
+end
+dbg(os.date())
+
 local yarn=require("yarn")
 local yarn_strings=require("yarn.strings")
 

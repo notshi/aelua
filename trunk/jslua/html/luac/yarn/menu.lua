@@ -14,6 +14,9 @@ local unpack=unpack
 local require=require
 local pairs=pairs
 
+local tostring=tostring
+
+local dbg=dbg or function()end
 
 module(...)
 local strings=require("yarn.strings")
@@ -282,13 +285,19 @@ setfenv(1,d)
 	end
 	
 	function show_stairs_menu(it,by)
+		local main=it.level.main
 		local top={}
 
 		local goto_level=function(name,pow)
-			local main=it.level.main
 			main.level=main.level.destroy()
 			main.level=yarn_level.create(attrdata.get(name,pow,{xh=40,yh=28}),main)
 			main.menu.hide()
+
+-- mark this new area as visited
+			main.soul.visited=main.soul.visited or {}
+			main.soul.visited[name]=main.soul.visited[name] or {}
+			main.soul.visited[name][pow]=true
+
 		end
 		
 		top.title=it.desc
@@ -313,12 +322,40 @@ setfenv(1,d)
 			}
 			
 			for i=it.stairs_min,it.stairs_max do
-				tab[#tab+1]={
-					txt=it.stairs.." ("..i..")",
-					call=function()
-						goto_level("level."..it.stairs,i)
+			
+				local show=false
+				local lnam="level."..it.stairs
+dbg(lnam)
+dbg(main.level.name)
+dbg(main.level.pow)
+				if  main.soul.visited and
+					main.soul.visited[lnam] then
+					for i,v in pairs(main.soul.visited[lnam]) do
+						dbg(tostring(i).." : "..tostring(v))
 					end
-				}
+				end
+				if i<=1 then show=true end -- first level is always available
+				
+				if main.level.name == lnam then
+					if i<=main.level.pow+1 and i>=main.level.pow-1 then
+						show=true -- one up/down 1 are always available
+					end
+				end
+				if  main.soul.visited and
+					main.soul.visited[lnam] and
+					main.soul.visited[lnam][i] then
+					show=true
+				end
+
+				
+				if show then
+					tab[#tab+1]={
+						txt=it.stairs.." ("..i..")",
+						call=function()
+							goto_level("level."..it.stairs,i)
+						end
+					}
+				end
 			end
 			
 			top.display=build_request(tab)
