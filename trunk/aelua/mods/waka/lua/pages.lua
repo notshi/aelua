@@ -97,6 +97,8 @@ function create(srv)
 	p.layer=0
 	p.group=""
 	
+	p.tags={}
+	
 	dat.build_cache(ent) -- this just copies the props across
 	
 -- these are json only vars
@@ -140,6 +142,8 @@ end
 --------------------------------------------------------------------------------
 function put(srv,ent,tt)
 
+--	ent.cache.tags={["a"]=true,["bb"]=true,["ccc"]=true}
+	
 	local t=tt or dat -- use transaction?
 
 	local _,ok=check(srv,ent) -- check that this is valid to put
@@ -180,6 +184,8 @@ function get(srv,id,t)
 		return cache_get(srv,ent.key.id)
 	end
 	dat.build_cache(ent)
+
+---log(tostring(ent.cache.tags))
 	
 	return check(srv,ent)
 end
@@ -218,6 +224,7 @@ function edit(srv,id,by)
 		local text=by.text or c.text
 		local author=by.author or ""
 		local note=by.note or ""
+		
 	
 		c.last=c.edit -- also remember the last edit, which may be null
 		
@@ -235,6 +242,8 @@ function edit(srv,id,by)
 		d.note=note
 		
 		c.text=text -- change the actual text
+		
+		c.tags=by.tags or c.tags -- remember updated tags in an index
 		
 		return true
 	end		

@@ -339,6 +339,23 @@ public class Data
 				}
 			}
 			else
+			if(v instanceof LuaTable) // we only accept a string -> true style table for multiple values
+			{
+				boolean gotdata=false;
+				LinkedList m=new LinkedList();;
+				Enumeration mt = ((LuaTable)v).keys();		 
+				while(mt.hasMoreElements())
+				{
+					Object val=mt.nextElement();
+					if(val instanceof String)
+					{
+						m.add(val);
+						gotdata=true;
+					}
+				}
+				if(gotdata) { e.setProperty((String)i,m); } // empty lists seem to break things
+			}
+			else
 			{
 				e.setProperty((String)i,v);
 			}
@@ -412,6 +429,19 @@ public class Data
 				if(v instanceof Text)
 				{
 					L.rawSet(props,(String)i,((Text)v).getValue());
+				}
+				else
+				if(v instanceof List)
+				{
+					LuaTable nt=L.newTable();
+					for (Object val : ((List)v))
+					{
+						if(val instanceof String)
+						{
+							L.rawSet(nt,val,Boolean.TRUE); // we build a string -> true table
+						}
+					}
+					L.rawSet(props,(String)i,nt);
 				}
 				else
 				{

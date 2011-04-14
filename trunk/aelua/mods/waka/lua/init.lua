@@ -187,6 +187,7 @@ local ext
 							text=posts.text,
 							author=user.cache.id,
 							note=(chunks.note and chunks.note.text) or "",
+							tags=wet_waka.text_to_tags(chunks.tags and chunks.tags.text),
 						})
 					for f,p in pairs(hooks.changed) do -- update hooks?
 						if string.find(pagename,p) then

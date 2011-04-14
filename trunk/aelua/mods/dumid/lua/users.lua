@@ -31,6 +31,7 @@ default_props=
 	email  ="", -- this is a duplicate of the userid or a real email
 	name   ="",
 	parent ="", -- set to a parent userid for linked accounts
+	ip="", -- last known ip or blank if unknown
 }
 
 default_cache=
