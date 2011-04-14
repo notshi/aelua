@@ -37,6 +37,10 @@
 	color:#999;
 }
 
+.wetnote_comment_form_div_cont {
+	margin-left: 110px;
+}
+
 .wetnote_reply_div{
 	margin-left:40px;
 }
@@ -94,7 +98,6 @@
 
 .wetnote_comment_form_text {
 	border: 1px solid #000;
-	margin-left: 110px;
 	width:500px;
 	height:120px;
 }
@@ -104,7 +107,6 @@
 	-webkit-border-radius: 8px;
 	border-radius: 4px 4px;
 	background-color: #DCDCDC;
-	margin-left: 110px;
 	width:502px;
 	height:30px;
 	border-bottom: 1px solid #999;

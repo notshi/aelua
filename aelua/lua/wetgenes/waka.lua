@@ -36,6 +36,33 @@ local split_equal		=str.split_equal
 
 -----------------------------------------------------------------------------
 --
+-- turn a string into a tag array
+--
+-----------------------------------------------------------------------------
+function text_to_tags(text)
+	local r={}
+	
+	if text then
+		if string.find(text,",") then -- coma seperated
+			local a=split_words(text,",")
+			for i,v in ipairs(a) do
+				local s=str.trim(v)
+				if #s>0 then r[s]=true end
+			end
+		else -- white space seperated
+			local a=split_words(text)
+			for i,v in ipairs(a) do
+				local s=str.trim(v)
+				if #s>0 then r[s]=true end
+			end
+		end
+	end
+	
+	return r
+end
+
+-----------------------------------------------------------------------------
+--
 -- take some text and break it into named chunks
 -- returns a lookup table of chunks and numerical list of these chunks in the order they where first defined
 -- body is the default chunk name

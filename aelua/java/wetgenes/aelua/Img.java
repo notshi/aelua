@@ -96,8 +96,11 @@ public class Img
 	}
 	public void fill_tab_img(Lua L,LuaTable t,Image img)
 	{
+		byte[] dat=img.getImageData();
+		
 		L.setField(t,"image",img);
-		L.setField(t,"data",img.getImageData());
+		L.setField(t,"data",dat);
+		L.setField(t,"size",(double)dat.length);
 		L.setField(t,"format",img.getFormat().name());
 		L.setField(t,"height",(double)img.getHeight());
 		L.setField(t,"width",(double)img.getWidth());

@@ -1,3 +1,6 @@
+
+@import url("/css/note/import.css");
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -108,157 +111,6 @@ a:focus {color: #666; text-decoration: underline;}
 .aelua_clear{ clear: both; }
 
 
-.wetnote_comment_div , .wetnote_comment_hide_div {
-    position: relative;
-    clear: both;
-}
-
-/* Click here to show hidden */
-.wetnote_comment_hide_div {
-    color: #999;
-    font-size: 16px;
-}
-.wetnote_comment_hide_div a {
-    color: #999;
-}
-
-.wetnote_comment_div {
-    background-color: #fff;
-    -moz-border-radius: 8px;
-    -webkit-border-radius: 8px;
-    border-radius: 4px 4px;
-    margin: 10px 0 10px 0;
-    min-height: 100px;
-    width: 600px;
-}
-
-/* Click here to reply */
-.wetnote_comment_form_div{
-    margin-bottom: 40px;
-    clear: both;    
-    color: #999;
-    font-size: 16px;
-}
-.wetnote_comment_form_div a {
-    color: #999;
-}
-
-.wetnote_reply_div{
-    margin-left: 40px;
-}
-
-.wetnote_comment_icon {
-    width: 100px;
-    height: 100px;
-    position: absolute;
-}
-
-.wetnote_comment_text {
-    width: 460px;
-    margin-left: 120px;
-    padding-bottom: 20px;
-    overflow: hidden;    
-    color: #000;
-    font-size: 16px;
-}
-
-.wetnote_comment_head {
-    opacity: 0;
-    padding-top: 5px;
-    padding-bottom: 10px;
-    width: 460px;
-    margin-left: 120px;    
-    color: #666;
-    font-size: 12px;
-}
-.wetnote_comment_head a {
-    color: #000;
-}
-
-.wetnote_comment_head:hover {
-    opacity: 1;
-}
-
-.wetnote_comment_form{
-    width: 640px;
-}
-
-.wetnote_comment_form_head{
-    width: 640px;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    border-bottom: 1px solid #ddd;
-}
-
-.wetnote_comment_form_tail{
-    margin-bottom: 20px;
-}
-
-.wetnote_comment_form_text {
-    border: 1px solid #000;
-    margin-left: 110px;
-    width: 478px;
-    height: 120px;
-    padding: 10px;
-}
-
-.wetnote_comment_post {
-    -moz-border-radius: 8px;
-    -webkit-border-radius: 8px;
-    border-radius: 4px 4px;
-    background-color: #DCDCDC;
-    margin-left: 109px;
-    margin-top: 2px;
-    width: 501px;
-    height: 30px;
-    border-bottom: 1px solid #999;
-    border-right: 1px solid #999;
-    border-top: 1px solid #eee;
-    border-left: 1px solid #eee;
-    cursor: pointer;
-}
-.wetnote_comment_post:hover {
-    background-color: #E1E1E1;
-}
-.wetnote_comment_post:active {
-    background-color: #DCDCDC;
-}
-
-.wetnote_comment_img {
-    max-width: 460px;
-    max-height: 345px;
-    display: block;
-}
-
-.wetnote_main{
-    display: table;
-}
-.wetnote_main2{
-    display: table-row;
-}
-.wetnote_comments{
-    vertical-align: top;
-    display: table-cell;
-    width: 640px;
-}
-.wetnote_ticker{
-    vertical-align: top;
-    width: 320px;
-    display: table-cell;
-    color: #aaa;
-    font-size: 12px;
-    padding-top: 20px;
-}
-.wetnote_tick a {
-    color: #888;
-}
-
-.wetnote_tick{
-    margin:10px 20px 10px 20px;
-    text-align: center;
-}
-
-
 .profile_layout{
 margin: 0 auto;
 width: 940px;
@@ -350,3 +202,4 @@ width: 900px;
 padding: 5px;
 text-align:center;
 }
+

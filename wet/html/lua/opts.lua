@@ -113,6 +113,13 @@ map={ -- base lookup table
 											},
 					},
 
+["shoop"]		=	{			-- an image module
+						["#default"]	=	"shoop", 		-- no badlinks, we own everything under here
+						["#opts"]		=	{
+												url="/shoop",
+											},
+					},
+
 ["forum"]		=	{			-- a forum module
 						["#default"]	=	"forum", 		-- no badlinks, we own everything under here
 						["#opts"]		=	{

@@ -181,7 +181,7 @@ local put=make_put(srv)
 	end
 	if srv.gets.continue then continue=srv.gets.continue end -- where we wish to end up
 
-log(continue)
+--log(continue)
 	
 	local user
 	local sess
@@ -323,7 +323,8 @@ log(continue)
 					user.cache.authentication[i]=v
 				end
 			end
-
+			
+			user.cache.ip=srv.ip -- remember the last ip we logged in from
 			user.cache.admin=admin
 			user.cache.info=info -- extra procesed info
 			if info.email then user.cache.email=info.email end -- real email if available
@@ -334,6 +335,10 @@ log(continue)
 			end
 			
 			t.rollback()	
+		end
+-- clear cache of the user
+		if user then
+			d_users.cache_fix(srv,d_users.cache_what(srv,user))
 		end
 	end
 	
@@ -349,7 +354,6 @@ log(continue)
 			hash=hash..string.format("%04x", math.random(0,65535) ) -- not so good but meh it will do for now
 		end
 		sess=d_sess.manifest(srv,user,hash)
---		sess.cache.ip=srv.ip -- lock to this ip?
 		d_users.put(srv,sess) -- dump the session
 		srv.set_cookie{name="wet_session",value=hash,domain=srv.domain,path="/",live=os.time()+(60*60*24*28)}
 	end

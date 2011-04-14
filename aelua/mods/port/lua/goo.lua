@@ -55,7 +55,7 @@ module("port.goo")
 
 function shorten(url)
 
-	local got=fetch.post("https://www.googleapis.com/urlshortener/v1/url",
+	local got=fetch.post("https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyBvpbJCF1Pl-VENOr09NXHdO8xryGDH0Sg",
 		{
 --			["Authorization"]="OAuth "..table.concat(auths,", "),
 			["Content-Type"]="application/json; charset=utf-8",

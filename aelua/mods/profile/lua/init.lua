@@ -27,6 +27,8 @@ local html=require("profile.html")
 local wakapages=require("waka.pages")
 local comments=require("note.comments")
 
+local ipv4=require("admin.ipv4")
+
 local math=math
 local string=string
 local table=table
@@ -162,6 +164,10 @@ local get=make_get(srv)
 						form="name",
 						show="head",
 					},
+					{
+						form="location",
+						show="head",
+					},
 				}
 			content.list=list
 			content.user=pusr.cache
@@ -277,6 +283,31 @@ function makechunk_name(content,chunk)
 	return replace(p,d)
 end
 
+
+-----------------------------------------------------------------------------
+--
+-- the location of the person
+--
+-----------------------------------------------------------------------------
+function makechunk_location(content,chunk)
+	local user=content.user
+	local d={}
+	d.location = replace([[
+	<div class="profile_flag">
+	<img src="/art/base/flags/{co}.png" width="16" height="11" />
+	</div>
+]],{
+	co=ipv4.country(user.ip):lower(),
+	})
+	
+		
+	local p=[[
+<div class="profile_location">
+{location}
+</div>
+]]
+	return replace(p,d)
+end
 
 -----------------------------------------------------------------------------
 --

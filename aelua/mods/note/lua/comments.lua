@@ -356,7 +356,7 @@ function build_get_comment(srv,tab,c)
 	
 	local media=""
 	if c.media~=0 then
-		media=[[<a href="/data/]]..c.media..[["><img src="]]..srv.url_domain..[[/thumbcache/460/345/data/]]..c.media..[[" class="wetnote_comment_img" /></a>]]
+		media=[[<a href="/data/]]..c.media..[["><img src="]]..srv.url_domain..[[/thumbcache/crop/460/345/data/]]..c.media..[[" class="wetnote_comment_img" /></a>]]
 	end
 	
 	local plink,purl=d_users.get_profile_link(c.cache.user.id)
@@ -382,24 +382,16 @@ end
 
 --------------------------------------------------------------------------------
 --
--- post data to this comment url if we have any
--- display comment form at top so you can comment on this post
--- display comments + replies if we have any
--- with reply links so you can reply to these previous comment threads
+-- post data to this comment url if we have valid post info
+-- if post worked or if there was no post attempt then return nothing
+-- otherwise return some error html to display to the user
 --
 -- pass in get,set,posts,user,sess using the tab table
 -- also set tab.url to the url
 --
 --------------------------------------------------------------------------------
-function build(srv,tab)
-local function dput(s) put("<div>"..tostring(s).."</div>") end
+function post(srv,tab)
 
-	local ret={}
-	tab.ret=ret
-	ret.count=0
-	
-	local meta
-	
 	local user=(tab.user and tab.user.cache)
 	
 	if tab.posts then
@@ -409,43 +401,40 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			local posted
 		
 			if #tab.posts.wetnote_comment_text > 4096 then
-				tab.put([[
+				return([[
 				<div class="wetnote_error">
 				Sorry but your comment was too long (>4096 chars) to be accepted.
 				</div>
 				]])
-				return
 			end
---[[			
-			if #tab.posts.wetnote_comment_text <=3 then
-				tab.put([-[
+
+			if #tab.posts.wetnote_comment_text <3 then
+				return([[
 				<div class="wetnote_error">
-				Sorry but your comment was too short (>3 chars) to be accepted.
+				Sorry but your comment was too short (<3 chars) to be accepted.
 				</div>
-				]-])
-				return
+				]])
 			end
-]]			
+
+			local image
 			if tab.posts.filedata and tab.posts.filedata.size>0 then
 			
 				if tab.posts.filedata.size>=1000000 then
-					tab.put([[
+					return([[
 					<div class="wetnote_error">
 					Sorry but your upload must not be bigger than 1000000 bytes in size.
 					</div>
 					]])
-					return			
 				end
 				
-				local image=img.get(tab.posts.filedata.data) -- convert to image
+				image=img.get(tab.posts.filedata.data) -- convert to image
 				
 				if not image then
-					tab.put([[
+					return([[
 					<div class="wetnote_error">
 					Sorry but your upload must be a valid image.
 					</div>
 					]])
-					return
 				else
 					if image.width>1024 or image.height>1024 then -- resize, keep aspect
 						image=img.resize(image,1024,1024,"JPEG") -- resize image
@@ -455,7 +444,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 					end
 				end
 			end
-		
+			
 			local id=math.floor(tonumber(tab.posts.wetnote_comment_id))
 			local e=create(srv)
 			local c=e.cache
@@ -492,10 +481,18 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				dat.size=tab.posts.filedata and tab.posts.filedata.size
 				dat.name=tab.posts.filedata and tab.posts.filedata.name
 				dat.owner=user.id
-				
 				wetdata.upload(srv,dat)
 
 				c.media=dat.id -- remember id
+			end
+			if tab.image=="force" then -- require image to start thread 
+				if (not c.media) or (c.media==0) then
+					return([[
+					<div class="wetnote_error">
+					Sorry but you must include a valid image.
+					</div>
+					]])
+				end
 			end
 			
 			put(srv,e)
@@ -530,8 +527,8 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 
 			end
 
-			meta=update_meta_cache(srv,tab.url)
-			ret.count=meta.cache.count
+			tab.meta=update_meta_cache(srv,tab.url)
+			if tab.ret then tab.ret.count=tab.meta.cache.count end
 
 			if posted and posted.cache then -- redirect to our new post
 			
@@ -586,10 +583,132 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		end
 		
 	end
+end
+
+
+
+--------------------------------------------------------------------------------
+--
+-- get a html reply form
+--
+-- pass in get,set,posts,user,sess using the tab table
+-- also set tab.url to the url
+--
+--------------------------------------------------------------------------------
+function get_reply_form(srv,tab,num)
+
+	num=num or 0
+
+	local user=(tab.user and tab.user.cache)
+
+	if tab.linkonly then
+		return tab.get([[
+<div class="wetnote_comment_form_div">
+<a href="{url}" ">Reply</a>
+</div>]],{
+		url=srv.url_domain..tab.url,
+		id=num,
+	})
+	end
+	
+	if not user then -- must login to reply
+		return tab.get([[
+<div class="wetnote_comment_form_div">
+<a href="#" onclick="$(this).hide(400);$('#wetnote_comment_form_{id}').show(400);return false;" style="{actioncss}">Reply</a>
+<div id="wetnote_comment_form_{id}" style="{formcss}"> <a href="{url}">You must login to comment.<br/> Click here to login with twitter/gmail/etc...</a>
+</div>
+</div>]],{
+		url="/dumid/login/?continue="..url_esc(tab.url),
+		actioncss=(num==0) and "display:none" or "display:block",
+		formcss=(num==0) and "display:block" or "display:none",
+		id=num,
+	})
+	end
+	
+	local upload=""
+	
+	if tab.image then
+		local com=" Please choose an image! "
+		if tab.image=="force" then com=" You must choose an image! " end
+		upload=[[<div class="wetnote_comment_form_image_div" ><span>]]..com..[[</span><input  class="wetnote_comment_form_image" type="file" name="filedata" /></div>]]
+	end
+	
+	local post_text="Express your important opinion"
+	
+	local reply_text="Reply"
+	
+	if num==0 then
+		if tab.post_text then post_text=tab.post_text end
+	else
+		if tab.reply_text then reply_text=tab.reply_text end
+	end
+	
+	local plink,purl=d_users.get_profile_link(user.id or "")
+
+	return tab.get([[
+<div class="wetnote_comment_form_div">
+<a href="#" onclick="$(this).hide(400);$('#wetnote_comment_form_{id}').show(400);return false;" style="{actioncss}">Reply</a>
+<form class="wetnote_comment_form" name="wetnote_comment_form" id="wetnote_comment_form_{id}" action="" method="post" enctype="multipart/form-data" style="{formcss}">
+<div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
+<div class="wetnote_comment_form_div_cont">
+{upload}
+<textarea class="wetnote_comment_form_text" name="wetnote_comment_text"></textarea>
+<input name="wetnote_comment_id" type="hidden" value="{id}"></input>
+<input class="wetnote_comment_post" name="wetnote_comment_submit" type="submit" value="{post_text}"></input>
+</div>
+</form>
+</div>
+]],{
+	actioncss=(num==0) and "display:none" or "display:block",
+	formcss=(num==0) and "display:block" or "display:none",
+	author=user.id or "",
+	name=user.name or "",
+	plink=plink,
+	purl=purl or "http://google.com/search?q="..(user.name or ""),
+	time=os.date("%Y-%m-%d %H:%M:%S"),
+	id=num,
+	icon=srv.url_domain .. ( d_users.get_avatar_url(user or "") ),
+	upload=upload,
+	post_text=post_text,
+	})
+
+end
+
+
+
+
+--------------------------------------------------------------------------------
+--
+-- post data to this comment url if we have any
+-- display comment form at top so you can comment on this post
+-- display comments + replies if we have any
+-- with reply links so you can reply to these previous comment threads
+--
+-- pass in get,set,posts,user,sess using the tab table
+-- also set tab.url to the url
+--
+--------------------------------------------------------------------------------
+function build(srv,tab)
+local function dput(s) put("<div>"..tostring(s).."</div>") end
+
+	local ret={}
+	tab.ret=ret
+	ret.count=0
+	
+	local user=(tab.user and tab.user.cache)
+	
+	if tab.posts then
+		local err=post(srv,tab)
+		
+		if err then
+			tab.put(err)
+			return
+		end
+	end
 
 	
 -- reply page link
-	function get_reply_page(num)
+	local function get_reply_page(num)
 		return tab.get([[
 <div class="wetnote_comment_form_div">
 <a href="{url}">Reply</a>
@@ -597,71 +716,10 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			url=srv.url_domain..tab.url.."/"..num
 		})
 	end
-	
--- reply form
-	function get_reply_form(num)
-		if tab.linkonly then
-			return tab.get([[
-<div class="wetnote_comment_form_div">
-<a href="{url}" ">Reply</a>
-</div>]],{
-			url=srv.url_domain..tab.url,
-			id=num,
-		})
-		end
-		if not user then -- must login to reply
-			return tab.get([[
-<div class="wetnote_comment_form_div">
-<a href="#" onclick="$(this).hide(400);$('#wetnote_comment_form_{id}').show(400);return false;" style="{actioncss}">Reply</a>
-<div id="wetnote_comment_form_{id}" style="{formcss}"> <a href="{url}">You must login to comment.<br/> Click here to login with twitter/gmail/etc...</a>
-</div>
-</div>]],{
-			url="/dumid/login/?continue="..url_esc(tab.url),
-			actioncss=(num==0) and "display:none" or "display:block",
-			formcss=(num==0) and "display:block" or "display:none",
-			id=num,
-		})
-		end
-		local upload=""
-		if tab.image then
-			upload=[[<div><input type="file" name="filedata" style="margin-left:110px;width:500px;" /></div>]]
-		end
-		local post_text="Express your important opinion"
-		if num==0 then
-			if tab.post_text then post_text=tab.post_text end
-		else
-			if tab.reply_text then reply_text=tab.reply_text end
-		end
-		local plink,purl=d_users.get_profile_link(user.id or "")
-		return tab.get([[
-<div class="wetnote_comment_form_div">
-<a href="#" onclick="$(this).hide(400);$('#wetnote_comment_form_{id}').show(400);return false;" style="{actioncss}">Reply</a>
-<form class="wetnote_comment_form" name="wetnote_comment_form" id="wetnote_comment_form_{id}" action="" method="post" enctype="multipart/form-data" style="{formcss}">
-	<div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
-	<textarea class="wetnote_comment_form_text" name="wetnote_comment_text"></textarea>
-	<input name="wetnote_comment_id" type="hidden" value="{id}"></input>
-	{upload}
-	<input class="wetnote_comment_post" name="wetnote_comment_submit" type="submit" value="{post_text}"></input>
-</form>
-</div>
-]],{
-		actioncss=(num==0) and "display:none" or "display:block",
-		formcss=(num==0) and "display:block" or "display:none",
-		author=user.id or "",
-		name=user.name or "",
-		plink=plink,
-		purl=purl or "http://google.com/search?q="..(user.name or ""),
-		time=os.date("%Y-%m-%d %H:%M:%S"),
-		id=num,
-		icon=srv.url_domain .. ( d_users.get_avatar_url(user or "") ),
-		upload=upload,
-		post_text=post_text,
-		})
-	end
 		
 -- the meta will contain the cache of everything, we may already have it due to updates	
-	if not meta then
-		meta=manifest(srv,tab.url)
+	if not tab.meta then
+		tab.meta=manifest(srv,tab.url)
 	end
 
 	tab.put([[<div class="wetnote_main">]])
@@ -681,14 +739,14 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	
 	if show_post then
 		tab.put([[<div class="wetnote_comment_form_head"></div>]])
-		tab.put(get_reply_form(0))
+		tab.put(get_reply_form(srv,tab,0))
 		tab.put([[<div class="wetnote_comment_form_tail"></div>]])
 	end
 	
 	
 -- get all top level comments
 --	local cs=list(srv,{sortdate="DESC",url=tab.url,group=0})
-	local cs=meta.cache.comments or {}
+	local cs=tab.meta.cache.comments or {}
 	
 	if tab.toponly then -- just display a top comment field
 	
@@ -769,7 +827,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				
 			end
 			
-			tab.put(get_reply_form(c.id))
+			tab.put(get_reply_form(srv,tab,c.id))
 
 			tab.put([[
 </div>
