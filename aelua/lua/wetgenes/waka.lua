@@ -391,8 +391,9 @@ function refine_chunks(srv,chunks,opts)
 	
 		if v.opts.form=="lua" then -- we have some lua code for this page
 			local e=sbox.make_env()
+			e.text=v.text
 			local f,err=loadstring(v.text)
-			v.text=err or "OK"
+			e.text=err or v.text
 			if f then
 				setfenv(f, e)
 				pcall(f)
