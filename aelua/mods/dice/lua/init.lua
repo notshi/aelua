@@ -14,6 +14,7 @@ local log=require("wetgenes.aelua.log").log -- grab the func from the package
 local wet_string=require("wetgenes.string")
 local str_split=wet_string.str_split
 local serialize=wet_string.serialize
+local macro_replace=wet_string.macro_replace
 
 
 -- require all the module sub parts
@@ -29,6 +30,8 @@ local ipairs=ipairs
 local tostring=tostring
 local tonumber=tonumber
 local type=type
+
+local require=require
 
 module("dice")
 
@@ -50,13 +53,22 @@ local function put(a,b)
 	b.srv=srv
 	srv.put(wet_html.get(html,a,b))
 end
+local function get(a,b)
+	b=b or {}
+	b.srv=srv
+	return wet_html.get(html,a,b)
+end
 
 
-	srv.set_mimetype("text/html")
-	put("header",{})
---	put("home_bar",{})
---	put("user_bar",{})
-	
+-- need the base wiki page, its kind of the main site everything
+	local wakapages=require("waka.pages")
+	local refined=wakapages.load(srv,"/dice")[0]	
+
+	srv.set_mimetype("text/html; charset=UTF-8")
+	put("header",{title="profile ",H={user=user,sess=sess}})
+
+	refined.title="Dice"
+	local body=""
 	
 	local style="plain"
 	local count=2
@@ -94,7 +106,7 @@ end
 	local styles={"plain"}
 	local counts={1,2,3,4,5,6,7,8,9,10,11,12,13,14}
 	local sides={2,4,6,8,10,12,20}
-	put("dice_form",{counts=counts,sides=sides,styles=styles,count=count,side=side,style=style})
+	body=body..get("dice_form",{counts=counts,sides=sides,styles=styles,count=count,side=side,style=style})
 	
 	local dienames={
 					[2]="eldritch coins",
@@ -105,7 +117,7 @@ end
 					[20]="rough icosahedrons",
 					}
 	local diename=dienames[side] or side.." sided dice"
-	put(
+	body=body..get(
 	[[
 		<br/>
 		The webmaster grabs a handful of {diename} and throws them high into the air.<br/>
@@ -123,10 +135,13 @@ end
 	local width=count*100
 	if width>960 then width=960 end
 	
-	put("<a href=\"/dice/image/plain/{imgid}.jpg\"><img src=\"/dice/image/plain/{imgid}.jpg\" width=\"{width}\"/></a><br/>",{count=count,sides=sides,imgid=imgid,width=width})
+	body=body..get("<a href=\"/dice/image/plain/{imgid}.jpg\"><img src=\"/dice/image/plain/{imgid}.jpg\" width=\"{width}\"/></a><br/>",{count=count,sides=sides,imgid=imgid,width=width})
 	
-	put("footer",{})
-	
+	refined.body=body;
+	put( macro_replace(refined.plate or "{body}", refined ) )
+			
+	put("footer")
+
 end
 
 

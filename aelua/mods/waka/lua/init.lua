@@ -286,7 +286,7 @@ local ext
 		srv.set_mimetype("text/plain; charset=UTF-8")
 		srv.put(page.cache.text or "")
 		
-	elseif ext=="dbg" then -- dump out all the bubbled chunks as json
+	elseif ext=="dump" then -- dump out all the bubbled chunks as json
 
 		srv.set_mimetype("text/plain; charset=UTF-8")
 		put( json.encode(chunks) )
@@ -305,10 +305,14 @@ local ext
 		
 		if not display_edit_only then
 		
+			local repopts={}
+			
+			if ext=="dbg" then repopts.dbg_html_comments=true end
+			
 			put(macro_replace(refined.plate or [[
 			<h1>{title}</h1>
 			{body}
-			]],refined))
+			]],refined,repopts))
 			
 			if pageopts.flame=="on" then -- add comments to this page
 				comments.build(srv,{title=refined.title or pagename,url=url_local,posts=posts,get=get,put=put,sess=sess,user=user})
