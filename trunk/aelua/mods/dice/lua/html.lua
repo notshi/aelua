@@ -47,7 +47,7 @@ dice_form=function(d)
 	d.line1=""
 	for i=1,#d.counts do local v=d.counts[i]
 		local checked=""
-		if v==d.count then checked="checked=\"on\"" end
+		if v==d.count then checked="checked=\"checked\"" end
 		d.line1=d.line1..wet_html.replace(cs,{v=v,checked=checked})
 --		if (i%2)==0 then d.line1=d.line1.."<br/>" end
 	end
@@ -55,14 +55,14 @@ dice_form=function(d)
 	d.line2=""
 	for i=1,#d.sides do local v=d.sides[i]
 		local checked=""
-		if v==d.side then checked="checked=\"on\"" end
+		if v==d.side then checked="checked=\"checked\"" end
 		d.line2=d.line2..wet_html.replace(ds,{v=v,checked=checked})
 	end
 	
 	d.line3=""
 	for i=1,#d.styles do local v=d.styles[i]
 		local checked=""
-		if v==d.style then checked="checked=\"on\"" end
+		if v==d.style then checked="checked=\"checked\"" end
 		d.line3=d.line3..wet_html.replace(ss,{v=v,checked=checked})
 	end
 	
@@ -72,20 +72,21 @@ dice_form=function(d)
 <h1>Choose your god!</h1>
 </div>
 
-<form class="jNice" name="dice_form" id="dice_form" action="" method="POST">
-<div class="#dice_form">
-<div class="#dice_form_line1" style="float:left;width:150px;background-color:#f0f0ff" >
-{line1}
-</div>
-<div class="#dice_form_line2" style="float:left;width:75px;background-color:#f0ffff" >
-{line2}
-</div>
-<div class="#dice_form_line3" style="float:left;width:400px" >
-{line3}
-</div>
-<div class="#dice_form_submit" style="clear:both" >
-<input type="submit" name="submit" value="Roll dice!"/>
-</div>
+<form class="jNice" name="dice_form" id="dice_form" action="" method="post">
+	<div class="#dice_form">
+		<div class="#dice_form_line1" style="float:left;width:150px;background-color:#f0f0ff" >
+			{line1}
+		</div>
+		<div class="#dice_form_line2" style="float:left;width:75px;background-color:#f0ffff" >
+			{line2}
+		</div>
+		<div class="#dice_form_line3" style="float:left;width:400px" >
+			{line3}
+		</div>
+		<div class="#dice_form_submit" style="clear:both" >
+			<input type="submit" name="submit" value="Roll dice!"/>
+		</div>
+	</div>
 </form>
 
 
