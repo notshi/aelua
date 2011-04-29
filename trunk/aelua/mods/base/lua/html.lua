@@ -84,10 +84,15 @@ end
 -----------------------------------------------------------------------------
 header=function(d)
 
+	d.bar=d.bar or ""
+	d.bartop=d.bartop or ""
+	
 	if opts_html.bar=="head" then
 		d.bar=d.bar or get_html("aelua_bar",d)
 	end
-	d.bar=d.bar or ""
+	if opts_html.bar=="top" then
+		d.bartop=get_html("aelua_bar",d)
+	end
 	
 	d.extra=(d.srv and d.srv.extra or "") .. ( d.extra or "" )
 	
@@ -185,6 +190,7 @@ header=function(d)
 
  </head>
 <body>
+{bartop}
 <div class="aelua_body">
 {bar}
 ]])
@@ -236,10 +242,14 @@ footer=function(d)
 [[
 </div>
 <div class="aelua_footer">
+<div class="aelua_about">
 {about}
-{report}
-{bar}
 </div>
+<div class="aelua_report">
+{report}
+</div>
+</div>
+{bar}
 </body>
 </html>
 ]])
@@ -264,9 +274,7 @@ about=function(d)
 --	d.appengine="<a href=\"http://code.google.com/appengine/\">appengine</a>"
 
 	local p=get_plate("about",[[
-<div class="aelua_about">
 	{bootstrapp} is a distribution of {aelua} {mods} developed by {wetgenes}.
-</div>
 ]])
 	return replace(p,d)
 

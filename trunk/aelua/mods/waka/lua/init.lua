@@ -316,6 +316,7 @@ local ext
 			
 			if pageopts.flame=="on" then -- add comments to this page
 				comments.build(srv,{title=refined.title or pagename,url=url_local,posts=posts,get=get,put=put,sess=sess,user=user})
+--anon="default"
 			end
 			
 		end

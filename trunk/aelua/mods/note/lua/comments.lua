@@ -86,6 +86,7 @@ function create(srv)
 				-- ok    - this is a valid comment, display it
 				-- spam  - this is pure spam, hidden but not forgotten
 				-- meta  - use on fake comments that only contain cached info of other comments
+				-- anon  -- anonymous, should not show up in user searches
 
 	p.count=0       -- number of replies to this comment (could be good to sort by)
 	p.pagecount=0   -- number of pagecomments to this comment (this comment is treated as its own page)
@@ -360,14 +361,8 @@ function build_get_comment(srv,tab,c)
 	end
 	
 	local plink,purl=d_users.get_profile_link(c.cache.user.id)
-	return tab.get([[
-<div class="wetnote_comment_div" id="wetnote{id}" >
-<div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
-<div class="wetnote_comment_head" > #{id} posted by <a href="{purl}">{name}</a> on {time} </div>
-<div class="wetnote_comment_text" >{media}{text}</div>
-<div class="wetnote_comment_tail" ></div>
-</div>
-]],{
+
+	local vars={
 	media=media,
 	text=wet_waka.waka_to_html(c.text,{base_url=tab.url,escape_html=true}),
 	author=c.cache.user.id,
@@ -377,7 +372,23 @@ function build_get_comment(srv,tab,c)
 	time=os.date("%Y-%m-%d %H:%M:%S",c.created),
 	id=c.id,
 	icon=srv.url_domain..( c.cache.avatar or d_users.get_avatar_url(c.cache.user) ),
-	})
+	}
+	
+	if c.type=="anon" then -- anonymiser
+		vars.name="anon"
+		vars.author=0
+		vars.purl="/art/note/anon.jpg"
+		vars.icon="/art/note/anon.jpg"
+	end
+	
+	return tab.get([[
+<div class="wetnote_comment_div" id="wetnote{id}" >
+<div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
+<div class="wetnote_comment_head" > #{id} posted by <a href="{purl}">{name}</a> on {time} </div>
+<div class="wetnote_comment_text" >{media}{text}</div>
+<div class="wetnote_comment_tail" ></div>
+</div>
+]],vars)
 end
 
 --------------------------------------------------------------------------------
@@ -492,6 +503,12 @@ function post(srv,tab)
 					Sorry but you must include a valid image.
 					</div>
 					]])
+				end
+			end
+			
+			if tab.anon and tab.posts.anon then -- may be anonymous
+				if wet_string.trim(tab.posts.anon)=="anon" then -- it is
+					c.type="anon"
 				end
 			end
 			
@@ -626,11 +643,17 @@ function get_reply_form(srv,tab,num)
 	end
 	
 	local upload=""
+	local anon=""
 	
 	if tab.image then
 		local com=" Please choose an image! "
 		if tab.image=="force" then com=" You must choose an image! " end
 		upload=[[<div class="wetnote_comment_form_image_div" ><span>]]..com..[[</span><input  class="wetnote_comment_form_image" type="file" name="filedata" /></div>]]
+	end
+	if tab.anon then
+		local checked=""
+		if tab.anon=="default" then checked="checked" end -- selected by default
+		anon=[[<div class="wetnote_comment_form_anon_dic" ><input  class="wetnote_comment_form_anon_check" type="checkbox" name="anon" value="anon" ]]..checked..[[/><span>Post anonymously?</span></div>]]
 	end
 	
 	local post_text="Express your important opinion"
@@ -652,6 +675,7 @@ function get_reply_form(srv,tab,num)
 <div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
 <div class="wetnote_comment_form_div_cont">
 {upload}
+{anon}
 <textarea class="wetnote_comment_form_text" name="wetnote_comment_text"></textarea>
 <input name="wetnote_comment_id" type="hidden" value="{id}"></input>
 <input class="wetnote_comment_post" name="wetnote_comment_submit" type="submit" value="{post_text}"></input>
@@ -669,6 +693,7 @@ function get_reply_form(srv,tab,num)
 	id=num,
 	icon=srv.url_domain .. ( d_users.get_avatar_url(user or "") ),
 	upload=upload,
+	anon=anon,
 	post_text=post_text,
 	})
 
