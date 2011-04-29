@@ -114,7 +114,7 @@ function waka_changed(srv,page)
 	
 	local chunks=wet_waka.text_to_chunks( page.cache.text )
 	
-	log(tostring(chunks.title.text))
+--	log(tostring(chunks.title.text))
 end
 
 -- add our hook to the waka stuffs, this should get called on module load
