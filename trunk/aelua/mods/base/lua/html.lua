@@ -83,17 +83,17 @@ end
 --
 -----------------------------------------------------------------------------
 header=function(d)
-
-	d.bar=d.bar or ""
-	d.bartop=d.bartop or ""
 	
 	if opts_html.bar=="head" then
-		d.bar=d.bar or get_html("aelua_bar",d)
+		d.bar=get_html("aelua_bar",d)
 	end
 	if opts_html.bar=="top" then
 		d.bartop=get_html("aelua_bar",d)
 	end
 	
+	d.bar=d.bar or ""
+	d.bartop=d.bartop or ""
+
 	d.extra=(d.srv and d.srv.extra or "") .. ( d.extra or "" )
 	
 	d.favicon="/favicon.ico"
