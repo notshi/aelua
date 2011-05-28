@@ -114,7 +114,7 @@ local ext
 	end
 	if aa[#aa]=="" then aa[#aa]=nil end-- kill any trailing slash
 	
-	if aa[1]=="" and aa[2]=="admin" then
+	if aa[1]=="!" and aa[2]=="admin" then
 		return serv_admin(srv)
 	end
 	
@@ -392,8 +392,8 @@ local get=make_get(srv)
 	else
 	
 			put([[
-			<a href="{srv.url_base}/admin/pages"> view all pages </a><br/>
-			<a href="{srv.url_base}/admin/edits"> view all edits </a><br/>
+			<a href="{srv.url_base}!/admin/pages"> view all pages </a><br/>
+			<a href="{srv.url_base}!/admin/edits"> view all edits </a><br/>
 ]],{})
 
 	end

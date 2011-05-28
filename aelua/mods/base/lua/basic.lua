@@ -117,7 +117,7 @@ fetch.countzero()
 		
 		if slash then
 		
-			if slash=="" and not srv.query then -- use a default index if all blank
+			if slash=="" and not srv.query and not srv.url_slash[ srv.url_slash_idx+1 ]  then -- use a default index if all blank
 				slash=lookup[ "#index" ] or ""
 				if slash~="" then
 					local ss=str_split("/",slash)

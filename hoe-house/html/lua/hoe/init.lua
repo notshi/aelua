@@ -922,6 +922,8 @@ end
 -----------------------------------------------------------------------------
 function serv_round_trade(H)
 
+if true then return serv_round_disabled(H) end
+
 	-- these are the allowed trades , the first name is offered
 	-- and the second name is the payment type
 	local valid_trades={
@@ -1254,6 +1256,22 @@ function serv_round_trade(H)
 
 end
 
+
+-----------------------------------------------------------------------------
+--
+-- acts
+--
+-----------------------------------------------------------------------------
+function serv_round_disabled(H)
+
+	local put,get=H.put,H.get
+
+	H.srv.set_mimetype("text/html; charset=UTF-8")
+	put("header",{})
+	put("player_bar",{player=H.player and H.player.cache})
+	put("<h1>DISABLED</h1>")
+	put("footer",footer_data)
+end
 
 -----------------------------------------------------------------------------
 --
