@@ -1,6 +1,4 @@
 
-local log=require("wetgenes.aelua.log").log -- grab the func from the package
-
 local sys=require("wetgenes.aelua.sys")
 local wet_html=require("wetgenes.html")
 local replace=wet_html.replace
