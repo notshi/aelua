@@ -381,6 +381,8 @@ function build_get_comment(srv,tab,c)
 		vars.icon="/art/note/anon.jpg"
 	end
 	
+	vars.title=tab.get([[#{id} posted by {name} on {time}]],vars)
+	
 	return tab.get([[
 <div class="wetnote_comment_div" id="wetnote{id}" >
 <div class="wetnote_comment_icon" ><a href="{purl}"><img src="{icon}" width="100" height="100" /></a></div>
@@ -388,7 +390,7 @@ function build_get_comment(srv,tab,c)
 <div class="wetnote_comment_text" >{media}{text}</div>
 <div class="wetnote_comment_tail" ></div>
 </div>
-]],vars)
+]],vars),vars
 end
 
 --------------------------------------------------------------------------------
@@ -813,10 +815,18 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 		
 		for i,c in ipairs(cs) do
 	
-
-	--		local c=v.cache
-			tab.put(build_get_comment(srv,tab,c)) -- main comment
-					
+			local dothis=false
+			
+			if tab.replyonly then -- just display replys to this comment
+			
+				if c.id ~= tab.replyonly then dothis=true end
+				
+			else
+				tab.put(build_get_comment(srv,tab,c)) -- main comment
+				dothis=true
+			end
+			
+		if dothis then
 			tab.put([[
 <div class="wetnote_reply_div">
 ]])
@@ -851,7 +861,8 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				tab.put(build_get_comment(srv,tab,c))
 				
 			end
-			
+		end
+		
 			tab.put(get_reply_form(srv,tab,c.id))
 
 			tab.put([[

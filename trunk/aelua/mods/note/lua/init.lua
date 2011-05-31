@@ -149,6 +149,8 @@ local posts=make_posts(srv)
 		if ap[#ap] then
 			if ap[#ap]=="js" then -- javascript embed
 				ext="js"
+			elseif ap[#ap]=="atom" then -- rss feed
+				ext="atom"
 			elseif ap[#ap]=="frame" then -- special version of this page intended to be embeded in an iframe
 				ext="frame"
 			end
@@ -162,14 +164,57 @@ local posts=make_posts(srv)
 
 	local note_url="/"..table.concat(aa,"/") -- this is the url we are talking about
 
-	if ext=="js" then
+
+	if ext=="atom" then -- head comments only in feed, comments on comments are ignored
+	
+		local function atom_escape(s)
+
+			return string.gsub(s, "([%&%<])",
+				function(c)
+					if c=="&" then return "&amp;" end
+					if c=="<" then return "&lt;" end
+					return c
+				end)
+		end
+
+			local list=comments.list(srv,{csortdate="DESC",url=note_url,group=0}) -- get all comments
+			
+			local updated=0
+			local author_name=""
+			if list[1] then
+				updated=list[1].cache.created
+				author_name=list[1].cache.cache.user.name
+			end
+			
+			updated=os.date("%Y-%m-%dT%H:%M:%SZ",updated)
+			srv.set_mimetype("application/atom+xml; charset=UTF-8")
+			put("note_atom_head",{title="notes",updated=updated,author_name=author_name})
+			for i,v in ipairs(list) do
+log(tostring(v.cache))				
+				local text,vars=comments.build_get_comment(srv,{url=note_url,get=get},v.cache)
+				
+				vars.script=[[<script type="text/javascript" src="]]..srv.url_domain..[[/note/import]]..note_url..[[.js?wetnote=]]..v.cache.id..[["></script>]]
+				put("note_atom_item",{
+					it=v.cache,
+					text=atom_escape(vars.media..vars.text..vars.script),
+					title=atom_escape(vars.title),
+					link=srv.url_domain..note_url.."#wetnote"..v.cache.id,
+					})
+			end
+			put("note_atom_foot",{})
+
+	elseif ext=="js" then
 		srv.set_mimetype("text/javascript; charset=UTF-8")
 		
 		local out={}
 		local newput=function(a,b)
 			out[#out+1]=get(a,b)
 		end
-		comments.build(srv,{url=note_url,posts={},get=get,put=newput,sess=sess,user=user,linkonly=true})
+		local replyonly
+		if srv.gets.wetnote then
+			replyonly=tonumber(srv.gets.wetnote)
+		end
+		comments.build(srv,{url=note_url,posts={},get=get,put=newput,sess=sess,user=user,linkonly=true,replyonly=replyonly})
 		local s=table.concat(out) -- this is the html string we wish to insert
 
 local function js_encode(str)

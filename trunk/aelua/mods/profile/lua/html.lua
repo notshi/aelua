@@ -39,7 +39,7 @@ end
 -----------------------------------------------------------------------------
 profile_layout=function(d)
 
--- the 4 main components, may be arrays of strings just juin them if they are
+-- the 4 main components, may be arrays of strings just join them if they are
 	for i,v in ipairs{"head","wide","side","foot"} do
 		if type(d[v])=="table" then
 			d[v]=table.concat(d[v]) -- turn any tables to strings
