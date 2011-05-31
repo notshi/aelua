@@ -192,7 +192,7 @@ local posts=make_posts(srv)
 			for i,v in ipairs(list) do
 				local text,vars=comments.build_get_comment(srv,{url=note_url,get=get},v.cache)
 				
-				vars.script=[[<script type="text/javascript" src="]]..srv.url_domain..[[/note/import]]..note_url..[[.js?wetnote=]]..v.cache.id..[["></script>]]
+				vars.script=[[<script type="text/javascript" src="]]..srv.url_domain..[[/note/import]]..note_url..[[/.js?wetnote=]]..v.cache.id..[["></script>]]
 				put("note_atom_item",{
 					it=v.cache,
 					text=atom_escape(vars.media..vars.text..vars.script),
@@ -221,6 +221,13 @@ local function js_encode(str)
         return string.format("\\x%02x", string.byte(c))
     end)
 end		
+		local surl=srv.url
+		local replyonly
+		if srv.gets.wetnote then
+			replyonly=tonumber(srv.gets.wetnote)
+		end
+		if replyonly then surl=surl.."?wetnote="..replyonly end
+		
 		put([[
 var div = document.createElement('div');
 div.id='{url}';
@@ -250,7 +257,7 @@ if (!document.getElementById('{css}'))
 
 ]],
 {
-	url=srv.url,
+	url=surl,
 	str=js_encode(s),
 	css=srv.url_domain.."/css/note/import.css"
 })
