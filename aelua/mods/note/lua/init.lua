@@ -190,7 +190,6 @@ local posts=make_posts(srv)
 			srv.set_mimetype("application/atom+xml; charset=UTF-8")
 			put("note_atom_head",{title="notes",updated=updated,author_name=author_name})
 			for i,v in ipairs(list) do
-log(tostring(v.cache))				
 				local text,vars=comments.build_get_comment(srv,{url=note_url,get=get},v.cache)
 				
 				vars.script=[[<script type="text/javascript" src="]]..srv.url_domain..[[/note/import]]..note_url..[[.js?wetnote=]]..v.cache.id..[["></script>]]
