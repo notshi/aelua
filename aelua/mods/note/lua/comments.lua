@@ -765,9 +765,11 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 	end
 	
 	if show_post then
+if not tab.replyonly then
 		tab.put([[<div class="wetnote_comment_form_head"></div>]])
 		tab.put(get_reply_form(srv,tab,0))
 		tab.put([[<div class="wetnote_comment_form_tail"></div>]])
+end
 	end
 	
 	
@@ -819,7 +821,7 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 			
 			if tab.replyonly then -- just display replys to this comment
 			
-				if c.id ~= tab.replyonly then dothis=true end
+				if c.id == tab.replyonly then dothis=true end
 				
 			else
 				tab.put(build_get_comment(srv,tab,c)) -- main comment
@@ -861,13 +863,13 @@ local function dput(s) put("<div>"..tostring(s).."</div>") end
 				tab.put(build_get_comment(srv,tab,c))
 				
 			end
-		end
 		
 			tab.put(get_reply_form(srv,tab,c.id))
 
 			tab.put([[
 </div>
 ]])
+		end
 		end
 	end
 	
