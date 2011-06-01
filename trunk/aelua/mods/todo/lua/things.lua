@@ -30,6 +30,7 @@ default_props=
 {
 	title="", -- a cache of the title of the waka page
 	total=0, -- total of all "good" pledges
+	count=0, -- count of "good" pledges
 	state="none",
 }
 

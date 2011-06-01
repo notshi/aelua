@@ -86,6 +86,23 @@ local function make_posts(srv)
 	return posts
 end
 
+hooks={
+	posted={},
+}
+-----------------------------------------------------------------------------
+--
+-- handle callbacks
+--
+-----------------------------------------------------------------------------
+function add_posted_hook(pat,func)
+
+	hooks.posted[func]=pat -- use func as the key
+	
+end
+
+
+
+
 -----------------------------------------------------------------------------
 --
 -- the serv function, where the action happens.
