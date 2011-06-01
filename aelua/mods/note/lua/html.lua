@@ -56,7 +56,7 @@ note_atom_foot=function(d)
 
 end
 note_atom_item=function(d)
-	d.pubdate=(os.date("%Y-%m-%dT%H:%M:%SZ",d.it.updated))
+	d.pubdate=(os.date("%Y-%m-%dT%H:%M:%SZ",d.it.created))
 	d.id=d.link
 	return replace([[
 	<entry>

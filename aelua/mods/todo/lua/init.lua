@@ -25,6 +25,8 @@ local d_users=require("dumid.users")
 local html=require("profile.html")
 
 local waka=require("waka")
+local note=require("note")
+
 local wakapages=require("waka.pages")
 local comments=require("note.comments")
 
@@ -108,17 +110,46 @@ end
 --
 -----------------------------------------------------------------------------
 function waka_changed(srv,page)
+
 	if not page then return end
+	if tostring(page.key.id):sub(1,6)~="/todo/" then return end
 	
 	log(tostring(page.key.id))
 	
 	local chunks=wet_waka.text_to_chunks( page.cache.text )
 	
---	log(tostring(chunks.title.text))
+	log(tostring(chunks.body.text))
 end
 
 -- add our hook to the waka stuffs, this should get called on module load
 -- so that we always watch the waka edits, the trailing slash is to make sure that
 -- we only catch task pages and bellow
 waka.add_changed_hook("^/todo/",waka_changed)
+
+
+
+
+-----------------------------------------------------------------------------
+--
+-- hook into note posts
+--
+-----------------------------------------------------------------------------
+function note_posted(srv,page,parent)
+
+	if not page then return end
+	if tostring(page.key.id):sub(1,6)~="/todo/" then return end
+	
+	log("NOTE: "..tostring(page.key.id))
+	
+	local chunks=wet_waka.text_to_chunks( page.cache.text )
+	
+	log("NOTE: "..tostring(chunks.body.text))
+end
+
+-- add our hook to the waka stuffs, this should get called on module load
+-- so that we always watch the waka edits, the trailing slash is to make sure that
+-- we only catch task pages and bellow
+note.add_posted_hook("^/todo/",note_posted)
+
+
 

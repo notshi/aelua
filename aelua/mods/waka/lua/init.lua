@@ -74,10 +74,9 @@ end
 hooks={
 	changed={},
 }
-
 -----------------------------------------------------------------------------
 --
--- handle admin special pages/lists
+-- handle callbacks
 --
 -----------------------------------------------------------------------------
 function add_changed_hook(pat,func)
