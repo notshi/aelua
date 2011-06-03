@@ -120,7 +120,7 @@ local get,put=make_get_put(srv)
 					local data=sys.zip_read(zip,name)
 					if data then
 					
-						srv.set_mimetype( srv.vars.mime or guess_mimetype(name) )
+						srv.set_mimetype( (srv.vars.mime or guess_mimetype(name)).."; charset=UTF-8" )
 						srv.set_header("Cache-Control","public") -- allow caching of page
 						srv.set_header("Expires",os.date("%a, %d %b %Y %H:%M:%S GMT",os.time()+(60*60))) -- one hour cache
 						srv.put(data)
@@ -133,18 +133,26 @@ local get,put=make_get_put(srv)
 				
 				local t=sys.zip_list(zip)
 				
+				srv.set_mimetype("text/html".."; charset=UTF-8")
+--				srv.set_header("Cache-Control","public") -- allow caching of page
+--				srv.set_header("Expires",os.date("%a, %d %b %Y %H:%M:%S GMT",os.time()+(60*60))) -- one hour cache
+
+				srv.put("<html><head></head><body>\n")
+
 				for i,v in ipairs(t or {}) do
 				
-					srv.put(v.size.." : "..v.name.."\n")
+					srv.put(v.size.." : <a href=\""..v.name.."\">"..v.name.."</a><br/>\n")
 					
 				end
+
+				srv.put("</body></html>\n")
 				return
 				
 			else
 		
 				local ef=file.get(srv,em.cache.filekey)
 				
-				srv.set_mimetype( srv.vars.mime or em.cache.mimetype)				
+				srv.set_mimetype( (srv.vars.mime or em.cache.mimetype).."; charset=UTF-8")				
 				srv.set_header("Cache-Control","public") -- allow caching of page
 				srv.set_header("Expires",os.date("%a, %d %b %Y %H:%M:%S GMT",os.time()+(60*60))) -- one hour cache
 
@@ -425,54 +433,23 @@ end
 --
 -- guess a mimetype give a filename
 --
+local guess_mimetype_lookup={
+	[".jpg"]="image/jpeg",
+	[".jpeg"]="image/jpeg",
+	[".png"]="image/png",
+	[".gif"]="image/gif",
+	[".txt"]="text/plain",
+	[".css"]="text/css",
+	[".htm"]="text/html",
+	[".html"]="text/html",
+	[".js"]="text/javascript",
+	[".zip"]="application/zip",
+	[".ogg"]="audio/ogg",
+	[".mp3"]="audio/mp3",
+	[".manifest"]="text/cache-manifest",
+}
 function guess_mimetype(name)
-	local l2=name:sub(-2):lower()
-	local l3=name:sub(-3):lower()
-	local l4=name:sub(-4):lower()
-
-	if l3=="jpg" or l4=="jpeg" then
-
-		return "image/jpeg"
-		
-	elseif l3=="png" then
-
-		return "image/png"
-		
-	elseif l3=="gif" then
-
-		return "image/gif"
-		
-	elseif l3=="txt" then
-
-		return "text/plain"
-		
-	elseif l3=="css" then
-
-		return "text/css"
-		
-	elseif l3=="htm" or l4=="html" then
-
-		return "text/html"
-		
-	elseif l3=="zip" then
-
-		return "application/zip"
-		
-	elseif l2=="js" then
-	
-		return "text/javascript"
-		
-	elseif l3=="ogg" then
-	
-		return "audio/ogg"
-		
-	elseif l3=="mp3" then
-	
-		return "audio/mp3"
-		
-	else
-
-		return "application/octet-stream"
-		
-	end
+	local ext=name:match("%.[^%.]+$") -- get extension of filename, including .
+	if ext then ext=ext:lower() else ext="" end
+	return guess_mimetype_lookup[ ext ] or "application/octet-stream"
 end
