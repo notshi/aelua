@@ -1,6 +1,6 @@
-# aelua
+No longer updated. The latest code for this project now lives at https://bitbucket.org/xixs/pagecake
 
-The latest code for this project now lives at https://bitbucket.org/xixs/pagecake
+# aelua
 
 Where the current focus is on using nginx as an alternative host to appengine.
 
