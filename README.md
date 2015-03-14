@@ -1,5 +1,11 @@
 No longer updated. The latest code for this project now lives at https://bitbucket.org/xixs/pagecake
 
+Imported from the now defunct, https://code.google.com/p/aelua/ (archived - https://archive.today/GliE2)
+
+![aelua screenshot](http://wet.genes.pw/data/aelua_screen/aelua_screen.png)
+
+Thanks, google :/
+
 # aelua
 
 Where the current focus is on using nginx as an alternative host to appengine.
