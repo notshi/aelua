@@ -216,10 +216,22 @@ Apps live in the root of the svn here http://code.google.com/p/aelua/source/brow
 
 Apps are intended to be entire example sites you can configure to your tastes then deploy to appengine.
 
-AppWet
+###AppWet - is the example aelua app.
+http://wet.appspot.com/
 
-AppHoeHouse
+http://code.google.com/p/aelua/source/browse/#svn/trunk/wet
 
-AppBootStrap
+###AppHoeHouse - is a hommage to the web game whore house.
+http://hoe-house.appspot.com/
 
-AppShitProduct
+http://code.google.com/p/aelua/source/browse/#svn/trunk/hoe-house
+
+###AppBootStrap - is a cunning plan
+http://boot-strap.appspot.com/
+
+http://code.google.com/p/aelua/source/browse/#svn/trunk/boot-strap
+
+###AppShitProduct - is a future video documentary mashup kinda thing.
+http://shit-product.appspot.com/
+
+http://code.google.com/p/aelua/source/browse/#svn/trunk/shit-product
