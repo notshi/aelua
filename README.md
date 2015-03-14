@@ -1,4 +1,4 @@
-###No longer updated. The latest code for this project now lives at https://bitbucket.org/xixs/pagecake
+###No longer updated. Latest code lives at https://bitbucket.org/xixs/pagecake
 
 Imported from the now defunct, https://code.google.com/p/aelua/
 
