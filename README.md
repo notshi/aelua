@@ -102,6 +102,17 @@ example -> http://wet.appspot.com/chan
 source -> http://code.google.com/p/aelua/source/browse/#svn/trunk/aelua/mods/chan
 
 
+###ModConsole - Admin console module.
+
+A live Lua console connected to your app.
+
+Typing in commands or pasting of trusted code for the use of.
+
+Since you need admin to use this you will have to install to your own app or run one locally to see it.
+
+You can however be told that you do not have admin privileges at this example url http://wet.appspot.com/console please enjoy the experience.
+
+
 ###ModDice - Random numbers for gamers.
 
 A simple dice throwing module.
@@ -117,6 +128,12 @@ source -> http://code.google.com/p/aelua/source/browse/#svn/trunk/aelua/mods/dic
 If you would like more dice or alternative images, consider donating them yourself :) See http://code.google.com/p/aelua/source/browse/#svn/trunk/aelua/mods/dice/art/plain for examples of what we need.
 
 It would be nice to knock up some blender projects and having a clean rendered option.
+
+
+###ModBlog - you want chunky fries with that?
+
+the accompanying blog module to be attached to the wiki or standalone.
+
 
 
 ###ModWaka - A wiki like module.
@@ -206,6 +223,17 @@ for example
 http://wet.appspot.com/thumbcache/16/16/code.google.com/p/aelua/logo
 
 Generates a 16x16 image from the aelua project logo, please don't abuse that link. Just host your own copy of the example wet application.
+
+
+###FutureFontage - Cutomised type for destrucktion.
+Introduction
+Each type is 130x130px, modular and can be contruckted to form a ship.
+
+Color undecided.
+
+https://aelua.googlecode.com/svn/trunk/wet/html/art/
+
+![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot001.png) ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot002.png) ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot003.png) ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot004.png) ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot005.png) ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot006.png) ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot007.png)
 
 #Apps
 A list of available apps.
