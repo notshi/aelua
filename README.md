@@ -231,7 +231,7 @@ Each type is 130x130px, modular and can be contruckted to form a ship.
 
 Color undecided.
 
-https://aelua.googlecode.com/svn/trunk/wet/html/art/
+https://github.com/notshi/aelua/tree/master/wet/html/art
 
 ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot001.png) ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot002.png) ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot003.png) ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot004.png) ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot005.png) ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot006.png) ![image of spaceship logo](https://github.com/notshi/aelua/blob/master/wet/html/art/dot007.png)
 
